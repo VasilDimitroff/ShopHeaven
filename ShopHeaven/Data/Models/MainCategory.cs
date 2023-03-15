@@ -2,7 +2,7 @@
 
 namespace ShopHeaven.Data.Models
 {
-    public class MainCategory : GuidModel
+    public class MainCategory : GuidModel, IBaseModel
     {
         public MainCategory()
         {
@@ -19,5 +19,7 @@ namespace ShopHeaven.Data.Models
         public virtual ICollection<SubCategory> SubCategories { get; set; }
 
         public virtual ICollection<ProductsMainCategories> Products { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }

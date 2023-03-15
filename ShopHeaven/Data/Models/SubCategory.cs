@@ -1,9 +1,8 @@
-﻿using Duende.IdentityServer.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ShopHeaven.Data.Models
 {
-    public class SubCategory : GuidModel
+    public class SubCategory : GuidModel, IBaseModel
     {
         public SubCategory()
         {
@@ -16,10 +15,13 @@ namespace ShopHeaven.Data.Models
 
         public string Description { get; set; }
 
+        [Required]
         public int MainCategoryId { get; set; }
 
         public MainCategory MainCategory { get; set; }
 
         public ICollection<ProductsSubCategories> Products { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }
