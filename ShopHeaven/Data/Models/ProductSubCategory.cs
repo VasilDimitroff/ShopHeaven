@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
 {
-    public class Image : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
+    public class ProductSubCategory: IBaseModel, ICreatableModel, IDeletableModel
     {
-        [Required]
-        public string Url { get; set; }
-
         public int ProductId { get; set; }
 
         public virtual Product Product { get; set; }
+
+        public int SubCategoryId { get; set; }
+
+        public virtual SubCategory SubCategory { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -23,8 +23,7 @@ namespace ShopHeaven.Data.Models
         public int CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
-        [InverseProperty("Images")]
+        [InverseProperty("ProductsSubCategories")]
         public virtual User CreatedBy { get; set; }
-
     }
 }

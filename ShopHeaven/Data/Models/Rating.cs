@@ -2,7 +2,7 @@
 
 namespace ShopHeaven.Data.Models
 {
-    public class Rating : GuidModel, IBaseModel
+    public class Rating : GuidModel, IBaseModel, IDeletableModel
     {
         [Required]
         public int UserId { get; set; }
@@ -18,5 +18,11 @@ namespace ShopHeaven.Data.Models
         public int Value { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedOn { get; set; }
     }
 }

@@ -1,15 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
 {
-    public class Product : GuidModel, IBaseModel
+    public class Product : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
     {
         public Product()
         {
             Ratings = new HashSet<Rating>();
-            MainCategories = new HashSet<ProductsMainCategories>();
-            SubCategories = new HashSet<ProductsSubCategories>();
+            MainCategories = new HashSet<ProductMainCategory>();
+            SubCategories = new HashSet<ProductSubCategory>();
             Images = new HashSet<Image>();
+            Tags = new HashSet<ProductTag>();
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
@@ -26,13 +28,10 @@ namespace ShopHeaven.Data.Models
         [MaxLength(100)]
         public string Brand { get; set; }
 
-        [Required]
         public bool HasGuarantee { get; set; }
 
-        [Required]
         public bool IsAvailable { get; set; }
 
-        [Required]
         public decimal Price { get; set; }
 
         public decimal Discount { get; set; }
@@ -41,15 +40,28 @@ namespace ShopHeaven.Data.Models
 
         public virtual Image Thumbnail { get; set; }
 
-        [Required]
         public DateTime CreatedOn { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedOn { get; set; }
+
+        public int CreatedById { get; set; }
+
+        [ForeignKey(nameof(CreatedById))]
+        [InverseProperty("Products")]
+        public virtual User CreatedBy { get; set; }
 
         public virtual ICollection<Image> Images { get; set; }
 
-        public virtual ICollection<ProductsMainCategories> MainCategories { get; set; }
+        public virtual ICollection<ProductMainCategory> MainCategories { get; set; }
 
-        public virtual ICollection<ProductsSubCategories> SubCategories { get; set; }
+        public virtual ICollection<ProductSubCategory> SubCategories { get; set; }
 
         public virtual ICollection<Rating> Ratings { get; set; }
+
+        public virtual ICollection<ProductTag> Tags { get; set; }
     }
 }
