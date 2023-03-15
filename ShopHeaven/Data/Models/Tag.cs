@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
 {
@@ -6,9 +7,12 @@ namespace ShopHeaven.Data.Models
     {
         public Tag()
         {
+            CreatedOn = DateTime.UtcNow;
             Products = new HashSet<ProductTag>();
         }
 
+        [Required(ErrorMessage ="Tag name cannot be null or empty")]
+        [MinLength(1)]
         public string Name { get; set; }
 
         public DateTime CreatedOn { get; set; }
@@ -25,6 +29,6 @@ namespace ShopHeaven.Data.Models
         [InverseProperty("Tags")]
         public User CreatedBy { get; set; }
 
-        public virtual ICollection<ProductTag> Products { get; set; }
+        public ICollection<ProductTag> Products { get; set; }
     }
 }

@@ -7,6 +7,7 @@ namespace ShopHeaven.Data.Models
     {
         public SubCategory()
         {
+            CreatedOn = DateTime.UtcNow;
             this.Products = new HashSet<ProductSubCategory>();
         }
 
@@ -35,6 +36,6 @@ namespace ShopHeaven.Data.Models
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("SubCategories")]
-        public virtual User CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
     }
 }

@@ -4,13 +4,18 @@ namespace ShopHeaven.Data.Models
 {
     public class ProductTag : IBaseModel, ICreatableModel, IDeletableModel
     {
+        public ProductTag()
+        {
+            CreatedOn = DateTime.UtcNow;
+        }
+
         public int ProductId { get; set; }
 
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         public int TagId { get; set; }
 
-        public virtual Tag Tag { get; set; }
+        public Tag Tag { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -24,6 +29,6 @@ namespace ShopHeaven.Data.Models
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("ProductsTags")]
-        public virtual User CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
     }
 }

@@ -4,13 +4,18 @@ namespace ShopHeaven.Data.Models
 {
     public class ProductMainCategory: IBaseModel, ICreatableModel, IDeletableModel
     {
+        public ProductMainCategory()
+        {
+            CreatedOn = DateTime.UtcNow;
+        }
+
         public int ProductId { get; set; }
 
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         public int MainCategoryId { get; set; }
 
-        public virtual MainCategory MainCategory { get; set; }
+        public MainCategory MainCategory { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -24,6 +29,6 @@ namespace ShopHeaven.Data.Models
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("ProductsMainCategories")]
-        public virtual User CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
     }
 }

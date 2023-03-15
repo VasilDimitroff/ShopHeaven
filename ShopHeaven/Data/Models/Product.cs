@@ -7,10 +7,12 @@ namespace ShopHeaven.Data.Models
     {
         public Product()
         {
-            Ratings = new HashSet<Rating>();
+            CreatedOn = DateTime.UtcNow;
+            Reviews = new HashSet<Review>();
             MainCategories = new HashSet<ProductMainCategory>();
             SubCategories = new HashSet<ProductSubCategory>();
             Images = new HashSet<Image>();
+            Reviews = new HashSet<Review>();
             Tags = new HashSet<ProductTag>();
         }
 
@@ -36,9 +38,13 @@ namespace ShopHeaven.Data.Models
 
         public decimal Discount { get; set; }
 
+        public double Rating => Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+
+        //inverse property!
         public int ThumbnailId { get; set; }
 
-        public virtual Image Thumbnail { get; set; }
+        [ForeignKey(nameof(ThumbnailId))]
+        public Image Thumbnail { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -52,16 +58,16 @@ namespace ShopHeaven.Data.Models
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Products")]
-        public virtual User CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
 
-        public virtual ICollection<Image> Images { get; set; }
+        public ICollection<Image> Images { get; set; }
 
-        public virtual ICollection<ProductMainCategory> MainCategories { get; set; }
+        public ICollection<Review> Reviews { get; set; }
 
-        public virtual ICollection<ProductSubCategory> SubCategories { get; set; }
+        public ICollection<ProductMainCategory> MainCategories { get; set; }
 
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public ICollection<ProductSubCategory> SubCategories { get; set; }
 
-        public virtual ICollection<ProductTag> Tags { get; set; }
+        public ICollection<ProductTag> Tags { get; set; }
     }
 }

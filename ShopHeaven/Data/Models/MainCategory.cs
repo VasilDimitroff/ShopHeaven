@@ -7,6 +7,7 @@ namespace ShopHeaven.Data.Models
     {
         public MainCategory()
         {
+            CreatedOn = DateTime.UtcNow;
             SubCategories = new HashSet<SubCategory>();
             Products = new HashSet<ProductMainCategory>();
         }
@@ -21,18 +22,18 @@ namespace ShopHeaven.Data.Models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public int CreatedById { get; set; }
-
-        [ForeignKey(nameof(CreatedById))]
-        [InverseProperty("MainCategories")]
-        public virtual User CreatedBy { get; set; }
-
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
 
-        public virtual ICollection<SubCategory> SubCategories { get; set; }
+        public int CreatedById { get; set; }
 
-        public virtual ICollection<ProductMainCategory> Products { get; set; }
+        [ForeignKey(nameof(CreatedById))]
+        [InverseProperty("MainCategories")]
+        public User CreatedBy { get; set; }
+
+        public ICollection<SubCategory> SubCategories { get; set; }
+
+        public ICollection<ProductMainCategory> Products { get; set; }
     }
 }

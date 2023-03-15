@@ -1,19 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
 {
-    public class Image : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
+    public class Review : GuidModel, IBaseModel, IDeletableModel, ICreatableModel
     {
-        public Image()
+        public Review()
         {
             CreatedOn = DateTime.UtcNow;
         }
 
-        [Required]
-        public string Url { get; set; }
+        [Required(ErrorMessage = "Please, enter a name")]
+        public string Author { get; set; }
+
+        [Required(ErrorMessage = "Review content cannot be empty or null")]
+        [MinLength(3)]
+        public string Content { get; set; }
+
+        [EmailAddress(ErrorMessage = "Please, enter a valid e-mail address")]
+        public string Email { get; set; }
 
         public int ProductId { get; set; }
+
+        public int RatingValue { get; set; }
 
         public Product Product { get; set; }
 
@@ -27,9 +35,6 @@ namespace ShopHeaven.Data.Models
 
         public int CreatedById { get; set; }
 
-        [ForeignKey(nameof(CreatedById))]
-        [InverseProperty("Images")]
         public User CreatedBy { get; set; }
-
     }
 }

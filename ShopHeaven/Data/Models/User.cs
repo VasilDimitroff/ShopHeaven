@@ -7,7 +7,8 @@ namespace ShopHeaven.Data.Models
     {
         public User()
         {
-            Ratings = new HashSet<Rating>();
+            CreatedOn = DateTime.UtcNow;
+            Reviews = new HashSet<Review>();
             Products = new HashSet<Product>();
             Images = new HashSet<Image>();
             MainCategories = new HashSet<MainCategory>();
@@ -18,6 +19,14 @@ namespace ShopHeaven.Data.Models
             ProductsTags = new HashSet<ProductTag>();
         }
 
+        public int CartId { get; set; }
+
+        public Cart Cart { get; set; }
+
+        public int WishlistId { get; set; }
+
+        public Wishlist Wishlist { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
@@ -26,30 +35,30 @@ namespace ShopHeaven.Data.Models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public ICollection<Review> Reviews { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<Product> Products { get; set; }
+        public ICollection<Image> Images { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<Image> Images { get; set; }
+        public ICollection<Product> Products { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<MainCategory> MainCategories { get; set; }
+        public ICollection<MainCategory> MainCategories { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<SubCategory> SubCategories { get; set; }
+        public ICollection<SubCategory> SubCategories { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<Tag> Tags { get; set; }
+        public ICollection<ProductMainCategory> ProductsMainCategories { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<ProductMainCategory> ProductsMainCategories { get; set; }
+        public ICollection<ProductSubCategory> ProductsSubCategories { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<ProductSubCategory> ProductsSubCategories { get; set; }
+        public ICollection<Tag> Tags { get; set; }
 
         [InverseProperty("CreatedBy")]
-        public virtual ICollection<ProductTag> ProductsTags { get; set; }
+        public ICollection<ProductTag> ProductsTags { get; set; }
     }
 }
