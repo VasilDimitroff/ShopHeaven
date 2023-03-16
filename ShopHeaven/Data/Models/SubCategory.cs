@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ShopHeaven.Data.Models.Common;
 
 namespace ShopHeaven.Data.Models
 {
-    public class SubCategory : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
+    public class SubCategory : BaseModel, ICreatableModel
     {
         public SubCategory()
         {
-            CreatedOn = DateTime.UtcNow;
             this.Products = new HashSet<ProductSubCategory>();
         }
 
@@ -20,17 +20,9 @@ namespace ShopHeaven.Data.Models
         [Required]
         public int MainCategoryId { get; set; }
 
-        public MainCategory MainCategory { get; set; }
+        public MainCategory MainCategory { get; set; } // this is main category of the current category
 
-        public ICollection<ProductSubCategory> Products { get; set; }
-
-        public DateTime CreatedOn { get; set; }
-
-        public DateTime? ModifiedOn { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedOn { get; set; }
+        public ICollection<ProductSubCategory> Products { get; set; } // this subcategory contains these products
 
         public int CreatedById { get; set; }
 

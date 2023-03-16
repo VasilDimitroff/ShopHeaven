@@ -1,4 +1,4 @@
-﻿namespace ShopHeaven.Data.Models
+﻿namespace ShopHeaven.Data.Models.Common
 {
     public interface ICreatableModel
     {

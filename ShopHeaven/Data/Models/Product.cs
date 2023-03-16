@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ShopHeaven.Data.Models.Common;
 
 namespace ShopHeaven.Data.Models
 {
-    public class Product : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
+    public class Product : BaseModel, ICreatableModel
     {
         public Product()
         {
-            CreatedOn = DateTime.UtcNow;
             Reviews = new HashSet<Review>();
             MainCategories = new HashSet<ProductMainCategory>();
             SubCategories = new HashSet<ProductSubCategory>();
             Images = new HashSet<Image>();
             Reviews = new HashSet<Review>();
             Tags = new HashSet<ProductTag>();
+            Carts = new HashSet<ProductCart>();
+            Wishlists = new HashSet<ProductWishlist>();
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
@@ -36,23 +38,14 @@ namespace ShopHeaven.Data.Models
 
         public decimal Price { get; set; }
 
-        public decimal Discount { get; set; }
+        public decimal Discount { get; set; } // in percent
 
         public double Rating => Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
 
-        //inverse property!
         public int ThumbnailId { get; set; }
 
         [ForeignKey(nameof(ThumbnailId))]
         public Image Thumbnail { get; set; }
-
-        public DateTime CreatedOn { get; set; }
-
-        public DateTime? ModifiedOn { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedOn { get; set; }
 
         public int CreatedById { get; set; }
 
@@ -60,14 +53,20 @@ namespace ShopHeaven.Data.Models
         [InverseProperty("Products")]
         public User CreatedBy { get; set; }
 
-        public ICollection<Image> Images { get; set; }
+        public ICollection<Image> Images { get; set; } // the product has these images
 
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Review> Reviews { get; set; } // the product has these reviews
 
-        public ICollection<ProductMainCategory> MainCategories { get; set; }
+        public ICollection<ProductMainCategory> MainCategories { get; set; } // the product is in these maincategories
 
-        public ICollection<ProductSubCategory> SubCategories { get; set; }
+        public ICollection<ProductSubCategory> SubCategories { get; set; } // the product is in these subcategories
 
-        public ICollection<ProductTag> Tags { get; set; }
+        public ICollection<ProductTag> Tags { get; set; } // the product has these tags
+
+        public ICollection<ProductCart> Carts { get; set; } // the product is presented in these carts
+
+        public ICollection<ProductWishlist> Wishlists { get; set; } // the product is presented in these wishlists
+
+        public ICollection<ProductOrder> Orders { get; set; } // the product is presented in these orders
     }
 }

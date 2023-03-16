@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ShopHeaven.Data.Models.Common;
 
 namespace ShopHeaven.Data.Models
 {
-    public class Review : GuidModel, IBaseModel, IDeletableModel, ICreatableModel
+    public class Review : BaseModel, ICreatableModel
     {
-        public Review()
-        {
-            CreatedOn = DateTime.UtcNow;
-        }
-
         [Required(ErrorMessage = "Please, enter a name")]
         public string Author { get; set; }
 
@@ -25,16 +22,10 @@ namespace ShopHeaven.Data.Models
 
         public Product Product { get; set; }
 
-        public DateTime CreatedOn { get; set; }
-
-        public DateTime? ModifiedOn { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedOn { get; set; }
-
         public int CreatedById { get; set; }
 
+        [ForeignKey(nameof(CreatedById))]
+        [InverseProperty("Reviews")]
         public User CreatedBy { get; set; }
     }
 }

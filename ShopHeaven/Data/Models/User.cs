@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using ShopHeaven.Data.Models.Common;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
@@ -14,9 +15,7 @@ namespace ShopHeaven.Data.Models
             MainCategories = new HashSet<MainCategory>();
             SubCategories = new HashSet<SubCategory>();
             Tags = new HashSet<Tag>();
-            ProductsMainCategories = new HashSet<ProductMainCategory>();
-            ProductsSubCategories = new HashSet<ProductSubCategory>();
-            ProductsTags = new HashSet<ProductTag>();
+            Orders = new HashSet<Order>();
         }
 
         public int CartId { get; set; }
@@ -35,30 +34,25 @@ namespace ShopHeaven.Data.Models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public ICollection<Review> Reviews { get; set; }
+        [InverseProperty("CreatedBy")]
+        public ICollection<Review> Reviews { get; set; } // user is created these reviews
 
         [InverseProperty("CreatedBy")]
-        public ICollection<Image> Images { get; set; }
+        public ICollection<Image> Images { get; set; } // user is uploaded these images
 
         [InverseProperty("CreatedBy")]
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product> Products { get; set; } // user is created these products
 
         [InverseProperty("CreatedBy")]
-        public ICollection<MainCategory> MainCategories { get; set; }
+        public ICollection<MainCategory> MainCategories { get; set; } // user is created these main categories
 
         [InverseProperty("CreatedBy")]
-        public ICollection<SubCategory> SubCategories { get; set; }
+        public ICollection<SubCategory> SubCategories { get; set; } // user is created these subcategories
 
         [InverseProperty("CreatedBy")]
-        public ICollection<ProductMainCategory> ProductsMainCategories { get; set; }
+        public ICollection<Tag> Tags { get; set; } // user is created these tags
 
-        [InverseProperty("CreatedBy")]
-        public ICollection<ProductSubCategory> ProductsSubCategories { get; set; }
-
-        [InverseProperty("CreatedBy")]
-        public ICollection<Tag> Tags { get; set; }
-
-        [InverseProperty("CreatedBy")]
-        public ICollection<ProductTag> ProductsTags { get; set; }
+        [InverseProperty("CreatedBy")] 
+        public ICollection<Order> Orders { get; set; } // user is created these orders
     }
 }

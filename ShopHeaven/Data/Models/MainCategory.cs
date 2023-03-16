@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ShopHeaven.Data.Models.Common;
 
 namespace ShopHeaven.Data.Models
 {
-    public class MainCategory : GuidModel, IBaseModel, ICreatableModel, IDeletableModel
+    public class MainCategory : BaseModel, ICreatableModel
     {
         public MainCategory()
         {
-            CreatedOn = DateTime.UtcNow;
             SubCategories = new HashSet<SubCategory>();
             Products = new HashSet<ProductMainCategory>();
         }
@@ -18,22 +18,14 @@ namespace ShopHeaven.Data.Models
 
         public string Description { get; set; }
 
-        public DateTime CreatedOn { get; set; }
-
-        public DateTime? ModifiedOn { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedOn { get; set; }
-
         public int CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("MainCategories")]
         public User CreatedBy { get; set; }
 
-        public ICollection<SubCategory> SubCategories { get; set; }
-
-        public ICollection<ProductMainCategory> Products { get; set; }
+        public ICollection<SubCategory> SubCategories { get; set; } // this category has these subcategories
+         
+        public ICollection<ProductMainCategory> Products { get; set; } // this category contain these products
     }
 }
