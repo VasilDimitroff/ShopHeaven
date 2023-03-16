@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ShopHeaven.Data.Models.Common;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
@@ -18,11 +19,13 @@ namespace ShopHeaven.Data.Models
             Orders = new HashSet<Order>();
         }
 
-        public int CartId { get; set; }
+        [Required]
+        public string CartId { get; set; }
 
         public Cart Cart { get; set; }
 
-        public int WishlistId { get; set; }
+        [Required]
+        public string WishlistId { get; set; }
 
         public Wishlist Wishlist { get; set; }
 

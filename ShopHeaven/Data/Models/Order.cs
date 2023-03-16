@@ -24,11 +24,13 @@ namespace ShopHeaven.Data.Models
 
         public decimal TotalPriceWithDiscountAndCoupon => TotalPriceWithDiscount - Coupon.Amount * TotalPriceWithDiscount / 100;
 
-        public int CouponId { get; set; }
+        [Required]
+        public string CouponId { get; set; }
 
         public Coupon Coupon { get; set; }
 
-        public int PaymentId { get; set; }
+        [Required]
+        public string PaymentId { get; set; }
 
         public Payment Payment { get; set; }
 
@@ -38,7 +40,7 @@ namespace ShopHeaven.Data.Models
 
         public decimal ShippingAmount { get; set; }
 
-        public int CreatedById { get; set; }
+        public string CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Orders")]

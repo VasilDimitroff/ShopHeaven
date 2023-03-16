@@ -50,7 +50,6 @@ namespace ShopHeaven.Data
         public DbSet<Payment> Payments { get; set; }
 
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -64,7 +63,8 @@ namespace ShopHeaven.Data
             modelBuilder.Entity<ProductMainCategory>()
                 .HasOne(pmc => pmc.MainCategory)
                 .WithMany(mc => mc.Products)
-                .HasForeignKey(pmc => pmc.MainCategoryId);
+                .HasForeignKey(pmc => pmc.MainCategoryId)
+                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductSubCategory>()
                 .HasKey(psc => new { psc.ProductId, psc.SubCategoryId });
@@ -75,51 +75,78 @@ namespace ShopHeaven.Data
             modelBuilder.Entity<ProductSubCategory>()
                 .HasOne(psc => psc.SubCategory)
                 .WithMany(sc => sc.Products)
-                .HasForeignKey(psc => psc.SubCategoryId);
+                .HasForeignKey(psc => psc.SubCategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductTag>()
                 .HasKey(pt => new { pt.TagId, pt.ProductId });
             modelBuilder.Entity<ProductTag>()
                 .HasOne(x => x.Tag)
                 .WithMany(x => x.Products)
-                .HasForeignKey(pt => pt.TagId);
+                .HasForeignKey(pt => pt.TagId)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductTag>()
                .HasOne(x => x.Product)
                .WithMany(x => x.Tags)
-               .HasForeignKey(pt => pt.ProductId);
+               .HasForeignKey(pt => pt.ProductId)
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductCart>()
                 .HasKey(pc => new { pc.CartId, pc.ProductId });
             modelBuilder.Entity<ProductCart>()
                 .HasOne(x => x.Cart)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.CartId);
+                .HasForeignKey(x => x.CartId)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductCart>()
                 .HasOne(x => x.Product)
                 .WithMany(x => x.Carts)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductWishlist>()
                .HasKey(x => new { x.WishlistId, x.ProductId });
             modelBuilder.Entity<ProductWishlist>()
                 .HasOne(x => x.Wishlist)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.WishlistId);
+                .HasForeignKey(x => x.WishlistId)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductWishlist>()
                 .HasOne(x => x.Product)
                 .WithMany(x => x.Wishlists)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductOrder>()
              .HasKey(x => new { x.OrderId, x.ProductId });
             modelBuilder.Entity<ProductOrder>()
                 .HasOne(x => x.Order)
                 .WithMany(x => x.Products)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductOrder>()
                 .HasOne(x => x.Product)
                 .WithMany(x => x.Orders)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SubCategory>()
+                .HasOne(x => x.MainCategory)
+                .WithMany(x => x.SubCategories)
+                .HasForeignKey(x => x.MainCategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>()
+             .HasMany(x => x.Images)
+             .WithOne(x => x.Product)
+             .HasForeignKey(x => x.ProductId)
+             .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>()
+            .HasOne(x => x.CreatedBy)
+            .WithMany(x => x.Products)
+            .HasForeignKey(x => x.CreatedById)
+            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

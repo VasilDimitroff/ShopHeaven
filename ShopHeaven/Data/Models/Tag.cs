@@ -15,7 +15,8 @@ namespace ShopHeaven.Data.Models
         [MinLength(1)]
         public string Name { get; set; }
 
-        public int CreatedById { get; set; }
+        [Required]
+        public string CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Tags")]

@@ -13,12 +13,12 @@ namespace ShopHeaven.Data.Models
         }
 
         [Required(ErrorMessage = "Main Category name cannot be null or empty")]
-        [MinLength(1)]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public int CreatedById { get; set; }
+        [Required]
+        public string CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("MainCategories")]
