@@ -18,13 +18,14 @@ namespace ShopHeaven.Data.Models
         public string Description { get; set; }
 
         [Required]
-        public int MainCategoryId { get; set; }
+        public string MainCategoryId { get; set; }
 
         public MainCategory MainCategory { get; set; } // this is main category of the current category
 
         public ICollection<ProductSubCategory> Products { get; set; } // this subcategory contains these products
 
-        public int CreatedById { get; set; }
+        [Required]
+        public string CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("SubCategories")]

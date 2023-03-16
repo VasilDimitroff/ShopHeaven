@@ -1,4 +1,6 @@
 ﻿using ShopHeaven.Data.Models.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopHeaven.Data.Models
 {
@@ -9,8 +11,10 @@ namespace ShopHeaven.Data.Models
             Products = new HashSet<ProductCart>();
         }
 
-        public int UserId { get; set; }
+        [Required]
+        public string UserId { get; set; }
 
+        [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
         public decimal TotalPriceWithNoDiscount => Products.Sum(x => x.Product.Price * x.Quantity);
