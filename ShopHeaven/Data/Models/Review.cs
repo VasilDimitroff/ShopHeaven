@@ -16,15 +16,13 @@ namespace ShopHeaven.Data.Models
         [EmailAddress(ErrorMessage = "Please, enter a valid e-mail address")]
         public string Email { get; set; }
 
-        [Required]
-        public string ProductId { get; set; }
+        public int ProductId { get; set; }
 
         public int RatingValue { get; set; }
 
         public Product Product { get; set; }
 
-        [Required]
-        public string CreatedById { get; set; }
+        public int CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Reviews")]

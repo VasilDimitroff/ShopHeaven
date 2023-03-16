@@ -2,7 +2,7 @@
 {
     public interface ICreatableModel
     {
-        public string CreatedById { get; set; }
+        public int CreatedById { get; set; }
 
         public User CreatedBy { get; set; }
     }

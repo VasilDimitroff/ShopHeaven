@@ -35,29 +35,12 @@ if (app.Environment.IsDevelopment())
     app.UseMigrationsEndPoint();
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<ShopDbContext>();
-        context.Database.EnsureCreated();
-    }
 }
 else
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-/* Seeder
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    SeedData.Initialize(services);
-}
-*/
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

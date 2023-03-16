@@ -9,14 +9,11 @@ namespace ShopHeaven.Data.Models
         [Required]
         public string Url { get; set; }
 
-        public string ProductId { get; set; }
+        public int ProductId { get; set; }
 
         public Product Product { get; set; }
 
-        public bool IsMainImage { get; set; } // if it is true, it is the main image of the product. Only 1 image can be main image
-
-        [Required]
-        public string CreatedById { get; set; }
+        public int CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Images")]

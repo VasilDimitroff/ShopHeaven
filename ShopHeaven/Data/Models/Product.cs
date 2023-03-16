@@ -19,10 +19,13 @@ namespace ShopHeaven.Data.Models
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
+        [MinLength(2)]
         [MaxLength(200)]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Product description must contain at least 5 characters")]
+        [MinLength(5)]
+        [MaxLength(2000)]
         public string Description { get; set; }
 
         [MinLength(1)]
@@ -39,8 +42,12 @@ namespace ShopHeaven.Data.Models
 
         public double Rating => Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
 
-        [Required]
-        public string CreatedById { get; set; }
+        public int ThumbnailId { get; set; }
+
+        [ForeignKey(nameof(ThumbnailId))]
+        public Image Thumbnail { get; set; }
+
+        public int CreatedById { get; set; }
 
         [ForeignKey(nameof(CreatedById))]
         [InverseProperty("Products")]
