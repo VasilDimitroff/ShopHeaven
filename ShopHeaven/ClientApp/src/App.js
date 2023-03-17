@@ -1,4 +1,15 @@
 import React, { Component } from 'react';
+import { Button } from '@mui/material';
+
+export default function App() {
+  return (
+    <div>
+      <Button variant="contained" >BUTTON</Button>
+    </div>
+  )
+}
+/*
+import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
@@ -20,4 +31,4 @@ export default class App extends Component {
       </Layout>
     );
   }
-}
+} */
