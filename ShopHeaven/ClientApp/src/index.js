@@ -1,4 +1,24 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import { ThemeProvider } from "@emotion/react";
+import React from 'react';
+import { ReactDOM } from "react-dom";
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import {theme} from './theme';
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+root.render(
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>
+);
+
+/*
+import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -24,3 +44,4 @@ serviceWorkerRegistration.unregister();
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+*/

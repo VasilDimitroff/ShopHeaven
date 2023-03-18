@@ -1,3 +1,246 @@
+import {React, useState} from 'react';
+import { Badge,
+        AppBar,
+        Box,
+        List,
+        Toolbar,
+        Typography,
+        ListItem,
+        ListItemButton,
+        ListItemText,
+        InputBase,
+        Avatar,
+        ListItemAvatar} from '@mui/material';
+import { styled, alpha } from '@mui/material/styles';
+//import {styled, alpha } from '@emotion/styled';
+import {theme} from './../theme';
+import { AddShoppingCart, Image, Delete, Search, Reviews, ShoppingCartCheckout, Favorite, Cancel, ShoppingCart, AccountCircle, Logout } from '@mui/icons-material';
+import LogoSmall from '../static/images/shop_heaven_logo_small_2.png'
+import LogoBig from '../static/images/shop_heaven_logo_big_2.png'
+
+export default function NavMenu() {
+
+  const [open, setOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
+
+ function HideAllMenusExcept(setterFuncToShowMenu){
+    let useStatesSetterNames = [setShowUserMenu, setShowFavoritesMenu];
+
+    for (let i = 0; i < useStatesSetterNames.length; i++) {
+      if(setterFuncToShowMenu === useStatesSetterNames[i]){
+          useStatesSetterNames[i](true);
+      }
+      else {
+          useStatesSetterNames[i](false);
+      }
+    }
+  }
+
+  const CustomToolbar = styled(Toolbar)({
+    display: "flex",
+    justifyContent: "space-between",
+  });
+  
+  const CustomCancel = styled(Cancel)({
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+    paddingRight: theme.spacing(1),
+  });
+
+  const CustomSearchField = styled('div')({
+    display: "flex",
+    alignItems: "center",
+    marginRight: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.5),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    borderRadius: theme.shape.borderRadius,
+    width: "30%",
+    [theme.breakpoints.down("sm")]: {
+      display: open === true ? "flex" : "none",
+      width: "70%",
+    },
+  });
+
+  const CustomSearchButton = styled(Search)({
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+  });
+
+  const CustomBadge = styled(Badge)({
+    marginRight: theme.spacing(4),
+  });
+
+  const UserMenu = styled(Box)({
+    position: "absolute",
+    width: '100%',
+    maxWidth: 250,
+    backgroundColor: theme.palette.dropdown.main,
+    color: theme.palette.dropdown.main.color,
+    marginTop: theme.spacing(6),
+    paddingTop: theme.spacing(2),
+    right: "2.5%",
+    borderRadius: theme.shape.borderRadius,
+    display: showUserMenu === true ? "block" : "none",
+  });
+
+  const FavoritesList = styled(List)({
+    width: '100%',
+    maxWidth: 360,
+    position: "absolute",
+    right: "2.5%",
+    backgroundColor: theme.palette.dropdown.main,
+    color: theme.palette.dropdown.main.color,
+    marginTop: theme.spacing(6),
+    paddingTop: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    display: showFavoritesMenu === true ? "flex" : "none",
+    alignItems: "center",
+  });
+
+  const CustomSearchInput = styled(InputBase)({
+      color: "white",
+      marginLeft: theme.spacing(1),
+      width: "92%",
+  });
+
+  const IconsArea = styled('div')({
+    alignItems: "center",
+    display: open === true ? "none" : "flex",
+  });
+
+  const UserMenuListItem = styled(ListItemText)({
+    marginLeft: theme.spacing(4),
+  });
+
+  const Label = styled(Typography)({
+    marginRight: theme.spacing(1),
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
+  });
+
+  const BigLogoImage = styled('img')({
+      width: "18%",
+      display: "none",
+      [theme.breakpoints.up("sm")]: {
+        display: "block",
+      },
+  });
+  
+  const SmallLogoImage = styled('img')({
+    width: "15%",
+    paddingBottom: theme.spacing(1.5),
+    paddingTop: theme.spacing(1.5),
+    display: "block",
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+});
+
+  return (
+  <div>
+    <AppBar position="fixed">
+    <CustomToolbar>
+    <BigLogoImage src={LogoBig}/>
+    <SmallLogoImage src={LogoSmall}/>
+      <CustomSearchField>
+        <Search sx={{ paddingLeft: "10px", }} />
+        <CustomSearchInput placeholder="Search..."/>
+        <CustomCancel onClick={() => setOpen(false)} />
+      </CustomSearchField>
+      <IconsArea>
+        <CustomSearchButton
+          onClick={() => setOpen(true)} />
+        <CustomBadge
+            badgeContent={4}
+            color="secondary"
+            onClick={ ()=> showFavoritesMenu === true ? setShowFavoritesMenu(false) : HideAllMenusExcept(setShowFavoritesMenu)}
+            sx={{ cursor: "pointer" }}
+            >
+          <Label>Favorites</Label>
+          <Favorite />    
+        </CustomBadge>
+        <CustomBadge badgeContent={2} color="secondary">
+          <Label>Cart</Label>
+          <ShoppingCart />      
+        </CustomBadge>
+        <CustomBadge 
+           color="secondary"
+           onClick={ ()=> showUserMenu === true ? setShowUserMenu(false) : HideAllMenusExcept(setShowUserMenu)}
+           sx={{ cursor: "pointer" }}>
+         <Avatar sx={{ bgcolor: theme.palette.secondary.main,}}>
+              V
+         </Avatar>
+        </CustomBadge> 
+      </IconsArea>
+    </CustomToolbar>
+  </AppBar>
+  <FavoritesList onMouseLeave={()=> showFavoritesMenu === true ? setShowFavoritesMenu(false) : setShowFavoritesMenu(true)}>  
+      <ListItemButton>
+        <ListItemAvatar>
+          <Avatar>
+            <Image />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary="Product Name" secondary="Price: 0.00" />
+        
+      </ListItemButton> 
+      <ListItemButton sx={{cursor: "pointer",}}>
+         <AddShoppingCart />
+      </ListItemButton>
+      <ListItemButton sx={{cursor: "pointer",}}>
+         <Delete/>
+       </ListItemButton>
+    </FavoritesList>
+
+  <UserMenu onMouseLeave={()=> showUserMenu === true ? setShowUserMenu(false) : setShowUserMenu(true)}>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton>          
+                <AccountCircle />
+              <UserMenuListItem primary="My Account" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>         
+                <ShoppingCartCheckout />
+              <UserMenuListItem primary="My Orders" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+                <Reviews />
+              <UserMenuListItem primary="My Reviews" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+                <Favorite />
+              <UserMenuListItem primary="Favorites" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+                <Logout />
+              <UserMenuListItem primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+    </UserMenu>
+</div>
+  );
+}
+
+/*
+
 import React, { Component } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -48,3 +291,4 @@ export class NavMenu extends Component {
     );
   }
 }
+*/

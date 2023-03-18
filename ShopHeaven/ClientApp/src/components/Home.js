@@ -1,5 +1,18 @@
+import React from 'react';
+import { Button, Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import {theme} from './../theme';
+import NavMenu from './NavMenu';
 
-import React, { Component } from 'react';
+
+export default function Home() {
+  return (
+   <div>
+   </div>
+  );
+};
+
+
 /*
 import React, { Component } from 'react';
 

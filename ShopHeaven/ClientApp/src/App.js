@@ -1,13 +1,40 @@
 import React, { Component } from 'react';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import {theme} from './theme';
+import NavMenu from './components/NavMenu';
+import Home from './components/Home';
+
 
 export default function App() {
   return (
-    <div>
-      <Button variant="contained" >BUTTON</Button>
-    </div>
-  )
-}
+   <div>
+      <NavMenu/>
+   </div>
+  );
+};
+
+
+
+/*
+const CustomButton = styled(Button)({
+  color: "white",
+  backgroundColor: theme.palette.primary.main,
+});
+
+export default function App() {
+  return (
+    <Container className='container' sx = {{ backgroundColor: "red", width: "100%",}}>
+        <CustomButton variant="contained">BUTTON</CustomButton>
+    </Container>
+  );
+};
+
+*/
+
+
+
+
 /*
 import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
