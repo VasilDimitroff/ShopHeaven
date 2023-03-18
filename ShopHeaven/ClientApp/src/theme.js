@@ -8,6 +8,12 @@ export const theme = createTheme({
         secondary: {
             main: "#e6412f",
         },
+        success: {
+            main: "#388e3c",
+        },
+        error: {
+            main: "#f44336",
+        },
         dropdown: {
             main: "#dde7f5",
             color: "#fff",

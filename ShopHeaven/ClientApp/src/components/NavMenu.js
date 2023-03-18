@@ -193,10 +193,10 @@ export default function NavMenu() {
         <ListItemText primary="Product Name" secondary="Price: 0.00" />
         
       </ListItemButton> 
-      <ListItemButton sx={{cursor: "pointer",}}>
+      <ListItemButton sx={{cursor: "pointer", color: theme.palette.success.main, paddingTop: theme.spacing(3.5), paddingBottom: theme.spacing(3.5)}}>
          <AddShoppingCart />
       </ListItemButton>
-      <ListItemButton sx={{cursor: "pointer",}}>
+      <ListItemButton sx={{cursor: "pointer", color: theme.palette.error.main, paddingTop: theme.spacing(3.5), paddingBottom: theme.spacing(3.5)}}>
          <Delete/>
        </ListItemButton>
     </FavoritesList>
