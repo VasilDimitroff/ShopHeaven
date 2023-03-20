@@ -8,10 +8,11 @@ import {
   ListItemText,
   Divider,
   Fade,
-  Button
+  Button,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Category, RadioButtonChecked } from "@mui/icons-material";
+import { Category, RadioButtonChecked, KeyboardArrowRight } from "@mui/icons-material";
 import { theme } from "./../theme";
 
 const categories = [
@@ -171,10 +172,18 @@ export default function HomeSlider() {
 
   const [showSubmenu, setShowSubmenu] = useState(true);
 
+  const ViewAllButton = styled(Button)({
+    width: "90%",
+    display: "flex",
+    margin: "auto",
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
+    backgroundColor: theme.palette.primary.main
+  });
 
   const Wrapper = styled(Box)(({ theme }) => ({
     position: "relative",
-    left: 50,
+    border: "1px solid black",
     width: "90%",
     margin: "auto",
     marginTop: theme.spacing(8),
@@ -183,7 +192,6 @@ export default function HomeSlider() {
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
-   
     [theme.breakpoints.up("sm")]: {
       left: 272,
     },
@@ -199,50 +207,59 @@ export default function HomeSlider() {
     },
     display: "flex",
     alignItems: "center",
-    width: 270
+    width: 270,
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5)
   });
+
+  const CategoriesHeading = styled(Typography)({
+    textAlign: "center",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    fontWeight: 300
+  })
 
   return (
     <div>
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
+      <Box sx={{ backgroundColor: theme.palette.appBackground.main}}>
         <Wrapper>
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
-              <Stack spacing={2}>
+              <Stack spacing={2}>  
                 <List
-                  sx={{ display: "flex" }}
+                  sx={{ display: "flex", }}
                   component="nav"
                   aria-label="mailbox folders"
-                >
-                  <Box>
+                >  
+                  <Box sx={{ backgroundColor: "white" }}>
+                  <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
                     {categories.map((category) => {
                       return (
                         <Box
-                          sx={{ display: "flex"}}
+                        
                           onMouseLeave={() => setShowSubmenu(false)}
                         >
-                            <CategoryItem>
-                              <RadioButtonChecked
-                                onMouseEnter={() =>
-                                  showSubCategories(category.id)
-                                }
-                              />
-                              <ListItemText
-                                primary={category.name}
-                                sx={{ marginLeft: theme.spacing(2) }}
-                                onMouseEnter={() =>
-                                  showSubCategories(category.id)
-                                }
-                              />
-                           
-                            </CategoryItem>
-                            <Divider/>
-                        </Box>    
+                          <CategoryItem sx={{ backgroundColor: "white" }}>
+                            <RadioButtonChecked
+                              onMouseEnter={() =>
+                                showSubCategories(category.id)
+                              }
+                            />
+                            <ListItemText
+                              primary={category.name}
+                              sx={{ marginLeft: theme.spacing(2) }}
+                              onMouseEnter={() =>
+                                showSubCategories(category.id)
+                              }
+                            />
+                            <KeyboardArrowRight onClick = { () => showSubCategories(category.id)}/>
+                          </CategoryItem>
+                          <Divider />
+                        </Box>
                       );
                     })}
-            
-                  <Button variant="contained" sx={{width: "100%", marginTop: theme.spacing(0.5)}}>VIEW ALL</Button>  
-             
+
+                    <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
                   </Box>
                   <Fade in={showSubmenu} timeout={600}>
                     <Submenu

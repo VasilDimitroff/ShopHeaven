@@ -76,6 +76,8 @@ export default function NavMenu() {
   const CustomToolbar = styled(Toolbar)({
     display: "flex",
     justifyContent: "space-between",
+    width: "90%",
+    margin: "auto"
   });
 
   const CustomCancel = styled(Cancel)({
@@ -264,8 +266,6 @@ export default function NavMenu() {
                   sx={{
                     cursor: "pointer",
                     color: theme.palette.success.main,
-                    paddingTop: theme.spacing(3.5),
-                    paddingBottom: theme.spacing(3.5),
                     justifyContent: "center",
                     backgroundColor: theme.palette.dropdown.main,
                     "&:hover": {
@@ -273,14 +273,12 @@ export default function NavMenu() {
                     },
                   }}
                 >
-                  <AddShoppingCart />
+                  <AddShoppingCart sx={{ fontSize: "30px",}}/>
                 </ListItemButton>
                 <ListItemButton
                   sx={{
                     cursor: "pointer",
                     color: theme.palette.error.main,
-                    paddingTop: theme.spacing(3.5),
-                    paddingBottom: theme.spacing(3.5),
                     justifyContent: "center",
                     backgroundColor: theme.palette.dropdown.main,
                     "&:hover": {
@@ -288,7 +286,7 @@ export default function NavMenu() {
                     },
                   }}
                 >
-                  <Delete />
+                  <Delete sx={{ fontSize: "30px",}}/>
                 </ListItemButton>
               </Box>
             );
