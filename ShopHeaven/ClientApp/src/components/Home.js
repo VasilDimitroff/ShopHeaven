@@ -2,13 +2,13 @@ import React from 'react';
 import { Button, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {theme} from './../theme';
-import NavMenu from './NavMenu';
+import HomeSlider from './HomeSlider';
+import zIndex from '@mui/material/styles/zIndex';
 
 
 export default function Home() {
   return (
-   <div>
-   </div>
+   <HomeSlider sx={{position: "relative", zIndex: "-2"}}/>
   );
 };
 
