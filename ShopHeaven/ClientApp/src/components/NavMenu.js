@@ -76,8 +76,8 @@ export default function NavMenu() {
   const CustomToolbar = styled(Toolbar)({
     display: "flex",
     justifyContent: "space-between",
-    width: "90%",
-    margin: "auto"
+    width: "80%",
+    margin: "auto",
   });
 
   const CustomCancel = styled(Cancel)({
@@ -273,7 +273,7 @@ export default function NavMenu() {
                     },
                   }}
                 >
-                  <AddShoppingCart sx={{ fontSize: "30px",}}/>
+                  <AddShoppingCart sx={{ fontSize: "30px" }} />
                 </ListItemButton>
                 <ListItemButton
                   sx={{
@@ -286,7 +286,7 @@ export default function NavMenu() {
                     },
                   }}
                 >
-                  <Delete sx={{ fontSize: "30px",}}/>
+                  <Delete sx={{ fontSize: "30px" }} />
                 </ListItemButton>
               </Box>
             );

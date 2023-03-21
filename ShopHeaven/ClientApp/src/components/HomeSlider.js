@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Grid,
-  Stack,
   List,
   ListItemButton,
   ListItemText,
@@ -12,7 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Category, RadioButtonChecked, KeyboardArrowRight } from "@mui/icons-material";
+import {
+  Category,
+  RadioButtonChecked,
+  KeyboardArrowRight,
+} from "@mui/icons-material";
 import { theme } from "./../theme";
 
 const categories = [
@@ -145,7 +148,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 9 is unreal category from the future",
+    name: "Category 9 is unreal category",
     id: "9",
     subcategories: [
       "Category 9, Subcategory 1 is the best subcategory",
@@ -158,6 +161,54 @@ const categories = [
       "Category 9, Subcategory 8",
       "Category 9, Subcategory 9",
       "Category 9, Subcategory 10",
+    ],
+  },
+  {
+    name: "Category 10",
+    id: "10",
+    subcategories: [
+      "Category 10, Subcategory 1",
+      "Category 10, Subcategory 2",
+      "Category 10, Subcategory 3",
+      "Category 10, Subcategory 4",
+      "Category 10, Subcategory 5",
+      "Category 10, Subcategory 6",
+      "Category 10, Subcategory 7",
+      "Category 10, Subcategory 8",
+      "Category 10, Subcategory 9",
+      "Category 10, Subcategory 10",
+    ],
+  },
+  {
+    name: "Category 11",
+    id: "11",
+    subcategories: [
+      "Category 11, Subcategory 1",
+      "Category 11, Subcategory 2",
+      "Category 11, Subcategory 3",
+      "Category 11, Subcategory 4",
+      "Category 11, Subcategory 5",
+      "Category 11, Subcategory 6",
+      "Category 11, Subcategory 7",
+      "Category 11, Subcategory 8",
+      "Category 11, Subcategory 9",
+      "Category 11, Subcategory 10",
+    ],
+  },
+  {
+    name: "Category 12",
+    id: "12",
+    subcategories: [
+      "Category 12, Subcategory 1",
+      "Category 12, Subcategory 2",
+      "Category 12, Subcategory 3",
+      "Category 12, Subcategory 4",
+      "Category 12, Subcategory 5",
+      "Category 12, Subcategory 6",
+      "Category 12, Subcategory 7",
+      "Category 12, Subcategory 8",
+      "Category 12, Subcategory 9",
+      "Category 12, Subcategory 10",
     ],
   },
 ];
@@ -178,13 +229,13 @@ export default function HomeSlider() {
     margin: "auto",
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: theme.palette.primary.main,
+    display: categories.length > 10 ? "block" : "none"
   });
 
   const Wrapper = styled(Box)(({ theme }) => ({
     position: "relative",
-    border: "1px solid black",
-    width: "90%",
+    width: "80%",
     margin: "auto",
     marginTop: theme.spacing(8),
   }));
@@ -193,11 +244,12 @@ export default function HomeSlider() {
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
     [theme.breakpoints.up("sm")]: {
-      left: 272,
+      left: 374,
     },
-    [theme.breakpoints.down("sm")]: {
-      left: 118,
+    [theme.breakpoints.down("md")]: {
+      left: 0,
     },
+    boxShadow: theme.palette.dropdown.boxShadow,
   }));
 
   const CategoryItem = styled(ListItemButton)({
@@ -209,83 +261,101 @@ export default function HomeSlider() {
     alignItems: "center",
     width: 270,
     paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5)
+    paddingBottom: theme.spacing(1.5),
   });
 
   const CategoriesHeading = styled(Typography)({
     textAlign: "center",
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    fontWeight: 300
-  })
+    fontWeight: 300,
+  });
+
+  const MenuHolder = styled(Box)({
+    backgroundColor: "white",
+    width: "100%",
+    borderRadius: theme.shape.borderRadius,
+    [theme.breakpoints.down("sm")]: {
+      display: "block",
+      margin: "auto",
+    },
+  });
 
   return (
     <div>
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main}}>
+      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
         <Wrapper>
           <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
-              <Stack spacing={2}>  
-                <List
-                  sx={{ display: "flex", }}
-                  component="nav"
-                  aria-label="mailbox folders"
-                >  
-                  <Box sx={{ backgroundColor: "white" }}>
+            <Grid item xs={12} md={3} sx={{ display: "flex",}}>
+              <List
+                sx={{  display: "flex",width: "100%",}}
+                component="nav"
+                aria-label="mailbox folders"
+              >
+                <MenuHolder>
                   <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-                    {categories.map((category) => {
-                      return (
-                        <Box
-                        
-                          onMouseLeave={() => setShowSubmenu(false)}
+                  {categories.slice(0, 12).map((category) => {
+                    return (
+                      <Box
+                        sx={{ display: "flex",}}
+                        onMouseLeave={() => setShowSubmenu(false)}
+                      >
+                        <CategoryItem
+                          sx={{ backgroundColor: "white", display: "flex" }}
                         >
-                          <CategoryItem sx={{ backgroundColor: "white" }}>
-                            <RadioButtonChecked
-                              onMouseEnter={() =>
-                                showSubCategories(category.id)
-                              }
-                            />
-                            <ListItemText
-                              primary={category.name}
-                              sx={{ marginLeft: theme.spacing(2) }}
-                              onMouseEnter={() =>
-                                showSubCategories(category.id)
-                              }
-                            />
-                            <KeyboardArrowRight onClick = { () => showSubCategories(category.id)}/>
+                          <RadioButtonChecked
+                            onMouseEnter={() => showSubCategories(category.id)}
+                          />
+                          <Typography
+                            sx={{
+                              marginLeft: theme.spacing(2),
+                              width: "100%",
+                              fontSize: "18px",
+                            }}
+                            onMouseEnter={() => showSubCategories(category.id)}
+                          >
+                            {category.name}
+                          </Typography>
+                          <KeyboardArrowRight
+                            onClick={() => showSubCategories(category.id)}
+                          />
+                        </CategoryItem>
+
+                        <Divider />
+                      </Box>
+                    );
+                  })}
+
+                  <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
+                </MenuHolder>
+                <Fade in={showSubmenu} timeout={600}>
+                  <Submenu
+                    onMouseEnter={() => setShowSubmenu(true)}
+                    onMouseLeave={() => setShowSubmenu(false)}
+                  >
+                    {subcategories.map((subcategory) => {
+                      return (
+                        <Box>
+                          <CategoryItem>
+                            <Category />
+                            <Typography
+                              sx={{
+                                marginLeft: theme.spacing(2),
+                                fontSize: "16px",
+                              }}
+                            >
+                              {subcategory}
+                            </Typography>
                           </CategoryItem>
                           <Divider />
                         </Box>
                       );
                     })}
-
-                    <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
-                  </Box>
-                  <Fade in={showSubmenu} timeout={600}>
-                    <Submenu
-                      onMouseEnter={() => setShowSubmenu(true)}
-                      onMouseLeave={() => setShowSubmenu(false)}
-                    >
-                      {subcategories.map((subcategory) => {
-                        return (
-                          <Box>
-                            <CategoryItem>
-                              <Category />
-                              <ListItemText
-                                primary={`${subcategory}`}
-                                sx={{ marginLeft: theme.spacing(2) }}
-                              />
-                            </CategoryItem>
-                            <Divider />
-                          </Box>
-                        );
-                      })}
-                    </Submenu>
-                  </Fade>
-                </List>
-              </Stack>
+                  </Submenu>
+                </Fade>
+              </List>
             </Grid>
-            <Grid item xs={6} md={8}>
+            <Grid item xs={0} md={7}>
               <div>xs=6 md=8</div>
             </Grid>
           </Grid>
