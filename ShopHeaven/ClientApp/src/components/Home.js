@@ -3,12 +3,11 @@ import { Button, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {theme} from './../theme';
 import HomeSlider from './HomeSlider';
-import zIndex from '@mui/material/styles/zIndex';
 
 
 export default function Home() {
   return (
-   <HomeSlider sx={{position: "relative", zIndex: "-2"}}/>
+   <HomeSlider sx={{position: "relative"}}/>
   );
 };
 
