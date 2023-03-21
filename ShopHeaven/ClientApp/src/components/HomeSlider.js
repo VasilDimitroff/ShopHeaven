@@ -5,7 +5,7 @@ import {
   Grid,
   List,
   ListItemButton,
-  Paper,
+  ListItemText,
   Divider,
   Fade,
   Button,
@@ -362,7 +362,14 @@ export default function HomeSlider() {
                   </Submenu>
                 </Fade>
               </List>
+<<<<<<< HEAD
             </MainMenuWrapper>
+=======
+            </Grid>
+            <Grid item xs={0} md={7}>
+              <div>xs=6 md=8</div>
+            </Grid>
+>>>>>>> parent of a434c13 (wrong slider install)
           </Grid>
           <Grid xs={12} lg={9} >
               <CarouselSlider />
