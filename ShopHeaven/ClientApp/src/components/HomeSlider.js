@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import CarouselSlider from "./carousel/CarouselSlider";
 import {
   Box,
   Grid,
   List,
   ListItemButton,
-  ListItemText,
+  Paper,
   Divider,
   Fade,
   Button,
@@ -230,11 +231,10 @@ export default function HomeSlider() {
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
     backgroundColor: theme.palette.primary.main,
-    display: categories.length > 10 ? "block" : "none"
+    display: categories.length > 10 ? "block" : "none",
   });
 
-  const Wrapper = styled(Box)(({ theme }) => ({
-    position: "relative",
+  const MainMenuWrapper = styled(Box)(({ theme }) => ({
     width: "80%",
     margin: "auto",
     marginTop: theme.spacing(8),
@@ -243,8 +243,9 @@ export default function HomeSlider() {
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
+    zIndex: "100",
     [theme.breakpoints.up("sm")]: {
-      left: 374,
+      left: 310,
     },
     [theme.breakpoints.down("md")]: {
       left: 0,
@@ -281,14 +282,21 @@ export default function HomeSlider() {
     },
   });
 
+
   return (
     <div>
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
-        <Wrapper>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={3} sx={{ display: "flex",}}>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.appBackground.main,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Grid container spacing={2} sx={{ width: "80%"}}>
+          <Grid xs={12} lg={3}>
+            <MainMenuWrapper>
               <List
-                sx={{  display: "flex",width: "100%",}}
+                sx={{ display: "flex", width: "100%" }}
                 component="nav"
                 aria-label="mailbox folders"
               >
@@ -297,11 +305,11 @@ export default function HomeSlider() {
                   {categories.slice(0, 12).map((category) => {
                     return (
                       <Box
-                        sx={{ display: "flex",}}
+                        sx={{ display: "flex" }}
                         onMouseLeave={() => setShowSubmenu(false)}
                       >
                         <CategoryItem
-                          sx={{ backgroundColor: "white", display: "flex" }}
+                          sx={{ backgroundColor: "white", display: "flex", width: "100%" }}
                         >
                           <RadioButtonChecked
                             onMouseEnter={() => showSubCategories(category.id)}
@@ -354,12 +362,12 @@ export default function HomeSlider() {
                   </Submenu>
                 </Fade>
               </List>
-            </Grid>
-            <Grid item xs={0} md={7}>
-              <div>xs=6 md=8</div>
-            </Grid>
+            </MainMenuWrapper>
           </Grid>
-        </Wrapper>
+          <Grid xs={12} lg={9} >
+              <CarouselSlider />
+          </Grid>
+        </Grid>
       </Box>
     </div>
   );
