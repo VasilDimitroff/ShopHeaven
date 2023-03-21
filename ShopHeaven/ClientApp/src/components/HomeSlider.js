@@ -4,13 +4,14 @@ import {
   Grid,
   List,
   ListItemButton,
-  ListItemText,
+  Paper,
   Divider,
   Fade,
   Button,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import HomeCarousel from './../components/home-slider/HomeCarousel';
 import {
   Category,
   RadioButtonChecked,
@@ -356,7 +357,7 @@ export default function HomeSlider() {
               </List>
             </Grid>
             <Grid item xs={0} md={7}>
-              <div>xs=6 md=8</div>
+                    <HomeCarousel/>
             </Grid>
           </Grid>
         </Wrapper>
