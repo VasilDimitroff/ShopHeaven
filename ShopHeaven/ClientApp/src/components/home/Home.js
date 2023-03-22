@@ -1,17 +1,18 @@
-import React from 'react';
-import { Button, Container } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import {theme} from '../../theme';
-import HomeSliderAndCategories from './HomeSliderAndCategories';
-import zIndex from '@mui/material/styles/zIndex';
-
+import React from "react";
+import { Button, Container } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { theme } from "../../theme";
+import HomeSliderAndCategories from "./HomeSliderAndCategories";
+import NavMenu from "../NavMenu";
 
 export default function Home() {
   return (
-   <HomeSliderAndCategories/>
+    <div>
+      <NavMenu />
+      <HomeSliderAndCategories />
+    </div>
   );
-};
-
+}
 
 /*
 import React, { Component } from 'react';

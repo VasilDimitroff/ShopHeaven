@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import {
   Box,
-  Grid,
   List,
   ListItemButton,
-  ListItemText,
   Divider,
   Fade,
   Button,
@@ -12,9 +10,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
-  Category,
+  Label,
   RadioButtonChecked,
   KeyboardArrowRight,
+  ArrowBackIos
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
 
@@ -282,6 +281,12 @@ export default function CategoriesHomeList() {
     },
   });
 
+  const SubcategoriesHeading = styled(Box)({
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  })
+
   return (
             <CategoriesWrapper>
               <List
@@ -329,12 +334,24 @@ export default function CategoriesHomeList() {
                   <Submenu
                     onMouseEnter={() => setShowSubmenu(true)}
                     onMouseLeave={() => setShowSubmenu(false)}
-                  >
+                  > <SubcategoriesHeading>
+                  <CategoryItem onClick={() => setShowSubmenu(false)}  sx={{ backgroundColor: "#adcbff"}}>
+                    <ArrowBackIos />
+                    <CategoriesHeading variant="h5"
+                      sx={{
+                        marginLeft: theme.spacing(2),
+                        fontSize: "20px",
+                      }}
+                    >
+                      BACK TO MAIN CATEGORIES
+                    </CategoriesHeading>
+                  </CategoryItem>
+                </SubcategoriesHeading>
                     {subcategories.map((subcategory) => {
                       return (
                         <Box>
                           <CategoryItem>
-                            <Category />
+                            <Label sx={{ fontSize: "14px"}} />
                             <Typography
                               sx={{
                                 marginLeft: theme.spacing(2),

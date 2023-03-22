@@ -14,11 +14,14 @@ import {
   ListItemAvatar,
   Slide,
   Divider,
+  IconButton,
+  Button
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 //import {styled, alpha } from '@emotion/styled';
 import { theme } from "./../theme";
 import {
+  Close,
   AddShoppingCart,
   Image,
   Delete,
@@ -119,6 +122,9 @@ export default function NavMenu() {
     [theme.breakpoints.up("md")]: {
       display: "none",
     },
+    "&:hover": {
+                 opacity: 0.7
+              },    
   });
 
   const CustomBadge = styled(Badge)({
@@ -138,7 +144,7 @@ export default function NavMenu() {
     color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(-2),
     paddingTop: theme.spacing(2),
-    right: "11%",
+    right: "8%",
     borderRadius: theme.shape.borderRadius,
     display: showUserMenu === true ? "block" : "none",
     boxShadow: theme.palette.dropdown.boxShadow,
@@ -149,7 +155,7 @@ export default function NavMenu() {
     zIndex: "10",
     maxWidth: 360,
     position: "absolute",
-    right: "11%",
+    right: "8%",
     backgroundColor: theme.palette.dropdown.main,
     color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(-2),
@@ -202,9 +208,20 @@ export default function NavMenu() {
     },
   });
 
-  const MenuIcon = styled(Menu)({
-    cursor: "pointer",
-    fontSize: "35px",
+  const MenuIcon = styled(IconButton)({
+ 
+    display: showMobileMenu === true ? "none" : "block",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  });
+
+  const CloseIcon = styled(IconButton)({
+
+    display: showMobileMenu === true ? "block" : "none",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
   });
 
   return (
@@ -218,9 +235,18 @@ export default function NavMenu() {
               alignItems: "center",
             }}
           >
-            <MenuIcon onClick={() => showMobileMenu === true
-                  ? setShowMobileMenu(false)
-                  : HideAllMenusExcept(setShowMobileMenu)} />
+            <MenuIcon>
+              <Menu sx={{fontSize:"35px", color: "white"}}
+                onClick={() =>
+                  showMobileMenu === true
+                    ? setShowMobileMenu(false)
+                    : HideAllMenusExcept(setShowMobileMenu)
+                }
+              />
+            </MenuIcon>
+            <CloseIcon>
+              <Close sx={{fontSize:"35px", color: "white"}} onClick={() => setShowMobileMenu(!showMobileMenu)} />{" "}
+            </CloseIcon>
 
             <BigLogoImage src={LogoBig} />
 
@@ -242,15 +268,20 @@ export default function NavMenu() {
                   ? setShowFavoritesMenu(false)
                   : HideAllMenusExcept(setShowFavoritesMenu)
               }
-              sx={{ cursor: "pointer" }}
-            >
+              sx={{ cursor: "pointer", 
+              "&:hover": {
+                 opacity: 0.7
+              }, }}>
               <Label>Favorites</Label>
               <Favorite />
             </CustomBadge>
-            <CustomBadge badgeContent={2} color="secondary">
+            <CustomBadge badgeContent={2} color="secondary" sx={{border: "white", "&:hover": {
+                 opacity: 0.7
+              },}}>
               <Label>Cart</Label>
               <ShoppingCart />
             </CustomBadge>
+         
             <CustomBadge
               color="secondary"
               onClick={() =>
@@ -260,8 +291,9 @@ export default function NavMenu() {
               }
               sx={{ cursor: "pointer" }}
             >
-              <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>V</Avatar>
+              <IconButton><Avatar sx={{ bgcolor: theme.palette.secondary.main }}>V</Avatar></IconButton>
             </CustomBadge>
+
           </IconsArea>
         </CustomToolbar>
       </AppBar>
@@ -296,9 +328,10 @@ export default function NavMenu() {
                   />
                 </ListItemButton>
 
-                <ListItemButton
+                <IconButton
                   sx={{
-                    cursor: "pointer",
+                    paddingLeft: theme.spacing(2.5),
+                    paddingRight: theme.spacing(2.5),
                     color: theme.palette.success.main,
                     justifyContent: "center",
                     backgroundColor: theme.palette.dropdown.main,
@@ -308,10 +341,11 @@ export default function NavMenu() {
                   }}
                 >
                   <AddShoppingCart sx={{ fontSize: "30px" }} />
-                </ListItemButton>
-                <ListItemButton
+                </IconButton>
+                <IconButton
                   sx={{
-                    cursor: "pointer",
+                    paddingLeft: theme.spacing(2.5),
+                    paddingRight: theme.spacing(2.5),
                     color: theme.palette.error.main,
                     justifyContent: "center",
                     backgroundColor: theme.palette.dropdown.main,
@@ -321,7 +355,7 @@ export default function NavMenu() {
                   }}
                 >
                   <Delete sx={{ fontSize: "30px" }} />
-                </ListItemButton>
+                </IconButton>
               </Box>
             );
           })}
@@ -409,20 +443,21 @@ export default function NavMenu() {
         </UserMenu>
       </Slide>
 
-      <Slide in={showMobileMenu} direction="down" timeout={500}>   
-   
-      <Box sx={{ 
+      <Slide in={showMobileMenu} direction="down" timeout={500}>
+        <Box
+          sx={{
             width: "95%",
-            display:"block",
+            display: "block",
             margin: "auto",
-      position: "absolute",
-      zIndex: 3,
-      left: "3%",
-      top: theme.spacing(6),
-    boxShadow: theme.palette.dropdown.boxShadow}}>
-       <CategoriesHomeList/>
-      </Box>
- 
+            position: "absolute",
+            zIndex: 3,
+            left: "3%",
+            top: theme.spacing(6),
+            boxShadow: theme.palette.dropdown.boxShadow,
+          }}
+        >
+          <CategoriesHomeList />
+        </Box>
       </Slide>
     </div>
   );

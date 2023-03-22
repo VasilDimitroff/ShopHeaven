@@ -8,7 +8,6 @@ import { theme } from "../../theme";
 
 export default function HomeSliderAndCategories() {
   return (
-    <div>
       <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
         <Grid
           container
@@ -57,6 +56,5 @@ export default function HomeSliderAndCategories() {
           </Grid>
         </Grid>
       </Box>
-    </div>
   );
 }
