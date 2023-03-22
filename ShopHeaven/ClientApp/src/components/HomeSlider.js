@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import HomeCarousel from "./home-carousel/HomeCarousel";
 import {
   Category,
   RadioButtonChecked,
@@ -230,21 +231,20 @@ export default function HomeSlider() {
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
     backgroundColor: theme.palette.primary.main,
-    display: categories.length > 10 ? "block" : "none"
+    display: categories.length > 10 ? "block" : "none",
   });
 
-  const Wrapper = styled(Box)(({ theme }) => ({
-    position: "relative",
-    width: "80%",
-    margin: "auto",
-    marginTop: theme.spacing(8),
+  const CategoriesWrapper = styled(Box)(({ theme }) => ({
+    position: "relative"
   }));
 
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
+    left: "101%",
+    zIndex: 2,
     [theme.breakpoints.up("sm")]: {
-      left: 374,
+
     },
     [theme.breakpoints.down("md")]: {
       left: 0,
@@ -260,8 +260,8 @@ export default function HomeSlider() {
     display: "flex",
     alignItems: "center",
     width: 270,
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
+    paddingTop: theme.spacing(1.65),
+    paddingBottom: theme.spacing(1.65),
   });
 
   const CategoriesHeading = styled(Typography)({
@@ -284,11 +284,22 @@ export default function HomeSlider() {
   return (
     <div>
       <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
-        <Wrapper>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={3} sx={{ display: "flex",}}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            width: "80%",
+            margin: "auto",
+            marginTop: theme.spacing(8),
+            display: "flex",
+            justifyContent: "space-between",
+            border: "1px solid green"
+          }}
+        >
+          <Grid xs={0} lg={3} sx={{ border: "1px solid blue",           height: "100%",}}>
+            <CategoriesWrapper>
               <List
-                sx={{  display: "flex",width: "100%",}}
+                sx={{ display: "flex", width: "100%", }}
                 component="nav"
                 aria-label="mailbox folders"
               >
@@ -297,7 +308,7 @@ export default function HomeSlider() {
                   {categories.slice(0, 12).map((category) => {
                     return (
                       <Box
-                        sx={{ display: "flex",}}
+                        sx={{ display: "flex" }}
                         onMouseLeave={() => setShowSubmenu(false)}
                       >
                         <CategoryItem
@@ -354,12 +365,14 @@ export default function HomeSlider() {
                   </Submenu>
                 </Fade>
               </List>
-            </Grid>
-            <Grid item xs={0} md={7}>
-              <div>xs=6 md=8</div>
-            </Grid>
+            </CategoriesWrapper>
           </Grid>
-        </Wrapper>
+          <Grid xs={12} lg={9} sx={{height: "100%"}}>
+            <Box sx={{  display: "block", marginTop: theme.spacing(1), marginLeft: theme.spacing(2.5), width: "100%", border:"1px solid red"}}>
+              <HomeCarousel />
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </div>
   );
