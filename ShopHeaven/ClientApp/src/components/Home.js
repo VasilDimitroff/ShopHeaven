@@ -8,7 +8,7 @@ import zIndex from '@mui/material/styles/zIndex';
 
 export default function Home() {
   return (
-   <HomeSlider sx={{position: "relative", zIndex: "-2"}}/>
+   <HomeSlider/>
   );
 };
 

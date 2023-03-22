@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+
 import {
   Badge,
   AppBar,
@@ -30,17 +31,22 @@ import {
   ShoppingCart,
   AccountCircle,
   Logout,
+  Menu,
 } from "@mui/icons-material";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import { display } from "@mui/system";
 import ProductMenuListItem from "./ProductMenuListItem";
+import HomeSlider from "./HomeSlider";
+//import { Button } from "bootstrap";
 
 export default function NavMenu() {
+
   const [open, setOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
   const [deleteFromCart, setDeleteFromCart] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const products = [
     {
@@ -62,7 +68,7 @@ export default function NavMenu() {
   ];
 
   function HideAllMenusExcept(setterFuncToShowMenu) {
-    let useStatesSetterNames = [setShowUserMenu, setShowFavoritesMenu];
+    let useStatesSetterNames = [setShowUserMenu, setShowFavoritesMenu, setShowMobileMenu];
 
     for (let i = 0; i < useStatesSetterNames.length; i++) {
       if (setterFuncToShowMenu === useStatesSetterNames[i]) {
@@ -75,13 +81,16 @@ export default function NavMenu() {
 
   const CustomToolbar = styled(Toolbar)({
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     width: "80%",
     margin: "auto",
+    [theme.breakpoints.down("md")]: {
+      width: "95%",
+    },
   });
 
   const CustomCancel = styled(Cancel)({
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       display: "none",
     },
     paddingRight: theme.spacing(1),
@@ -97,22 +106,25 @@ export default function NavMenu() {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     borderRadius: theme.shape.borderRadius,
-    width: "30%",
-    [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    [theme.breakpoints.down("md")]: {
       display: open === true ? "flex" : "none",
-      width: "70%",
     },
   });
 
   const CustomSearchButton = styled(Search)({
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
+    cursor: "pointer",
+    [theme.breakpoints.up("md")]: {
       display: "none",
     },
   });
 
   const CustomBadge = styled(Badge)({
-    marginRight: theme.spacing(4),
+    cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: theme.spacing(3),
+    },
+    marginLeft: theme.spacing(5),
   });
 
   const UserMenu = styled(Box)({
@@ -124,7 +136,7 @@ export default function NavMenu() {
     color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(-2),
     paddingTop: theme.spacing(2),
-    right: "2.5%",
+    right: "11%",
     borderRadius: theme.shape.borderRadius,
     display: showUserMenu === true ? "block" : "none",
     boxShadow: theme.palette.dropdown.boxShadow,
@@ -135,7 +147,7 @@ export default function NavMenu() {
     zIndex: "10",
     maxWidth: 360,
     position: "absolute",
-    right: "2.5%",
+    right: "11%",
     backgroundColor: theme.palette.dropdown.main,
     color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(-2),
@@ -148,7 +160,6 @@ export default function NavMenu() {
 
   const CustomSearchInput = styled(InputBase)({
     color: "white",
-    marginLeft: theme.spacing(1),
     width: "92%",
   });
 
@@ -164,40 +175,59 @@ export default function NavMenu() {
   const Label = styled(Typography)({
     marginRight: theme.spacing(1),
     display: "none",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       display: "block",
     },
   });
 
   const BigLogoImage = styled("img")({
-    width: "18%",
+    width: "75%",
+    marginLeft: theme.spacing(2),
     display: "none",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       display: "block",
     },
   });
 
   const SmallLogoImage = styled("img")({
-    width: "15%",
+    width: "25%",
+    marginLeft: theme.spacing(2),
     paddingBottom: theme.spacing(1.5),
     paddingTop: theme.spacing(1.5),
     display: "block",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       display: "none",
     },
+  });
+
+  const MenuIcon = styled(Menu)({
+    cursor: "pointer",
+    fontSize: "35px",
   });
 
   return (
     <div>
       <AppBar position="fixed">
         <CustomToolbar>
-          <BigLogoImage src={LogoBig} />
-          <SmallLogoImage src={LogoSmall} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <MenuIcon sx={{ border: "1px solid black",}} onClick={()=> setShowMobileMenu(!showMobileMenu)}/>
+
+            <BigLogoImage src={LogoBig} />
+
+            <SmallLogoImage src={LogoSmall} />
+          </Box>
           <CustomSearchField>
             <Search sx={{ paddingLeft: "10px" }} />
             <CustomSearchInput placeholder="Search..." />
             <CustomCancel onClick={() => setOpen(false)} />
           </CustomSearchField>
+
           <IconsArea>
             <CustomSearchButton onClick={() => setOpen(true)} />
             <CustomBadge

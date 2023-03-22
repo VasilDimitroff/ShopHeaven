@@ -215,6 +215,8 @@ const categories = [
 ];
 
 let subcategories = [];
+let isMobileMenuButtonClicked;
+
 
 export default function HomeSlider() {
   function showSubCategories(id) {
@@ -235,7 +237,7 @@ export default function HomeSlider() {
   });
 
   const CategoriesWrapper = styled(Box)(({ theme }) => ({
-    position: "relative"
+    position: "relative",
   }));
 
   const Submenu = styled(Box)(({ theme }) => ({
@@ -243,11 +245,10 @@ export default function HomeSlider() {
     position: "absolute",
     left: "101%",
     zIndex: 2,
-    [theme.breakpoints.up("sm")]: {
-
-    },
+    [theme.breakpoints.up("sm")]: {},
     [theme.breakpoints.down("md")]: {
       left: 0,
+      width: "100%"
     },
     boxShadow: theme.palette.dropdown.boxShadow,
   }));
@@ -262,6 +263,9 @@ export default function HomeSlider() {
     width: 270,
     paddingTop: theme.spacing(1.65),
     paddingBottom: theme.spacing(1.65),
+    [theme.breakpoints.down("md")]: {
+      width: "100%"
+    },
   });
 
   const CategoriesHeading = styled(Typography)({
@@ -289,17 +293,20 @@ export default function HomeSlider() {
           spacing={2}
           sx={{
             width: "80%",
+            [theme.breakpoints.down("md")]: {
+              width: "95%",
+            },
             margin: "auto",
             marginTop: theme.spacing(8),
             display: "flex",
             justifyContent: "space-between",
-            border: "1px solid green"
+            border: "1px solid green",
           }}
         >
-          <Grid xs={0} lg={3} sx={{ border: "1px solid blue",           height: "100%",}}>
+          <Grid xs={12} md={4} lg={3} sx={{ border: "1px solid blue", height: "100%" }}>
             <CategoriesWrapper>
               <List
-                sx={{ display: "flex", width: "100%", }}
+                sx={{ display: "flex", width: "100%" }}
                 component="nav"
                 aria-label="mailbox folders"
               >
@@ -367,8 +374,18 @@ export default function HomeSlider() {
               </List>
             </CategoriesWrapper>
           </Grid>
-          <Grid xs={12} lg={9} sx={{height: "100%"}}>
-            <Box sx={{  display: "block", marginTop: theme.spacing(1), marginLeft: theme.spacing(2.5), width: "100%", border:"1px solid red"}}>
+          <Grid xs={12} md={8} lg={9} sx={{ height: "100%" }}>
+            <Box
+              sx={{
+                display: "block",
+                marginTop: theme.spacing(1),
+                [theme.breakpoints.up("md")]: {
+                  marginLeft: theme.spacing(2.5),
+                },
+                width: "100%",
+                border: "1px solid red",
+              }}
+            >
               <HomeCarousel />
             </Box>
           </Grid>
