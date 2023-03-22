@@ -1,5 +1,4 @@
 import { React, useState } from "react";
-
 import {
   Badge,
   AppBar,
@@ -37,11 +36,10 @@ import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import { display } from "@mui/system";
 import ProductMenuListItem from "./ProductMenuListItem";
-import HomeSlider from "./HomeSlider";
+import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
 export default function NavMenu() {
-
   const [open, setOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
@@ -68,7 +66,11 @@ export default function NavMenu() {
   ];
 
   function HideAllMenusExcept(setterFuncToShowMenu) {
-    let useStatesSetterNames = [setShowUserMenu, setShowFavoritesMenu, setShowMobileMenu];
+    let useStatesSetterNames = [
+      setShowUserMenu,
+      setShowFavoritesMenu,
+      setShowMobileMenu,
+    ];
 
     for (let i = 0; i < useStatesSetterNames.length; i++) {
       if (setterFuncToShowMenu === useStatesSetterNames[i]) {
@@ -216,7 +218,9 @@ export default function NavMenu() {
               alignItems: "center",
             }}
           >
-            <MenuIcon sx={{ border: "1px solid black",}} onClick={()=> setShowMobileMenu(!showMobileMenu)}/>
+            <MenuIcon onClick={() => showMobileMenu === true
+                  ? setShowMobileMenu(false)
+                  : HideAllMenusExcept(setShowMobileMenu)} />
 
             <BigLogoImage src={LogoBig} />
 
@@ -323,7 +327,6 @@ export default function NavMenu() {
           })}
         </FavoritesList>
       </Slide>
-
       <Slide in={showUserMenu} direction="down">
         <UserMenu
           onMouseLeave={() =>
@@ -404,6 +407,22 @@ export default function NavMenu() {
             </ListItem>
           </List>
         </UserMenu>
+      </Slide>
+
+      <Slide in={showMobileMenu} direction="down" timeout={500}>   
+   
+      <Box sx={{ 
+            width: "95%",
+            display:"block",
+            margin: "auto",
+      position: "absolute",
+      zIndex: 3,
+      left: "3%",
+      top: theme.spacing(6),
+    boxShadow: theme.palette.dropdown.boxShadow}}>
+       <CategoriesHomeList/>
+      </Box>
+ 
       </Slide>
     </div>
   );

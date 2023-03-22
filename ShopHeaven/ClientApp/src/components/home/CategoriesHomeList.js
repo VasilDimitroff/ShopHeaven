@@ -11,13 +11,12 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import HomeCarousel from "./home-carousel/HomeCarousel";
 import {
   Category,
   RadioButtonChecked,
   KeyboardArrowRight,
 } from "@mui/icons-material";
-import { theme } from "./../theme";
+import { theme } from "./../../theme";
 
 const categories = [
   {
@@ -215,10 +214,8 @@ const categories = [
 ];
 
 let subcategories = [];
-let isMobileMenuButtonClicked;
 
-
-export default function HomeSlider() {
+export default function CategoriesHomeList() {
   function showSubCategories(id) {
     setShowSubmenu(true);
     subcategories = categories[id - 1].subcategories;
@@ -286,27 +283,9 @@ export default function HomeSlider() {
   });
 
   return (
-    <div>
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            width: "80%",
-            [theme.breakpoints.down("md")]: {
-              width: "95%",
-            },
-            margin: "auto",
-            marginTop: theme.spacing(8),
-            display: "flex",
-            justifyContent: "space-between",
-            border: "1px solid green",
-          }}
-        >
-          <Grid xs={12} md={4} lg={3} sx={{ border: "1px solid blue", height: "100%" }}>
             <CategoriesWrapper>
               <List
-                sx={{ display: "flex", width: "100%" }}
+                sx={{ display: "flex", width: "100%", backgroundColor: "white" }}
                 component="nav"
                 aria-label="mailbox folders"
               >
@@ -372,25 +351,6 @@ export default function HomeSlider() {
                   </Submenu>
                 </Fade>
               </List>
-            </CategoriesWrapper>
-          </Grid>
-          <Grid xs={12} md={8} lg={9} sx={{ height: "100%" }}>
-            <Box
-              sx={{
-                display: "block",
-                marginTop: theme.spacing(1),
-                [theme.breakpoints.up("md")]: {
-                  marginLeft: theme.spacing(2.5),
-                },
-                width: "100%",
-                border: "1px solid red",
-              }}
-            >
-              <HomeCarousel />
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </div>
+            </CategoriesWrapper> 
   );
 }

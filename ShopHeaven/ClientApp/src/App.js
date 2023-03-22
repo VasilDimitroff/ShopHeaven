@@ -3,7 +3,7 @@ import { Button, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {theme} from './theme';
 import NavMenu from './components/NavMenu';
-import Home from './components/Home';
+import Home from './components/home/Home';
 
 
 export default function App() {

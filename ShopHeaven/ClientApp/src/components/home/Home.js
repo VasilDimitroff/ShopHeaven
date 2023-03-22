@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import {theme} from './../theme';
-import HomeSlider from './HomeSlider';
+import {theme} from '../../theme';
+import HomeSliderAndCategories from './HomeSliderAndCategories';
 import zIndex from '@mui/material/styles/zIndex';
 
 
 export default function Home() {
   return (
-   <HomeSlider/>
+   <HomeSliderAndCategories/>
   );
 };
 

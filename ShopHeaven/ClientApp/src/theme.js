@@ -18,7 +18,7 @@ export const theme = createTheme({
             main: "#fff",         
             //main: "#dde7f5",
             color: "#000",
-            boxShadow: "10px 10px 5px -7px rgba(0,0,0,0.38)",     
+            boxShadow: "1px 4px 6px 4px rgba(0,0,0,0.42)",     
         },
         appBackground: {
             main: "#f2f2f7",
