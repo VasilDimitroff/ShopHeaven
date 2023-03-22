@@ -13,7 +13,7 @@ import {
   Label,
   RadioButtonChecked,
   KeyboardArrowRight,
-  ArrowBackIos
+  ArrowBackIos,
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
 
@@ -287,12 +287,12 @@ export default function CategoriesHomeList() {
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
-    left: "101%",
+    left: "100%",
     zIndex: 2,
     [theme.breakpoints.up("sm")]: {},
     [theme.breakpoints.down("md")]: {
       left: 0,
-      width: "100%"
+      width: "100%",
     },
     boxShadow: theme.palette.dropdown.boxShadow,
   }));
@@ -308,7 +308,7 @@ export default function CategoriesHomeList() {
     paddingTop: theme.spacing(1.65),
     paddingBottom: theme.spacing(1.65),
     [theme.breakpoints.down("md")]: {
-      width: "100%"
+      width: "100%",
     },
   });
 
@@ -322,7 +322,8 @@ export default function CategoriesHomeList() {
   const MenuHolder = styled(Box)({
     backgroundColor: "white",
     width: "100%",
-    borderRadius: theme.shape.borderRadius,
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderBottomLeftRadius: theme.shape.borderRadius,
     [theme.breakpoints.down("sm")]: {
       display: "block",
       margin: "auto",
@@ -330,92 +331,100 @@ export default function CategoriesHomeList() {
   });
 
   const SubcategoriesHeading = styled(Box)({
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("md")] : {
       display: "none",
     },
-  })
+  });
 
   return (
-            <CategoriesWrapper>
-              <List
-                sx={{ display: "flex", width: "100%", backgroundColor: "white",}}
-                component="nav"
-                aria-label="mailbox folders"
+    <CategoriesWrapper>
+      <List
+        sx={{ display: "flex", width: "100%" }}
+        component="nav"
+        aria-label="mailbox folders"
+      >
+        <MenuHolder>
+          <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
+          {categories.slice(0, 12).map((category) => {
+            return (
+              <Box
+                sx={{ display: "flex" }}
+                onMouseLeave={() => setShowSubmenu(!showSubmenu)}
               >
-                <MenuHolder>
-                  <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-                  {categories.slice(0, 12).map((category) => {
-                    return (
-                      <Box
-                        sx={{ display: "flex",}}
-                        onMouseLeave={() => setShowSubmenu(!showSubmenu)}
-                      >
-                        <CategoryItem
-                          sx={{ backgroundColor: "white", display: "flex" }}
-                        >
-                          <RadioButtonChecked
-                            onMouseEnter={() => showSubCategories(category.id)}
-                          />
-                          <Typography
-                            sx={{
-                              marginLeft: theme.spacing(2),
-                              width: "100%",
-                              fontSize: "18px",
-                            }}
-                            onMouseEnter={() => showSubCategories(category.id)}
-                          >
-                            {category.name}
-                          </Typography>
-                          <KeyboardArrowRight
-                            onClick={() => showSubCategories(category.id)}
-                          />
-                        </CategoryItem>
+                <CategoryItem
+                  sx={{ backgroundColor: "white", display: "flex" }}
+                >
+                  <RadioButtonChecked
+                    onMouseEnter={() => showSubCategories(category.id)}
+                  />
+                  <Typography
+                    sx={{
+                      marginLeft: theme.spacing(2),
+                      width: "100%",
+                      fontSize: "18px",
+                      "&:hover": {
+                        color: theme.palette.primary.main,
+                      },
+                    }}
+                    onMouseEnter={() => showSubCategories(category.id)}
+                  >
+                    {category.name}
+                  </Typography>
+                  <KeyboardArrowRight
+                    onClick={() => showSubCategories(category.id)}
+                  />
+                </CategoryItem>
+                <Divider />
+              </Box>
+            );
+          })}
 
-                        <Divider />
-                      </Box>
-                    );
-                  })}
-
-                  <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
-                </MenuHolder>
-                <Fade in={showSubmenu} timeout={400}>
-                  <Submenu
-                    onMouseEnter={() => setShowSubmenu(true)}
-                    onMouseLeave={() => setShowSubmenu(false)}
-                  > <SubcategoriesHeading>
-                  <CategoryItem onClick={() => setShowSubmenu(!showSubmenu)}  sx={{ backgroundColor: "#adcbff"}}>
-                    <ArrowBackIos />
-                    <CategoriesHeading variant="h5"
+          <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
+        </MenuHolder>
+        <Fade in={showSubmenu} timeout={400}>
+          <Submenu
+            onMouseEnter={() => setShowSubmenu(true)}
+            onMouseLeave={() => setShowSubmenu(false)}
+          >
+            {" "}
+            <SubcategoriesHeading>
+              <CategoryItem
+                onClick={() => setShowSubmenu(!showSubmenu)}
+                sx={{ backgroundColor: "#adcbff" }}
+              >
+                <ArrowBackIos />
+                <CategoriesHeading
+                  variant="h5"
+                  sx={{
+                    marginLeft: theme.spacing(2),
+                    fontSize: "20px",
+                  }}
+                >
+                  BACK TO MAIN CATEGORIES
+                </CategoriesHeading>
+              </CategoryItem>
+            </SubcategoriesHeading>
+            {subcategories.map((subcategory) => {
+              return (
+                <Box>
+                  <CategoryItem>
+                    <Label sx={{ fontSize: "14px" }} />
+                    <Typography
                       sx={{
                         marginLeft: theme.spacing(2),
-                        fontSize: "20px",
+                        fontSize: "16px",
                       }}
                     >
-                      BACK TO MAIN CATEGORIES
-                    </CategoriesHeading>
+                      {subcategory}
+                    </Typography>
                   </CategoryItem>
-                </SubcategoriesHeading>
-                    {subcategories.map((subcategory) => {
-                      return (
-                        <Box>
-                          <CategoryItem>
-                            <Label sx={{ fontSize: "14px"}} />
-                            <Typography
-                              sx={{
-                                marginLeft: theme.spacing(2),
-                                fontSize: "16px",
-                              }}
-                            >
-                              {subcategory}
-                            </Typography>
-                          </CategoryItem>
-                          <Divider />
-                        </Box>
-                      );
-                    })}
-                  </Submenu>
-                </Fade>
-              </List>
-            </CategoriesWrapper> 
+                  <Divider />
+                </Box>
+              );
+            })}
+          </Submenu>
+        </Fade>
+      </List>
+    </CategoriesWrapper>
   );
 }

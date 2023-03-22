@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Slide } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import HomeCarousel from "../home-carousel/HomeCarousel";
 import CategoriesHomeList from "./CategoriesHomeList";
@@ -8,50 +8,50 @@ import { theme } from "../../theme";
 
 export default function HomeSliderAndCategories() {
   return (
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
+    <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          width: "80%",
+          [theme.breakpoints.down("md")]: {
+            width: "95%",
+          },
+          margin: "auto",
+          marginTop: theme.spacing(8),
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Grid
-          container
-          spacing={2}
+          xs={12}
+          md={4}
+          lg={3}
           sx={{
-            width: "80%",
             [theme.breakpoints.down("md")]: {
-              width: "95%",
+              display: "none",
             },
-            margin: "auto",
-            marginTop: theme.spacing(8),
-            display: "flex",
-            justifyContent: "space-between",
-            border: "1px solid green",
           }}
         >
-          <Grid
-            xs={12}
-            md={4}
-            lg={3}
+          <Box>
+            <CategoriesHomeList />
+          </Box>
+        </Grid>
+        <Grid xs={12} md={8} lg={9}>
+          <Box
             sx={{
-              border: "1px solid blue",
-              [theme.breakpoints.down("md")]: {
-                display: "none",
+              display: "block",
+              [theme.breakpoints.up("md")]: {
+                /* marginLeft: theme.spacing(2.5), */
               },
+              width: "100%",
+              marginTop: theme.spacing(1),
             }}
           >
-            <CategoriesHomeList />
-          </Grid>
-          <Grid xs={12} md={8} lg={9}>
-            <Box
-              sx={{
-                display: "block",
-                [theme.breakpoints.up("md")]: {
-                  marginLeft: theme.spacing(2.5),
-                },
-                width: "100%",
-                border: "1px solid red",
-              }}
-            >
-              <HomeCarousel />
-            </Box>
-          </Grid>
+            <HomeCarousel />
+          </Box>
         </Grid>
-      </Box>
+      </Grid>
+    </Box>
   );
 }
