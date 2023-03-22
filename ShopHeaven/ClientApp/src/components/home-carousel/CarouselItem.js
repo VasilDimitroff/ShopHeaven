@@ -1,4 +1,12 @@
-import { Paper, Button, Box, Container, Typography } from "@mui/material";
+import {
+  Paper,
+  Button,
+  Box,
+  Container,
+  Typography,
+  Slide,
+  Fade,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
 
@@ -21,41 +29,51 @@ function CarouselItem(props) {
   return (
     <Paper sx={{ position: "relative" }}>
       <SliderImage src={props.item.image} />
-      <Box
-        sx={{
-          width: "100%",
-          position: "absolute",
+      <Slide in={true} direction="up" timeout={600}>
+        <Box
+          sx={{
+            width: "100%",
+            position: "absolute",
 
-          backgroundColor: "rgba(0,0,0,.5)",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          bottom: 0,
-        }}
-      >
-        <Container>
-          <Typography variant="h4" sx={{ marginTop: theme.spacing(3),  [theme.breakpoints.down("md")]: {
-             fontSize: "22px"
-          }, }}>
-            {props.item.name}
-          </Typography>
-          <Typography sx={{
-             marginTop: theme.spacing(1),
-             [theme.breakpoints.down("md")]: {
-                fontSize: "12px"
-             },
-          }}>
-            {props.item.description.length > 200
-              ? `${props.item.description.slice(0, 200)}...`
-              : `${props.item.description.slice(0, 200)}`}
-          </Typography>
-          <SliderButton variant="contained" color="secondary" size="large">
-            <Typography>Check it out!</Typography>
-          </SliderButton>
-        </Container>
-      </Box>
+            backgroundColor: "rgba(0,0,0,.5)",
+            color: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            bottom: 0,
+          }}
+        >
+          <Container>
+            <Typography
+              variant="h4"
+              sx={{
+                marginTop: theme.spacing(3),
+                [theme.breakpoints.down("md")]: {
+                  fontSize: "22px",
+                },
+              }}
+            >
+              {props.item.name}
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: theme.spacing(1),
+                [theme.breakpoints.down("md")]: {
+                  fontSize: "12px",
+                },
+              }}
+            >
+              {props.item.description.length > 200
+                ? `${props.item.description.slice(0, 200)}...`
+                : `${props.item.description.slice(0, 200)}`}
+            </Typography>
+            <SliderButton variant="contained" color="secondary" size="large">
+              <Typography>Check it out!</Typography>
+            </SliderButton>
+          </Container>
+        </Box>
+      </Slide>
     </Paper>
   );
 }
