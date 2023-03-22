@@ -30,8 +30,6 @@ export default function HomeSliderAndCategories() {
             lg={3}
             sx={{
               border: "1px solid blue",
-              height: "100%",
-
               [theme.breakpoints.down("md")]: {
                 display: "none",
               },
@@ -39,11 +37,10 @@ export default function HomeSliderAndCategories() {
           >
             <CategoriesHomeList />
           </Grid>
-          <Grid xs={12} md={8} lg={9} sx={{ height: "100%" }}>
+          <Grid xs={12} md={8} lg={9}>
             <Box
               sx={{
                 display: "block",
-                marginTop: theme.spacing(1),
                 [theme.breakpoints.up("md")]: {
                   marginLeft: theme.spacing(2.5),
                 },

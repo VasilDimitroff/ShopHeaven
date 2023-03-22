@@ -210,6 +210,54 @@ const categories = [
       "Category 12, Subcategory 10",
     ],
   },
+  {
+    name: "Category 13",
+    id: "13",
+    subcategories: [
+      "Category 13, Subcategory 1",
+      "Category 13, Subcategory 2",
+      "Category 13, Subcategory 3",
+      "Category 13, Subcategory 4",
+      "Category 13, Subcategory 5",
+      "Category 13, Subcategory 6",
+      "Category 13, Subcategory 7",
+      "Category 13, Subcategory 8",
+      "Category 13, Subcategory 9",
+      "Category 13, Subcategory 10",
+    ],
+  },
+  {
+    name: "Category 14",
+    id: "14",
+    subcategories: [
+      "Category 14, Subcategory 1",
+      "Category 14, Subcategory 2",
+      "Category 14, Subcategory 3",
+      "Category 14, Subcategory 4",
+      "Category 14, Subcategory 5",
+      "Category 14, Subcategory 6",
+      "Category 14, Subcategory 7",
+      "Category 14, Subcategory 8",
+      "Category 14, Subcategory 9",
+      "Category 14, Subcategory 10",
+    ],
+  },
+  {
+    name: "Category 15",
+    id: "15",
+    subcategories: [
+      "Category 15, Subcategory 1",
+      "Category 15, Subcategory 2",
+      "Category 15, Subcategory 3",
+      "Category 15, Subcategory 4",
+      "Category 15, Subcategory 5",
+      "Category 15, Subcategory 6",
+      "Category 15, Subcategory 7",
+      "Category 15, Subcategory 8",
+      "Category 15, Subcategory 9",
+      "Category 15, Subcategory 10",
+    ],
+  },
 ];
 
 let subcategories = [];
@@ -290,7 +338,7 @@ export default function CategoriesHomeList() {
   return (
             <CategoriesWrapper>
               <List
-                sx={{ display: "flex", width: "100%", backgroundColor: "white" }}
+                sx={{ display: "flex", width: "100%", backgroundColor: "white",}}
                 component="nav"
                 aria-label="mailbox folders"
               >
@@ -299,8 +347,8 @@ export default function CategoriesHomeList() {
                   {categories.slice(0, 12).map((category) => {
                     return (
                       <Box
-                        sx={{ display: "flex" }}
-                        onMouseLeave={() => setShowSubmenu(false)}
+                        sx={{ display: "flex",}}
+                        onMouseLeave={() => setShowSubmenu(!showSubmenu)}
                       >
                         <CategoryItem
                           sx={{ backgroundColor: "white", display: "flex" }}
@@ -330,12 +378,12 @@ export default function CategoriesHomeList() {
 
                   <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
                 </MenuHolder>
-                <Fade in={showSubmenu} timeout={600}>
+                <Fade in={showSubmenu} timeout={400}>
                   <Submenu
                     onMouseEnter={() => setShowSubmenu(true)}
                     onMouseLeave={() => setShowSubmenu(false)}
                   > <SubcategoriesHeading>
-                  <CategoryItem onClick={() => setShowSubmenu(false)}  sx={{ backgroundColor: "#adcbff"}}>
+                  <CategoryItem onClick={() => setShowSubmenu(!showSubmenu)}  sx={{ backgroundColor: "#adcbff"}}>
                     <ArrowBackIos />
                     <CategoriesHeading variant="h5"
                       sx={{
