@@ -1,13 +1,12 @@
 import { React } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box } from "@mui/material";
-import ProductCarouselSlide from "./ProductCarouseSlide";
+import { Box, Typography } from "@mui/material";
+import ProductCarouselSlide from "./ProductCarouselSlide";
 import { theme } from "../../theme";
-import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
-
   function SetCardsNumber() {
     let cardsPerSlide;
 
@@ -18,7 +17,7 @@ function ProductsCarousel(props) {
     const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
     if (isBiggerOrXs === true) {
-      cardsPerSlide = 1;
+      cardsPerSlide = 2;
     }
     if (isBiggerOrSm === true) {
       cardsPerSlide = 2;
@@ -56,13 +55,39 @@ function ProductsCarousel(props) {
     return slidesInfo;
   }
 
+  const StyledHeading = styled(Typography)({
+    [theme.breakpoints.down("md")]: {
+      textAlign: "center"
+    },
+  })
+
   return (
     <Box>
+      <StyledHeading variant="h4">{props.headingName}</StyledHeading>
       <Carousel
         animation="slide"
         swipe={false}
         navButtonsAlwaysVisible={true}
         indicators={true}
+        interval={7000}
+        cycleNavigation={false}
+        indicatorIconButtonProps={{
+          style: {
+            marginTop: theme.spacing(3),
+          },
+        }}
+        activeIndicatorIconButtonProps={{
+          style: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.main,
+          },
+        }}
+        navButtonsProps={{
+          style: {
+            opacity: "0.8",
+            backgroundColor: theme.palette.primary.main,
+          },
+        }}
       >
         {ReturnSlidesInfo().map((rowInfo) => {
           return (
@@ -72,7 +97,6 @@ function ProductsCarousel(props) {
                 rowInfo.startIndex + rowInfo.cardsPerSlide
               )}
               cardsPerSlide={rowInfo.cardsPerSlide}
-              slideHeading={`Category ${rowInfo.startIndex}`}
             />
           );
         })}

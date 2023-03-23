@@ -8,7 +8,6 @@ import {
   Button,
   CardContent,
   CardMedia,
-  Container,
   Chip,
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";

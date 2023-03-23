@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Box, Grid, Slide } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import HomeCarousel from "../home-carousel/HomeCarousel";
+import HomeCarousel from "./HomeCarousel";
 import CategoriesHomeList from "./CategoriesHomeList";
-import { Category } from "@mui/icons-material";
 import { theme } from "../../theme";
 
 export default function HomeSliderAndCategories(props) {

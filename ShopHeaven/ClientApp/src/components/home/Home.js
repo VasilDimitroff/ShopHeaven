@@ -1,10 +1,11 @@
 import React from "react";
-import { Button, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import HomeSliderAndCategories from "./HomeSliderAndCategories";
 import NavMenu from "../NavMenu";
-import FirstLineProducts from "./FirstLineProducts";
+import ProductsCarouselLine from "../products/ProductsCarouselLine";
+import FullWidthBanner from "../banners/FullWidthBanner";
+import {Box } from "@mui/material";
 
 let products = [
   {
@@ -80,7 +81,10 @@ export default function Home() {
     <div>
       <NavMenu />
       <HomeSliderAndCategories items={products} />
-      <FirstLineProducts products={products}/>
+      <ProductsCarouselLine products={products} headingName="Promotions"/>
+      <ProductsCarouselLine products={products.reverse()} headingName="Similar to {subcategoryName} (You may also like)"/>
+      <ProductsCarouselLine products={products} headingName="Frequently Purchased"/>
+      <FullWidthBanner paddingTop={theme.spacing(3.5)} height={250} heightSm={180} image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"/>
     </div>
   );
 }

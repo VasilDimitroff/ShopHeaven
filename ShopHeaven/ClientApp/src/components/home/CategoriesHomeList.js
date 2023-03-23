@@ -378,7 +378,7 @@ export default function CategoriesHomeList() {
                   <RadioButtonChecked
                     onMouseEnter={() => showSubCategories(category.id)}
                   />
-                  <Typography
+                  <Typography id={category.id}
                     sx={{
                       marginLeft: theme.spacing(2),
                       width: "100%",

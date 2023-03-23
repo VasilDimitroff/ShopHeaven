@@ -16,7 +16,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ProductCarouselCard from "./ProductCarouselCard";
 
-function ProductCarouselSlide(props, cardsPerSlide, slideHeading) {
+function ProductCarouselSlide(props, cardsPerSlide) {
   const SliderImage = styled("img")({
     width: "100%",
     objectFit: "cover",
@@ -27,26 +27,20 @@ function ProductCarouselSlide(props, cardsPerSlide, slideHeading) {
     },
   });
 
-  const SliderButton = styled(Button)({
-    marginBottom: theme.spacing(3),
-    marginTop: theme.spacing(2),
-  });
-
   const StyledProductCarouselCard = styled(ProductCarouselCard)({});
 
   const SlideWrapper = styled(Box)({
-    marginTop: theme.spacing(4.4),
+    marginTop: theme.spacing(2.5),
     display: "flex",
     gap: 1,
   });
 
   return (
     <Box>
-      <Typography variant="h4">{props.slideHeading}</Typography>
       <SlideWrapper>
         <Grid
           container
-          columns={{ xs: 1, sm: 4, md: 6, lg: 10, xl: 12 }}
+          columns={{ xs: 2, sm: 4, md: 6, lg: 10, xl: 12 }}
           sx={{
             display: "flex",
             alignItems: "flex-start",
