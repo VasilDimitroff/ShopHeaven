@@ -268,7 +268,7 @@ export default function CategoriesHomeList() {
     subcategories = categories[id - 1].subcategories;
   }
 
-  const [showSubmenu, setShowSubmenu] = useState(true);
+  const [showSubmenu, setShowSubmenu] = useState(false);
 
   const ViewAllButton = styled(Button)({
     width: "90%",
@@ -287,12 +287,20 @@ export default function CategoriesHomeList() {
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     position: "absolute",
+    [theme.breakpoints.down("md")]: {
+      position: "fixed",
+    },
     left: "100%",
-    zIndex: 2,
+    zIndex: 23,
     [theme.breakpoints.up("sm")]: {},
     [theme.breakpoints.down("md")]: {
+      display: "block",
+      paddingTop: theme.spacing(5),
+      width: "90%",
+      margin: "auto",
+      position: "fixed",
+      right: 0,
       left: 0,
-      width: "100%",
     },
     boxShadow: theme.palette.dropdown.boxShadow,
   }));
@@ -324,25 +332,38 @@ export default function CategoriesHomeList() {
     width: "100%",
     borderTopLeftRadius: theme.shape.borderRadius,
     borderBottomLeftRadius: theme.shape.borderRadius,
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
+    [theme.breakpoints.down("md")]: {
+      borderTopRightRadius: theme.shape.borderRadius,
+      borderBottomRightRadius: theme.shape.borderRadius,
+      paddingTop: theme.spacing(5),
+      width: "90%",
       margin: "auto",
+      position: "fixed",
+      right: 0,
+      left: 0,
     },
   });
 
   const SubcategoriesHeading = styled(Box)({
-    [theme.breakpoints.up("md")] : {
+    [theme.breakpoints.down("md")]: {
+      display: showSubmenu === true ? "flex" : "none",
+    },
+    [theme.breakpoints.up("md")]: {
       display: "none",
+    },
+  });
+
+  const StyledList = styled(List)({
+    display: "flex",
+    width: "100%",
+    [theme.breakpoints.down("md")]: {
+      position: "relative",
     },
   });
 
   return (
     <CategoriesWrapper>
-      <List
-        sx={{ display: "flex", width: "100%" }}
-        component="nav"
-        aria-label="mailbox folders"
-      >
+      <StyledList component="nav" aria-label="mailbox folders">
         <MenuHolder>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
           {categories.slice(0, 12).map((category) => {
@@ -389,7 +410,7 @@ export default function CategoriesHomeList() {
             {" "}
             <SubcategoriesHeading>
               <CategoryItem
-                onClick={() => setShowSubmenu(!showSubmenu)}
+                onClick={() => setShowSubmenu(false)}
                 sx={{ backgroundColor: "#adcbff" }}
               >
                 <ArrowBackIos />
@@ -424,7 +445,7 @@ export default function CategoriesHomeList() {
             })}
           </Submenu>
         </Fade>
-      </List>
+      </StyledList>
     </CategoriesWrapper>
   );
 }

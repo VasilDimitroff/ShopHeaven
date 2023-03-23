@@ -15,7 +15,7 @@ import {
   Slide,
   Divider,
   IconButton,
-  Button
+  Fade,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 //import {styled, alpha } from '@emotion/styled';
@@ -123,8 +123,8 @@ export default function NavMenu() {
       display: "none",
     },
     "&:hover": {
-                 opacity: 0.7
-              },    
+      opacity: 0.7,
+    },
   });
 
   const CustomBadge = styled(Badge)({
@@ -136,7 +136,7 @@ export default function NavMenu() {
   });
 
   const UserMenu = styled(Box)({
-    position: "absolute",
+    position: "fixed",
     zIndex: "100",
     width: "100%",
     maxWidth: 250,
@@ -209,7 +209,6 @@ export default function NavMenu() {
   });
 
   const MenuIcon = styled(IconButton)({
- 
     display: showMobileMenu === true ? "none" : "block",
     [theme.breakpoints.up("md")]: {
       display: "none",
@@ -217,7 +216,6 @@ export default function NavMenu() {
   });
 
   const CloseIcon = styled(IconButton)({
-
     display: showMobileMenu === true ? "block" : "none",
     [theme.breakpoints.up("md")]: {
       display: "none",
@@ -236,7 +234,8 @@ export default function NavMenu() {
             }}
           >
             <MenuIcon>
-              <Menu sx={{fontSize:"35px", color: "white"}}
+              <Menu
+                sx={{ fontSize: "35px", color: "white" }}
                 onClick={() =>
                   showMobileMenu === true
                     ? setShowMobileMenu(false)
@@ -245,7 +244,10 @@ export default function NavMenu() {
               />
             </MenuIcon>
             <CloseIcon>
-              <Close sx={{fontSize:"35px", color: "white"}} onClick={() => setShowMobileMenu(!showMobileMenu)} />{" "}
+              <Close
+                sx={{ fontSize: "35px", color: "white" }}
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+              />{" "}
             </CloseIcon>
 
             <BigLogoImage src={LogoBig} />
@@ -268,20 +270,30 @@ export default function NavMenu() {
                   ? setShowFavoritesMenu(false)
                   : HideAllMenusExcept(setShowFavoritesMenu)
               }
-              sx={{ cursor: "pointer", 
-              "&:hover": {
-                 opacity: 0.7
-              }, }}>
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  opacity: 0.7,
+                },
+              }}
+            >
               <Label>Favorites</Label>
               <Favorite />
             </CustomBadge>
-            <CustomBadge badgeContent={2} color="secondary" sx={{border: "white", "&:hover": {
-                 opacity: 0.7
-              },}}>
+            <CustomBadge
+              badgeContent={2}
+              color="secondary"
+              sx={{
+                border: "white",
+                "&:hover": {
+                  opacity: 0.7,
+                },
+              }}
+            >
               <Label>Cart</Label>
               <ShoppingCart />
             </CustomBadge>
-         
+
             <CustomBadge
               color="secondary"
               onClick={() =>
@@ -291,9 +303,12 @@ export default function NavMenu() {
               }
               sx={{ cursor: "pointer" }}
             >
-              <IconButton><Avatar sx={{ bgcolor: theme.palette.secondary.main }}>V</Avatar></IconButton>
+              <IconButton>
+                <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
+                  V
+                </Avatar>
+              </IconButton>
             </CustomBadge>
-
           </IconsArea>
         </CustomToolbar>
       </AppBar>
@@ -361,7 +376,7 @@ export default function NavMenu() {
           })}
         </FavoritesList>
       </Slide>
-      <Slide in={showUserMenu} direction="down">
+      <Fade in={showUserMenu} direction="down">
         <UserMenu
           onMouseLeave={() =>
             showUserMenu === true
@@ -441,24 +456,20 @@ export default function NavMenu() {
             </ListItem>
           </List>
         </UserMenu>
-      </Slide>
+      </Fade>
 
-      <Slide in={showMobileMenu} direction="down" timeout={500}>
+      <Fade in={showMobileMenu} timeout={500}>
         <Box
           sx={{
-            width: "95%",
-            display: "block",
-            margin: "auto",
-            position: "absolute",
+            position: "fixed",
             zIndex: 3,
-            left: "3%",
-            top: theme.spacing(6),
+            top: theme.spacing(1),
             boxShadow: theme.palette.dropdown.boxShadow,
           }}
         >
           <CategoriesHomeList />
         </Box>
-      </Slide>
+      </Fade>
     </div>
   );
 }

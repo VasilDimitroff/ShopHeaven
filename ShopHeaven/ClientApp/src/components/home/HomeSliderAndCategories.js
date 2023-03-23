@@ -18,7 +18,7 @@ export default function HomeSliderAndCategories() {
             width: "95%",
           },
           margin: "auto",
-          marginTop: theme.spacing(8),
+          paddingTop: theme.spacing(8),
           display: "flex",
           justifyContent: "space-between",
         }}
@@ -33,7 +33,7 @@ export default function HomeSliderAndCategories() {
             },
           }}
         >
-          <Box>
+          <Box sx={{ marginTop: theme.spacing(2) }}>
             <CategoriesHomeList />
           </Box>
         </Grid>
@@ -45,7 +45,7 @@ export default function HomeSliderAndCategories() {
                 /* marginLeft: theme.spacing(2.5), */
               },
               width: "100%",
-              marginTop: theme.spacing(1),
+              marginTop: theme.spacing(3),
             }}
           >
             <HomeCarousel />

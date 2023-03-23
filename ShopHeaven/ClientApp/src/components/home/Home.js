@@ -4,12 +4,14 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import HomeSliderAndCategories from "./HomeSliderAndCategories";
 import NavMenu from "../NavMenu";
+import FirstLineProducts from "./FirstLineProducts";
 
 export default function Home() {
   return (
     <div>
       <NavMenu />
       <HomeSliderAndCategories />
+      <FirstLineProducts/>
     </div>
   );
 }
