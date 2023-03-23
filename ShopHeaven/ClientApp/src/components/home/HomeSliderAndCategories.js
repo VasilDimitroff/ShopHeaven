@@ -6,7 +6,7 @@ import CategoriesHomeList from "./CategoriesHomeList";
 import { Category } from "@mui/icons-material";
 import { theme } from "../../theme";
 
-export default function HomeSliderAndCategories() {
+export default function HomeSliderAndCategories(props) {
   return (
     <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
       <Grid
@@ -48,7 +48,7 @@ export default function HomeSliderAndCategories() {
               marginTop: theme.spacing(3),
             }}
           >
-            <HomeCarousel />
+            <HomeCarousel items={props.items}/>
           </Box>
         </Grid>
       </Grid>

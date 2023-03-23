@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ProductsCarousel from '../products/ProductsCarousel';
 
-export default function FirstLineProducts() {
+export default function FirstLineProducts(props) {
 
     const CarouselWrapper = styled(Box)({
         margin: "auto", width: "100%", display: "block", width: "80%",
@@ -19,7 +19,7 @@ export default function FirstLineProducts() {
     return (
       <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
         <CarouselWrapper>
-          <ProductsCarousel/>
+          <ProductsCarousel products={props.products}/>
         </CarouselWrapper>
       </Box>
     );
