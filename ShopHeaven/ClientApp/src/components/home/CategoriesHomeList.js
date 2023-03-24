@@ -1,271 +1,19 @@
 import React, { useState } from "react";
-import {
-  Box,
-  List,
-  ListItemButton,
-  Divider,
-  Fade,
-  Button,
-  Typography,
-} from "@mui/material";
+import {Box, List, ListItemText, ListItemButton, Divider, Fade, Button, Typography,} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {
-  Label,
-  RadioButtonChecked,
-  KeyboardArrowRight,
-  ArrowBackIos,
-} from "@mui/icons-material";
+import { Label, RadioButtonChecked, KeyboardArrowRight, ArrowBackIos, } from "@mui/icons-material";
 import { theme } from "./../../theme";
 
-const categories = [
-  {
-    name: "Category 1 ",
-    id: "1",
-    subcategories: [
-      "Category 1, Subcategory 1",
-      "Category 1, Subcategory 2",
-      "Category 1, Subcategory 3",
-      "Category 1, Subcategory 4",
-      "Category 1, Subcategory 5",
-      "Category 1, Subcategory 6",
-      "Category 1, Subcategory 7",
-      "Category 1, Subcategory 8",
-      "Category 1, Subcategory 9",
-      "Category 1, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 2",
-    id: "2",
-    subcategories: [
-      "Category 2, Subcategory 1",
-      "Category 2, Subcategory 2",
-      "Category 2, Subcategory 3",
-      "Category 2, Subcategory 4",
-      "Category 2, Subcategory 5",
-      "Category 2, Subcategory 6",
-      "Category 2, Subcategory 7",
-      "Category 2, Subcategory 8",
-      "Category 2, Subcategory 9",
-      "Category 2, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 3",
-    id: "3",
-    subcategories: [
-      "Category 3, Subcategory 1",
-      "Category 3, Subcategory 2",
-      "Category 3, Subcategory 3",
-      "Category 3, Subcategory 4",
-      "Category 3, Subcategory 5",
-      "Category 3, Subcategory 6",
-      "Category 3, Subcategory 7",
-      "Category 3, Subcategory 8",
-      "Category 3, Subcategory 9",
-      "Category 3, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 4",
-    id: "4",
-    subcategories: [
-      "Category 4, Subcategory 1",
-      "Category 4, Subcategory 2",
-      "Category 4, Subcategory 3",
-      "Category 4, Subcategory 4",
-      "Category 4, Subcategory 5",
-      "Category 4, Subcategory 6",
-      "Category 4, Subcategory 7",
-      "Category 4, Subcategory 8",
-      "Category 4, Subcategory 9",
-      "Category 4, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 5",
-    id: "5",
-    subcategories: [
-      "Category 5, Subcategory 1",
-      "Category 5, Subcategory 2",
-      "Category 5, Subcategory 3",
-      "Category 5, Subcategory 4",
-      "Category 5, Subcategory 5",
-      "Category 5, Subcategory 6",
-      "Category 5, Subcategory 7",
-      "Category 5, Subcategory 8",
-      "Category 5, Subcategory 9",
-      "Category 5, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 6",
-    id: "6",
-    subcategories: [
-      "Category 6, Subcategory 1",
-      "Category 6, Subcategory 2",
-      "Category 6, Subcategory 3",
-      "Category 6, Subcategory 4",
-      "Category 6, Subcategory 5",
-      "Category 6, Subcategory 6",
-      "Category 6, Subcategory 7",
-      "Category 6, Subcategory 8",
-      "Category 6, Subcategory 9",
-      "Category 6, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 7",
-    id: "7",
-    subcategories: [
-      "Category 7, Subcategory 1",
-      "Category 7, Subcategory 2",
-      "Category 7, Subcategory 3",
-      "Category 7, Subcategory 4",
-      "Category 7, Subcategory 5",
-      "Category 7, Subcategory 6",
-      "Category 7, Subcategory 7",
-      "Category 7, Subcategory 8",
-      "Category 7, Subcategory 9",
-      "Category 7, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 8",
-    id: "8",
-    subcategories: [
-      "Category 8, Subcategory 1",
-      "Category 8, Subcategory 2",
-      "Category 8, Subcategory 3",
-      "Category 8, Subcategory 4",
-      "Category 8, Subcategory 5",
-      "Category 8, Subcategory 6",
-      "Category 8, Subcategory 7",
-      "Category 8, Subcategory 8",
-      "Category 8, Subcategory 9",
-      "Category 8, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 9 is unreal category",
-    id: "9",
-    subcategories: [
-      "Category 9, Subcategory 1 is the best subcategory",
-      "Category 9, Subcategory 2",
-      "Category 9, Subcategory 3",
-      "Category 9, Subcategory 4",
-      "Category 9, Subcategory 5",
-      "Category 9, Subcategory 6",
-      "Category 9, Subcategory 7",
-      "Category 9, Subcategory 8",
-      "Category 9, Subcategory 9",
-      "Category 9, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 10",
-    id: "10",
-    subcategories: [
-      "Category 10, Subcategory 1",
-      "Category 10, Subcategory 2",
-      "Category 10, Subcategory 3",
-      "Category 10, Subcategory 4",
-      "Category 10, Subcategory 5",
-      "Category 10, Subcategory 6",
-      "Category 10, Subcategory 7",
-      "Category 10, Subcategory 8",
-      "Category 10, Subcategory 9",
-      "Category 10, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 11",
-    id: "11",
-    subcategories: [
-      "Category 11, Subcategory 1",
-      "Category 11, Subcategory 2",
-      "Category 11, Subcategory 3",
-      "Category 11, Subcategory 4",
-      "Category 11, Subcategory 5",
-      "Category 11, Subcategory 6",
-      "Category 11, Subcategory 7",
-      "Category 11, Subcategory 8",
-      "Category 11, Subcategory 9",
-      "Category 11, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 12",
-    id: "12",
-    subcategories: [
-      "Category 12, Subcategory 1",
-      "Category 12, Subcategory 2",
-      "Category 12, Subcategory 3",
-      "Category 12, Subcategory 4",
-      "Category 12, Subcategory 5",
-      "Category 12, Subcategory 6",
-      "Category 12, Subcategory 7",
-      "Category 12, Subcategory 8",
-      "Category 12, Subcategory 9",
-      "Category 12, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 13",
-    id: "13",
-    subcategories: [
-      "Category 13, Subcategory 1",
-      "Category 13, Subcategory 2",
-      "Category 13, Subcategory 3",
-      "Category 13, Subcategory 4",
-      "Category 13, Subcategory 5",
-      "Category 13, Subcategory 6",
-      "Category 13, Subcategory 7",
-      "Category 13, Subcategory 8",
-      "Category 13, Subcategory 9",
-      "Category 13, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 14",
-    id: "14",
-    subcategories: [
-      "Category 14, Subcategory 1",
-      "Category 14, Subcategory 2",
-      "Category 14, Subcategory 3",
-      "Category 14, Subcategory 4",
-      "Category 14, Subcategory 5",
-      "Category 14, Subcategory 6",
-      "Category 14, Subcategory 7",
-      "Category 14, Subcategory 8",
-      "Category 14, Subcategory 9",
-      "Category 14, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 15",
-    id: "15",
-    subcategories: [
-      "Category 15, Subcategory 1",
-      "Category 15, Subcategory 2",
-      "Category 15, Subcategory 3",
-      "Category 15, Subcategory 4",
-      "Category 15, Subcategory 5",
-      "Category 15, Subcategory 6",
-      "Category 15, Subcategory 7",
-      "Category 15, Subcategory 8",
-      "Category 15, Subcategory 9",
-      "Category 15, Subcategory 10",
-    ],
-  },
-];
-
 let subcategories = [];
+let mainCategoryOfSubcategoriesName;
 
-export default function CategoriesHomeList() {
-  function showSubCategories(id) {
+export default function CategoriesHomeList(props) {
+
+  function setSubCategoriesData(mainCategoryId) {
     setShowSubmenu(true);
-    subcategories = categories[id - 1].subcategories;
+    let searchedMainCategory = props.categories.find(category => category.id == mainCategoryId);
+    subcategories = searchedMainCategory.subcategories;
+    mainCategoryOfSubcategoriesName = searchedMainCategory.name;
   }
 
   const [showSubmenu, setShowSubmenu] = useState(false);
@@ -277,7 +25,7 @@ export default function CategoriesHomeList() {
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
     backgroundColor: theme.palette.primary.main,
-    display: categories.length > 10 ? "block" : "none",
+    display: props.categories.length > 10 ? "block" : "none",
   });
 
   const CategoriesWrapper = styled(Box)(({ theme }) => ({
@@ -333,6 +81,7 @@ export default function CategoriesHomeList() {
     borderTopLeftRadius: theme.shape.borderRadius,
     borderBottomLeftRadius: theme.shape.borderRadius,
     [theme.breakpoints.down("md")]: {
+      boxShadow: theme.palette.dropdown.boxShadow,
       borderTopRightRadius: theme.shape.borderRadius,
       borderBottomRightRadius: theme.shape.borderRadius,
       paddingTop: theme.spacing(5),
@@ -361,24 +110,43 @@ export default function CategoriesHomeList() {
     },
   });
 
+  const MainCategoryName = styled(ListItemText)({
+    backgroundColor:  theme.palette.primary.main,
+    color: "white",
+    paddingTop: theme.spacing(2.5),
+    paddingBottom: theme.spacing(2.5),
+  });
+
+  const MainCategoryNameText = styled(Typography)({
+    textAlign: "center",
+    textTransform: "uppercase",
+    fontWeight: "500",
+    fontSize: "19px",
+    lineHeight: 1.2,
+    textAlign: "center",
+  });
+
+
   return (
     <CategoriesWrapper>
       <StyledList component="nav" aria-label="mailbox folders">
         <MenuHolder>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-          {categories.slice(0, 12).map((category) => {
+          {props.categories.slice(0, 12).map((category) => {
             return (
+              <div>
               <Box
                 sx={{ display: "flex" }}
                 onMouseLeave={() => setShowSubmenu(!showSubmenu)}
               >
-                <CategoryItem
+               
+                <CategoryItem 
                   sx={{ backgroundColor: "white", display: "flex" }}
-                >
+                > 
                   <RadioButtonChecked
-                    onMouseEnter={() => showSubCategories(category.id)}
+                    onMouseEnter={() => setSubCategoriesData(category.id)}
                   />
-                  <Typography id={category.id}
+                  <Typography
                     sx={{
                       marginLeft: theme.spacing(2),
                       width: "100%",
@@ -387,16 +155,18 @@ export default function CategoriesHomeList() {
                         color: theme.palette.primary.main,
                       },
                     }}
-                    onMouseEnter={() => showSubCategories(category.id)}
+                    onMouseEnter={() => setSubCategoriesData(category.id)}
                   >
                     {category.name}
                   </Typography>
                   <KeyboardArrowRight
-                    onClick={() => showSubCategories(category.id)}
+                    onClick={() => setSubCategoriesData(category.id)}
                   />
+                 
                 </CategoryItem>
+                
                 <Divider />
-              </Box>
+              </Box></div>
             );
           })}
 
@@ -425,6 +195,11 @@ export default function CategoriesHomeList() {
                 </CategoriesHeading>
               </CategoryItem>
             </SubcategoriesHeading>
+            <MainCategoryName>
+                <MainCategoryNameText component="h3" >
+                 {mainCategoryOfSubcategoriesName}
+                </MainCategoryNameText>
+            </MainCategoryName>
             {subcategories.map((subcategory) => {
               return (
                 <Box>

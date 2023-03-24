@@ -69,7 +69,7 @@ function ProductsCarousel(props) {
         swipe={false}
         navButtonsAlwaysVisible={true}
         indicators={true}
-        interval={7000}
+        interval={12000}
         cycleNavigation={false}
         indicatorIconButtonProps={{
           style: {

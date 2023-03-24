@@ -32,7 +32,7 @@ export default function HomeSliderAndCategories(props) {
           }}
         >
           <Box sx={{ marginTop: theme.spacing(2) }}>
-            <CategoriesHomeList />
+            <CategoriesHomeList categories={props.categories} />
           </Box>
         </Grid>
         <Grid xs={12} md={8} lg={9}>
