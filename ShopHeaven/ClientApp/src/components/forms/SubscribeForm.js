@@ -10,10 +10,11 @@ import {
   OutlinedInput,
   InputAdornment,
   FormHelperText,
+  Input
 } from "@mui/material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
-import { AccountCircle } from "@mui/icons-material";
+import { Person, Email  } from "@mui/icons-material";
 function SubscribeForm(props) {
   const Banner = styled(Box)({
     backgroundColor: theme.palette.primary.main,
@@ -28,7 +29,6 @@ function SubscribeForm(props) {
     position: "absolute",
     bottom: 0,
     width: "100%",
-    display: "flex",
   });
 
   const FormHolder = styled(Container)({
@@ -38,6 +38,7 @@ function SubscribeForm(props) {
     justifyContent: "space-between",
     [theme.breakpoints.down("md")]: {
       width: "50%",
+      paddingTop: theme.spacing(4)
     },
     [theme.breakpoints.down("sm")]: {
       width: "80%",
@@ -46,7 +47,8 @@ function SubscribeForm(props) {
 
   const Info = styled(Typography)({
     textAlign: "center",
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
     color: "white",
     fontSize: "22px",
     [theme.breakpoints.down("md")]: {
@@ -98,31 +100,42 @@ function SubscribeForm(props) {
       sx={{ backgroundColor: theme.palette.appBackground.main, }}
     >
       <Banner>
-          <Info>{props.infoText}</Info>
+         
        
         <Slide direction="right" in={true}>
-          <Overlay sx={{ display: "flex", alignItems:"center", border: "2px solid red"}}>
+          <Overlay>
+          <Info>{props.infoText}</Info>
             <FormHolder>
          
               <FormWrapper variant="filled">
-  
+            
+    
                 <InputBox>
-                  <AccountCircle
-                    sx={{ color: theme.palette.white.main, fontSize: "60px" }}
-                  />
                   <StyledTextField
+                   sx={{fontSize: "34px",}}
+                   InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person  sx={{fontSize: "34px", color: theme.palette.white.main, pt: theme.spacing(1), pb: theme.spacing(1)}} />
+                      </InputAdornment>
+                    ),
+                  }}
                     id="input-with-sx"
                     label="Name"
                     color="white"
                     variant="filled"
-                    sx={{fontSize: "34px"}}
                   />
                 </InputBox>
                 <InputBox>
-                  <AccountCircle
-                    sx={{ color: theme.palette.white.main, fontSize: "60px" }}
-                  />
                   <StyledTextField
+                   sx={{fontSize: "34px",}}
+                   InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email  sx={{fontSize: "34px", color: theme.palette.white.main, pt: theme.spacing(1), pb: theme.spacing(1)}} />
+                      </InputAdornment>
+                    ),
+                  }}
                     id="input-with-sx"
                     label="E-mail"
                     color="white"

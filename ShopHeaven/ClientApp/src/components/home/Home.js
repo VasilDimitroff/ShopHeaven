@@ -353,7 +353,7 @@ export default function Home() {
         heightSm={180}
         image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
       />
-      <SubscribeForm height={250} infoText="Subscribe for out newsletter for all interesting products"/>
+      <SubscribeForm height={220} infoText="Subscribe for out newsletter for all interesting products"/>
     </div>
   );
 }
