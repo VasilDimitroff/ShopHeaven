@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Container,
-  TextField,
-  Slide,
-  Typography,
-  Button,
-  InputAdornment,
-} from "@mui/material";
+import { Box,  Container, TextField,Slide, Typography,  Button, InputAdornment,} from "@mui/material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { Person, Email } from "@mui/icons-material";

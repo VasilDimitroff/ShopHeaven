@@ -303,7 +303,7 @@ export default function NavMenu(props) {
           <IconsArea>
             <CustomSearchButton onClick={() => setOpen(true)} />
             <CustomBadge
-              badgeContent={4}
+              badgeContent={1}
               color="secondary"
               onClick={() =>
                 showFavoritesMenu === true

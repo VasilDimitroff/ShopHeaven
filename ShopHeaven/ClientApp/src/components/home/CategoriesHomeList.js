@@ -51,7 +51,7 @@ export default function CategoriesHomeList(props) {
   }
 
   categoriesToShow = SetCategoriesToShow();
-  subCategoriesToShow = SetCategoriesToShow();
+  subCategoriesToShow = SetSubCategoriesToShow();
 
   function setSubCategoriesData(mainCategoryId) {
     setShowSubmenu(true);
