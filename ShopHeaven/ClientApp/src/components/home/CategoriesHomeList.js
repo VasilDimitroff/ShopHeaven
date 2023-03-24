@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import {
   Box,
   List,
+  ListItemText,
   ListItemButton,
   Divider,
   Fade,
   Button,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -17,258 +19,50 @@ import {
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
 
-const categories = [
-  {
-    name: "Category 1 ",
-    id: "1",
-    subcategories: [
-      "Category 1, Subcategory 1",
-      "Category 1, Subcategory 2",
-      "Category 1, Subcategory 3",
-      "Category 1, Subcategory 4",
-      "Category 1, Subcategory 5",
-      "Category 1, Subcategory 6",
-      "Category 1, Subcategory 7",
-      "Category 1, Subcategory 8",
-      "Category 1, Subcategory 9",
-      "Category 1, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 2",
-    id: "2",
-    subcategories: [
-      "Category 2, Subcategory 1",
-      "Category 2, Subcategory 2",
-      "Category 2, Subcategory 3",
-      "Category 2, Subcategory 4",
-      "Category 2, Subcategory 5",
-      "Category 2, Subcategory 6",
-      "Category 2, Subcategory 7",
-      "Category 2, Subcategory 8",
-      "Category 2, Subcategory 9",
-      "Category 2, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 3",
-    id: "3",
-    subcategories: [
-      "Category 3, Subcategory 1",
-      "Category 3, Subcategory 2",
-      "Category 3, Subcategory 3",
-      "Category 3, Subcategory 4",
-      "Category 3, Subcategory 5",
-      "Category 3, Subcategory 6",
-      "Category 3, Subcategory 7",
-      "Category 3, Subcategory 8",
-      "Category 3, Subcategory 9",
-      "Category 3, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 4",
-    id: "4",
-    subcategories: [
-      "Category 4, Subcategory 1",
-      "Category 4, Subcategory 2",
-      "Category 4, Subcategory 3",
-      "Category 4, Subcategory 4",
-      "Category 4, Subcategory 5",
-      "Category 4, Subcategory 6",
-      "Category 4, Subcategory 7",
-      "Category 4, Subcategory 8",
-      "Category 4, Subcategory 9",
-      "Category 4, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 5",
-    id: "5",
-    subcategories: [
-      "Category 5, Subcategory 1",
-      "Category 5, Subcategory 2",
-      "Category 5, Subcategory 3",
-      "Category 5, Subcategory 4",
-      "Category 5, Subcategory 5",
-      "Category 5, Subcategory 6",
-      "Category 5, Subcategory 7",
-      "Category 5, Subcategory 8",
-      "Category 5, Subcategory 9",
-      "Category 5, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 6",
-    id: "6",
-    subcategories: [
-      "Category 6, Subcategory 1",
-      "Category 6, Subcategory 2",
-      "Category 6, Subcategory 3",
-      "Category 6, Subcategory 4",
-      "Category 6, Subcategory 5",
-      "Category 6, Subcategory 6",
-      "Category 6, Subcategory 7",
-      "Category 6, Subcategory 8",
-      "Category 6, Subcategory 9",
-      "Category 6, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 7",
-    id: "7",
-    subcategories: [
-      "Category 7, Subcategory 1",
-      "Category 7, Subcategory 2",
-      "Category 7, Subcategory 3",
-      "Category 7, Subcategory 4",
-      "Category 7, Subcategory 5",
-      "Category 7, Subcategory 6",
-      "Category 7, Subcategory 7",
-      "Category 7, Subcategory 8",
-      "Category 7, Subcategory 9",
-      "Category 7, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 8",
-    id: "8",
-    subcategories: [
-      "Category 8, Subcategory 1",
-      "Category 8, Subcategory 2",
-      "Category 8, Subcategory 3",
-      "Category 8, Subcategory 4",
-      "Category 8, Subcategory 5",
-      "Category 8, Subcategory 6",
-      "Category 8, Subcategory 7",
-      "Category 8, Subcategory 8",
-      "Category 8, Subcategory 9",
-      "Category 8, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 9 is unreal category",
-    id: "9",
-    subcategories: [
-      "Category 9, Subcategory 1 is the best subcategory",
-      "Category 9, Subcategory 2",
-      "Category 9, Subcategory 3",
-      "Category 9, Subcategory 4",
-      "Category 9, Subcategory 5",
-      "Category 9, Subcategory 6",
-      "Category 9, Subcategory 7",
-      "Category 9, Subcategory 8",
-      "Category 9, Subcategory 9",
-      "Category 9, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 10",
-    id: "10",
-    subcategories: [
-      "Category 10, Subcategory 1",
-      "Category 10, Subcategory 2",
-      "Category 10, Subcategory 3",
-      "Category 10, Subcategory 4",
-      "Category 10, Subcategory 5",
-      "Category 10, Subcategory 6",
-      "Category 10, Subcategory 7",
-      "Category 10, Subcategory 8",
-      "Category 10, Subcategory 9",
-      "Category 10, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 11",
-    id: "11",
-    subcategories: [
-      "Category 11, Subcategory 1",
-      "Category 11, Subcategory 2",
-      "Category 11, Subcategory 3",
-      "Category 11, Subcategory 4",
-      "Category 11, Subcategory 5",
-      "Category 11, Subcategory 6",
-      "Category 11, Subcategory 7",
-      "Category 11, Subcategory 8",
-      "Category 11, Subcategory 9",
-      "Category 11, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 12",
-    id: "12",
-    subcategories: [
-      "Category 12, Subcategory 1",
-      "Category 12, Subcategory 2",
-      "Category 12, Subcategory 3",
-      "Category 12, Subcategory 4",
-      "Category 12, Subcategory 5",
-      "Category 12, Subcategory 6",
-      "Category 12, Subcategory 7",
-      "Category 12, Subcategory 8",
-      "Category 12, Subcategory 9",
-      "Category 12, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 13",
-    id: "13",
-    subcategories: [
-      "Category 13, Subcategory 1",
-      "Category 13, Subcategory 2",
-      "Category 13, Subcategory 3",
-      "Category 13, Subcategory 4",
-      "Category 13, Subcategory 5",
-      "Category 13, Subcategory 6",
-      "Category 13, Subcategory 7",
-      "Category 13, Subcategory 8",
-      "Category 13, Subcategory 9",
-      "Category 13, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 14",
-    id: "14",
-    subcategories: [
-      "Category 14, Subcategory 1",
-      "Category 14, Subcategory 2",
-      "Category 14, Subcategory 3",
-      "Category 14, Subcategory 4",
-      "Category 14, Subcategory 5",
-      "Category 14, Subcategory 6",
-      "Category 14, Subcategory 7",
-      "Category 14, Subcategory 8",
-      "Category 14, Subcategory 9",
-      "Category 14, Subcategory 10",
-    ],
-  },
-  {
-    name: "Category 15",
-    id: "15",
-    subcategories: [
-      "Category 15, Subcategory 1",
-      "Category 15, Subcategory 2",
-      "Category 15, Subcategory 3",
-      "Category 15, Subcategory 4",
-      "Category 15, Subcategory 5",
-      "Category 15, Subcategory 6",
-      "Category 15, Subcategory 7",
-      "Category 15, Subcategory 8",
-      "Category 15, Subcategory 9",
-      "Category 15, Subcategory 10",
-    ],
-  },
-];
-
 let subcategories = [];
+let mainCategoryOfSubcategoriesName;
+let categoriesToShow;
+let subCategoriesToShow;
 
-export default function CategoriesHomeList() {
-  function showSubCategories(id) {
-    setShowSubmenu(true);
-    subcategories = categories[id - 1].subcategories;
+export default function CategoriesHomeList(props) {
+  function SetCategoriesToShow() {
+
+    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
+
+    if (isSmallerThanSm === true) {
+      categoriesToShow = 8;
+    } else {
+      categoriesToShow = 12;
+    }
+
+    return categoriesToShow;
   }
 
-  const [showSubmenu, setShowSubmenu] = useState(true);
+  function SetSubCategoriesToShow() {
+    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
+
+    if (isSmallerThanSm === true) {
+      subCategoriesToShow = SetCategoriesToShow() + 1;
+    } else {
+      subCategoriesToShow = subcategories.length;
+    }
+
+    return subCategoriesToShow;
+  }
+
+  categoriesToShow = SetCategoriesToShow();
+  subCategoriesToShow = SetCategoriesToShow();
+
+  function setSubCategoriesData(mainCategoryId) {
+    setShowSubmenu(true);
+    let searchedMainCategory = props.categories.find(
+      (category) => category.id == mainCategoryId
+    );
+    subcategories = searchedMainCategory.subcategories;
+    mainCategoryOfSubcategoriesName = searchedMainCategory.name;
+  }
+
+  const [showSubmenu, setShowSubmenu] = useState(false);
 
   const ViewAllButton = styled(Button)({
     width: "90%",
@@ -277,7 +71,7 @@ export default function CategoriesHomeList() {
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
     backgroundColor: theme.palette.primary.main,
-    display: categories.length > 10 ? "block" : "none",
+    display: props.categories.length > categoriesToShow ? "block" : "none",
   });
 
   const CategoriesWrapper = styled(Box)(({ theme }) => ({
@@ -286,13 +80,18 @@ export default function CategoriesHomeList() {
 
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
+    backgroundColor: "white",
     position: "absolute",
     left: "100%",
-    zIndex: 2,
-    [theme.breakpoints.up("sm")]: {},
+    zIndex: 23,
     [theme.breakpoints.down("md")]: {
+      display: "block",
+      paddingTop: theme.spacing(5),
+      width: "90%",
+      margin: "auto",
+      position: "fixed",
+      right: 0,
       left: 0,
-      width: "100%",
     },
     boxShadow: theme.palette.dropdown.boxShadow,
   }));
@@ -324,107 +123,167 @@ export default function CategoriesHomeList() {
     width: "100%",
     borderTopLeftRadius: theme.shape.borderRadius,
     borderBottomLeftRadius: theme.shape.borderRadius,
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
+    [theme.breakpoints.down("md")]: {
+      boxShadow: theme.palette.dropdown.boxShadow,
+      borderTopRightRadius: theme.shape.borderRadius,
+      borderBottomRightRadius: theme.shape.borderRadius,
+      paddingTop: theme.spacing(5),
+      width: "90%",
       margin: "auto",
+      position: "fixed",
+      right: 0,
+      left: 0,
     },
   });
 
   const SubcategoriesHeading = styled(Box)({
-    [theme.breakpoints.up("md")] : {
+    [theme.breakpoints.down("md")]: {
+      display: showSubmenu === true ? "flex" : "none",
+    },
+    [theme.breakpoints.up("md")]: {
       display: "none",
     },
   });
 
+  const StyledList = styled(List)({
+    display: "flex",
+    width: "100%",
+    [theme.breakpoints.down("md")]: {
+      position: "relative",
+    },
+  });
+
+  const MainCategoryName = styled(ListItemText)({
+    color: "white",
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    marginTop: theme.spacing(-0.5),
+    backgroundColor: theme.palette.secondary.main,
+    [theme.breakpoints.down("md")]: {
+      display: "none",
+    },
+  });
+
+  const MainCategoryNameText = styled(Typography)({
+    textTransform: "uppercase",
+    fontWeight: "500",
+    fontSize: "19px",
+    lineHeight: 1.2,
+    textAlign: "center",
+    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    fontSize: "20px",
+  });
+
   return (
     <CategoriesWrapper>
-      <List
-        sx={{ display: "flex", width: "100%" }}
-        component="nav"
-        aria-label="mailbox folders"
-      >
+      <StyledList component="nav" aria-label="mailbox folders">
         <MenuHolder>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-          {categories.slice(0, 12).map((category) => {
+          {props.categories.slice(0, categoriesToShow).map((category) => {
             return (
-              <Box
-                sx={{ display: "flex" }}
-                onMouseLeave={() => setShowSubmenu(!showSubmenu)}
-              >
-                <CategoryItem
-                  sx={{ backgroundColor: "white", display: "flex" }}
+              <div key={category.id}>
+                <Box
+                  sx={{ display: "flex" }}
+                  onMouseLeave={() => setShowSubmenu(!showSubmenu)}
                 >
-                  <RadioButtonChecked
-                    onMouseEnter={() => showSubCategories(category.id)}
-                  />
-                  <Typography
-                    sx={{
-                      marginLeft: theme.spacing(2),
-                      width: "100%",
-                      fontSize: "18px",
-                      "&:hover": {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
-                    onMouseEnter={() => showSubCategories(category.id)}
+                  <CategoryItem
+                    sx={{ backgroundColor: "white", display: "flex" }}
                   >
-                    {category.name}
-                  </Typography>
-                  <KeyboardArrowRight
-                    onClick={() => showSubCategories(category.id)}
-                  />
-                </CategoryItem>
-                <Divider />
-              </Box>
+                    <RadioButtonChecked
+                      onMouseEnter={() => setSubCategoriesData(category.id)}
+                    />
+                    <Typography
+                      sx={{
+                        marginLeft: theme.spacing(2),
+                        width: "100%",
+                        fontSize: "18px",
+                        fontWeight: "500",
+                        "&:hover": {
+                          color: theme.palette.primary.main,
+                        },
+                      }}
+                      onMouseEnter={() => setSubCategoriesData(category.id)}
+                    >
+                      {category.name}
+                    </Typography>
+                    <KeyboardArrowRight
+                      onClick={() => setSubCategoriesData(category.id)}
+                    />
+                  </CategoryItem>
+
+                  <Divider />
+                </Box>
+              </div>
             );
           })}
 
-          <ViewAllButton variant="contained">VIEW ALL</ViewAllButton>
+          <ViewAllButton variant="contained">VIEW ALL CATEGORIES</ViewAllButton>
         </MenuHolder>
         <Fade in={showSubmenu} timeout={400}>
           <Submenu
             onMouseEnter={() => setShowSubmenu(true)}
             onMouseLeave={() => setShowSubmenu(false)}
           >
-            {" "}
             <SubcategoriesHeading>
               <CategoryItem
-                onClick={() => setShowSubmenu(!showSubmenu)}
-                sx={{ backgroundColor: "#adcbff" }}
+                onClick={() => setShowSubmenu(false)}
+                sx={{
+                  backgroundColor: theme.palette.secondary.main,
+                  color: "white",
+                  "&:hover": {
+                    color: "black",
+                  },
+                }}
               >
                 <ArrowBackIos />
-                <CategoriesHeading
-                  variant="h5"
-                  sx={{
-                    marginLeft: theme.spacing(2),
-                    fontSize: "20px",
-                  }}
-                >
-                  BACK TO MAIN CATEGORIES
-                </CategoriesHeading>
+                <MainCategoryNameText variant="h5">
+                  {mainCategoryOfSubcategoriesName}
+                </MainCategoryNameText>
               </CategoryItem>
             </SubcategoriesHeading>
-            {subcategories.map((subcategory) => {
-              return (
-                <Box>
-                  <CategoryItem>
-                    <Label sx={{ fontSize: "14px" }} />
-                    <Typography
-                      sx={{
-                        marginLeft: theme.spacing(2),
-                        fontSize: "16px",
-                      }}
-                    >
-                      {subcategory}
-                    </Typography>
-                  </CategoryItem>
-                  <Divider />
-                </Box>
-              );
-            })}
+            <MainCategoryName>
+              <MainCategoryNameText component="h3">
+                {mainCategoryOfSubcategoriesName}
+              </MainCategoryNameText>
+            </MainCategoryName>
+            {subcategories
+              .slice(0, subCategoriesToShow)
+              .map((subcategory, index) => {
+                return (
+                  <Box key={index}>
+                    <CategoryItem>
+                      <Label sx={{ fontSize: "14px" }} />
+                      <Typography
+                        sx={{
+                          marginLeft: theme.spacing(2),
+                          fontSize: "16px",
+                        }}
+                      >
+                        {subcategory}
+                      </Typography>
+                    </CategoryItem>
+                    <Divider />
+                  </Box>
+                );
+              })}
+            <ViewAllButton
+              variant="contained"
+              sx={{
+                display: "none",
+                [theme.breakpoints.down("md")]: {
+                  display:
+                    subcategories.length > subCategoriesToShow
+                      ? "block"
+                      : "none",
+                },
+              }}
+            >
+              VIEW ALL SUBCATEGORIES
+            </ViewAllButton>
           </Submenu>
         </Fade>
-      </List>
+      </StyledList>
     </CategoriesWrapper>
   );
 }

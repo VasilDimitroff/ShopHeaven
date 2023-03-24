@@ -15,7 +15,8 @@ import {
   Slide,
   Divider,
   IconButton,
-  Button
+  Fade,
+  Container,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 //import {styled, alpha } from '@emotion/styled';
@@ -42,7 +43,7 @@ import ProductMenuListItem from "./ProductMenuListItem";
 import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
-export default function NavMenu() {
+export default function NavMenu(props) {
   const [open, setOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
@@ -123,8 +124,8 @@ export default function NavMenu() {
       display: "none",
     },
     "&:hover": {
-                 opacity: 0.7
-              },    
+      opacity: 0.7,
+    },
   });
 
   const CustomBadge = styled(Badge)({
@@ -136,13 +137,13 @@ export default function NavMenu() {
   });
 
   const UserMenu = styled(Box)({
-    position: "absolute",
+    position: "fixed",
     zIndex: "100",
     width: "100%",
     maxWidth: 250,
     backgroundColor: theme.palette.dropdown.main,
     color: theme.palette.dropdown.main.color,
-    marginTop: theme.spacing(-2),
+    marginTop: theme.spacing(6),
     paddingTop: theme.spacing(2),
     right: "8%",
     borderRadius: theme.shape.borderRadius,
@@ -158,7 +159,7 @@ export default function NavMenu() {
     right: "8%",
     backgroundColor: theme.palette.dropdown.main,
     color: theme.palette.dropdown.main.color,
-    marginTop: theme.spacing(-2),
+    marginTop: theme.spacing(7),
     paddingTop: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
     display: showFavoritesMenu === true ? "block" : "none",
@@ -178,6 +179,14 @@ export default function NavMenu() {
 
   const UserMenuListItem = styled(ListItemText)({
     marginLeft: theme.spacing(4),
+  });
+
+  const UserNameText = styled(Typography)({
+    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    fontSize: "21px",
+    fontWeight: "400",
+    textAlign: "center"
   });
 
   const Label = styled(Typography)({
@@ -209,7 +218,6 @@ export default function NavMenu() {
   });
 
   const MenuIcon = styled(IconButton)({
- 
     display: showMobileMenu === true ? "none" : "block",
     [theme.breakpoints.up("md")]: {
       display: "none",
@@ -217,8 +225,34 @@ export default function NavMenu() {
   });
 
   const CloseIcon = styled(IconButton)({
-
     display: showMobileMenu === true ? "block" : "none",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  });
+
+  const DropDownMenuListItemButton = styled(ListItemButton)({
+    backgroundColor: theme.palette.dropdown.main,
+    "&:hover": {
+      backgroundColor: theme.palette.onHoverButtonColor.main,
+    },
+  });
+
+  const StyledIconButton = styled(IconButton)({
+    paddingLeft: theme.spacing(2.5),
+    paddingRight: theme.spacing(2.5),
+    justifyContent: "center",
+    backgroundColor: theme.palette.dropdown.main,
+    "&:hover": {
+      backgroundColor: theme.palette.onHoverButtonColor.main,
+    },
+  });
+
+  const MobileMenuWrapper = styled(Box)({
+    position: "fixed",
+    zIndex: 3,
+    top: theme.spacing(1),
+    boxShadow: theme.palette.dropdown.boxShadow,
     [theme.breakpoints.up("md")]: {
       display: "none",
     },
@@ -235,27 +269,35 @@ export default function NavMenu() {
               alignItems: "center",
             }}
           >
-            <MenuIcon>
-              <Menu sx={{fontSize:"35px", color: "white"}}
-                onClick={() =>
+            <MenuIcon  onClick={() =>
                   showMobileMenu === true
                     ? setShowMobileMenu(false)
                     : HideAllMenusExcept(setShowMobileMenu)
-                }
+                }>
+              <Menu
+                sx={{ fontSize: "35px", color: theme.palette.white.main }}
+               
               />
             </MenuIcon>
-            <CloseIcon>
-              <Close sx={{fontSize:"35px", color: "white"}} onClick={() => setShowMobileMenu(!showMobileMenu)} />{" "}
+            <CloseIcon  onClick={() => setShowMobileMenu(!showMobileMenu)}>
+              <Close sx={{ fontSize: "35px", color: theme.palette.white.main }}/>
             </CloseIcon>
-
             <BigLogoImage src={LogoBig} />
-
             <SmallLogoImage src={LogoSmall} />
           </Box>
           <CustomSearchField>
-            <Search sx={{ paddingLeft: "10px" }} />
+            <Search
+              sx={{
+                paddingLeft: theme.spacing(1),
+                paddingRight: theme.spacing(1),
+                fontSize: "40px",
+              }}
+            />
             <CustomSearchInput placeholder="Search..." />
-            <CustomCancel onClick={() => setOpen(false)} />
+            <CustomCancel
+              sx={{ fontSize: "30px" }}
+              onClick={() => setOpen(false)}
+            />
           </CustomSearchField>
 
           <IconsArea>
@@ -268,20 +310,30 @@ export default function NavMenu() {
                   ? setShowFavoritesMenu(false)
                   : HideAllMenusExcept(setShowFavoritesMenu)
               }
-              sx={{ cursor: "pointer", 
-              "&:hover": {
-                 opacity: 0.7
-              }, }}>
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  opacity: 0.7,
+                },
+              }}
+            >
               <Label>Favorites</Label>
               <Favorite />
             </CustomBadge>
-            <CustomBadge badgeContent={2} color="secondary" sx={{border: "white", "&:hover": {
-                 opacity: 0.7
-              },}}>
+            <CustomBadge
+              badgeContent={2}
+              color="secondary"
+              sx={{
+                border: "white",
+                "&:hover": {
+                  opacity: 0.7,
+                },
+              }}
+            >
               <Label>Cart</Label>
               <ShoppingCart />
             </CustomBadge>
-         
+
             <CustomBadge
               color="secondary"
               onClick={() =>
@@ -291,9 +343,12 @@ export default function NavMenu() {
               }
               sx={{ cursor: "pointer" }}
             >
-              <IconButton><Avatar sx={{ bgcolor: theme.palette.secondary.main }}>V</Avatar></IconButton>
+              <IconButton>
+                <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
+                  V
+                </Avatar>
+              </IconButton>
             </CustomBadge>
-
           </IconsArea>
         </CustomToolbar>
       </AppBar>
@@ -306,17 +361,10 @@ export default function NavMenu() {
               : setShowFavoritesMenu(true)
           }
         >
-          {products.map((product) => {
+          {products.map((product, index) => {
             return (
-              <Box sx={{ display: "flex" }} spacing={2}>
-                <ListItemButton
-                  sx={{
-                    backgroundColor: theme.palette.dropdown.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.onHoverButtonColor.main,
-                    },
-                  }}
-                >
+              <Box sx={{ display: "flex" }}  key={index} spacing={2}>
+                <DropDownMenuListItemButton>
                   <ListItemAvatar>
                     <Avatar>
                       <Image />
@@ -326,36 +374,13 @@ export default function NavMenu() {
                     primary={product.name}
                     secondary={`Price: ${product.price}`}
                   />
-                </ListItemButton>
-
-                <IconButton
-                  sx={{
-                    paddingLeft: theme.spacing(2.5),
-                    paddingRight: theme.spacing(2.5),
-                    color: theme.palette.success.main,
-                    justifyContent: "center",
-                    backgroundColor: theme.palette.dropdown.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.onHoverButtonColor.main,
-                    },
-                  }}
-                >
+                </DropDownMenuListItemButton>
+                <StyledIconButton sx={{ color: theme.palette.success.main }}>
                   <AddShoppingCart sx={{ fontSize: "30px" }} />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    paddingLeft: theme.spacing(2.5),
-                    paddingRight: theme.spacing(2.5),
-                    color: theme.palette.error.main,
-                    justifyContent: "center",
-                    backgroundColor: theme.palette.dropdown.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.onHoverButtonColor.main,
-                    },
-                  }}
-                >
+                </StyledIconButton>
+                <StyledIconButton sx={{ color: theme.palette.error.main }}>
                   <Delete sx={{ fontSize: "30px" }} />
-                </IconButton>
+                </StyledIconButton>
               </Box>
             );
           })}
@@ -371,94 +396,56 @@ export default function NavMenu() {
         >
           <List>
             <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  backgroundColor: theme.palette.dropdown.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.onHoverButtonColor.main,
-                  },
-                }}
-              >
+              <Container>
+                <UserNameText component="h4" >
+                  VASIL DIMITROV
+                </UserNameText>
+              </Container>
+            </ListItem>
+            <Divider/>
+            <ListItem disablePadding>
+              <DropDownMenuListItemButton>
                 <AccountCircle />
                 <UserMenuListItem primary="My Account" />
-              </ListItemButton>
+              </DropDownMenuListItemButton>
             </ListItem>
             <Divider />
             <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  backgroundColor: theme.palette.dropdown.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.onHoverButtonColor.main,
-                  },
-                }}
-              >
+              <DropDownMenuListItemButton>
                 <ShoppingCartCheckout />
                 <UserMenuListItem primary="My Orders" />
-              </ListItemButton>
+              </DropDownMenuListItemButton>
             </ListItem>
             <Divider />
             <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  backgroundColor: theme.palette.dropdown.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.onHoverButtonColor.main,
-                  },
-                }}
-              >
+              <DropDownMenuListItemButton>
                 <Reviews />
                 <UserMenuListItem primary="My Reviews" />
-              </ListItemButton>
+              </DropDownMenuListItemButton>
             </ListItem>
             <Divider />
             <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  backgroundColor: theme.palette.dropdown.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.onHoverButtonColor.main,
-                  },
-                }}
-              >
+              <DropDownMenuListItemButton>
                 <Favorite />
                 <UserMenuListItem primary="Favorites" />
-              </ListItemButton>
+              </DropDownMenuListItemButton>
             </ListItem>
             <Divider />
             <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  backgroundColor: theme.palette.dropdown.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.onHoverButtonColor.main,
-                  },
-                }}
-              >
+              <DropDownMenuListItemButton>
                 <Logout />
                 <UserMenuListItem primary="Logout" />
-              </ListItemButton>
+              </DropDownMenuListItemButton>
             </ListItem>
           </List>
         </UserMenu>
       </Slide>
 
-      <Slide in={showMobileMenu} direction="down" timeout={500}>
-        <Box
-          sx={{
-            width: "95%",
-            display: "block",
-            margin: "auto",
-            position: "absolute",
-            zIndex: 3,
-            left: "3%",
-            top: theme.spacing(6),
-            boxShadow: theme.palette.dropdown.boxShadow,
-          }}
-        >
-          <CategoriesHomeList />
-        </Box>
-      </Slide>
+      <Fade in={showMobileMenu} timeout={500}>
+        <MobileMenuWrapper>
+          <CategoriesHomeList categories={props.categories} />
+        </MobileMenuWrapper>
+      </Fade>
     </div>
   );
 }

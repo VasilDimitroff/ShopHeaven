@@ -1,12 +1,4 @@
-import {
-  Paper,
-  Button,
-  Box,
-  Container,
-  Typography,
-  Slide,
-  Fade,
-} from "@mui/material";
+import { Paper, Box, Container,Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
 
@@ -17,19 +9,13 @@ function CarouselItem(props) {
     height: 765,
 
     [theme.breakpoints.down("md")]: {
-      height: 400,
+      height: 300,
     },
-  });
-
-  const SliderButton = styled(Button)({
-    marginBottom: theme.spacing(3),
-    marginTop: theme.spacing(2),
   });
 
   return (
     <Paper sx={{ position: "relative" }}>
       <SliderImage src={props.item.image} />
-      <Slide in={true} direction="up" timeout={600}>
         <Box
           sx={{
             width: "100%",
@@ -59,6 +45,7 @@ function CarouselItem(props) {
             <Typography
               sx={{
                 marginTop: theme.spacing(1),
+                paddingBottom: theme.spacing(6),
                 [theme.breakpoints.down("md")]: {
                   fontSize: "12px",
                 },
@@ -68,14 +55,11 @@ function CarouselItem(props) {
                 ? `${props.item.description.slice(0, 200)}...`
                 : `${props.item.description.slice(0, 200)}`}
             </Typography>
-            <SliderButton variant="contained" color="secondary" size="large">
-              <Typography>Check it out!</Typography>
-            </SliderButton>
+            
           </Container>
         </Box>
-      </Slide>
     </Paper>
   );
 }
-//<div sx={{position: "absolute", zIndex:"100", top: "0px", backgroundColor: "black", height: "300px", marginTop: "400px"}}>{props.item.description}</div>
+
 export default CarouselItem;

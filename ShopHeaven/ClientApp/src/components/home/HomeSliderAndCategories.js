@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Box, Grid, Slide } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import HomeCarousel from "../home-carousel/HomeCarousel";
+import HomeCarousel from "./HomeCarousel";
 import CategoriesHomeList from "./CategoriesHomeList";
-import { Category } from "@mui/icons-material";
 import { theme } from "../../theme";
 
-export default function HomeSliderAndCategories() {
+export default function HomeSliderAndCategories(props) {
   return (
     <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
       <Grid
@@ -18,12 +16,13 @@ export default function HomeSliderAndCategories() {
             width: "95%",
           },
           margin: "auto",
-          marginTop: theme.spacing(8),
+          paddingTop: theme.spacing(8),
           display: "flex",
           justifyContent: "space-between",
         }}
       >
         <Grid
+          item
           xs={12}
           md={4}
           lg={3}
@@ -33,22 +32,22 @@ export default function HomeSliderAndCategories() {
             },
           }}
         >
-          <Box>
-            <CategoriesHomeList />
+          <Box sx={{ marginTop: theme.spacing(2) }}>
+            <CategoriesHomeList categories={props.categories} />
           </Box>
         </Grid>
-        <Grid xs={12} md={8} lg={9}>
+        <Grid item xs={12} md={8} lg={9}>
           <Box
             sx={{
               display: "block",
               [theme.breakpoints.up("md")]: {
-                /* marginLeft: theme.spacing(2.5), */
+                 marginLeft: theme.spacing(-2),
               },
               width: "100%",
-              marginTop: theme.spacing(1),
+              marginTop: theme.spacing(3),
             }}
           >
-            <HomeCarousel />
+            <HomeCarousel items={props.items}/>
           </Box>
         </Grid>
       </Grid>

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material';
 
-export const theme = createTheme({
+export const theme  = createTheme({
     palette: {
         primary: {
             main: "#4083e2",
@@ -23,10 +23,12 @@ export const theme = createTheme({
         appBackground: {
             main: "#f2f2f7",
         },
+        white: {
+            main: "#ffffff",
+        },
         onHoverButtonColor: {
             main: "#d7edfd",
-        },
-        
+        },        
     },
     shape: {
         borderRadius: "7px",
