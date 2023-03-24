@@ -192,6 +192,7 @@ export default function CategoriesHomeList(props) {
                         marginLeft: theme.spacing(2),
                         width: "100%",
                         fontSize: "18px",
+                        fontWeight: "500",
                         "&:hover": {
                           color: theme.palette.primary.main,
                         },

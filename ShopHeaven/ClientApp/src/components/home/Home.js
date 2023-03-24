@@ -80,7 +80,7 @@ let products = [
 
 const categories = [
   {
-    name: "Category 1 ",
+    name: "Phones, Laptops and Tablets",
     id: "1",
     subcategories: [
       "Category 1, Subcategory 1",
@@ -101,7 +101,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 2",
+    name: "Computers and periphery",
     id: "2",
     subcategories: [
       "Category 2, Subcategory 1",
@@ -117,7 +117,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 3",
+    name: "TV, Audio and Photo",
     id: "3",
     subcategories: [
       "Category 3, Subcategory 1",
@@ -133,7 +133,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 4",
+    name: "Gaming",
     id: "4",
     subcategories: [
       "Category 4, Subcategory 1",
@@ -149,7 +149,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 5",
+    name: "Big electrical tools",
     id: "5",
     subcategories: [
       "Category 5, Subcategory 1",
@@ -165,7 +165,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 6",
+    name: "Small electrical tools",
     id: "6",
     subcategories: [
       "Category 6, Subcategory 1",
@@ -181,7 +181,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 7",
+    name: "Fashion",
     id: "7",
     subcategories: [
       "Category 7, Subcategory 1",
@@ -197,7 +197,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 8",
+    name: "Health and beauty",
     id: "8",
     subcategories: [
       "Category 8, Subcategory 1",
@@ -213,7 +213,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 9 is unreal category",
+    name: "Home, garden and petshop",
     id: "9",
     subcategories: [
       "Category 9, Subcategory 1 is the best subcategory",
@@ -229,7 +229,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 10",
+    name: "Toys and kids",
     id: "10",
     subcategories: [
       "Category 10, Subcategory 1",
@@ -245,7 +245,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 11",
+    name: "Sport and free time",
     id: "11",
     subcategories: [
       "Category 11, Subcategory 1",
@@ -261,7 +261,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 12",
+    name: "Auto",
     id: "12",
     subcategories: [
       "Category 12, Subcategory 1",
@@ -277,7 +277,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 13",
+    name: "Books",
     id: "13",
     subcategories: [
       "Category 13, Subcategory 1",
@@ -293,7 +293,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 14",
+    name: "Office",
     id: "14",
     subcategories: [
       "Category 14, Subcategory 1",
@@ -309,7 +309,7 @@ const categories = [
     ],
   },
   {
-    name: "Category 15",
+    name: "Foods",
     id: "15",
     subcategories: [
       "Category 15, Subcategory 1",
@@ -353,7 +353,7 @@ export default function Home() {
         heightSm={180}
         image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
       />
-      <SubscribeForm height={220} infoText="Subscribe for out newsletter for all interesting products"/>
+      <SubscribeForm height={200} heightSm={240} infoText="Subscribe to our newsletter for all interesting products"/>
     </div>
   );
 }

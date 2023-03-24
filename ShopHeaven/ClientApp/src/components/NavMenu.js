@@ -275,12 +275,12 @@ export default function NavMenu(props) {
                     : HideAllMenusExcept(setShowMobileMenu)
                 }>
               <Menu
-                sx={{ fontSize: "35px", color: "white" }}
+                sx={{ fontSize: "35px", color: theme.palette.white.main }}
                
               />
             </MenuIcon>
             <CloseIcon  onClick={() => setShowMobileMenu(!showMobileMenu)}>
-              <Close sx={{ fontSize: "35px", color: "white" }}/>
+              <Close sx={{ fontSize: "35px", color: theme.palette.white.main }}/>
             </CloseIcon>
             <BigLogoImage src={LogoBig} />
             <SmallLogoImage src={LogoSmall} />
