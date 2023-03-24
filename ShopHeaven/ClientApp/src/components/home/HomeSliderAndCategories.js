@@ -41,7 +41,7 @@ export default function HomeSliderAndCategories(props) {
             sx={{
               display: "block",
               [theme.breakpoints.up("md")]: {
-                /* marginLeft: theme.spacing(2.5), */
+                 marginLeft: theme.spacing(-2),
               },
               width: "100%",
               marginTop: theme.spacing(3),

@@ -63,6 +63,7 @@ function SubscribeForm(props) {
     backgroundColor: "rgba(255, 255, 255, 0.4)",
     borderTopRightRadius: theme.shape.borderRadius,
     borderTopLeftRadius: theme.shape.borderRadius,
+    width: "100%"
   });
 
   const FormWrapper = styled(Box)({
@@ -70,7 +71,7 @@ function SubscribeForm(props) {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+    gap: 20,
     [theme.breakpoints.down("md")]: {
       display: "block",
       width: "100%",
@@ -89,11 +90,11 @@ function SubscribeForm(props) {
   });
 
   const SubscribeButton = styled(Button)({
-    width: "80%",
+    width: "100%",
     display: "block",
     margin: "auto",
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
+    paddingTop: theme.spacing(1.75),
+    paddingBottom: theme.spacing(1.75),
   });
 
   return (
@@ -106,10 +107,9 @@ function SubscribeForm(props) {
           <Overlay>
             <Info>{props.infoText}</Info>
             <FormHolder>
-              <FormWrapper variant="filled">
+              <FormWrapper variant="filled" >
                 <InputBox>
                   <StyledTextField
-                    sx={{ fontSize: "34px" }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -132,7 +132,6 @@ function SubscribeForm(props) {
                 </InputBox>
                 <InputBox>
                   <StyledTextField
-                    sx={{ fontSize: "34px" }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
