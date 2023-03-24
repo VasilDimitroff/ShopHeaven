@@ -48,13 +48,15 @@ function ProductCarouselSlide(props, cardsPerSlide) {
           }}
         >
           {Array.from(props.products.slice(0, props.cardsPerSlide)).map(
-            (product) => (
+            (product, index) => (
               <Grid
+                item 
                 xs={1}
                 sm={2}
                 md={2}
                 lg={2}
                 xl={2}
+                key={index}
                 sx={{ display: "block" }}
               >
                 <StyledProductCarouselCard product={product} />

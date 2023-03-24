@@ -22,6 +22,7 @@ export default function HomeSliderAndCategories(props) {
         }}
       >
         <Grid
+          item
           xs={12}
           md={4}
           lg={3}
@@ -35,7 +36,7 @@ export default function HomeSliderAndCategories(props) {
             <CategoriesHomeList categories={props.categories} />
           </Box>
         </Grid>
-        <Grid xs={12} md={8} lg={9}>
+        <Grid item xs={12} md={8} lg={9}>
           <Box
             sx={{
               display: "block",

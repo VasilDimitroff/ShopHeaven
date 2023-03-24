@@ -93,6 +93,11 @@ const categories = [
       "Category 1, Subcategory 8",
       "Category 1, Subcategory 9",
       "Category 1, Subcategory 10",
+      "Category 1, Subcategory 11",
+      "Category 1, Subcategory 12",
+      "Category 1, Subcategory 13",
+      "Category 1, Subcategory 14",
+      "Category 1, Subcategory 15",
     ],
   },
   {

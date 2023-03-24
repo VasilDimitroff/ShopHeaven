@@ -47,8 +47,8 @@ function HomeCarousel(props) {
           },
         }}
       >
-        {props.items.map((item) => (
-          <CarouselItem item={item} />
+        {props.items.map((item, index) => (
+          <CarouselItem item={item} key={index} />
         ))}
       </Carousel>
     </Box>

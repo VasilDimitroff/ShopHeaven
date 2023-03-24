@@ -269,21 +269,18 @@ export default function NavMenu(props) {
               alignItems: "center",
             }}
           >
-            <MenuIcon>
-              <Menu
-                sx={{ fontSize: "35px", color: "white" }}
-                onClick={() =>
+            <MenuIcon  onClick={() =>
                   showMobileMenu === true
                     ? setShowMobileMenu(false)
                     : HideAllMenusExcept(setShowMobileMenu)
-                }
+                }>
+              <Menu
+                sx={{ fontSize: "35px", color: "white" }}
+               
               />
             </MenuIcon>
-            <CloseIcon>
-              <Close
-                sx={{ fontSize: "35px", color: "white" }}
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-              />{" "}
+            <CloseIcon  onClick={() => setShowMobileMenu(!showMobileMenu)}>
+              <Close sx={{ fontSize: "35px", color: "white" }}/>
             </CloseIcon>
             <BigLogoImage src={LogoBig} />
             <SmallLogoImage src={LogoSmall} />
@@ -364,9 +361,9 @@ export default function NavMenu(props) {
               : setShowFavoritesMenu(true)
           }
         >
-          {products.map((product) => {
+          {products.map((product, index) => {
             return (
-              <Box sx={{ display: "flex" }} spacing={2}>
+              <Box sx={{ display: "flex" }}  key={index} spacing={2}>
                 <DropDownMenuListItemButton>
                   <ListItemAvatar>
                     <Avatar>

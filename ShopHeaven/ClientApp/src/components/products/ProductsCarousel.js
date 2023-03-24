@@ -89,9 +89,10 @@ function ProductsCarousel(props) {
           },
         }}
       >
-        {ReturnSlidesInfo().map((rowInfo) => {
+        {ReturnSlidesInfo().map((rowInfo, index) => {
           return (
             <ProductCarouselSlide
+              key={index}
               products={props.products.slice(
                 rowInfo.startIndex,
                 rowInfo.startIndex + rowInfo.cardsPerSlide
