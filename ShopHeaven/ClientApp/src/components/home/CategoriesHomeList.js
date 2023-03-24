@@ -21,10 +21,11 @@ import { theme } from "./../../theme";
 
 let subcategories = [];
 let mainCategoryOfSubcategoriesName;
+let categoriesToShow;
+let subCategoriesToShow;
 
 export default function CategoriesHomeList(props) {
   function SetCategoriesToShow() {
-    let categoriesToShow;
 
     const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -41,11 +42,16 @@ export default function CategoriesHomeList(props) {
     const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
 
     if (isSmallerThanSm === true) {
-      return SetCategoriesToShow() + 1;
+      subCategoriesToShow = SetCategoriesToShow() + 1;
     } else {
-      return subcategories.length;
+      subCategoriesToShow = subcategories.length;
     }
+
+    return subCategoriesToShow;
   }
+
+  categoriesToShow = SetCategoriesToShow();
+  subCategoriesToShow = SetCategoriesToShow();
 
   function setSubCategoriesData(mainCategoryId) {
     setShowSubmenu(true);
@@ -65,7 +71,7 @@ export default function CategoriesHomeList(props) {
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1.5),
     backgroundColor: theme.palette.primary.main,
-    display: props.categories.length > SetCategoriesToShow() ? "block" : "none",
+    display: props.categories.length > categoriesToShow ? "block" : "none",
   });
 
   const CategoriesWrapper = styled(Box)(({ theme }) => ({
@@ -174,7 +180,7 @@ export default function CategoriesHomeList(props) {
       <StyledList component="nav" aria-label="mailbox folders">
         <MenuHolder>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-          {props.categories.slice(0, SetCategoriesToShow()).map((category) => {
+          {props.categories.slice(0, categoriesToShow).map((category) => {
             return (
               <div key={category.id}>
                 <Box
@@ -242,7 +248,7 @@ export default function CategoriesHomeList(props) {
               </MainCategoryNameText>
             </MainCategoryName>
             {subcategories
-              .slice(0, SetSubCategoriesToShow())
+              .slice(0, subCategoriesToShow)
               .map((subcategory, index) => {
                 return (
                   <Box key={index}>
@@ -267,7 +273,7 @@ export default function CategoriesHomeList(props) {
                 display: "none",
                 [theme.breakpoints.down("md")]: {
                   display:
-                    subcategories.length > SetSubCategoriesToShow()
+                    subcategories.length > subCategoriesToShow
                       ? "block"
                       : "none",
                 },
