@@ -1,45 +1,57 @@
 import React, { useState } from "react";
-import {Box, List, ListItemText, ListItemButton, Divider, Fade, Button, Typography, useMediaQuery} from "@mui/material";
+import {
+  Box,
+  List,
+  ListItemText,
+  ListItemButton,
+  Divider,
+  Fade,
+  Button,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Label, RadioButtonChecked, KeyboardArrowRight, ArrowBackIos, } from "@mui/icons-material";
+import {
+  Label,
+  RadioButtonChecked,
+  KeyboardArrowRight,
+  ArrowBackIos,
+} from "@mui/icons-material";
 import { theme } from "./../../theme";
 
 let subcategories = [];
 let mainCategoryOfSubcategoriesName;
 
-
 export default function CategoriesHomeList(props) {
-  
-  function SetCategoriesToShow(){
+  function SetCategoriesToShow() {
     let categoriesToShow;
 
-    const isSmallerThanSm= useMediaQuery(theme.breakpoints.down("sm"));
+    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
 
     if (isSmallerThanSm === true) {
       categoriesToShow = 8;
-    }
-    else{
+    } else {
       categoriesToShow = 12;
     }
 
     return categoriesToShow;
   }
 
-  function SetSubCategoriesToShow(){
-
-    const isSmallerThanSm= useMediaQuery(theme.breakpoints.down("sm"));
+  function SetSubCategoriesToShow() {
+    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
 
     if (isSmallerThanSm === true) {
       return SetCategoriesToShow() + 1;
-    }
-    else{
+    } else {
       return subcategories.length;
     }
   }
 
   function setSubCategoriesData(mainCategoryId) {
     setShowSubmenu(true);
-    let searchedMainCategory = props.categories.find(category => category.id == mainCategoryId);
+    let searchedMainCategory = props.categories.find(
+      (category) => category.id == mainCategoryId
+    );
     subcategories = searchedMainCategory.subcategories;
     mainCategoryOfSubcategoriesName = searchedMainCategory.name;
   }
@@ -142,9 +154,8 @@ export default function CategoriesHomeList(props) {
     marginTop: theme.spacing(-0.5),
     backgroundColor: theme.palette.secondary.main,
     [theme.breakpoints.down("md")]: {
-       display: "none"
+      display: "none",
     },
- 
   });
 
   const MainCategoryNameText = styled(Typography)({
@@ -155,11 +166,8 @@ export default function CategoriesHomeList(props) {
     textAlign: "center",
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
-    marginLeft: theme.spacing(2),
     fontSize: "20px",
   });
-
-
 
   return (
     <CategoriesWrapper>
@@ -169,38 +177,37 @@ export default function CategoriesHomeList(props) {
           {props.categories.slice(0, SetCategoriesToShow()).map((category) => {
             return (
               <div key={category.id}>
-              <Box
-                sx={{ display: "flex" }}
-                onMouseLeave={() => setShowSubmenu(!showSubmenu)}
-              >
-               
-                <CategoryItem 
-                  sx={{ backgroundColor: "white", display: "flex" }}
-                > 
-                  <RadioButtonChecked
-                    onMouseEnter={() => setSubCategoriesData(category.id)}
-                  />
-                  <Typography
-                    sx={{
-                      marginLeft: theme.spacing(2),
-                      width: "100%",
-                      fontSize: "18px",
-                      "&:hover": {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
-                    onMouseEnter={() => setSubCategoriesData(category.id)}
+                <Box
+                  sx={{ display: "flex" }}
+                  onMouseLeave={() => setShowSubmenu(!showSubmenu)}
+                >
+                  <CategoryItem
+                    sx={{ backgroundColor: "white", display: "flex" }}
                   >
-                    {category.name}
-                  </Typography>
-                  <KeyboardArrowRight
-                    onClick={() => setSubCategoriesData(category.id)}
-                  />
-                 
-                </CategoryItem>
-                
-                <Divider />
-              </Box></div>
+                    <RadioButtonChecked
+                      onMouseEnter={() => setSubCategoriesData(category.id)}
+                    />
+                    <Typography
+                      sx={{
+                        marginLeft: theme.spacing(2),
+                        width: "100%",
+                        fontSize: "18px",
+                        "&:hover": {
+                          color: theme.palette.primary.main,
+                        },
+                      }}
+                      onMouseEnter={() => setSubCategoriesData(category.id)}
+                    >
+                      {category.name}
+                    </Typography>
+                    <KeyboardArrowRight
+                      onClick={() => setSubCategoriesData(category.id)}
+                    />
+                  </CategoryItem>
+
+                  <Divider />
+                </Box>
+              </div>
             );
           })}
 
@@ -214,48 +221,59 @@ export default function CategoriesHomeList(props) {
             <SubcategoriesHeading>
               <CategoryItem
                 onClick={() => setShowSubmenu(false)}
-                sx={{ backgroundColor: theme.palette.secondary.main, color: "white",
-                "&:hover": {
-                  color: "black",
-                },
+                sx={{
+                  backgroundColor: theme.palette.secondary.main,
+                  color: "white",
+                  "&:hover": {
+                    color: "black",
+                  },
                 }}
               >
                 <ArrowBackIos />
-                <MainCategoryNameText
-                  variant="h5">
+                <MainCategoryNameText variant="h5">
                   {mainCategoryOfSubcategoriesName}
                 </MainCategoryNameText>
               </CategoryItem>
             </SubcategoriesHeading>
             <MainCategoryName>
-                <MainCategoryNameText component="h3" >
-                 {mainCategoryOfSubcategoriesName}
-                </MainCategoryNameText>
+              <MainCategoryNameText component="h3">
+                {mainCategoryOfSubcategoriesName}
+              </MainCategoryNameText>
             </MainCategoryName>
-            {subcategories.slice(0, SetSubCategoriesToShow()).map((subcategory, index) => {
-              return (
-                <Box key={index}>
-                  <CategoryItem>
-                    <Label sx={{ fontSize: "14px" }} />
-                    <Typography
-                      sx={{
-                        marginLeft: theme.spacing(2),
-                        fontSize: "16px",
-                      }}
-                    >
-                      {subcategory}
-                    </Typography>
-                  </CategoryItem>
-                  <Divider />
-                </Box>
-              );
-            })}
-            <ViewAllButton variant="contained" sx={{
-               display: "none",
-               [theme.breakpoints.down("md")]: {
-                display:  subcategories.length > SetSubCategoriesToShow() ? "block" : "none"
-              },
-            }}>VIEW ALL SUBCATEGORIES</ViewAllButton>
+            {subcategories
+              .slice(0, SetSubCategoriesToShow())
+              .map((subcategory, index) => {
+                return (
+                  <Box key={index}>
+                    <CategoryItem>
+                      <Label sx={{ fontSize: "14px" }} />
+                      <Typography
+                        sx={{
+                          marginLeft: theme.spacing(2),
+                          fontSize: "16px",
+                        }}
+                      >
+                        {subcategory}
+                      </Typography>
+                    </CategoryItem>
+                    <Divider />
+                  </Box>
+                );
+              })}
+            <ViewAllButton
+              variant="contained"
+              sx={{
+                display: "none",
+                [theme.breakpoints.down("md")]: {
+                  display:
+                    subcategories.length > SetSubCategoriesToShow()
+                      ? "block"
+                      : "none",
+                },
+              }}
+            >
+              VIEW ALL SUBCATEGORIES
+            </ViewAllButton>
           </Submenu>
         </Fade>
       </StyledList>

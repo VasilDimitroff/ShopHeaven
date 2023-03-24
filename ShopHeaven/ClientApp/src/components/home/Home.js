@@ -5,7 +5,9 @@ import HomeSliderAndCategories from "./HomeSliderAndCategories";
 import NavMenu from "../NavMenu";
 import ProductsCarouselLine from "../products/ProductsCarouselLine";
 import FullWidthBanner from "../banners/FullWidthBanner";
-import {Box } from "@mui/material";
+import FullWidthBannerWithOverlay from "../banners/FullWidthBannerWithOverlay";
+import SubscribeForm from "../forms/SubscribeForm";
+import { Box } from "@mui/material";
 
 let products = [
   {
@@ -75,8 +77,6 @@ let products = [
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
   },
 ];
-
-
 
 const categories = [
   {
@@ -329,12 +329,31 @@ const categories = [
 export default function Home() {
   return (
     <div>
-      <NavMenu categories={categories}/>
-      <HomeSliderAndCategories items={products} categories={categories}/>
-      <ProductsCarouselLine products={products} headingName="Promotions"/>
-      <ProductsCarouselLine products={products.reverse()} headingName="Similar to {subcategoryName} (You may also like)"/>
-      <ProductsCarouselLine products={products} headingName="Frequently Purchased"/>
-      <FullWidthBanner paddingTop={theme.spacing(3.5)} height={250} heightSm={180} image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"/>
+      <NavMenu categories={categories} />
+      <HomeSliderAndCategories items={products} categories={categories} />
+      <ProductsCarouselLine products={products} headingName="Promotions" />
+      <ProductsCarouselLine
+        products={products.reverse()}
+        headingName="Similar to {subcategoryName} (You may also like)"
+      />
+      <ProductsCarouselLine
+        products={products}
+        headingName="Frequently Purchased"
+      />
+      <FullWidthBannerWithOverlay
+        infoText="You haven't account yet? Create a new one now or login"
+        hoverOverlay={false}
+        buttonsTexts={["Login", "Register"]}
+        height={150}
+        paddingTop={theme.spacing(3.5)}
+      />
+      <FullWidthBanner
+        paddingTop={theme.spacing(3.5)}
+        height={250}
+        heightSm={180}
+        image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
+      />
+      <SubscribeForm height={250} infoText="Subscribe for out newsletter for all interesting products"/>
     </div>
   );
 }

@@ -23,6 +23,9 @@ export const theme  = createTheme({
         appBackground: {
             main: "#f2f2f7",
         },
+        white: {
+            main: "#ffffff",
+        },
         onHoverButtonColor: {
             main: "#d7edfd",
         },        
