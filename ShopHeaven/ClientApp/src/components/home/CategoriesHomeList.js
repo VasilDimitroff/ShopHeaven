@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  Box,
-  List,
-  ListItemText,
-  ListItemButton,
-  Divider,
-  Fade,
-  Button,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, List, ListItemText, ListItemButton, Divider, Fade, Button,Typography, } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import {
   Label,
@@ -21,42 +12,16 @@ import { theme } from "./../../theme";
 
 let subcategories = [];
 let mainCategoryOfSubcategoriesName;
-let categoriesToShow;
-let subCategoriesToShow;
 
 export default function CategoriesHomeList(props) {
-  function SetCategoriesToShow() {
-
-    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
-
-    if (isSmallerThanSm === true) {
-      categoriesToShow = 8;
-    } else {
-      categoriesToShow = 12;
-    }
-
-    return categoriesToShow;
-  }
-
-  function SetSubCategoriesToShow() {
-    const isSmallerThanSm = useMediaQuery(theme.breakpoints.down("sm"));
-
-    if (isSmallerThanSm === true) {
-      subCategoriesToShow = SetCategoriesToShow() + 1;
-    } else {
-      subCategoriesToShow = subcategories.length;
-    }
-
-    return subCategoriesToShow;
-  }
-
-  categoriesToShow = SetCategoriesToShow();
-  subCategoriesToShow = SetSubCategoriesToShow();
+  
+  let categoriesToShow = useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 12;
+  let subCategoriesToShow = useMediaQuery(theme.breakpoints.down("sm")) === true ? categoriesToShow + 1 : subcategories.length;
 
   function setSubCategoriesData(mainCategoryId) {
     setShowSubmenu(true);
     let searchedMainCategory = props.categories.find(
-      (category) => category.id == mainCategoryId
+      (category) => category.id === mainCategoryId
     );
     subcategories = searchedMainCategory.subcategories;
     mainCategoryOfSubcategoriesName = searchedMainCategory.name;

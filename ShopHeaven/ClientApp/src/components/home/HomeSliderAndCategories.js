@@ -9,7 +9,6 @@ export default function HomeSliderAndCategories(props) {
     <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
       <Grid
         container
-        spacing={2}
         sx={{
           width: "80%",
           [theme.breakpoints.down("md")]: {
@@ -41,7 +40,7 @@ export default function HomeSliderAndCategories(props) {
             sx={{
               display: "block",
               [theme.breakpoints.up("md")]: {
-                 marginLeft: theme.spacing(-2),
+                 //marginLeft: theme.spacing(-2),
               },
               width: "100%",
               marginTop: theme.spacing(3),
