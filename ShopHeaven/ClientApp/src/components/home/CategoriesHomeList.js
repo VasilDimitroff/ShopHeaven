@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import { Box, List, ListItemText, ListItemButton, Divider, Fade, Button,Typography, } from "@mui/material";
+import { Box, List, ListItemText, ListItemButton, Divider, Fade, Button,Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import {
-  Label,
-  RadioButtonChecked,
-  KeyboardArrowRight,
-  ArrowBackIos,
-} from "@mui/icons-material";
+import {Label,RadioButtonChecked, KeyboardArrowRight, ArrowBackIos } from "@mui/icons-material";
 import { theme } from "./../../theme";
 
 let subcategories = [];
@@ -17,17 +12,20 @@ export default function CategoriesHomeList(props) {
   
   let categoriesToShow = useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 12;
   let subCategoriesToShow = useMediaQuery(theme.breakpoints.down("sm")) === true ? categoriesToShow + 1 : subcategories.length;
+  const [showSubmenu, setShowSubmenu] = useState(false);
+  
+  function handleShowSubmenu(value) {
+    setShowSubmenu(value);
+  } 
 
   function setSubCategoriesData(mainCategoryId) {
-    setShowSubmenu(true);
+   handleShowSubmenu(true);
     let searchedMainCategory = props.categories.find(
       (category) => category.id === mainCategoryId
     );
     subcategories = searchedMainCategory.subcategories;
     mainCategoryOfSubcategoriesName = searchedMainCategory.name;
   }
-
-  const [showSubmenu, setShowSubmenu] = useState(false);
 
   const ViewAllButton = styled(Button)({
     width: "90%",
@@ -140,10 +138,6 @@ export default function CategoriesHomeList(props) {
     fontSize: "20px",
   });
 
-  function handleShowSubmenu(value) {
-    setShowSubmenu(value);
-  } 
-
   return (
     <CategoriesWrapper>
       <StyledList component="nav" aria-label="mailbox folders">
@@ -152,15 +146,20 @@ export default function CategoriesHomeList(props) {
           {props.categories.slice(0, categoriesToShow).map((category) => {
             return (
               <div key={category.id}>
+                <Divider />
+                <Divider />
                 <Box
                   sx={{ display: "flex" }}
                   onMouseLeave={() => handleShowSubmenu(!showSubmenu)}
+                  onClick={() => setSubCategoriesData(category.id)}
+                  
                 >
                   <CategoryItem
                     sx={{ backgroundColor: "white", display: "flex" }}
                   >
                     <RadioButtonChecked
                       onMouseEnter={() => setSubCategoriesData(category.id)}
+                      onMouseLeave={() => handleShowSubmenu(!showSubmenu)}
                     />
                     <Typography
                       sx={{
@@ -181,7 +180,7 @@ export default function CategoriesHomeList(props) {
                     />
                   </CategoryItem>
 
-                  <Divider />
+                  
                 </Box>
               </div>
             );
