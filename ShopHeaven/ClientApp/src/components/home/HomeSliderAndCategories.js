@@ -23,8 +23,9 @@ export default function HomeSliderAndCategories(props) {
         <Grid
           item
           xs={12}
-          md={4}
-          lg={3}
+          md={5}
+          lg={5}
+          xl={3}
           sx={{
             [theme.breakpoints.down("md")]: {
               display: "none",
@@ -35,12 +36,12 @@ export default function HomeSliderAndCategories(props) {
             <CategoriesHomeList categories={props.categories} />
           </Box>
         </Grid>
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid item xs={12} md={7} lg={7} xl={9}>
           <Box
             sx={{
               display: "block",
               [theme.breakpoints.up("md")]: {
-                 //marginLeft: theme.spacing(-2),
+                 marginLeft: theme.spacing(0),
               },
               width: "100%",
               marginTop: theme.spacing(3),
