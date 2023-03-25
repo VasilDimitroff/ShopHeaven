@@ -97,7 +97,6 @@ function ProductsCarousel(props) {
                 rowInfo.startIndex,
                 rowInfo.startIndex + rowInfo.cardsPerSlide
               )}
-              cardsPerSlide={rowInfo.cardsPerSlide}
             />
           );
         })}

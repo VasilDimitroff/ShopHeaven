@@ -333,7 +333,7 @@ export default function Home() {
       <HomeSliderAndCategories items={products} categories={categories} />
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
-        products={products.reverse()}
+        products={products}
         headingName="Similar to {subcategoryName} (You may also like)"
       />
       <ProductsCarouselLine

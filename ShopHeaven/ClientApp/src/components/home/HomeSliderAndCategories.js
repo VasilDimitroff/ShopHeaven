@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Grid, Slide } from "@mui/material";
+import React from "react";
+import { Box, Grid } from "@mui/material";
 import HomeCarousel from "./HomeCarousel";
 import CategoriesHomeList from "./CategoriesHomeList";
 import { theme } from "../../theme";

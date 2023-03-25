@@ -140,6 +140,10 @@ export default function CategoriesHomeList(props) {
     fontSize: "20px",
   });
 
+  function handleShowSubmenu(value) {
+    setShowSubmenu(value);
+  } 
+
   return (
     <CategoriesWrapper>
       <StyledList component="nav" aria-label="mailbox folders">
@@ -150,7 +154,7 @@ export default function CategoriesHomeList(props) {
               <div key={category.id}>
                 <Box
                   sx={{ display: "flex" }}
-                  onMouseLeave={() => setShowSubmenu(!showSubmenu)}
+                  onMouseLeave={() => handleShowSubmenu(!showSubmenu)}
                 >
                   <CategoryItem
                     sx={{ backgroundColor: "white", display: "flex" }}
@@ -187,12 +191,12 @@ export default function CategoriesHomeList(props) {
         </MenuHolder>
         <Fade in={showSubmenu} timeout={400}>
           <Submenu
-            onMouseEnter={() => setShowSubmenu(true)}
-            onMouseLeave={() => setShowSubmenu(false)}
+            onMouseEnter={() => handleShowSubmenu(true)}
+            onMouseLeave={() => handleShowSubmenu(false)}
           >
             <SubcategoriesHeading>
               <CategoryItem
-                onClick={() => setShowSubmenu(false)}
+                onClick={() => handleShowSubmenu(false)}
                 sx={{
                   backgroundColor: theme.palette.secondary.main,
                   color: "white",

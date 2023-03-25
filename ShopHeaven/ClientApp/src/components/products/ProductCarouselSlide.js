@@ -1,31 +1,9 @@
-import {
-  Paper,
-  Button,
-  Box,
-  Container,
-  Typography,
-  Slide,
-  Grid,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ProductCarouselCard from "./ProductCarouselCard";
 
-function ProductCarouselSlide(props, cardsPerSlide) {
-  const SliderImage = styled("img")({
-    width: "100%",
-    objectFit: "cover",
-    height: 765,
-
-    [theme.breakpoints.down("md")]: {
-      height: 400,
-    },
-  });
+function ProductCarouselSlide(props) {
 
   const StyledProductCarouselCard = styled(ProductCarouselCard)({});
 

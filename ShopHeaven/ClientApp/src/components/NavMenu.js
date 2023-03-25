@@ -39,16 +39,30 @@ import {
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import { display } from "@mui/system";
-import ProductMenuListItem from "./ProductMenuListItem";
 import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
 export default function NavMenu(props) {
-  const [open, setOpen] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
-  const [deleteFromCart, setDeleteFromCart] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  function handleShowMobileMenu(value) {
+    setShowMobileMenu(value);
+  }
+
+  function handleShowFavoritesMenu(value) {
+    setShowFavoritesMenu(value);
+  }
+  
+  function handleShowSearchBar(value) {
+    setShowSearchBar(value);
+  }
+
+  function handleShowUserMenu(value) {
+    setShowUserMenu(value);
+  }
 
   const products = [
     {
@@ -71,9 +85,9 @@ export default function NavMenu(props) {
 
   function HideAllMenusExcept(setterFuncToShowMenu) {
     let useStatesSetterNames = [
-      setShowUserMenu,
-      setShowFavoritesMenu,
-      setShowMobileMenu,
+      handleShowUserMenu,
+      handleShowFavoritesMenu,
+      handleShowMobileMenu,
     ];
 
     for (let i = 0; i < useStatesSetterNames.length; i++) {
@@ -114,7 +128,7 @@ export default function NavMenu(props) {
     borderRadius: theme.shape.borderRadius,
     width: "100%",
     [theme.breakpoints.down("md")]: {
-      display: open === true ? "flex" : "none",
+      display: showSearchBar === true ? "flex" : "none",
     },
   });
 
@@ -174,7 +188,7 @@ export default function NavMenu(props) {
 
   const IconsArea = styled("div")({
     alignItems: "center",
-    display: open === true ? "none" : "flex",
+    display: showSearchBar === true ? "none" : "flex",
   });
 
   const UserMenuListItem = styled(ListItemText)({
@@ -271,15 +285,15 @@ export default function NavMenu(props) {
           >
             <MenuIcon  onClick={() =>
                   showMobileMenu === true
-                    ? setShowMobileMenu(false)
-                    : HideAllMenusExcept(setShowMobileMenu)
+                    ? handleShowMobileMenu(false)
+                    : HideAllMenusExcept(handleShowMobileMenu)
                 }>
               <Menu
                 sx={{ fontSize: "35px", color: theme.palette.white.main }}
                
               />
             </MenuIcon>
-            <CloseIcon  onClick={() => setShowMobileMenu(!showMobileMenu)}>
+            <CloseIcon  onClick={() => handleShowMobileMenu(!showMobileMenu)}>
               <Close sx={{ fontSize: "35px", color: theme.palette.white.main }}/>
             </CloseIcon>
             <BigLogoImage src={LogoBig} />
@@ -296,19 +310,19 @@ export default function NavMenu(props) {
             <CustomSearchInput placeholder="Search..." />
             <CustomCancel
               sx={{ fontSize: "30px" }}
-              onClick={() => setOpen(false)}
+              onClick={() => handleShowSearchBar(false)}
             />
           </CustomSearchField>
 
           <IconsArea>
-            <CustomSearchButton onClick={() => setOpen(true)} />
+            <CustomSearchButton onClick={() => handleShowSearchBar(true)} />
             <CustomBadge
               badgeContent={1}
               color="secondary"
               onClick={() =>
                 showFavoritesMenu === true
-                  ? setShowFavoritesMenu(false)
-                  : HideAllMenusExcept(setShowFavoritesMenu)
+                  ? handleShowFavoritesMenu(false)
+                  : HideAllMenusExcept(handleShowFavoritesMenu)
               }
               sx={{
                 cursor: "pointer",
@@ -338,8 +352,8 @@ export default function NavMenu(props) {
               color="secondary"
               onClick={() =>
                 showUserMenu === true
-                  ? setShowUserMenu(false)
-                  : HideAllMenusExcept(setShowUserMenu)
+                  ? handleShowUserMenu(false)
+                  : HideAllMenusExcept(handleShowUserMenu)
               }
               sx={{ cursor: "pointer" }}
             >
@@ -357,8 +371,8 @@ export default function NavMenu(props) {
         <FavoritesList
           onMouseLeave={() =>
             showFavoritesMenu === true
-              ? setShowFavoritesMenu(false)
-              : setShowFavoritesMenu(true)
+              ? handleShowFavoritesMenu(false)
+              : handleShowFavoritesMenu(true)
           }
         >
           {products.map((product, index) => {
@@ -390,8 +404,8 @@ export default function NavMenu(props) {
         <UserMenu
           onMouseLeave={() =>
             showUserMenu === true
-              ? setShowUserMenu(false)
-              : setShowUserMenu(true)
+              ? handleShowUserMenu(false)
+              : handleShowUserMenu(true)
           }
         >
           <List>
