@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, List, ListItemText, ListItemButton, Divider, Fade, Button,Typography, ListItem } from "@mui/material";
+import { Box, List, ListItemText, ListItemButton, Divider, Fade, Button,Typography, ListItem, Zoom, Tooltip } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import {Label,RadioButtonChecked, KeyboardArrowRight, ArrowBackIos } from "@mui/icons-material";
@@ -211,16 +211,16 @@ export default function CategoriesHomeList(props) {
           {props.categories.slice(0, categoriesToShow).map((category) => {
             return (
               <div key={category.id}>
-                <Divider/>
+                
+                <Divider />
+                <Tooltip placement="bottom-end" TransitionComponent={Zoom}  title="Click to view subcategories" arrow>
                 <Box
                   sx={{ display: "flex" }}
                   onClick={() => setSubCategoriesData(category.id, true)}
                   onMouseLeave={() => handleShowSubmenu(false)}
                 >
-                  <CategoryItem
-                  >
-                    <RadioButtonChecked
-                    />
+                  <CategoryItem>
+                    <RadioButtonChecked />
                     <Typography
                       sx={{
                         marginLeft: theme.spacing(2),
@@ -231,10 +231,10 @@ export default function CategoriesHomeList(props) {
                     >
                       {category.name}
                     </Typography>
-                    <KeyboardArrowRight             
-                    />
+                    <KeyboardArrowRight />
                   </CategoryItem>
                 </Box>
+                </Tooltip>
               </div>
             );
           })}
