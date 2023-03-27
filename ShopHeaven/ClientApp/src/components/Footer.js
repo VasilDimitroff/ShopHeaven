@@ -4,9 +4,8 @@ import {
   Typography,
   List,
   ListItem,
-  ListItemText,
   Divider,
-  Link
+  Link,
 } from "@mui/material";
 import {
   LinkedIn,
@@ -39,45 +38,44 @@ export default function Footer(props) {
       width: "95%",
     },
     paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(1),
   });
 
   const BrandFooterWrapper = styled(Box)({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.white.main,
   });
-  
+
   const BrandFooterContent = styled(Box)({
-      display:"block",
-      margin: "auto",
-      width: "80%",
+    display: "block",
+    margin: "auto",
+    width: "80%",
     [theme.breakpoints.down("md")]: {
       width: "95%",
     },
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(0.1),
-    
   });
 
   const SectionHeading = styled(Typography)({
     textTransform: "uppercase",
     fontWeight: "500",
     [theme.breakpoints.down("md")]: {
-        textAlign: "center",
+      textAlign: "center",
     },
   });
 
   const GridContentItem = styled(Grid)({
     [theme.breakpoints.down("md")]: {
-        marginBottom: theme.spacing(2)
+      marginBottom: theme.spacing(2),
     },
   });
 
-  const Logo = styled('img')({
-        width: "15%",
-        [theme.breakpoints.down("md")]: {
-            width: "45%",
-        },
+  const Logo = styled("img")({
+    width: "15%",
+    [theme.breakpoints.down("md")]: {
+      width: "45%",
+    },
   });
 
   const BrandFooterItemHolder = styled(Box)({
@@ -85,20 +83,20 @@ export default function Footer(props) {
     justifyContent: "center",
     marginBottom: theme.spacing(2),
     alignContent: "center",
-});
+  });
 
-const StyledListItem = styled(ListItem)({
+  const StyledListItem = styled(ListItem)({
     display: "flex",
     [theme.breakpoints.down("md")]: {
-        justifyContent:"flex-start",
-        width: "45%",
-        margin: "auto"
+      justifyContent: "flex-start",
+      width: "45%",
+      margin: "auto",
     },
-})
+  });
 
-const StyledLink = styled(Link)({
-    marginLeft: theme.spacing(1.5)
-})
+  const StyledLink = styled(Link)({
+    marginLeft: theme.spacing(1.5),
+  });
 
   return (
     <Box>
@@ -121,19 +119,27 @@ const StyledLink = styled(Link)({
                 <List>
                   <StyledListItem>
                     <AccountCircle />
-                    <StyledLink href="#" underline="hover">Your Account</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Your Account
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <ShoppingCartCheckout />
-                    <StyledLink href="#" underline="hover">Your Orders</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Your Orders
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <Reviews />
-                    <StyledLink href="#" underline="hover">Your Reviews</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Your Reviews
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <ShoppingCart />
-                    <StyledLink href="#" underline="hover">Your Cart</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Your Cart
+                    </StyledLink>
                   </StyledListItem>
                 </List>
               </Box>
@@ -146,19 +152,27 @@ const StyledLink = styled(Link)({
                 <List>
                   <StyledListItem>
                     <Email />
-                    <StyledLink href="#" underline="hover">Contact</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Contact
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <Info />
-                    <StyledLink href="#" underline="hover">About</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      About
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <Campaign />
-                    <StyledLink href="#" underline="hover">Advertising</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Advertising
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <Security />
-                    <StyledLink href="#" underline="hover">Privacy Policy</StyledLink>
+                    <StyledLink href="#" underline="hover">
+                      Privacy Policy
+                    </StyledLink>
                   </StyledListItem>
                 </List>
               </Box>
@@ -171,19 +185,43 @@ const StyledLink = styled(Link)({
                 <List>
                   <StyledListItem>
                     <LinkedIn />
-                    <StyledLink href="https://www.linkedin.com/in/vasil-dimitrov-426abb146/" target="blank" underline="hover">LinkedIn</StyledLink>
+                    <StyledLink
+                      href="https://www.linkedin.com/in/vasil-dimitrov-426abb146/"
+                      target="blank"
+                      underline="hover"
+                    >
+                      LinkedIn
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <GitHub />
-                    <StyledLink href="https://github.com/VasilDimitroff" target="blank" underline="hover">GitHub</StyledLink>
+                    <StyledLink
+                      href="https://github.com/VasilDimitroff"
+                      target="blank"
+                      underline="hover"
+                    >
+                      GitHub
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <Facebook />
-                    <StyledLink href="https://www.facebook.com/vbdimitrov" target="blank" underline="hover">Facebook</StyledLink>
+                    <StyledLink
+                      href="https://www.facebook.com/vbdimitrov"
+                      target="blank"
+                      underline="hover"
+                    >
+                      Facebook
+                    </StyledLink>
                   </StyledListItem>
                   <StyledListItem>
                     <AlternateEmail />
-                    <StyledLink href="mailto: v.b.dimitrow@gmail.com" target="blank" underline="hover">Email</StyledLink>
+                    <StyledLink
+                      href="mailto: v.b.dimitrow@gmail.com"
+                      target="blank"
+                      underline="hover"
+                    >
+                      Email
+                    </StyledLink>
                   </StyledListItem>
                 </List>
               </Box>
@@ -194,14 +232,14 @@ const StyledLink = styled(Link)({
       <Divider />
       <BrandFooterWrapper>
         <BrandFooterContent>
-        <BrandFooterItemHolder >
-            <Logo src={LogoImg}/>
-            </BrandFooterItemHolder>
-            <BrandFooterItemHolder >
+          <BrandFooterItemHolder>
+            <Logo src={LogoImg} />
+          </BrandFooterItemHolder>
+          <BrandFooterItemHolder>
             <Typography>
-                 Copyright © { new Date().getFullYear() } Shop Heaven Inc
+              Copyright © {new Date().getFullYear()} Shop Heaven Inc
             </Typography>
-            </BrandFooterItemHolder>
+          </BrandFooterItemHolder>
         </BrandFooterContent>
       </BrandFooterWrapper>
     </Box>

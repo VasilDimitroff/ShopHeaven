@@ -1,38 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Container } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import {theme} from './theme';
-import NavMenu from './components/NavMenu';
-import Home from './components/home/Home';
-
+import { Route, Routes } from 'react-router-dom';
+import AppRoutes from './AppRoutes';
+import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 
 export default function App() {
-  return (
+  return (  
    <div>
-      <Home/>
+     <Routes>
+        {AppRoutes.map((route, index) => {
+            const { element, requireAuth, ...rest } = route;
+            return <Route key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
+          }) }
+      </Routes>
    </div>
   );
 };
-
-
-
-/*
-const CustomButton = styled(Button)({
-  color: "white",
-  backgroundColor: theme.palette.primary.main,
-});
-
-export default function App() {
-  return (
-    <Container className='container' sx = {{ backgroundColor: "red", width: "100%",}}>
-        <CustomButton variant="contained">BUTTON</CustomButton>
-    </Container>
-  );
-};
-
-*/
-
-
 
 
 /*
