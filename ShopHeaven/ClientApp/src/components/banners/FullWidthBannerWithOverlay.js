@@ -6,6 +6,10 @@ import { styled } from "@mui/material/styles";
 function FullWidthBannerWithOverlay(props) {
   const [showOverlay, setShowOverlay] = useState(!props.hoverOverlay);
 
+  function handleShowOverlay(value){
+    setShowOverlay(value);
+  }
+
   const Banner = styled(Box)({
     backgroundColor: theme.palette.primary.main,
     height: props.height,
@@ -56,11 +60,10 @@ function FullWidthBannerWithOverlay(props) {
   return (
     <Box
       pt={props.paddingTop}
-      sx={{ backgroundColor: theme.palette.appBackground.main }}
     >
       <Banner
-        onMouseOver={() => setShowOverlay(true)}
-        onMouseLeave={() => setShowOverlay(!props.hoverOverlay)}
+        onMouseOver={() => handleShowOverlay(true)}
+        onMouseLeave={() => handleShowOverlay(!props.hoverOverlay)}
       >
         <Slide direction="right" in={showOverlay}>
           <Overlay>

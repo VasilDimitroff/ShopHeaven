@@ -15,7 +15,7 @@ const StyledCard =  styled(CardMedia)({
 });
 
   return (
-    <Box pt={props.paddingTop} sx={{backgroundColor: theme.palette.appBackground.main}}>
+    <Box pt={props.paddingTop}>
       <CardActionArea>
         <StyledCard
           component="img"

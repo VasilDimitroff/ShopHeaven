@@ -48,6 +48,8 @@ function ProductCarouselCard(props) {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   });
 
   const PriceAndActionsWrapper = styled(Box)({
@@ -77,6 +79,11 @@ function ProductCarouselCard(props) {
     minHeight: 400,
   });
 
+  const InStockState = styled(Box)({
+    fontWeight: 500,
+    color: props.product.isAvailable === true ? theme.palette.success.main : theme.palette.error.main
+  })
+
   return (
     <StyledCard>
       <CardActionArea>
@@ -97,6 +104,9 @@ function ProductCarouselCard(props) {
               : props.product.name.slice(0, 60)}
           </ProductName>
         </StyledCardActionArea>
+        <InStockState>
+          {props.product.isAvailable === true ? "In Stock" : "Out of stock"}
+        </InStockState>
         <Box>
           <RatingWrapper>
             <Rating

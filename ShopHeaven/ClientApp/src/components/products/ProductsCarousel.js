@@ -57,9 +57,9 @@ function ProductsCarousel(props) {
 
   const StyledHeading = styled(Typography)({
     [theme.breakpoints.down("md")]: {
-      textAlign: "center"
+      textAlign: "center",
     },
-  })
+  });
 
   return (
     <Box>
@@ -97,7 +97,6 @@ function ProductsCarousel(props) {
                 rowInfo.startIndex,
                 rowInfo.startIndex + rowInfo.cardsPerSlide
               )}
-              cardsPerSlide={rowInfo.cardsPerSlide}
             />
           );
         })}

@@ -6,11 +6,18 @@ function CarouselItem(props) {
   const SliderImage = styled("img")({
     width: "100%",
     objectFit: "cover",
-    height: 765,
-
-    [theme.breakpoints.down("md")]: {
-      height: 300,
+    height: 623,
+    [theme.breakpoints.down("lg")]: {
+      height: 625,
     },
+    [theme.breakpoints.down("md")]: {
+      height: 450,
+    },
+    [theme.breakpoints.down("sm")]: {
+      height: 340,
+    },
+
+
   });
 
   return (
