@@ -18,7 +18,7 @@ export default function ProductsCarouselLine(props) {
         },
     })
     return (
-      <Box sx={{ backgroundColor: theme.palette.appBackground.main }}>
+      <Box>
         <CarouselWrapper>
           <ProductsCarousel products={props.products} headingName={props.headingName}/>
         </CarouselWrapper>

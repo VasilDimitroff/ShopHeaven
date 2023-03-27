@@ -60,7 +60,6 @@ function FullWidthBannerWithOverlay(props) {
   return (
     <Box
       pt={props.paddingTop}
-      sx={{ backgroundColor: theme.palette.appBackground.main }}
     >
       <Banner
         onMouseOver={() => handleShowOverlay(true)}

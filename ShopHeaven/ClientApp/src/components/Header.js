@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 //import {styled, alpha } from '@emotion/styled';
-import { theme } from "./../theme";
+import { theme } from "../theme";
 import {
   Close,
   AddShoppingCart,
@@ -43,7 +43,7 @@ import { display } from "@mui/system";
 import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
-export default function NavMenu(props) {
+export default function Header(props) {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
@@ -297,8 +297,8 @@ export default function NavMenu(props) {
             <CloseIcon  onClick={() => handleShowMobileMenu(!showMobileMenu)}>
               <Close sx={{ fontSize: "35px", color: theme.palette.white.main }}/>
             </CloseIcon>
-            <BigLogoImage src={LogoBig} />
-            <SmallLogoImage src={LogoSmall} />
+            <Link to="/"><BigLogoImage src={LogoBig} /></Link>
+            <Link to="/"><SmallLogoImage src={LogoSmall} /></Link>
           </Box>
           <CustomSearchField>
             <Search

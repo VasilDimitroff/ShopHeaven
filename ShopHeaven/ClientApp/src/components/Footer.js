@@ -27,7 +27,6 @@ import LogoImg from "../static/images/shop_heaven_logo_big_2.png";
 
 export default function Footer(props) {
   const FooterWrapper = styled(Box)({
-    backgroundColor: theme.palette.appBackground.main,
     color: theme.palette.primary.main,
   });
 

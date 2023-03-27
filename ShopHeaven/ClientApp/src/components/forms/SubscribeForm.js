@@ -96,7 +96,7 @@ function SubscribeForm(props) {
 
   return (
     <Box
-      sx={{ backgroundColor: theme.palette.appBackground.main,
+      sx={{
       paddingBottom: props.padddingBottom,
       paddingTop:props.paddingTop }}
     >

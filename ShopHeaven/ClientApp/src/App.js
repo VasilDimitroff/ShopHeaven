@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
+import { theme } from "./theme"
 
 export default function App() {
   return (  
-   <div>
+   <div style={{backgroundColor: theme.palette.appBackground.main}}>
      <Routes>
         {AppRoutes.map((route, index) => {
             const { element, requireAuth, ...rest } = route;
