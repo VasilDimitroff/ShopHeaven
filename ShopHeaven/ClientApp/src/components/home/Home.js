@@ -3,11 +3,11 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import HomeSliderAndCategories from "./HomeSliderAndCategories";
 import NavMenu from "../NavMenu";
+import Footer from "../Footer";
 import ProductsCarouselLine from "../products/ProductsCarouselLine";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import FullWidthBannerWithOverlay from "../banners/FullWidthBannerWithOverlay";
 import SubscribeForm from "../forms/SubscribeForm";
-import { Box } from "@mui/material";
 
 let products = [
   {
@@ -340,6 +340,8 @@ export default function Home() {
         products={products}
         headingName="Frequently Purchased"
       />
+
+      {/*
       <FullWidthBannerWithOverlay
         infoText="You haven't account yet? Create a new one now or login"
         hoverOverlay={false}
@@ -353,7 +355,16 @@ export default function Home() {
         heightSm={180}
         image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
       />
-      <SubscribeForm height={200} heightSm={240} infoText="Subscribe to our newsletter for all interesting products"/>
+    */}
+      <SubscribeForm
+        ContentPaddingTop={theme.spacing(8)}
+        height={250}
+        heightSm={320}
+        paddingTop={theme.spacing(4)}
+        paddingBottom={theme.spacing(3)}
+        infoText="Subscribe to our newsletter for better life"
+      />
+      <Footer categories={categories} />
     </div>
   );
 }

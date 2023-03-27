@@ -15,13 +15,19 @@ function SubscribeForm(props) {
   });
 
   const Overlay = styled(Box)({
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    paddingTop: props.ContentPaddingTop,
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
     height: props.height,
     position: "absolute",
     bottom: 0,
     width: "100%",
     [theme.breakpoints.down("md")]: {
       height: props.heightSm,
+      paddingTop: theme.spacing(4.5),
+    },
+    [theme.breakpoints.down("sm")]: {
+      height: props.heightSm,
+      paddingTop: theme.spacing(4),
     },
   });
 
@@ -41,12 +47,11 @@ function SubscribeForm(props) {
 
   const Info = styled(Typography)({
     textAlign: "center",
-    paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
     color: "white",
     fontSize: "22px",
     [theme.breakpoints.down("md")]: {
-      display: "none",
+      paddingBottom: theme.spacing(0),
     },
   });
 
@@ -91,8 +96,9 @@ function SubscribeForm(props) {
 
   return (
     <Box
-      pt={props.paddingTop}
-      sx={{ backgroundColor: theme.palette.appBackground.main }}
+      sx={{ backgroundColor: theme.palette.appBackground.main,
+      paddingBottom: props.padddingBottom,
+      paddingTop:props.paddingTop }}
     >
       <Banner>
         <Slide direction="right" in={true}>
