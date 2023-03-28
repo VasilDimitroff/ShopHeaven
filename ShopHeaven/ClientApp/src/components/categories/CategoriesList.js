@@ -57,8 +57,8 @@ export default function CategoriesList(props) {
       <Heading>{props.heading}</Heading>
       <StyledImageList cols={colsToShow}>
         {props.categories.map((item) => (
-          <Zoom in={true}>
-          <StyledImageListItem key={item.img}>
+          <Zoom in={true} key={item.id}>
+          <StyledImageListItem>
             <img
               src={`${item.img}?w=248&fit=crop&auto=format`}
               srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}

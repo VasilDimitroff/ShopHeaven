@@ -1,12 +1,14 @@
 import { React } from "react";
-import { Box, Grid, Rating, Typography, Stack } from "@mui/material";
+import { Box, Grid, Rating, Typography, Chip } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link, useParams } from "react-router-dom";
-import { Info } from "@mui/icons-material";
+import { Description, Info } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import Sidebar from "./Sidebar";
 import ImageCarousel from "./ImageCarousel";
+import { palette } from "@mui/system";
+import ProductDescription from "./ProductDescription";
 
 export default function ProductInfoWrapper(props) {
   const ContentWrapper = styled(Box)({
@@ -23,28 +25,28 @@ export default function ProductInfoWrapper(props) {
   });
 
   const ProductName = styled(Typography)({
-    marginBottom: theme.spacing(2)
-  })
-
-  const InfoWrapper = styled(Stack)({
-    display:"flex",
-    justifyContent: "center"
-  })
+    marginBottom: theme.spacing(2),
+  });
 
   return (
     <MainWrapper>
       <ProductName variant="h4">{props.product.name}</ProductName>
-      <ContentWrapper>   
+      <ContentWrapper>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={5} sx={{ border: "1px solid yellow" }}>
-            <Box><ImageCarousel images={props.product.images}/></Box>
+          <Grid item xs={12} md={6} lg={4}>
+            <Box>
+              {
+              // first important part of the page
+              } 
+              <ImageCarousel images={props.product.images} />
+            </Box>
           </Grid>
-          <Grid container item xs={12} md={6} lg={7}>
-            <Grid item xs={12} md={12} lg={6} sx={{ border: "1px solid blue" }}>
-              <InfoWrapper spacing={1}>
-                <Rating sx={{border: "1px solid black", display: "flex"}}name="half-rating" size="small" label="stars" defaultValue={props.product.rating} precision={0.5} />
-                <Typography> stars</Typography>
-              </InfoWrapper>
+          <Grid container item xs={12} md={6} lg={8}>
+            <Grid item xs={12} md={12} lg={6} sx={{ position: "relative", }}>
+              {
+              // second important part of the page
+              } 
+                <ProductDescription product={props.product}/>
             </Grid>
             <Grid
               item
@@ -52,9 +54,11 @@ export default function ProductInfoWrapper(props) {
               xs={12}
               md={12}
               lg={6}
-              sx={{ border: "3px solid blue" }}
             >
-              <Box>buttons area</Box>
+               {
+              // third important part of the page
+              } 
+              buttons
             </Grid>
           </Grid>
         </Grid>

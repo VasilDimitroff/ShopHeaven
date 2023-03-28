@@ -82,7 +82,7 @@ function ImageCarousel(props) {
   });
 
   const ProductCardMedia = styled(CardMedia)({
-    height: 455,
+    height: 350,
     position: "relative",
     [theme.breakpoints.down("md")]: {
       height: 350,
