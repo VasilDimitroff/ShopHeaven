@@ -8,7 +8,7 @@ export default function BreadcrumbsBar(props) {
   const StyledChip = styled(Chip)({
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.main,
       color: theme.palette.white.main,
     },
   });
@@ -36,10 +36,10 @@ export default function BreadcrumbsBar(props) {
             key={index}
             to={`${breadcrumb.uri}`}
           >
-            <StyledChip color="primary" label={breadcrumb.name} />
+            <StyledChip color="primary" variant="outlined" label={breadcrumb.name} />
           </Link>
         ) : (
-          <Chip color="primary" key={index} label={breadcrumb.name} />
+          <Chip color="primary" variant="outlined" key={index} label={breadcrumb.name} />
         )
       )}
     </CustomBreadcrumbs>

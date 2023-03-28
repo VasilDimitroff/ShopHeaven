@@ -293,7 +293,7 @@ export default function Categories() {
   ];
 
   return (
-    <div style={{ backgroundColor: theme.palette.appBackground.main }}>
+    <div>
       <Header categories={categories} />
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <CategoriesWrapper categories={categories} heading="CATEGORIES" />

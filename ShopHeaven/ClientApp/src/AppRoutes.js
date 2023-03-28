@@ -1,5 +1,6 @@
 import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import Categories from './components/categories/Categories';
+import Product from './components/products/Product';
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import Home from "./components/home/Home";
@@ -16,6 +17,10 @@ const AppRoutes = [
   {
     path: '/categories',
     element: <Categories />
+  },
+  {
+    path: '/products/:productId',
+    element: <Product />
   },
   {
     path: '/fetch-data',
