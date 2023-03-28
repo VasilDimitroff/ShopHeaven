@@ -49,6 +49,7 @@ export default function Footer(props) {
     display: "block",
     margin: "auto",
     width: "80%",
+
     [theme.breakpoints.down("md")]: {
       width: "95%",
     },
@@ -235,7 +236,7 @@ export default function Footer(props) {
             <Logo src={LogoImg} />
           </BrandFooterItemHolder>
           <BrandFooterItemHolder>
-            <Typography>
+            <Typography sx={{fontSize: "12px"}}>
               Copyright © {new Date().getFullYear()} Shop Heaven Inc
             </Typography>
           </BrandFooterItemHolder>

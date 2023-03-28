@@ -70,6 +70,7 @@ export default function CategoriesHomeList(props) {
   const Submenu = styled(Box)(({ theme }) => ({
     display: showSubmenu === true ? "block" : "none",
     backgroundColor: "white",
+    marginTop: theme.spacing(9.5),
     position: "absolute",
     left: "100%",
     zIndex: 23,

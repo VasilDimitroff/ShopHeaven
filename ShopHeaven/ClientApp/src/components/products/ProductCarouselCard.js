@@ -81,8 +81,11 @@ function ProductCarouselCard(props) {
 
   const InStockState = styled(Box)({
     fontWeight: 500,
-    color: props.product.isAvailable === true ? theme.palette.success.main : theme.palette.error.main
-  })
+    color:
+      props.product.isAvailable === true
+        ? theme.palette.success.main
+        : theme.palette.error.main,
+  });
 
   return (
     <StyledCard>
@@ -124,10 +127,23 @@ function ProductCarouselCard(props) {
           <PriceAndActionsWrapper>
             <PriceText variant="h5">$10</PriceText>
             <ActionsWrapper>
-              <IconButton size="large" variant="contained">
+              <IconButton
+                size="large"
+                variant="contained"
+                sx={{
+                  "&:hover": {
+                    color: theme.palette.error.main,
+                  },
+                }}
+              >
                 <Favorite sx={{ fontSize: "26px" }} />
               </IconButton>
-              <IconButton size="large" variant="contained">
+              <IconButton size="large" variant="contained"
+              sx={{
+                "&:hover": {
+                  color: theme.palette.primary.main,
+                },
+              }}>
                 <ShoppingCart sx={{ fontSize: "26px" }} />
               </IconButton>
             </ActionsWrapper>
