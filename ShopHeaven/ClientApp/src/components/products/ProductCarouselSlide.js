@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Slide, } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ProductCarouselCard from "./ProductCarouselCard";
@@ -27,6 +27,7 @@ function ProductCarouselSlide(props) {
         >
           {Array.from(props.products.slice(0, props.cardsPerSlide)).map(
             (product, index) => (
+              <Slide in={true} direction="up" key={index}>
               <Grid
                 item 
                 xs={1}
@@ -34,11 +35,11 @@ function ProductCarouselSlide(props) {
                 md={2}
                 lg={2}
                 xl={2}
-                key={index}
                 sx={{ display: "block" }}
-              >
-                <StyledProductCarouselCard product={product} />
+              >              
+                <StyledProductCarouselCard product={product} />             
               </Grid>
+              </Slide>
             )
           )}
         </Grid>

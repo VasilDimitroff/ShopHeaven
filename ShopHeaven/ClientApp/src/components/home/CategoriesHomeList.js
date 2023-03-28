@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import {
   Box,
   List,
@@ -51,8 +52,8 @@ export default function CategoriesHomeList(props) {
     width: "100%",
     paddingBottom: theme.spacing(1.75),
     paddingTop: theme.spacing(1.75),
-    display: props.categories.length > categoriesToShow ? "block" : "none",
     backgroundColor: theme.palette.secondary.main,
+    display: props.categories.length > categoriesToShow ? "block" : "none",
     "&:hover": {},
     [theme.breakpoints.down("md")]: {
       color: theme.palette.white.main,
@@ -258,9 +259,11 @@ export default function CategoriesHomeList(props) {
           })}
           <Divider />
           <ViewAllButtonHolder>
+          <Link to="/categories" style={{ color: theme.palette.white.main, textDecoration: "none", width: "100%"}}>
             <ViewAllButton variant="contained">
-              VIEW ALL CATEGORIES
+             VIEW ALL CATEGORIES
             </ViewAllButton>
+            </Link>
           </ViewAllButtonHolder>
         </MenuHolder>
 
