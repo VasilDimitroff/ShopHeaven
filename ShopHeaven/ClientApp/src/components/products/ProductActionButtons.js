@@ -7,38 +7,31 @@ import {
   CardContent,
   CardActions,
   Button,
-  IconButton,
   Snackbar,
   Slide,
   InputBase,
-  Alert,
+  Stack,
 } from "@mui/material";
-import { AddCircle, RemoveCircle } from "@mui/icons-material";
+import { Favorite, AddShoppingCart } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
 export default function ProductActionButtons(props) {
-    const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState(false);
 
- function enterQuantity(){
-    const inputElement = document.getElementById('bootstrap-input');
-    const errorElement = document.getElementById('error');
+  function enterQuantity() {
+    const inputElement = document.getElementById("bootstrap-input");
 
-    if(inputElement.value < 1) {
-        inputElement.value = 1;
+    if (inputElement.value < 1) {
+      inputElement.value = 1;
     }
 
-    if(inputElement.value > props.product.quantity) {
-        setShowError(true);
-        errorElement.style.display = "flex";
+    if (inputElement.value > props.product.quantity) {
+      setShowError(true);
     } else {
-        errorElement.style.display = "none";
+      setShowError(false);
     }
- }
-
- function handleSetShowError() {
-    setShowError(false);
- }
+  }
 
   const MainPrice = styled(Typography)({
     color: theme.palette.error.main,
@@ -89,20 +82,35 @@ export default function ProductActionButtons(props) {
     fontSize: 17,
   });
 
+  const ActionButtons = styled(Stack)({
+    marginTop: theme.spacing(3)
+  })
+  const ActionButton = styled(Button)({
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+  });
+
+  const InStockInfo = styled(Typography)({
+    fontWeight: 500,
+    fontSize: 18,
+    color: props.product.isAvailable
+      ? theme.palette.success.main
+      : theme.palette.error.main,
+  });
+
   const BootstrapInput = styled(InputBase)(({ theme }) => ({
     width: 70,
-
-    'label + &': {
+    "label + &": {
       marginTop: theme.spacing(3),
     },
-    '& .MuiInputBase-input': {
-        color: "black",
+    "& .MuiInputBase-input": {
+      color: "black",
       textAlign: "center",
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: theme.palette.mode === 'light' ? '#fcfcfb' : '#2b2b2b',
-      border: '1px solid #ced4da',
+      backgroundColor: theme.palette.mode === "light" ? "#fcfcfb" : "#2b2b2b",
+      border: "1px solid #ced4da",
       fontSize: 17,
-      '&:focus': {
+      "&:focus": {
         borderColor: theme.palette.primary.main,
         boxShadow: theme.palette.dropdown.boxShadow.main,
       },
@@ -141,7 +149,6 @@ export default function ProductActionButtons(props) {
               variant="filled"
               label={`Save ${props.product.discount}%`}
             ></StyledChip>
-
           </PriceHolder>
         </Box>
       );
@@ -167,31 +174,47 @@ export default function ProductActionButtons(props) {
       <Card>
         <CardContent>
           {renderPrice()}
-         <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>Quantity:</Typography>
+          <InStockInfo>{`${
+                  props.product.isAvailable ? "In Stock" : "Out of Stock"
+                }`}</InStockInfo>
+          <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>
+            Quantity:
+          </Typography>
           <QuantityHolder>
-            <BootstrapInput onChange={ ()=> enterQuantity()} defaultValue={1} id="bootstrap-input" />
+            <BootstrapInput
+              onChange={() => enterQuantity()}
+              defaultValue={1}
+              id="bootstrap-input"
+            />
             {`(${props.product.quantity} left)`}
-          </QuantityHolder> 
+          </QuantityHolder>
           <Snackbar
-          ContentProps={{
-            style: {
-               backgroundColor: theme.palette.error.main,
-               textAlign: "center",
-               fontWeight: 500,
-               fontSize: 18
-            },
-          }}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleSetShowError}
-          open={showError}
-          severity="error"
-          TransitionComponent={Slide}
-          message={`In stock are ${props.product.quantity} items only! Please enter valid number`}
-      ></Snackbar>
+            ContentProps={{
+              style: {
+                backgroundColor: theme.palette.error.main,
+                textAlign: "center",
+                fontWeight: 500,
+                fontSize: 18,
+              },
+            }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            onClose={enterQuantity}
+            open={showError}
+            severity="error"
+            TransitionComponent={Slide}
+            message={`In stock are ${props.product.quantity} items only! Please enter valid number`}
+          ></Snackbar>
+          <ActionButtons spacing={1.5}>
+            <ActionButton variant="contained" size="large" startIcon={<AddShoppingCart />}>
+              Add to cart
+            </ActionButton>
+            <ActionButton variant="outlined" size="large" startIcon={<Favorite />}>
+              Add to favorites
+            </ActionButton>
+          </ActionButtons>
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
+          
         </CardActions>
       </Card>
     </Box>

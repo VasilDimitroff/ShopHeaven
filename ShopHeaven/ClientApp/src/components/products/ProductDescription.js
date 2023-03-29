@@ -1,10 +1,39 @@
   import {  Box, Chip, Typography, Rating, } from "@mui/material";
-  import { LinkedIn, GitHub, } from "@mui/icons-material";
+  import useMediaQuery from "@mui/material/useMediaQuery";
   import { styled } from "@mui/material/styles";
   import { theme } from "../../theme";
   
   export default function ProductDescription(props) {
-    
+  
+ 
+  function DescriptionLength() {
+    let charactersToShowForDescription = 100;
+
+    const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
+    const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
+    const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
+    const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
+    const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
+
+    if (isBiggerOrXs === true) {
+      charactersToShowForDescription = 1000;
+    }
+    if (isBiggerOrSm === true) {
+      charactersToShowForDescription = 1000;
+    }
+    if (isBiggerOrMd === true) {
+      charactersToShowForDescription = 570;
+    }
+    if (isBiggerOrLg === true) {
+      charactersToShowForDescription = 600;
+    }
+    if (isBiggerOrXl === true) {
+      charactersToShowForDescription = 650;
+    }
+
+    return charactersToShowForDescription;
+  }
+
   const RatingWrapper = styled(Box)({
     display: "flex",
   });
@@ -46,6 +75,7 @@
       ? theme.palette.success.main
       : theme.palette.error.main,
   });
+
   const BrandInfo = styled(Typography)({
     fontWeight: 500,
     fontSize: 18,
@@ -84,18 +114,13 @@
                 <BrandInfo>{`Brand: ${props.product.brand}`}</BrandInfo>
               </BrandWrapper>
               <DescriptionWrapper>
-                <InStockInfo>{`${
-                  props.product.isAvailable ? "In Stock" : "Out of Stock"
-                }`}</InStockInfo>
-              </DescriptionWrapper>
-              <DescriptionWrapper>
                 <GuaranteeText>Guarantee:</GuaranteeText>
                 <InStockInfo>{`${
                   props.product.hasGuarantee ? "Yes" : "No"
                 }`}</InStockInfo>
               </DescriptionWrapper>
               <DescriptionWrapper>
-                <Typography>{props.product.description.length > 650 ? `${props.product.description.slice(0, 650)}...` : props.product.description}</Typography>
+                <Typography>{props.product.description.length > DescriptionLength() ? `${props.product.description.slice(0, DescriptionLength())}...` : props.product.description}</Typography>
               </DescriptionWrapper>
               </Box>
               <Box>
