@@ -18,7 +18,7 @@ namespace ShopHeaven.Data.Models
 
         [Required]
         public string ProductId { get; set; }
-
+     
         public int RatingValue { get; set; }
 
         public Product Product { get; set; }

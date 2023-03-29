@@ -69,6 +69,8 @@ namespace ShopHeaven.Data.Models
 
         public ICollection<ProductLabel> Labels { get; set; } // the product is presented in these labels
 
+
+        //calculate the rating of the product
         private double CalculateRating()
         {
             return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
