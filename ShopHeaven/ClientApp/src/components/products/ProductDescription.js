@@ -59,6 +59,7 @@
 
   const StyledChip = styled(Chip)({
     cursor: "pointer",
+    borderRadius: theme.shape.borderRadius,
     "&:hover": {
       backgroundColor: theme.palette.primary.main,
     },

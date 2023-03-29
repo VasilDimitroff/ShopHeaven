@@ -304,9 +304,10 @@ export default function Product(props) {
     description:
       "Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users.",
     id: 1,
+    currency: "€",
     rating: 2.3,
-    price: 20.5,
-    discount: 0,
+    price: 20.50,
+    discount: 10,
     brand: "Apple Inc",
     hasGuarantee: true,
     tags: ["auto", "home", "pets"],
