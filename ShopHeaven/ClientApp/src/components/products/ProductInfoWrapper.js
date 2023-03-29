@@ -1,19 +1,20 @@
 import { React } from "react";
-import { Box, Grid, Rating, Typography, Chip } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { Box, Grid, Paper, Typography, Chip } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { Description, Info } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import Sidebar from "./Sidebar";
 import ImageCarousel from "./ImageCarousel";
-import { palette } from "@mui/system";
 import ProductDescription from "./ProductDescription";
 
 export default function ProductInfoWrapper(props) {
   const ContentWrapper = styled(Box)({
     display: "flex",
   });
+
+  const StyledPaper = styled(Paper)({
+    padding: theme.spacing(3)
+  })
 
   const MainWrapper = styled(Box)({
     width: "80%",
@@ -29,10 +30,11 @@ export default function ProductInfoWrapper(props) {
   });
 
   return (
-    <MainWrapper>
-      <ProductName variant="h4">{props.product.name}</ProductName>
+    <MainWrapper> 
       <ContentWrapper>
-        <Grid container spacing={2}>
+      <StyledPaper>
+      <ProductName variant="h4">{props.product.name}</ProductName>
+        <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={4}>
             <Box>
               {
@@ -41,27 +43,31 @@ export default function ProductInfoWrapper(props) {
               <ImageCarousel images={props.product.images} />
             </Box>
           </Grid>
-          <Grid container item xs={12} md={6} lg={8}>
-            <Grid item xs={12} md={12} lg={6} sx={{ position: "relative", }}>
+ 
+            <Grid item xs={12} md={6} lg={5} sx={{ position: "relative", }}>
               {
               // second important part of the page
               } 
                 <ProductDescription product={props.product}/>
             </Grid>
+            
             <Grid
               item
-              container
               xs={12}
               md={12}
-              lg={6}
+              lg={3}
             >
                {
               // third important part of the page
               } 
-              buttons
+            
+                test
+              
             </Grid>
-          </Grid>
+        
+     
         </Grid>
+        </StyledPaper>
       </ContentWrapper>
     </MainWrapper>
   );

@@ -1,13 +1,13 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import CarouselItem from "./CarouselItem";
 import { theme } from "../../theme";
 
 function HomeCarousel(props) {
 
   return (
-    <Box>
+    <Paper>
       <Carousel
         animation="slide"
         swipe={false}
@@ -51,7 +51,7 @@ function HomeCarousel(props) {
           <CarouselItem item={item} key={index} />
         ))}
       </Carousel>
-    </Box>
+    </Paper>
   );
 }
 
