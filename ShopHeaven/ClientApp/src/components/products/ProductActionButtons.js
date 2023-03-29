@@ -12,12 +12,19 @@ import {
   InputBase,
   Stack,
 } from "@mui/material";
-import { Favorite, AddShoppingCart } from "@mui/icons-material";
+import { Favorite, FavoriteBorder, AddShoppingCart, RemoveShoppingCart } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
+
 export default function ProductActionButtons(props) {
+
   const [showError, setShowError] = useState(false);
+  const [addToCart, setAddToCart] = useState(false);
+  const [addToCartContent, setAddToCartContent] = useState("Add to cart");
+  const [addToFavorites, setAddToFavorites] = useState(false);
+  const [addToFavoritesContent, setAddToFavoritesContent] = useState("Add to favorites");
+
 
   function enterQuantity() {
     const inputElement = document.getElementById("bootstrap-input");
@@ -31,6 +38,30 @@ export default function ProductActionButtons(props) {
     } else {
       setShowError(false);
     }
+  }
+
+  function handleAddToCart(value){
+    setAddToCart(value);
+
+    if(value === false) {
+        setAddToCartContent("Add to cart");
+    } else {
+        setAddToCartContent("Remove from cart");
+    }
+   
+    console.log("Add to cart is " + addToCart);
+  }
+
+  function handleAddToFavorites(value){
+    setAddToFavorites(value);
+
+    if(value === false) {
+        setAddToFavoritesContent("Add to favorites");
+    } else {
+        setAddToFavoritesContent("Remove from favorites");
+    }
+
+    console.log("Add to favorites is " + addToFavorites);
   }
 
   const MainPrice = styled(Typography)({
@@ -171,6 +202,7 @@ export default function ProductActionButtons(props) {
 
   return (
     <Box>
+        {}
       <Card>
         <CardContent>
           {renderPrice()}
@@ -205,17 +237,14 @@ export default function ProductActionButtons(props) {
             message={`In stock are ${props.product.quantity} items only! Please enter valid number`}
           ></Snackbar>
           <ActionButtons spacing={1.5}>
-            <ActionButton variant="contained" size="large" startIcon={<AddShoppingCart />}>
-              Add to cart
+            <ActionButton onClick={()=> handleAddToCart(!addToCart)} variant="contained" size="large" startIcon={addToCart ? <RemoveShoppingCart /> : <AddShoppingCart/>}>
+             {addToCartContent}
             </ActionButton>
-            <ActionButton variant="outlined" size="large" startIcon={<Favorite />}>
-              Add to favorites
+            <ActionButton onClick={()=> handleAddToFavorites(!addToFavorites)} variant="outlined" size="large" startIcon={addToFavorites ? <Favorite /> : <FavoriteBorder/>}>
+            {addToFavoritesContent}
             </ActionButton>
           </ActionButtons>
         </CardContent>
-        <CardActions>
-          
-        </CardActions>
       </Card>
     </Box>
   );
