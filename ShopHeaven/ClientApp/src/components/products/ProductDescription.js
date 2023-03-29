@@ -94,7 +94,7 @@
                 }`}</InStockInfo>
               </DescriptionWrapper>
               <DescriptionWrapper>
-                <Typography>{props.product.description.length > 700 ? `${props.product.description.slice(0, 700)}...` : props.product.description}</Typography>
+                <Typography>{props.product.description.length > 650 ? `${props.product.description.slice(0, 650)}...` : props.product.description}</Typography>
               </DescriptionWrapper>
               </Box>
               <Box>
