@@ -49,6 +49,10 @@ namespace ShopHeaven.Data
 
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<Label> Labels { get; set; }
+
+        public DbSet<ProductLabel> ProductsLabels { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -130,11 +134,36 @@ namespace ShopHeaven.Data
                 .HasForeignKey(x => x.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ProductLabel>()
+            .HasKey(x => new { x.LabelId, x.ProductId });
+            modelBuilder.Entity<ProductLabel>()
+                .HasOne(x => x.Label)
+                .WithMany(x => x.Products)
+                .HasForeignKey(x => x.LabelId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ProductLabel>()
+                .HasOne(x => x.Product)
+                .WithMany(x => x.Labels)
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<SubCategory>()
                 .HasOne(x => x.MainCategory)
                 .WithMany(x => x.SubCategories)
                 .HasForeignKey(x => x.MainCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SubCategory>()
+                .HasOne(x => x.Image)
+                .WithOne(x => x.SubCategory)
+                .HasForeignKey<Image>(x => x.SubCategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<MainCategory>()
+               .HasOne(x => x.Image)
+               .WithOne(x => x.MainCategory)
+               .HasForeignKey<Image>(x => x.MainCategoryId)
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>()
              .HasMany(x => x.Images)
@@ -147,6 +176,36 @@ namespace ShopHeaven.Data
             .WithMany(x => x.Products)
             .HasForeignKey(x => x.CreatedById)
             .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder
+            .Entity<Product>()
+            .Property(p => p.Rating)
+            .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder
+           .Entity<Cart>()
+           .Property(c => c.TotalPriceWithDiscount)
+           .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder
+          .Entity<Cart>()
+          .Property(c => c.TotalPriceWithNoDiscount)
+          .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder
+         .Entity<Order>()
+         .Property(c => c.TotalPriceWithNoDiscount)
+         .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder
+         .Entity<Order>()
+         .Property(c => c.TotalPriceWithDiscountAndCoupon)
+         .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder
+          .Entity<Order>()
+          .Property(c => c.TotalPriceWithDiscount)
+          .UsePropertyAccessMode(PropertyAccessMode.Property);
         }
     }
 }

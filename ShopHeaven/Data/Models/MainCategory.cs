@@ -17,6 +17,12 @@ namespace ShopHeaven.Data.Models
 
         public string Description { get; set; }
 
+        [Required(ErrorMessage = "ImageId cannot be null or empty")]
+        [ForeignKey("Image")]
+        public string ImageId { get; set; }
+
+        public Image Image { get; set; } // cover image
+
         [Required]
         public string CreatedById { get; set; }
 

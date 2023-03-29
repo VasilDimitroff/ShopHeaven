@@ -6,6 +6,8 @@ namespace ShopHeaven.Data.Models
 {
     public class Product : BaseModel, ICreatableModel
     {
+        private double _rating;
+
         public Product()
         {
             Reviews = new HashSet<Review>();
@@ -16,6 +18,7 @@ namespace ShopHeaven.Data.Models
             Tags = new HashSet<ProductTag>();
             Carts = new HashSet<ProductCart>();
             Wishlists = new HashSet<ProductWishlist>();
+            Labels = new HashSet<ProductLabel>();
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
@@ -31,13 +34,15 @@ namespace ShopHeaven.Data.Models
 
         public bool HasGuarantee { get; set; }
 
+        public int Quantity { get; set; }
+
         public bool IsAvailable { get; set; }
 
         public decimal Price { get; set; }
 
         public decimal Discount { get; set; } // in percent
 
-        public double Rating => Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+        public double Rating  { get => CalculateRating();  private set => _rating = value; }
 
         [Required]
         public string CreatedById { get; set; }
@@ -61,5 +66,12 @@ namespace ShopHeaven.Data.Models
         public ICollection<ProductWishlist> Wishlists { get; set; } // the product is presented in these wishlists
 
         public ICollection<ProductOrder> Orders { get; set; } // the product is presented in these orders
+
+        public ICollection<ProductLabel> Labels { get; set; } // the product is presented in these labels
+
+        private double CalculateRating()
+        {
+            return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+        }
     }
 }
