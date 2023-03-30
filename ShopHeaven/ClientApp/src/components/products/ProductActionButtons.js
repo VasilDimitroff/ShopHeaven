@@ -5,7 +5,6 @@ import {
   Typography,
   Card,
   CardContent,
-  CardActions,
   Button,
   Snackbar,
   Slide,
@@ -13,21 +12,29 @@ import {
   Stack,
   IconButton,
 } from "@mui/material";
-import { Favorite, FavoriteBorder, AddShoppingCart, RemoveShoppingCart, AddCircle, RemoveCircle } from "@mui/icons-material";
+import {
+  Favorite,
+  FavoriteBorder,
+  AddShoppingCart,
+  RemoveShoppingCart,
+  AddCircle,
+  RemoveCircle,
+  Close
+} from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-
 
 export default function ProductActionButtons(props) {
   const [showError, setShowError] = useState(false);
   const [addToCart, setAddToCart] = useState(false);
   const [addToCartContent, setAddToCartContent] = useState("Add to cart");
   const [addToFavorites, setAddToFavorites] = useState(false);
-  const [addToFavoritesContent, setAddToFavoritesContent] = useState("Add to favorites");
+  const [addToFavoritesContent, setAddToFavoritesContent] =
+    useState("Add to favorites");
   let [productsQuantity, setProductsQuantity] = useState(1);
 
   useEffect(() => {
-    console.log('productsQuantity has been updated:', productsQuantity);
+    console.log("productsQuantity has been updated:", productsQuantity);
   }, [productsQuantity]);
 
   function handleSetProductsQuantity(value) {
@@ -36,76 +43,50 @@ export default function ProductActionButtons(props) {
     let result = productsQuantity + value;
 
     if (result < 1) {
-        value = 0;   
+      value = 0;
     }
 
-    if (result > props.product.quantity) {   
-        handleShowError();
-      } else {
-        setProductsQuantity(prev=>prev+=value);
-        handleCloseError();
+    if (result > props.product.quantity) {
+      handleShowError();
+    } else {
+      setProductsQuantity((prev) => (prev += value));
+      handleCloseError();
     }
 
     console.log("productsQuantity IS: " + productsQuantity);
   }
 
-  function handleShowError(){
+  function handleShowError() {
     setShowError(true);
   }
 
-  function handleCloseError(){
+  function handleCloseError() {
     setShowError(false);
   }
 
-  
-  function enterQuantity() {
-    const inputElement = document.getElementById("bootstrap-input");
-
-    let value = parseInt(inputElement.value)
-
-    if (value < 1 || value.isNaN()) {
-       value = 1;
-    }
-
-    if (value > props.product.quantity) {
-      setShowError(true);
-    } else {
-      setShowError(false);
-    }
-
-    setProductsQuantity(value);
-  } 
-
-  function handleAddToCart(value){
+  function handleAddToCart(value) {
     setAddToCart(value);
 
-    if(value === false) {
-        setAddToCartContent("Add to cart");
+    if (value === false) {
+      setAddToCartContent("Add to cart");
     } else {
-        setAddToCartContent("Remove from cart");
+      setAddToCartContent("Remove from cart");
     }
-   
+
     console.log("Add to cart is " + addToCart);
   }
 
-  function handleAddToFavorites(value){
+  function handleAddToFavorites(value) {
     setAddToFavorites(value);
 
-    if(value === false) {
-        setAddToFavoritesContent("Add to favorites");
+    if (value === false) {
+      setAddToFavoritesContent("Add to favorites");
     } else {
-        setAddToFavoritesContent("Remove from favorites");
+      setAddToFavoritesContent("Remove from favorites");
     }
 
     console.log("Add to favorites is " + addToFavorites);
   }
-
-  const MainPrice = styled(Typography)({
-    color: theme.palette.error.main,
-    fontWeight: 500,
-    letterSpacing: -1,
-    fontSize: 30,
-  });
 
   const Discount = styled(Typography)({
     color: "gray",
@@ -122,7 +103,6 @@ export default function ProductActionButtons(props) {
   });
 
   const StyledChip = styled(Chip)({
-    marginTop: theme.spacing(-1.4),
     color: theme.palette.white.main,
     fontWeight: 500,
     backgroundColor: theme.palette.secondary.main,
@@ -130,7 +110,7 @@ export default function ProductActionButtons(props) {
   });
 
   const MainPriceChip = styled(Chip)({
-    marginTop: theme.spacing(-1),
+    letterSpacing: -1,
     color: theme.palette.error.main,
     fontSize: 28,
     paddingTop: theme.spacing(2.8),
@@ -150,8 +130,8 @@ export default function ProductActionButtons(props) {
   });
 
   const ActionButtons = styled(Stack)({
-    marginTop: theme.spacing(3)
-  })
+    marginTop: theme.spacing(3),
+  });
   const ActionButton = styled(Button)({
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
@@ -181,11 +161,20 @@ export default function ProductActionButtons(props) {
         borderColor: theme.palette.primary.main,
         boxShadow: theme.palette.dropdown.boxShadow.main,
       },
-      "&:disabled": {
-        
-      },
+      "&:disabled": {},
     },
   }));
+  function renderFavoriteIcon(){
+    return addToFavorites ? <Favorite /> : <FavoriteBorder />
+  }
+
+  function renderCartIcon(){
+    return addToCart ? <RemoveShoppingCart /> : <AddShoppingCart />
+  }
+
+  function renderAvailability(){
+    return `${  props.product.isAvailable ? "In Stock" : "Out of Stock" }`
+  }
 
   function renderPrice() {
     const price =
@@ -207,14 +196,12 @@ export default function ProductActionButtons(props) {
             {priceWithNoDiscountToRender}
           </Discount>
           <PriceHolder>
-            <MainPrice gutterBottom>
-              <MainPriceChip
-                component="div"
-                size="medium"
-                variant="filled"
-                label={finalPrice}
-              ></MainPriceChip>
-            </MainPrice>
+            <MainPriceChip
+              component="div"
+              size="medium"
+              variant="filled"
+              label={finalPrice}
+            ></MainPriceChip>
             <StyledChip
               size="small"
               variant="filled"
@@ -226,13 +213,11 @@ export default function ProductActionButtons(props) {
     } else {
       renderResult = (
         <PriceHolder>
-          <MainPrice gutterBottom>
-            <MainPriceChip
-              size="medium"
-              variant="filled"
-              label={finalPrice}
-            ></MainPriceChip>
-          </MainPrice>
+          <MainPriceChip
+            size="medium"
+            variant="filled"
+            label={finalPrice}
+          ></MainPriceChip>
         </PriceHolder>
       );
     }
@@ -242,48 +227,60 @@ export default function ProductActionButtons(props) {
 
   return (
     <Box>
-        {}
       <Card>
         <CardContent>
           {renderPrice()}
-          <InStockInfo>{`${
-                  props.product.isAvailable ? "In Stock" : "Out of Stock"
-                }`}</InStockInfo>
+          <InStockInfo>{ renderAvailability() }</InStockInfo>
           <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>
             Quantity:
           </Typography>
           <QuantityHolder>
-          <IconButton onClick={()=> handleSetProductsQuantity(-1)}> <RemoveCircle/></IconButton>
+            <IconButton onClick={() => handleSetProductsQuantity(-1)}>
+              {" "}
+              <RemoveCircle />
+            </IconButton>
             <BootstrapInput
               defaultValue={productsQuantity}
               id="bootstrap-input"
               readOnly
               color="primary"
-              onChange={()=> enterQuantity()}
             />
-              <IconButton onClick={()=> handleSetProductsQuantity(1)}> <AddCircle/></IconButton>
+            <IconButton onClick={() => handleSetProductsQuantity(1)}>
+              <AddCircle />
+            </IconButton>
             {`(${props.product.quantity} left)`}
           </QuantityHolder>
-          <Snackbar
+          <Snackbar onClick={() => handleCloseError()}
             ContentProps={{
               style: {
                 backgroundColor: theme.palette.error.main,
                 textAlign: "center",
                 fontWeight: 500,
                 fontSize: 18,
+                cursor: "pointer"
               },
             }}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             open={showError}
             TransitionComponent={Slide}
-            message={`In stock are ${props.product.quantity} items only! Please enter valid number`}
-          ></Snackbar>
+            message={`In stock are ${props.product.quantity} items only! It is the maximum quantity you can purchase. X`}
+          >
+       </Snackbar>
           <ActionButtons spacing={1.5}>
-            <ActionButton onClick={()=> handleAddToCart(!addToCart)} variant="contained" size="large" startIcon={addToCart ? <RemoveShoppingCart /> : <AddShoppingCart/>}>
-             {addToCartContent}
+            <ActionButton
+              onClick={() => handleAddToCart(!addToCart)}
+              variant="contained"
+              size="large"
+              startIcon={ renderCartIcon() }>
+              {addToCartContent}
             </ActionButton>
-            <ActionButton onClick={()=> handleAddToFavorites(!addToFavorites)} variant="outlined" size="large" startIcon={addToFavorites ? <Favorite /> : <FavoriteBorder/>}>
-            {addToFavoritesContent}
+            <ActionButton
+              onClick={() => handleAddToFavorites(!addToFavorites)}
+              variant="outlined"
+              size="large"
+              startIcon={renderFavoriteIcon()}
+            >
+              {addToFavoritesContent}
             </ActionButton>
           </ActionButtons>
         </CardContent>

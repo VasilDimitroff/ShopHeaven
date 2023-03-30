@@ -1,22 +1,9 @@
-import {
-  Box,
-  Grid,
-  Typography,
-  List,
-  ListItem,
-  Divider,
-  Link,
-} from "@mui/material";
-import { LinkedIn, GitHub } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
-import Header from "../Header";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import CategoriesWrapper from "./CategoriesWrapper";
-import Footer from "../Footer";
 import FullWidthBanner from "../banners/FullWidthBanner";
 
-export default function Categories() {
+export default function Categories(props) {
   const categories = [
     {
       name: "Phones, Laptops and Tablets",
@@ -294,14 +281,12 @@ export default function Categories() {
 
   return (
     <div>
-      <Header categories={categories} />
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <CategoriesWrapper categories={categories} heading="CATEGORIES" />
       <FullWidthBanner paddingTop={theme.spacing(3.5)}
         height={250}
         heightSm={180}
         image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"/>
-      <Footer />
     </div>
   );
 }

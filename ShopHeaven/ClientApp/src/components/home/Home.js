@@ -465,8 +465,7 @@ const categories = [
 
 export default function Home() {
   return (
-    <div>
-      <Header categories={categories} />
+    <div>   
       <HomeSliderAndCategories items={products} categories={categories} />
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
@@ -501,7 +500,6 @@ export default function Home() {
         paddingBottom={theme.spacing(3)}
         infoText="Subscribe to our newsletter for better life"
       />
-      <Footer categories={categories} />
     </div>
   );
 }
