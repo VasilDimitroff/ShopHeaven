@@ -519,7 +519,6 @@ export default function Home() {
         ContentPaddingTop={theme.spacing(8)}
         height={250}
         heightSm={320}
-        paddingTop={theme.spacing(4)}
         paddingBottom={theme.spacing(3)}
         infoText="Subscribe to our newsletter for better life"
       />

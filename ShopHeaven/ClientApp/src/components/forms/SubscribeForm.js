@@ -1,5 +1,5 @@
 import React from "react";
-import { Box,  Container, TextField,Slide, Typography,  Button, InputAdornment,} from "@mui/material";
+import { Box,  Container, TextField,Slide, Typography,  Button, InputAdornment, Paper} from "@mui/material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { Person, Email } from "@mui/icons-material";
@@ -94,12 +94,20 @@ function SubscribeForm(props) {
     paddingBottom: theme.spacing(1.75),
   });
 
+  const MainWrapper = styled(Paper)({
+    width: "80%",
+    display: "block",
+    margin: "auto",
+    paddingBottom: props.padddingBottom,
+    paddingTop:props.paddingTop,
+    marginTop: theme.spacing(2),
+    [theme.breakpoints.down("md")]: {
+      width: "95%",
+    },
+  })
+
   return (
-    <Box
-      sx={{
-      paddingBottom: props.padddingBottom,
-      paddingTop:props.paddingTop }}
-    >
+    <MainWrapper>
       <Banner>
         <Slide direction="right" in={true}>
           <Overlay>
@@ -162,7 +170,7 @@ function SubscribeForm(props) {
           </Overlay>
         </Slide>
       </Banner>
-    </Box>
+    </MainWrapper>
   );
 }
 
