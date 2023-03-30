@@ -1,5 +1,5 @@
 import { React, useState } from 'react'
-import {  Box, Typography, Tabs, Tab, Paper, } from "@mui/material";
+import {  Box, Typography, Tabs, Tab, Paper, Container } from "@mui/material";
 import PropTypes from 'prop-types';
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -31,9 +31,6 @@ export default function ProductDetailInformation(props) {
         padding: theme.spacing(3)
     });
 
-    const StyledTab = styled(Tab)({
-   
-    })
 
     const MainWrapper = styled(Box)({
         width: "80%",
@@ -55,9 +52,9 @@ export default function ProductDetailInformation(props) {
         textColor="inherit"
         variant="fullWidth"
         aria-label="full width tabs example">
-        <StyledTab label="Description"  />
-        <StyledTab label="Specifications"/>
-        <StyledTab label="Reviews"/>
+        <Tab label="Description"  />
+        <Tab label="Specifications"/>
+        <Tab label="Reviews"/>
       </Tabs>
     </Box>
     <Box>
@@ -65,7 +62,18 @@ export default function ProductDetailInformation(props) {
         {props.product.description}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        {
+           props.product.specifications.map((spec, index) => {
+            return   <Container sx={{display: "flex"}} key={index}>
+                 <Typography>
+                      {spec.key} 
+                 </Typography>
+                 <Typography>
+                      {spec.value}
+                 </Typography>
+             </Container>
+         })
+        }
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

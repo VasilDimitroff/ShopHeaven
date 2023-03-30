@@ -274,6 +274,20 @@ export default function Product(props) {
     brand: "Apple Inc",
     hasGuarantee: true,
     tags: ["auto", "home", "pets"],
+    specifications: [
+      {
+        key: "Material",
+        value: "Rubber",
+      },
+      {
+        key: "Year",
+        value: "1991",
+      },
+      {
+        key: "Age",
+        value: "18+",
+      },
+    ],
     images: [
       "https://levvvel.com/wp-content/uploads/2560-x-1440-vs-1920-x-1080-resolution.jpg",
       "https://images.hdqwalls.com/download/winter-snow-trees-mountains-landscape-hdr-4k-aj-1920x1080.jpg",
