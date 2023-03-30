@@ -336,7 +336,7 @@ export default function Header(props) {
               <Favorite />
             </CustomBadge>
             <CustomBadge
-              badgeContent={2}
+              badgeContent={3}
               color="secondary"
               sx={{
                 border: "white",

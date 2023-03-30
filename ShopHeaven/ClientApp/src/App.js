@@ -5,6 +5,7 @@ import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import { theme } from "./theme"
 
 export default function App() {
+
   return (  
    <div style={{backgroundColor: theme.palette.appBackground.main}}>
      <Routes>
