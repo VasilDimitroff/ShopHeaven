@@ -1,5 +1,5 @@
 import { React } from "react";
-import { Box, Grid, Modal, Button, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ImageCarouselItem from "./ImageCarouselItem";

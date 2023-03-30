@@ -1,7 +1,5 @@
 import { React } from "react";
-import { Box, Grid, Paper, Typography, Chip } from "@mui/material";
-import { Link } from "react-router-dom";
-import { Description, Info } from "@mui/icons-material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import ImageCarousel from "./ImageCarousel";

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Box,
   Chip,
@@ -11,34 +11,70 @@ import {
   Slide,
   InputBase,
   Stack,
+  IconButton,
 } from "@mui/material";
-import { Favorite, FavoriteBorder, AddShoppingCart, RemoveShoppingCart } from "@mui/icons-material";
+import { Favorite, FavoriteBorder, AddShoppingCart, RemoveShoppingCart, AddCircle, RemoveCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
 
 export default function ProductActionButtons(props) {
-
   const [showError, setShowError] = useState(false);
   const [addToCart, setAddToCart] = useState(false);
   const [addToCartContent, setAddToCartContent] = useState("Add to cart");
   const [addToFavorites, setAddToFavorites] = useState(false);
   const [addToFavoritesContent, setAddToFavoritesContent] = useState("Add to favorites");
+  let [productsQuantity, setProductsQuantity] = useState(1);
 
+  useEffect(() => {
+    console.log('productsQuantity has been updated:', productsQuantity);
+  }, [productsQuantity]);
 
+  function handleSetProductsQuantity(value) {
+    value = parseInt(value);
+
+    let result = productsQuantity + value;
+
+    if (result < 1) {
+        value = 0;   
+    }
+
+    if (result > props.product.quantity) {   
+        handleShowError();
+      } else {
+        setProductsQuantity(prev=>prev+=value);
+        handleCloseError();
+    }
+
+    console.log("productsQuantity IS: " + productsQuantity);
+  }
+
+  function handleShowError(){
+    setShowError(true);
+  }
+
+  function handleCloseError(){
+    setShowError(false);
+  }
+
+  
   function enterQuantity() {
     const inputElement = document.getElementById("bootstrap-input");
 
-    if (inputElement.value < 1) {
-      inputElement.value = 1;
+    let value = parseInt(inputElement.value)
+
+    if (value < 1 || value.isNaN()) {
+       value = 1;
     }
 
-    if (inputElement.value > props.product.quantity) {
+    if (value > props.product.quantity) {
       setShowError(true);
     } else {
       setShowError(false);
     }
-  }
+
+    setProductsQuantity(value);
+  } 
 
   function handleAddToCart(value){
     setAddToCart(value);
@@ -130,20 +166,23 @@ export default function ProductActionButtons(props) {
   });
 
   const BootstrapInput = styled(InputBase)(({ theme }) => ({
-    width: 70,
+    width: 40,
     "label + &": {
       marginTop: theme.spacing(3),
     },
     "& .MuiInputBase-input": {
       color: "black",
       textAlign: "center",
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: "50%",
       backgroundColor: theme.palette.mode === "light" ? "#fcfcfb" : "#2b2b2b",
       border: "1px solid #ced4da",
       fontSize: 17,
       "&:focus": {
         borderColor: theme.palette.primary.main,
         boxShadow: theme.palette.dropdown.boxShadow.main,
+      },
+      "&:disabled": {
+        
       },
     },
   }));
@@ -170,6 +209,7 @@ export default function ProductActionButtons(props) {
           <PriceHolder>
             <MainPrice gutterBottom>
               <MainPriceChip
+                component="div"
                 size="medium"
                 variant="filled"
                 label={finalPrice}
@@ -213,11 +253,15 @@ export default function ProductActionButtons(props) {
             Quantity:
           </Typography>
           <QuantityHolder>
+          <IconButton onClick={()=> handleSetProductsQuantity(-1)}> <RemoveCircle/></IconButton>
             <BootstrapInput
-              onChange={() => enterQuantity()}
-              defaultValue={1}
+              defaultValue={productsQuantity}
               id="bootstrap-input"
+              readOnly
+              color="primary"
+              onChange={()=> enterQuantity()}
             />
+              <IconButton onClick={()=> handleSetProductsQuantity(1)}> <AddCircle/></IconButton>
             {`(${props.product.quantity} left)`}
           </QuantityHolder>
           <Snackbar
@@ -230,9 +274,7 @@ export default function ProductActionButtons(props) {
               },
             }}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            onClose={enterQuantity}
             open={showError}
-            severity="error"
             TransitionComponent={Slide}
             message={`In stock are ${props.product.quantity} items only! Please enter valid number`}
           ></Snackbar>
