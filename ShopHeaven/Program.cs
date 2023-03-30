@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyModel;
 using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddSwaggerGen();
 

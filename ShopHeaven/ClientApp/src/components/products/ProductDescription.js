@@ -4,8 +4,7 @@
   import { theme } from "../../theme";
   
   export default function ProductDescription(props) {
-  
- 
+
   function DescriptionLength() {
     let charactersToShowForDescription = 100;
 
