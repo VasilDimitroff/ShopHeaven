@@ -1,4 +1,4 @@
-  import {  Box, Chip, Typography, Rating, } from "@mui/material";
+  import {  Box, Chip, Typography, Rating } from "@mui/material";
   import useMediaQuery from "@mui/material/useMediaQuery";
   import { styled } from "@mui/material/styles";
   import { theme } from "../../theme";
@@ -94,6 +94,20 @@
     },
   })
 
+  function renderDescription(){
+    return (
+      <Typography>
+        {props.product.description.length > DescriptionLength()
+          ? `${props.product.description.slice(0, DescriptionLength())}...`
+          : props.product.description}
+      </Typography>
+    );
+  }
+
+  function renderGuarantee() {
+    return `${ props.product.hasGuarantee ? "Yes" : "No" }`
+  }
+
     return (
         <div>
                <Box>
@@ -114,12 +128,10 @@
               </BrandWrapper>
               <DescriptionWrapper>
                 <GuaranteeText>Guarantee:</GuaranteeText>
-                <InStockInfo>{`${
-                  props.product.hasGuarantee ? "Yes" : "No"
-                }`}</InStockInfo>
+                <InStockInfo>{ renderGuarantee() }</InStockInfo>
               </DescriptionWrapper>
               <DescriptionWrapper>
-                <Typography>{props.product.description.length > DescriptionLength() ? `${props.product.description.slice(0, DescriptionLength())}...` : props.product.description}</Typography>
+                {renderDescription() }
               </DescriptionWrapper>
               </Box>
               <Box>
