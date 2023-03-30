@@ -19,6 +19,7 @@ namespace ShopHeaven.Data.Models
             Carts = new HashSet<ProductCart>();
             Wishlists = new HashSet<ProductWishlist>();
             Labels = new HashSet<ProductLabel>();
+            Specifications = new HashSet<Specification>();
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
@@ -68,6 +69,8 @@ namespace ShopHeaven.Data.Models
         public ICollection<ProductOrder> Orders { get; set; } // the product is presented in these orders
 
         public ICollection<ProductLabel> Labels { get; set; } // the product is presented in these labels
+
+        public ICollection<Specification> Specifications { get; set; } // the product has these specifications
 
 
         //calculate the rating of the product

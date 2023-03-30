@@ -45,7 +45,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<bool> IsUsernameExists(string username)
         {
-           return await db.Users.AnyAsync(u => u.UserName == username);
+           return await db.Users.AnyAsync(u => u.UserName == username && u.IsDeleted == false);
         }
 
 
