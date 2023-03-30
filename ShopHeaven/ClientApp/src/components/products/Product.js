@@ -1,16 +1,11 @@
 import { React, useState } from "react";
 import { Box } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link, useParams } from "react-router-dom";
-import { Info } from "@mui/icons-material";
+import { useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
-import Sidebar from "./Sidebar";
-import Header from "../Header";
-import Footer from "../Footer";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
 import ProductsCarouselLine from "./ProductsCarouselLine";
+import ProductDetailInformation from "./ProductDetailInformation";
 
 
 export default function Product(props) {
@@ -22,6 +17,8 @@ export default function Product(props) {
       isAvailable: true,
       description: "Probably the most random thing you have ever seen!#1",
       id: 1,
+      currency: "$",
+      quantity: 12,
       rating: 2.3,
       price: 20.50,
       discount: 0,
@@ -40,6 +37,8 @@ export default function Product(props) {
       name: "Where the Nature helps you to sleep",
       isAvailable: true,
       id: 2,
+      currency: "$",
+      quantity: 143,
       rating: 3.4,
       price: 120.00,
       discount: 0,
@@ -60,6 +59,8 @@ export default function Product(props) {
       isAvailable: true,
       description: "Probably the most random thing you have ever seen!#3",
       id: 3,
+      currency: "$",
+      quantity: 312,
       rating: 4.9,
       price: 10.30,
       discount: 0,
@@ -79,6 +80,8 @@ export default function Product(props) {
       isAvailable: false,
       description: "Probably the most random thing you have ever seen!#4",
       id: 4,
+      currency: "$",
+      quantity: 172,
       rating: 3.8,
       price: 420.50,
       discount: 20,
@@ -98,6 +101,8 @@ export default function Product(props) {
       isAvailable: false,
       description: "Probably the most random thing you have ever seen!#5",
       id: 5,
+      currency: "$",
+      quantity: 6,
       rating: 4.8,
       price: 64.99,
       discount: 5,
@@ -117,6 +122,8 @@ export default function Product(props) {
       isAvailable: true,
       description: "Probably the most random thing you have ever seen!#6",
       id: 6,
+      currency: "$",
+      quantity: 212,
       rating: 4.2,
       price: 120.50,
       discount: 10,
@@ -135,6 +142,8 @@ export default function Product(props) {
       isAvailable: false,
       description: "Probably the most random thing you have ever seen!#7",
       id: 7,
+      currency: "$",
+      quantity: 153,
       rating: 3.4,
       price: 90.50,
       discount: 15,
@@ -152,6 +161,8 @@ export default function Product(props) {
       isAvailable: false,
       description: "Probably the most random thing you have ever seen!#8",
       id: 8,
+      currency: "$",
+      quantity: 812,
       rating: 3.5,
       price: 70.50,
       discount: 0,
@@ -171,6 +182,8 @@ export default function Product(props) {
       isAvailable: true,
       description: "Probably the most random thing you have ever seen!#9",
       id: 9,
+      currency: "$",
+      quantity: 22,
       rating: 3.6,
       price: 370.00,
       discount: 13,
@@ -190,6 +203,8 @@ export default function Product(props) {
       isAvailable: true,
       description: "Probably the most random thing you have ever seen!#10",
       id: 10,
+      currency: "$",
+      quantity: 83,
       rating: 4.3,
       price: 520.00,
       discount: 10,
@@ -207,6 +222,8 @@ export default function Product(props) {
       name: "Best TV you ever seen in your life",
       isAvailable: true,
       id: 11,
+      currency: "$",
+      quantity: 87,
       rating: 3.4,
       price: 710.00,
       discount: 0,
@@ -276,6 +293,7 @@ export default function Product(props) {
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <ProductInfoWrapper product={product}/>
       <ProductsCarouselLine products={products} headingName="Similar Products" />
+      <ProductDetailInformation product={product}/>
     </div>
   );
 }
