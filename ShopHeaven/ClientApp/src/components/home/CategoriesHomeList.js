@@ -174,7 +174,6 @@ export default function CategoriesHomeList(props) {
   const MainCategoryNameText = styled(Typography)({
     textTransform: "uppercase",
     fontWeight: "500",
-    fontSize: "19px",
     lineHeight: 1.2,
     textAlign: "center",
     paddingBottom: theme.spacing(1),
