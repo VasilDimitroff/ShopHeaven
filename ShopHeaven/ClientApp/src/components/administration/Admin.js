@@ -12,17 +12,9 @@ import Categories from "./Categories";
 import Dashboard from "./Dashboard";
 import Coupons from "./Coupons";
 import { categories } from "../categories";
-import {
-  Inbox,
-  Drafts,
-  Favorite,
-  FavoriteBorder,
-  AddShoppingCart,
-  RemoveShoppingCart,
-  AddCircle,
-  RemoveCircle,
-  Close,
-} from "@mui/icons-material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ReviewsIcon from "@mui/icons-material/Reviews";
+import { PeopleAlt,ShoppingBag, Category, Discount, ShoppingCartCheckout,} from "@mui/icons-material";
 
 export default function Admin() {
   let firstIndex = 1;
@@ -101,7 +93,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, firstIndex)}
                 >
                   <ListItemIcon>
-                    <Inbox />
+                    <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItemButton>
@@ -111,7 +103,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, secondIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <PeopleAlt />
                   </ListItemIcon>
                   <ListItemText primary="Users" />
                 </ListItemButton>
@@ -121,7 +113,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, thirdIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <ShoppingBag />
                   </ListItemIcon>
                   <ListItemText primary="Products" />
                 </ListItemButton>
@@ -131,7 +123,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, forthIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <Category />
                   </ListItemIcon>
                   <ListItemText primary="Categories" />
                 </ListItemButton>
@@ -141,7 +133,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, fifthIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <Discount />
                   </ListItemIcon>
                   <ListItemText primary="Coupons" />
                 </ListItemButton>
@@ -150,7 +142,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, sixthIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <ShoppingCartCheckout />
                   </ListItemIcon>
                   <ListItemText primary="Orders" />
                 </ListItemButton>
@@ -160,7 +152,7 @@ export default function Admin() {
                   onClick={(event) => handleListItemClick(event, seventhIndex)}
                 >
                   <ListItemIcon>
-                    <Drafts />
+                    <ReviewsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Reviews" />
                 </ListItemButton>
