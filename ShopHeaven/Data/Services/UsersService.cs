@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 
 namespace ShopHeaven.Data.Services
@@ -45,7 +46,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<bool> IsUsernameExists(string username)
         {
-           return await db.Users.AnyAsync(u => u.UserName == username && u.IsDeleted == false);
+           return await db.Users.AnyAsync(u => u.UserName == username && u.IsDeleted != true);
         }
 
 

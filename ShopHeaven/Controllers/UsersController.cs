@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ShopHeaven.Data.Services;
+using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 
 namespace ShopHeaven.Controllers

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyModel;
 using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services;
+using ShopHeaven.Data.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<ShopDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ShopDbContext>();
 
 builder.Services.AddIdentityServer()
@@ -27,7 +29,8 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<ICategoriesService, CategoriesService>();
 
 builder.Services.AddSwaggerGen();
 

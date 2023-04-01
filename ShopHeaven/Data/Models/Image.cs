@@ -9,7 +9,7 @@ namespace ShopHeaven.Data.Models
         [Required]
         public string Url { get; set; }
 
-        [Required]
+        [ForeignKey(nameof(Product))]
         public string ProductId { get; set; }
 
         public Product Product { get; set; }

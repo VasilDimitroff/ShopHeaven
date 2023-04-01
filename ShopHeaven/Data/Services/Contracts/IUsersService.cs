@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ShopHeaven.Models.Requests;
 
-namespace ShopHeaven.Data.Services
+namespace ShopHeaven.Data.Services.Contracts
 {
     public interface IUsersService
     {
