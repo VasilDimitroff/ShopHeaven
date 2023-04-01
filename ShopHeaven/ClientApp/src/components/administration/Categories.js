@@ -13,9 +13,10 @@ import {
   TableHead,
   TableContainer,
   Modal,
-  Fade,
   Zoom,
   Backdrop,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -25,7 +26,9 @@ import {
   Edit,
   Delete,
   AddCircle,
+  PhotoCamera,
 } from "@mui/icons-material";
+import { style } from "@mui/system";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
@@ -188,6 +191,7 @@ function Row(props) {
 }
 
 export default function Categories(props) {
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -204,13 +208,37 @@ export default function Categories(props) {
   const ModalBox = styled(Paper)({
     position: "absolute",
     top: "20%",
-    left: "20%",
-    right: "20%",
+    left: "25%",
+    right: "25%",
     transform: "translate(-50%, -50%)",
-    width: "60%",
+    width: "50%",
     boxShadow: 24,
-    p: 4,
+    padding: theme.spacing(3),
+    border: "1px solid gray",
+    display: "block",
+    margin: "auto",
+    [theme.breakpoints.down("lg")]: {
+      width: "80%",
+      left: "10%",
+      right: "10%",
+    },
   });
+
+  const StyledInput = styled(TextField)({
+    marginTop: theme.spacing(3),
+    width: "100%",
+  });
+
+  const InputBox = styled(Box)({
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4)
+  });
+
+  const CreateCategoryButton = styled(Button)({
+   width: "100%",
+   marginTop: theme.spacing(3),
+   marginBottom: theme.spacing(1)
+  })
 
   return (
     <Box>
@@ -276,15 +304,46 @@ export default function Categories(props) {
           <Zoom in={open}>
             <ModalBox>
               <Typography
+              sx={{marginLeft: theme.spacing(4),}}
                 id="transition-modal-title"
                 variant="h6"
                 component="h2"
               >
-                Text in a modal
+                Create a new category
               </Typography>
-              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-              </Typography>
+              <InputBox>
+                <StyledInput
+                  id="category-name"
+                  label="Category name"
+                  variant="filled"
+                />
+              </InputBox>
+              <InputBox>
+                <StyledInput
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="start">
+                        <PhotoCamera />
+                      </InputAdornment>
+                    ),
+                  }}
+                  accept="image/*"
+                  type="file"
+                  variant="filled"
+                />
+              </InputBox>
+              <InputBox>
+                <StyledInput
+                  id="filled-multiline-static"
+                  label="Category Description"
+                  multiline
+                  rows={5}
+                  variant="filled"
+                />
+              </InputBox>
+              <InputBox>
+              <CreateCategoryButton size="large" variant="contained">Create category</CreateCategoryButton>
+              </InputBox>
             </ModalBox>
           </Zoom>
         </Modal>
