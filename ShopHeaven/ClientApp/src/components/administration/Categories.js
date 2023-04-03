@@ -191,9 +191,19 @@ export default function Categories(props) {
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
 
+  const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
+  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState(false);
+
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  function handleOpen() {
+    setOpen(true);
+  } 
+  function handleClose(){
+    setOpen(false);
+    setCreateCategoryResponseMessage("");
+    setCreateCategoryErrorMessage(false);
+  }
 
   function onCreateCategory(e){
     console.log(categoryNameRef.current.value)
@@ -209,10 +219,14 @@ export default function Categories(props) {
     createCategory(category);
   }
 
-  function createCategory(category) {
-    console.log(category);
-    axios.post(ApiEndpoints.categories.createCategory, category)
-    .then((response) => console.log(response.data));
+  async function createCategory(category) {
+    try {
+      const response = await axios.post(ApiEndpoints.categories.createCategory, category);
+      setCreateCategoryResponseMessage(response.data);
+    } catch (error) {
+      console.log("server returns erorr during category creating: " + error);
+      setCreateCategoryErrorMessage(true);
+    }
   }
 
   const MainCategoryTableCell = styled(TableCell)({
@@ -257,6 +271,16 @@ export default function Categories(props) {
    width: "100%",
    marginTop: theme.spacing(3),
    marginBottom: theme.spacing(1)
+  })
+
+  const ResponseMessage = styled(Typography)({
+    textAlign: "center",
+    color: theme.palette.success.main
+  });
+
+  const ErrorResponseMessage = styled(Typography)({
+    textAlign: "center",
+    color: theme.palette.error.main
   })
 
   return (
@@ -366,6 +390,8 @@ export default function Categories(props) {
               <CreateCategoryButton type="submit" size="large" variant="contained">Create category</CreateCategoryButton>
               </InputBox>
               </form>
+                <ResponseMessage>{createCategoryResponseMessage}</ResponseMessage>
+                { createCategoryErrorMessage ? <ErrorResponseMessage>An error during category creation!</ErrorResponseMessage> : ""}
             </ModalBox>
           </Zoom>
         </Modal>
