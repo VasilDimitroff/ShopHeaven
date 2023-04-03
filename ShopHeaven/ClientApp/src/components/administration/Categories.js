@@ -1,4 +1,4 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, Fragment, useRef } from "react";
 import {
   Box,
   Button,
@@ -29,14 +29,11 @@ import {
   PhotoCamera,
 } from "@mui/icons-material";
 import { style } from "@mui/system";
+import axios from "axios";
+import { ApiEndpoints } from "../../endpoints";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
-
-  const StyledImage = styled("img")({
-    width: "30px",
-    height: "30px",
-  });
 
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
@@ -191,10 +188,32 @@ function Row(props) {
 }
 
 export default function Categories(props) {
+  let categoryNameRef = useRef();
+  let categoryDescriptionRef = useRef();
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  function onCreateCategory(e){
+    console.log(categoryNameRef.current.value)
+    console.log(categoryDescriptionRef.current.value)
+    e.preventDefault();
+
+    let category = {
+      name: categoryNameRef.current.value,
+      description: categoryDescriptionRef.current.value,
+      createdBy: "6d011520-f43e-468e-bf45-466ab65d9ca6",
+    }
+    
+    createCategory(category);
+  }
+
+  function createCategory(category) {
+    console.log(category);
+    axios.post(ApiEndpoints.categories.createCategory, category)
+    .then((response) => console.log(response.data));
+  }
 
   const MainCategoryTableCell = styled(TableCell)({
     fontSize: 18,
@@ -303,6 +322,7 @@ export default function Categories(props) {
         >
           <Zoom in={open}>
             <ModalBox>
+              <form onSubmit={onCreateCategory}>
               <Typography
               sx={{marginLeft: theme.spacing(4),}}
                 id="transition-modal-title"
@@ -313,7 +333,7 @@ export default function Categories(props) {
               </Typography>
               <InputBox>
                 <StyledInput
-                  id="category-name"
+                 inputRef={categoryNameRef}
                   label="Category name"
                   variant="filled"
                 />
@@ -334,7 +354,8 @@ export default function Categories(props) {
               </InputBox>
               <InputBox>
                 <StyledInput
-                  id="filled-multiline-static"
+                  inputRef={categoryDescriptionRef}
+                  id="123"
                   label="Category Description"
                   multiline
                   rows={5}
@@ -342,8 +363,9 @@ export default function Categories(props) {
                 />
               </InputBox>
               <InputBox>
-              <CreateCategoryButton size="large" variant="contained">Create category</CreateCategoryButton>
+              <CreateCategoryButton type="submit" size="large" variant="contained">Create category</CreateCategoryButton>
               </InputBox>
+              </form>
             </ModalBox>
           </Zoom>
         </Modal>
