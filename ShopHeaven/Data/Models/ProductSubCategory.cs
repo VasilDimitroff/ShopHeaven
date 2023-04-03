@@ -4,7 +4,7 @@ using ShopHeaven.Data.Models.Common;
 
 namespace ShopHeaven.Data.Models
 {
-    public class ProductSubCategory: BaseModel
+    public class ProductSubCategory: BaseModel, IDeletableModel
     {
         [Required]
         public string ProductId { get; set; }

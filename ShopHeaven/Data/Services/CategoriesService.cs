@@ -50,5 +50,102 @@ namespace ShopHeaven.Data.Services
 
             await this.db.SaveChangesAsync();      
         }
+
+        public async Task<string> DeleteCategory(DeleteCategoryRequestModel model)
+        {
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var userRoles = await this.userManager.GetRolesAsync(user);
+
+            if (!userRoles.Any(x => x == GlobalConstants.AdministratorRoleName))
+            {
+                throw new InvalidOperationException(GlobalConstants.UserHaveNoPermissionsToDeleteCategories);
+            }
+
+            MainCategory category = await this.db.MainCategories
+                .Where(x => x.Id == model.CategoryId && x.IsDeleted != true)
+                .Include(x => x.SubCategories
+                     .Where(x => x.IsDeleted != true))
+                .ThenInclude(x => x.Products
+                     .Where(x => x.IsDeleted != true))
+                .FirstOrDefaultAsync();
+
+
+            if (category == null)
+            {
+                throw new ArgumentException(GlobalConstants.CategoryWithThisIdDoesntExist);
+            }
+
+            //delete mapping entities between main category and product
+            //delete product entity and almost all related to it
+            foreach (ProductMainCategory productMainCategory in category.Products)
+            {
+                Product product = productMainCategory.Product;
+
+                foreach (var tag in product.Tags)
+                {
+                    tag.IsDeleted = true;
+                }
+
+                foreach (var image in product.Images)
+                {
+                    image.IsDeleted = true;
+                }
+
+                foreach (var review in product.Reviews)
+                {
+                    review.IsDeleted = true;
+                }
+
+                foreach (var productSubcategory in product.SubCategories)
+                {
+                    productSubcategory.IsDeleted = true;
+                }
+
+                foreach (var productCart in product.Carts)
+                {
+                    productCart.IsDeleted = true;
+                }
+
+                foreach (var productWishlist in product.Wishlists)
+                {
+                    productWishlist.IsDeleted = true;
+                }
+
+                foreach (var productLabels in product.Labels)
+                {
+                    productLabels.IsDeleted = true;
+                }
+
+                foreach (var productSpecifications in product.Specifications)
+                {
+                    productSpecifications.IsDeleted = true;
+                }
+
+        //delete product
+        product.IsDeleted = true;
+
+                //delete ProductMainCategory
+                productMainCategory.IsDeleted = true;
+            }
+
+            //delete subcategories entities
+            foreach (SubCategory subcategory in category.SubCategories)
+            {
+                subcategory.IsDeleted = true;
+            }
+
+            //delete main category
+            category.IsDeleted = true;
+
+            await this.db.SaveChangesAsync();
+
+            return category.Name;
+        }
     }
 }

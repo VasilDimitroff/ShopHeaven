@@ -13,5 +13,9 @@
         public const string UserDoesNotExist = "User with given Id doesn't exists!";
 
         public const string CategoryWithThisNameAlreadyExist = "Category with given name already exists!";
+
+        public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";
+
+        public const string UserHaveNoPermissionsToDeleteCategories = "You have no permissions to delete categories!";
     }
 }

@@ -30,5 +30,20 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] DeleteCategoryRequestModel model)
+        {
+            try
+            {
+                var categoryName = await this.categoriesService.DeleteCategory(model);
+                return Ok($"Category {categoryName} successfully deleted!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
