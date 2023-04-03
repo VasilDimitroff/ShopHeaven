@@ -70,7 +70,16 @@ export default function Admin() {
     padding: theme.spacing(1),
     textAlign: "center",
     color: theme.palette.text.secondary,
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+    },
   }));
+
+  const TableHolderListItem = styled(Item)({
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+    },
+  })
 
   const MainWrapper = styled(Box)({
     width: "80%",
@@ -80,14 +89,28 @@ export default function Admin() {
     },
   });
 
+  const StyledListItemText = styled(ListItemText)({
+    [theme.breakpoints.down("lg")]: {
+      display: "none",
+    },
+    marginLeft: theme.spacing(-2)
+  });
+
+  const StyledList = styled(List)({
+    display: "block",
+    [theme.breakpoints.down("lg")]: {
+      display: "flex",
+    },
+  });
+
   return (
     <MainWrapper>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={2}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={12} md={12} lg={2}>
             <Item>
-              <List component="nav" aria-label="main mailbox folders">
+              <StyledList aria-label="main mailbox folders">
                 <ListItemButton
                   selected={selectedIndex === 1}
                   onClick={(event) => handleListItemClick(event, firstIndex)}
@@ -95,7 +118,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Dashboard" />
+                  <StyledListItemText primary="Dashboard" />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton
@@ -105,7 +128,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <PeopleAlt />
                   </ListItemIcon>
-                  <ListItemText primary="Users" />
+                  <StyledListItemText primary="Users" />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton
@@ -115,7 +138,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <ShoppingBag />
                   </ListItemIcon>
-                  <ListItemText primary="Products" />
+                  <StyledListItemText primary="Products" />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton
@@ -125,7 +148,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <Category />
                   </ListItemIcon>
-                  <ListItemText primary="Categories" />
+                  <StyledListItemText primary="Categories" />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton
@@ -135,7 +158,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <Discount />
                   </ListItemIcon>
-                  <ListItemText primary="Coupons" />
+                  <StyledListItemText primary="Coupons" />
                 </ListItemButton>
                 <ListItemButton
                   selected={selectedIndex === sixthIndex}
@@ -144,7 +167,7 @@ export default function Admin() {
                   <ListItemIcon>
                     <ShoppingCartCheckout />
                   </ListItemIcon>
-                  <ListItemText primary="Orders" />
+                  <StyledListItemText primary="Orders" />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton
@@ -154,14 +177,14 @@ export default function Admin() {
                   <ListItemIcon>
                     <ReviewsIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Reviews" />
+                  <StyledListItemText primary="Reviews" />
                 </ListItemButton>
                 <Divider />
-              </List>
+              </StyledList>
             </Item>
           </Grid>
-          <Grid item xs={10}>
-            <Item>{renderSubmenu()}</Item>
+          <Grid item xs={12} sm={12} md={12} lg={10}>
+            <TableHolderListItem>{renderSubmenu()}</TableHolderListItem>
           </Grid>
         </Grid>
       </Box>
