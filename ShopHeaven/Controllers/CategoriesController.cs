@@ -18,7 +18,7 @@ namespace ShopHeaven.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody]CreateCategoryRequestModel model)
+        public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {
             try
             {

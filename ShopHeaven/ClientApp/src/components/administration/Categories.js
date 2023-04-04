@@ -190,6 +190,7 @@ function Row(props) {
 export default function Categories(props) {
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
+  let categoryImageRef = useRef();
 
   const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
   const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState(false);
@@ -206,22 +207,29 @@ export default function Categories(props) {
   }
 
   function onCreateCategory(e){
-    console.log(categoryNameRef.current.value)
-    console.log(categoryDescriptionRef.current.value)
+    console.log("CATEGORY NAME " + categoryNameRef.current.value)
+    console.log("CATEGORY DESCR " + categoryDescriptionRef.current.value)
+    console.log("IMAGE " + document.getElementById('category-image').files[0]);
+
+    const categoryName = categoryNameRef.current.value;
+    const categoryDescription = categoryDescriptionRef.current.value;
+    const categoryImage = document.getElementById('category-image').files[0];
+
+    const formData = new FormData();
+
+    formData.append("name", categoryName);
+    formData.append("description", categoryDescription);
+    formData.append("image", categoryImage);
+    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
+
     e.preventDefault();
 
-    let category = {
-      name: categoryNameRef.current.value,
-      description: categoryDescriptionRef.current.value,
-      createdBy: "6d011520-f43e-468e-bf45-466ab65d9ca6",
-    }
-    
-    createCategory(category);
+    createCategory(formData);
   }
 
-  async function createCategory(category) {
+  async function createCategory(formData) {
     try {
-      const response = await axios.post(ApiEndpoints.categories.createCategory, category);
+      const response = await axios.post(ApiEndpoints.categories.createCategory, formData);
       setCreateCategoryResponseMessage(response.data);
     } catch (error) {
       console.log("server returns erorr during category creating: " + error);
@@ -364,6 +372,7 @@ export default function Categories(props) {
               </InputBox>
               <InputBox>
                 <StyledInput
+                inputRef={categoryImageRef}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">
@@ -371,9 +380,10 @@ export default function Categories(props) {
                       </InputAdornment>
                     ),
                   }}
-                  accept="image/*"
+                  accept=".jpg, .png"
                   type="file"
                   variant="filled"
+                  id="category-image"
                 />
               </InputBox>
               <InputBox>

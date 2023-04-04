@@ -9,7 +9,7 @@ namespace ShopHeaven.Models.Requests
 
         public string Description { get; set; }
 
-       // public IFormFile Image { get; set; }
+        public IFormFile Image { get; set; }
 
         [Required]
         public string CreatedBy { get; set; }
