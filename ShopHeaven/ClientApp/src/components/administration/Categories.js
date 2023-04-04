@@ -44,9 +44,13 @@ function Row(props) {
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] = useState("");
   const [editCategoryErrorMessage, setEditCategoryErrorMessage] = useState(false);
 
+  const [getCategoryResult, setGetCategoryResult] = useState({});
 
-  function handleShowEditModal() {
+
+
+  async function handleShowEditModal(id) {
     setOpenEditCategoryModal(true);
+   await getCategory(id);
   } 
   function handleCloseEditModal(){
     setOpenEditCategoryModal(false);
@@ -57,7 +61,7 @@ function Row(props) {
   function clearFormValues() {
     categoryNameRef.current.value = "";
     categoryDescriptionRef.current.value = "";
-    document.getElementById('category-image').value = "";
+    document.getElementById('edit-category-image').value = "";
   }
 
   function onEditCategory(e){
@@ -69,7 +73,7 @@ function Row(props) {
 
     const categoryName = categoryNameRef.current.value;
     const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById('category-image').files[0];
+    const categoryImage = document.getElementById('edit-category-image').files[0];
 
     const formData = new FormData();
 
@@ -79,6 +83,17 @@ function Row(props) {
     formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
 
     editCategory(formData);
+  }
+
+  async function getCategory(id) {
+    try {
+      const response = await axios.get(ApiEndpoints.categories.getCategory + id);
+      setGetCategoryResult(response.data);
+
+    } catch (error) {
+      console.log("server returns erorr during category getting: " + error);
+      setEditCategoryErrorMessage(true);
+    }
   }
 
   async function editCategory(formData) {
@@ -232,7 +247,7 @@ function Row(props) {
         <TableCell align="center">{props.category.createdBy}</TableCell>
         <TableCell align="center">
           <StyledButton
-          onClick={() => handleShowEditModal()}
+          onClick={() => handleShowEditModal("1da3ebe5-55b3-4a7b-bda4-04315cd85f6f")}
             color="warning"
             variant="contained"
             size="small"
@@ -314,13 +329,14 @@ function Row(props) {
                 variant="h6"
                 component="h2"
               >
-                Create a new category
+                Edit category { getCategoryResult.name }
               </Typography>
               <InputBox>
                 <StyledInput
                  inputRef={categoryNameRef}
                   label="Category name"
                   variant="filled"
+                  defaultValue={getCategoryResult.name}
                 />
               </InputBox>
               <InputBox>
@@ -336,7 +352,7 @@ function Row(props) {
                   accept=".jpg, .png"
                   type="file"
                   variant="filled"
-                  id="category-image"
+                  id="edit-category-image"
                 />
               </InputBox>
               <InputBox>
@@ -347,6 +363,7 @@ function Row(props) {
                   multiline
                   rows={5}
                   variant="filled"
+                  defaultValue={getCategoryResult.description}
                 />
               </InputBox>
               <InputBox>
