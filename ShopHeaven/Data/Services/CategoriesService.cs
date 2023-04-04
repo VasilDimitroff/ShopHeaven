@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Responses.Categories;
 using System.Linq;
 
 namespace ShopHeaven.Data.Services
@@ -29,7 +30,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Name == model.Name);
-            
+
             if (category != null)
             {
                 throw new ArgumentException(GlobalConstants.CategoryWithThisNameAlreadyExist);
@@ -48,7 +49,7 @@ namespace ShopHeaven.Data.Services
 
             await this.db.MainCategories.AddAsync(newCategory);
 
-            await this.db.SaveChangesAsync();      
+            await this.db.SaveChangesAsync();
         }
 
         public async Task<string> DeleteCategory(DeleteCategoryRequestModel model)
@@ -127,8 +128,8 @@ namespace ShopHeaven.Data.Services
                     productSpecifications.IsDeleted = true;
                 }
 
-        //delete product
-        product.IsDeleted = true;
+                //delete product
+                product.IsDeleted = true;
 
                 //delete ProductMainCategory
                 productMainCategory.IsDeleted = true;
@@ -146,6 +147,23 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
 
             return category.Name;
+        }
+
+        public async Task<GetCategoryResponseModel> GetCategoryById(string id)
+        {
+            GetCategoryResponseModel getCategoryResponseModel = await this.db.MainCategories
+                .Where(x => x.Id == id && x.IsDeleted != true)
+                .Include(x => x.Image)
+                .Select(x => new GetCategoryResponseModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ImageUrl = x.Image.Url
+                })
+                .FirstOrDefaultAsync();
+
+            return getCategoryResponseModel;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Responses.Categories;
 
 namespace ShopHeaven.Controllers
 {
@@ -14,6 +15,27 @@ namespace ShopHeaven.Controllers
         public CategoriesController(ICategoriesService categoriesService)
         {
             this.categoriesService = categoriesService;
+        }
+
+        [HttpGet]
+        [Route("get")]
+        public async Task<IActionResult> Get(string id)
+        {
+            try
+            {
+                GetCategoryResponseModel categoryResponseModel = await this.categoriesService.GetCategoryById(id);
+
+                if (categoryResponseModel == null)
+                {
+                    return BadRequest($"Searched category not found!");
+                }
+
+                return Ok(categoryResponseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
