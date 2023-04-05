@@ -11,8 +11,6 @@ namespace ShopHeaven.Data.Models
         public Product()
         {
             Reviews = new HashSet<Review>();
-            MainCategories = new HashSet<ProductMainCategory>();
-            SubCategories = new HashSet<ProductSubCategory>();
             Images = new HashSet<Image>();
             Reviews = new HashSet<Review>();
             Tags = new HashSet<ProductTag>();
@@ -43,6 +41,11 @@ namespace ShopHeaven.Data.Models
 
         public decimal Discount { get; set; } // in percent
 
+        [Required]
+        public string SubCategoryId { get; set; }
+
+        public SubCategory SubCategory { get; set; }
+
         public double Rating  { get => CalculateRating();  private set => _rating = value; }
 
         [Required]
@@ -55,10 +58,6 @@ namespace ShopHeaven.Data.Models
         public ICollection<Image> Images { get; set; } // the product has these images
 
         public ICollection<Review> Reviews { get; set; } // the product has these reviews
-
-        public ICollection<ProductMainCategory> MainCategories { get; set; } // the product is in these maincategories
-
-        public ICollection<ProductSubCategory> SubCategories { get; set; } // the product is in these subcategories
 
         public ICollection<ProductTag> Tags { get; set; } // the product has these tags
 

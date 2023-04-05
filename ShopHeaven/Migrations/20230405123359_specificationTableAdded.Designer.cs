@@ -12,8 +12,8 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20230401170818_productIdInImageModelNotRequired")]
-    partial class productIdInImageModelNotRequired
+    [Migration("20230405123359_specificationTableAdded")]
+    partial class specificationTableAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -644,9 +644,15 @@ namespace ShopHeaven.Migrations
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
+                    b.Property<string>("SubCategoryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Products");
                 });
@@ -714,36 +720,6 @@ namespace ShopHeaven.Migrations
                     b.ToTable("ProductsLabels");
                 });
 
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductMainCategory", b =>
-                {
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MainCategoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductId", "MainCategoryId");
-
-                    b.HasIndex("MainCategoryId");
-
-                    b.ToTable("ProductsMainCategories");
-                });
-
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductOrder", b =>
                 {
                     b.Property<string>("OrderId")
@@ -775,36 +751,6 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductsOrders");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductSubCategory", b =>
-                {
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("SubCategoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductId", "SubCategoryId");
-
-                    b.HasIndex("SubCategoryId");
-
-                    b.ToTable("ProductsSubCategories");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductTag", b =>
@@ -949,7 +895,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Specification");
+                    b.ToTable("Specifications");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.SubCategory", b =>
@@ -1290,7 +1236,15 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("ShopHeaven.Data.Models.SubCategory", "SubCategory")
+                        .WithMany("Products")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductCart", b =>
@@ -1331,25 +1285,6 @@ namespace ShopHeaven.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductMainCategory", b =>
-                {
-                    b.HasOne("ShopHeaven.Data.Models.MainCategory", "MainCategory")
-                        .WithMany("Products")
-                        .HasForeignKey("MainCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("ShopHeaven.Data.Models.Product", "Product")
-                        .WithMany("MainCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MainCategory");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductOrder", b =>
                 {
                     b.HasOne("ShopHeaven.Data.Models.Order", "Order")
@@ -1367,25 +1302,6 @@ namespace ShopHeaven.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductSubCategory", b =>
-                {
-                    b.HasOne("ShopHeaven.Data.Models.Product", "Product")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShopHeaven.Data.Models.SubCategory", "SubCategory")
-                        .WithMany("Products")
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductTag", b =>
@@ -1437,7 +1353,7 @@ namespace ShopHeaven.Migrations
                     b.HasOne("ShopHeaven.Data.Models.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("CreatedBy");
@@ -1517,8 +1433,6 @@ namespace ShopHeaven.Migrations
                     b.Navigation("Image")
                         .IsRequired();
 
-                    b.Navigation("Products");
-
                     b.Navigation("SubCategories");
                 });
 
@@ -1538,15 +1452,11 @@ namespace ShopHeaven.Migrations
 
                     b.Navigation("Labels");
 
-                    b.Navigation("MainCategories");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
 
                     b.Navigation("Specifications");
-
-                    b.Navigation("SubCategories");
 
                     b.Navigation("Tags");
 

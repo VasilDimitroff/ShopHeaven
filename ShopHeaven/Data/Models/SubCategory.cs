@@ -8,7 +8,7 @@ namespace ShopHeaven.Data.Models
     {
         public SubCategory()
         {
-            this.Products = new HashSet<ProductSubCategory>();
+            this.Products = new HashSet<Product>();
         }
 
         [Required(ErrorMessage = "SubCategory name cannot be null or empty")]
@@ -28,7 +28,7 @@ namespace ShopHeaven.Data.Models
 
         public MainCategory MainCategory { get; set; } // this is main category of the current category
 
-        public ICollection<ProductSubCategory> Products { get; set; } // this subcategory contains these products
+        public ICollection<Product> Products { get; set; } // this subcategory contains these products
 
         [Required]
         public string CreatedById { get; set; }

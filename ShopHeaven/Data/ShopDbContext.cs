@@ -17,13 +17,11 @@ namespace ShopHeaven.Data
 
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Specification> Specifications { get; set; }
+
         public DbSet<MainCategory> MainCategories { get; set; }
 
         public DbSet<SubCategory> SubCategories { get; set; }
-
-        public DbSet<ProductMainCategory> ProductsMainCategories { get; set; }
-
-        public DbSet<ProductSubCategory> ProductsSubCategories { get; set; }
 
         public DbSet<Review> Reviews { get; set; }
 
@@ -57,30 +55,6 @@ namespace ShopHeaven.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<ProductMainCategory>()
-                .HasKey(pmc => new { pmc.ProductId, pmc.MainCategoryId });
-            modelBuilder.Entity<ProductMainCategory>()
-                .HasOne(pmc => pmc.Product)
-                .WithMany(p => p.MainCategories)
-                .HasForeignKey(pmc => pmc.ProductId);
-            modelBuilder.Entity<ProductMainCategory>()
-                .HasOne(pmc => pmc.MainCategory)
-                .WithMany(mc => mc.Products)
-                .HasForeignKey(pmc => pmc.MainCategoryId)
-                 .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<ProductSubCategory>()
-                .HasKey(psc => new { psc.ProductId, psc.SubCategoryId });
-            modelBuilder.Entity<ProductSubCategory>()
-                .HasOne(psc => psc.Product)
-                .WithMany(sc => sc.SubCategories)
-                .HasForeignKey(psc => psc.ProductId);
-            modelBuilder.Entity<ProductSubCategory>()
-                .HasOne(psc => psc.SubCategory)
-                .WithMany(sc => sc.Products)
-                .HasForeignKey(psc => psc.SubCategoryId)
-                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProductTag>()
                 .HasKey(pt => new { pt.TagId, pt.ProductId });
@@ -176,6 +150,13 @@ namespace ShopHeaven.Data
             .WithMany(x => x.Products)
             .HasForeignKey(x => x.CreatedById)
             .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Product>()
+            .HasMany(x => x.Reviews)
+            .WithOne(x => x.Product)
+            .HasForeignKey(x => x.ProductId)
+            .OnDelete(DeleteBehavior.NoAction);
+
 
             modelBuilder
             .Entity<Product>()

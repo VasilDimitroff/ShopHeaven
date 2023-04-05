@@ -84,62 +84,53 @@ namespace ShopHeaven.Data.Services
 
             //delete mapping entities between main category and product
             //delete product entity and almost all related to it
-            foreach (ProductMainCategory productMainCategory in category.Products)
+            foreach (SubCategory subCategory in category.SubCategories)
             {
-                Product product = productMainCategory.Product;
-
-                foreach (var tag in product.Tags)
+                foreach (Product product in subCategory.Products)
                 {
-                    tag.IsDeleted = true;
-                }
+                    foreach (var tag in product.Tags)
+                    {
+                        tag.IsDeleted = true;
+                    }
 
-                foreach (var image in product.Images)
-                {
-                    image.IsDeleted = true;
-                }
+                    foreach (var image in product.Images)
+                    {
+                        image.IsDeleted = true;
+                    }
 
-                foreach (var review in product.Reviews)
-                {
-                    review.IsDeleted = true;
-                }
+                    foreach (var review in product.Reviews)
+                    {
+                        review.IsDeleted = true;
+                    }
 
-                foreach (var productSubcategory in product.SubCategories)
-                {
-                    productSubcategory.IsDeleted = true;
-                }
+                    foreach (var productCart in product.Carts)
+                    {
+                        productCart.IsDeleted = true;
+                    }
 
-                foreach (var productCart in product.Carts)
-                {
-                    productCart.IsDeleted = true;
-                }
+                    foreach (var productWishlist in product.Wishlists)
+                    {
+                        productWishlist.IsDeleted = true;
+                    }
 
-                foreach (var productWishlist in product.Wishlists)
-                {
-                    productWishlist.IsDeleted = true;
-                }
+                    foreach (var productLabels in product.Labels)
+                    {
+                        productLabels.IsDeleted = true;
+                    }
 
-                foreach (var productLabels in product.Labels)
-                {
-                    productLabels.IsDeleted = true;
-                }
+                    foreach (var productSpecifications in product.Specifications)
+                    {
+                        productSpecifications.IsDeleted = true;
+                    }
 
-                foreach (var productSpecifications in product.Specifications)
-                {
-                    productSpecifications.IsDeleted = true;
+                    //delete product
+                    product.IsDeleted = true;
                 }
-
-                //delete product
-                product.IsDeleted = true;
 
                 //delete ProductMainCategory
-                productMainCategory.IsDeleted = true;
+                subCategory.IsDeleted = true;
             }
 
-            //delete subcategories entities
-            foreach (SubCategory subcategory in category.SubCategories)
-            {
-                subcategory.IsDeleted = true;
-            }
 
             //delete main category
             category.IsDeleted = true;

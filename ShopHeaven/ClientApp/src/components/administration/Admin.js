@@ -12,6 +12,7 @@ import Categories from "./Categories";
 import Dashboard from "./Dashboard";
 import Coupons from "./Coupons";
 import { categories } from "../categories";
+import { products } from "../products";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { PeopleAlt,ShoppingBag, Category, Discount, ShoppingCartCheckout,} from "@mui/icons-material";
@@ -41,7 +42,7 @@ export default function Admin() {
     } else if (selectedIndex === secondIndex) {
       return <Users />;
     } else if (selectedIndex === thirdIndex) {
-      return <Products />;
+      return <Products categories={categories} products={products}/>;
     } else if (selectedIndex === forthIndex) {
       return <Categories categories={categories} />;
     } else if (selectedIndex === fifthIndex) {
