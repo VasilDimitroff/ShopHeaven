@@ -6,7 +6,5 @@ namespace ShopHeaven.Data.Services.Contracts
     public interface IUsersService
     {
         Task<IdentityResult> CreateUser(CreateUserRequestModel model);
-
-        Task<bool> IsUsernameExists(string username);
     }
 }

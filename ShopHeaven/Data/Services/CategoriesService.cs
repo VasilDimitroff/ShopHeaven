@@ -144,12 +144,14 @@ namespace ShopHeaven.Data.Services
         public async Task<List<GetCategoriesResponseModel>> GetAllCategories()
         {
             List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
+                .Where(x => x.IsDeleted != true)
                 .Include(x => x.SubCategories)
                 .Select(x => new GetCategoriesResponseModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Subcategories = x.SubCategories
+                    .Where(s => s.IsDeleted != true)
                     .Select(x => new SubcategoriesBaseResponseModel
                     {
                         Name = x.Name,

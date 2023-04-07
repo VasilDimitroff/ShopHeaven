@@ -19,9 +19,7 @@ namespace ShopHeaven.Data.Services
         }
         public async Task<IdentityResult> CreateUser(CreateUserRequestModel model)
         {
-            bool isUserExists =  await this.IsUsernameExists(model.Username);
-
-            if (isUserExists)
+            if (await db.Users.AnyAsync(u => u.UserName == model.Username && u.IsDeleted != true))
             {
                 throw new ArgumentException(GlobalConstants.UserWithThisUsernameAlreadyExist);
             }
@@ -43,12 +41,5 @@ namespace ShopHeaven.Data.Services
 
             return result;
         }
-
-        public async Task<bool> IsUsernameExists(string username)
-        {
-           return await db.Users.AnyAsync(u => u.UserName == username && u.IsDeleted != true);
-        }
-
-
     }
 }
