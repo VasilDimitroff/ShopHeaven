@@ -19,16 +19,18 @@ import {
   InputAdornment,
   Chip,
   InputBase,
-  FormGroup,
   FormControlLabel,
   Switch,
+  ImageList,
+  ImageListItem,
+  ListItemIcon
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
-  Edit,
+  Close,
   Delete,
   AddCircle,
   PhotoCamera,
@@ -209,6 +211,21 @@ function Row(props) {
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
+  });
+
+  const StyledImageList = styled(ImageList)({
+    padding: theme.spacing(0.5),
+  });
+
+  const StyledImageListItem = styled(ImageListItem)({
+    position: "relative",
+    cursor: "pointer",
+    "&:hover": {
+      outlineColor: theme.palette.primary.main,
+      outlineStyle: "solid",
+      outlineWidth: "3px",
+      boxShadow: theme.palette.dropdown.boxShadow.main,
+    },
   });
 
   return (
@@ -433,41 +450,57 @@ function Row(props) {
                   size="medium"
                   variant="contained"
                 >
-                  Save Changes
+                  SAVE PRODUCT INFO
                 </EditProductButton>
               </form>
-
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center">Product Images</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {props.product.images.map((image, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                        sx={{ padding: 0, width: "100%" }}
-                      >
-                        <img
-                          src={image}
-                          style={{
-                            display: "block",
-                            margin: "auto",
-                            width: "50%",
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
+              <Box>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  component="div"
+                  sx={{ marginTop: theme.spacing(6) }}
+                >
+                  PRODUCT IMAGES
+                </Typography>
+                <form>
+                <StyledImageList cols={5}>
+                  {props.product.images.map((item, index) => (
+                    <StyledImageListItem key={index}  sx={{width: "90%"}}>
+                          <ListItemIcon sx={{position: "absolute", zIndex: 1, right: -15}}>
+                            <IconButton><Close sx={{ color: theme.palette.error.main}} /></IconButton>
+                       </ListItemIcon>
+                      <img
+                        src={`${item}?w=248&fit=crop&auto=format`}
+                        srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                        alt={props.product.name}
+                        loading="lazy"
+                      />
+                  
+                    </StyledImageListItem>
                   ))}
-                </TableBody>
-              </Table>
+                </StyledImageList>
+                <InputBox>
+                  <ProductInfoInput
+                    inputRef={productImageRef}
+                    accept=".jpg, .png"
+                    type="file"
+                    variant="outlined"
+                    id="upload-product-photos-image"
+                    inputProps={{
+                      multiple: true
+                    }}
+                  />
+                </InputBox>
+
+                <EditProductButton
+                  type="submit"
+                  size="medium"
+                  variant="contained"
+                >
+                  SAVE IMAGES
+                </EditProductButton>
+                </form>
+              </Box>
             </Box>
           </Collapse>
         </TableCell>
