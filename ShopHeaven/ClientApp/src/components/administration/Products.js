@@ -23,7 +23,8 @@ import {
   Switch,
   ImageList,
   ImageListItem,
-  ListItemIcon
+  ListItemIcon,
+  Pagination,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -634,6 +635,14 @@ export default function Products(props) {
     color: theme.palette.error.main,
   });
 
+  const StyledPagination = styled(Pagination)({
+  })
+
+  const PaginationHolder = styled(Box)({
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  })
+
   return (
     <Box>
       <TableContainer component={Box}>
@@ -671,6 +680,12 @@ export default function Products(props) {
           </Button>
         </StyledButtonBox>
       </TableContainer>
+      <Collapse in={true} timeout="auto" unmountOnExit>
+       Product Form Here
+        </Collapse>
+        <PaginationHolder> 
+           <StyledPagination count={10} size="medium" color="secondary"  />
+        </PaginationHolder>
       <Box>
         <Modal
           aria-labelledby="transition-modal-title"
