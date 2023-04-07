@@ -422,7 +422,7 @@ export default function Categories(props) {
     formData.append("name", categoryName);
     formData.append("description", categoryDescription);
     formData.append("image", categoryImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
+    formData.append("createdBy", "3f2d0e68-950b-44fc-85b5-66a4e5d849e2");
 
     createCategory(formData);
   }

@@ -23,7 +23,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                GetCategoryResponseModel categoryResponseModel = await this.categoriesService.GetCategoryById(id);
+                GetCategoriesResponseModel categoryResponseModel = await this.categoriesService.GetCategoryById(id);
 
                 if (categoryResponseModel == null)
                 {
@@ -31,6 +31,22 @@ namespace ShopHeaven.Controllers
                 }
 
                 return Ok(categoryResponseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("getAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                List<GetCategoriesResponseModel> categoriesWithSubcategories = await this.categoriesService.GetAllCategories();
+
+                return Ok(categoriesWithSubcategories);
             }
             catch (Exception ex)
             {

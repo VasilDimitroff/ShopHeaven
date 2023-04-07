@@ -10,6 +10,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<GetCategoryResponseModel> GetCategoryById(string id);
 
+        Task<List<GetCategoriesResponseModel>> GetAllCategories();
+
         Task<string> DeleteCategory(DeleteCategoryRequestModel model);
     }
 }

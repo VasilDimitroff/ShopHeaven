@@ -4,6 +4,7 @@ using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Responses.Categories;
+using ShopHeaven.Models.Responses.Subcategories;
 using System.Linq;
 
 namespace ShopHeaven.Data.Services
@@ -138,6 +139,27 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
 
             return category.Name;
+        }
+
+        public async Task<List<GetCategoriesResponseModel>> GetAllCategories()
+        {
+            List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
+                .Include(x => x.SubCategories)
+                .Select(x => new GetCategoriesResponseModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Subcategories = x.SubCategories
+                    .Select(x => new SubcategoriesBaseResponseModel
+                    {
+                        Name = x.Name,
+                        Id = x.Id,
+                    })
+                    .ToList()
+                })
+                .ToListAsync();
+
+            return allCategories;
         }
 
         public async Task<GetCategoryResponseModel> GetCategoryById(string id)
