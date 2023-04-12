@@ -12,11 +12,6 @@ import {
   TableBody,
   TableHead,
   TableContainer,
-  Modal,
-  Zoom,
-  Backdrop,
-  TextField,
-  InputAdornment,
   Chip,
   InputBase,
   FormControlLabel,
@@ -231,7 +226,7 @@ function Row(props) {
                     defaultValue={props.product.description}
                   />
                 </InputBox>
-                <InputBox></InputBox>
+
                 <Box sx={{ display: "flex", marginTop: theme.spacing(5) }}>
                   <InputBox>
                     <Typography variant="h6">Availability:</Typography>
@@ -475,25 +470,8 @@ export default function Products(props) {
 
   const [showCreateProduct, setShowCreateProduct] = useState(false);
 
-  const [createProductResponseMessage, setCreateProductResponseMessage] =
-    useState("");
-  const [createProductErrorMessage, setCreateProductErrorMessage] =
-    useState(false);
-
-  const [openCreateProductModal, setOpenCreateProductModal] = useState(false);
-
-  function handleOpen() {
-    setOpenCreateProductModal(true);
-  }
-
   function handleShowCreateProduct(){
     setShowCreateProduct(!showCreateProduct)
-  }
-
-  function handleClose() {
-    setOpenCreateProductModal(false);
-    setCreateProductResponseMessage("");
-    setCreateProductErrorMessage(false);
   }
 
   function clearFormValues() {
@@ -530,11 +508,11 @@ export default function Products(props) {
         ApiEndpoints.products.createProduct,
         formData
       );
-      setCreateProductResponseMessage(response.data);
+      //setCreateProductResponseMessage(response.data);
       clearFormValues();
     } catch (error) {
       console.log("Server returns erorr during product creating: " + error);
-      setCreateProductErrorMessage(true);
+      //setCreateProductErrorMessage(true);
     }
   }
 
@@ -545,51 +523,6 @@ export default function Products(props) {
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
-  });
-
-  const ModalBox = styled(Paper)({
-    position: "absolute",
-    top: "20%",
-    left: "25%",
-    right: "25%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    boxShadow: 24,
-    padding: theme.spacing(3),
-    border: "1px solid gray",
-    display: "block",
-    margin: "auto",
-    [theme.breakpoints.down("lg")]: {
-      width: "80%",
-      left: "10%",
-      right: "10%",
-    },
-  });
-
-  const StyledInput = styled(TextField)({
-    marginTop: theme.spacing(3),
-    width: "100%",
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateProductButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main,
   });
 
   const StyledPagination = styled(Pagination)({

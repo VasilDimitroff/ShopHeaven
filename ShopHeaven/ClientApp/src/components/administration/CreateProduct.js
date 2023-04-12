@@ -80,9 +80,9 @@ export default function CreateProduct() {
   let productDescriptionRef = useRef();
   let productAvailabilityRef = useRef();
 
-  const [editProductResponseMessage, setEditProductResponseMessage] =
+  const [createProductResponseMessage, setCreateProductResponseMessage] =
     useState("");
-  const [editProductErrorMessage, setEditProductErrorMessage] = useState(false);
+  const [createProductErrorMessage, setCreateProductErrorMessage] = useState(false);
 
   function onChangeAvailability(e) {
     setProductAvailable(!productAvailable);
@@ -104,7 +104,7 @@ export default function CreateProduct() {
 
   });
 
-  const EditProductButton = styled(Button)({
+  const CreateProductButton = styled(Button)({
     width: "20%",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
@@ -343,13 +343,13 @@ Separated by dash-after key,
 And by comma-after value`}
                       />
                     </Box>
-                    <EditProductButton
+                    <CreateProductButton
                       type="submit"
                       size="medium"
                       variant="contained"
                     >
                       SAVE PRODUCT INFO
-                    </EditProductButton>
+                    </CreateProductButton>
                   </form>
                   <Box>
                     <Typography
@@ -372,13 +372,13 @@ And by comma-after value`}
                           }}
                         />
                       </InputBox>
-                      <EditProductButton
+                      <CreateProductButton
                         type="submit"
                         size="medium"
                         variant="contained"
                       >
                         SAVE IMAGES
-                      </EditProductButton>
+                      </CreateProductButton>
                     </form>
                   </Box>
                 </Box>
@@ -387,8 +387,8 @@ And by comma-after value`}
           </TableRow>
         </Table>
       </TableContainer>
-      <ResponseMessage>{editProductResponseMessage}</ResponseMessage>
-      {editProductErrorMessage ? (
+      <ResponseMessage>{createProductResponseMessage}</ResponseMessage>
+      {createProductErrorMessage ? (
         <ErrorResponseMessage>
           An error during product editing!
         </ErrorResponseMessage>
