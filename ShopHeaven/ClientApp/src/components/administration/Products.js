@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef } from "react";
+import { React, useState, Fragment, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -38,6 +38,7 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
+import CreateProduct from "./CreateProduct";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
@@ -48,8 +49,6 @@ function Row(props) {
     props.product.isAvailable
   );
 
-  const [openEditProductModal, setOpenEditProductModal] = useState(false);
-
   let productNameRef = useRef();
   let productDescriptionRef = useRef();
   let productImageRef = useRef();
@@ -59,16 +58,14 @@ function Row(props) {
     useState("");
   const [editProductErrorMessage, setEditProductErrorMessage] = useState(false);
 
-  const [getProductResult, setGetProductResult] = useState({});
+  const [productSpecifications, setProductSpecifications] = useState([...props.product.specifications]);
 
-  async function handleShowEditModal(id) {
-    setOpenEditProductModal(true);
-    await getProduct(id);
-  }
-  function handleCloseEditModal() {
-    setOpenEditProductModal(false);
-    setEditProductResponseMessage("");
-    setEditProductErrorMessage(false);
+  useEffect(() => {
+    console.log("productSpecifications has been updated:", productSpecifications);
+  }, [productSpecifications]);
+
+  function handleSetProductSpecifications(key, value){
+    setProductSpecifications((prev) => ([...prev, { key: key, value: value}]));
   }
 
   function handleTagsInput(show) {
@@ -84,51 +81,6 @@ function Row(props) {
     productNameRef.current.value = "";
     productDescriptionRef.current.value = "";
     document.getElementById("edit-product-image").value = "";
-  }
-
-  function onEditProduct(e) {
-    e.preventDefault();
-
-    const productName = productNameRef.current.value;
-    const productDescription = productDescriptionRef.current.value;
-    const productImage = document.getElementById("edit-product-image").files[0];
-
-    console.log("Product NAME " + productName);
-    console.log("Product DESCR " + productDescription);
-    console.log("Product IMAGE " + productImage);
-
-    const formData = new FormData();
-
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("image", productImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
-
-    editProduct(formData);
-  }
-
-  async function getProduct(id) {
-    try {
-      const response = await axios.get(ApiEndpoints.products.getProduct + id);
-      setGetProductResult(response.data);
-    } catch (error) {
-      console.log("Server returns erorr during product getting: " + error);
-      setEditProductErrorMessage(true);
-    }
-  }
-
-  async function editProduct(formData) {
-    try {
-      const response = await axios.post(
-        ApiEndpoints.products.editProduct,
-        formData
-      );
-      setEditProductResponseMessage(response.data);
-      clearFormValues();
-    } catch (error) {
-      console.log("Server returns erorr during product editing: " + error);
-      setEditProductErrorMessage(true);
-    }
   }
 
   const ProductNameTableCell = styled(TableCell)({
@@ -379,7 +331,7 @@ function Row(props) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {props.product.specifications.map((spec, index) => (
+                        {productSpecifications.map((spec, index) => (
                           <TableRow
                             key={index}
                             sx={{
@@ -393,7 +345,6 @@ function Row(props) {
                             >
                               <InputBox>
                                 <ProductInfoInput
-                                  inputRef={productNameRef}
                                   defaultValue={spec.key}
                                 />
                               </InputBox>
@@ -401,7 +352,6 @@ function Row(props) {
                             <TableCell align="center">
                               <InputBox>
                                 <ProductInfoInput
-                                  inputRef={productNameRef}
                                   defaultValue={spec.value}
                                 />
                               </InputBox>
@@ -410,7 +360,7 @@ function Row(props) {
                         ))}
                       </TableBody>
                     </Table>
-                    <AddSpecificationButton size="small" variant="contained">
+                    <AddSpecificationButton onClick={() => handleSetProductSpecifications("", "")} size="small" variant="contained">
                       Add Specification
                     </AddSpecificationButton>
                   </TableContainer>
@@ -466,7 +416,7 @@ function Row(props) {
                 <form>
                 <StyledImageList cols={5}>
                   {props.product.images.map((item, index) => (
-                    <StyledImageListItem key={index}  sx={{width: "90%"}}>
+                    <StyledImageListItem key={index} sx={{width: "90%"}}>
                           <ListItemIcon sx={{position: "absolute", zIndex: 1, right: -15}}>
                             <IconButton><Close sx={{ color: theme.palette.error.main}} /></IconButton>
                        </ListItemIcon>
@@ -523,6 +473,8 @@ export default function Products(props) {
   let productDescriptionRef = useRef();
   let productImageRef = useRef();
 
+  const [showCreateProduct, setShowCreateProduct] = useState(false);
+
   const [createProductResponseMessage, setCreateProductResponseMessage] =
     useState("");
   const [createProductErrorMessage, setCreateProductErrorMessage] =
@@ -533,6 +485,11 @@ export default function Products(props) {
   function handleOpen() {
     setOpenCreateProductModal(true);
   }
+
+  function handleShowCreateProduct(){
+    setShowCreateProduct(!showCreateProduct)
+  }
+
   function handleClose() {
     setOpenCreateProductModal(false);
     setCreateProductResponseMessage("");
@@ -671,7 +628,7 @@ export default function Products(props) {
         </Table>
         <StyledButtonBox>
           <Button
-            onClick={handleOpen}
+            onClick={handleShowCreateProduct}
             variant="contained"
             size="small"
             startIcon={<AddCircle />}
@@ -680,91 +637,13 @@ export default function Products(props) {
           </Button>
         </StyledButtonBox>
       </TableContainer>
-      <Collapse in={true} timeout="auto" unmountOnExit>
-       Product Form Here
-        </Collapse>
+      <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
+          <CreateProduct/>
+       </Collapse>
         <PaginationHolder> 
            <StyledPagination count={10} size="medium" color="secondary"  />
         </PaginationHolder>
       <Box>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openCreateProductModal}
-          onClose={handleClose}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
-        >
-          <Zoom in={openCreateProductModal}>
-            <ModalBox>
-              <form onSubmit={onCreateProduct}>
-                <Typography
-                  sx={{ marginLeft: theme.spacing(4) }}
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                >
-                  Create a new product
-                </Typography>
-                <InputBox>
-                  <StyledInput
-                    inputRef={productNameRef}
-                    label="Product name"
-                    variant="filled"
-                  />
-                </InputBox>
-                <InputBox>
-                  <StyledInput
-                    inputRef={productImageRef}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="start">
-                          <PhotoCamera />
-                        </InputAdornment>
-                      ),
-                    }}
-                    accept=".jpg, .png"
-                    type="file"
-                    variant="filled"
-                    id="create-product-image"
-                  />
-                </InputBox>
-                <InputBox>
-                  <StyledInput
-                    inputRef={productDescriptionRef}
-                    id="123"
-                    label="Product Description"
-                    multiline
-                    rows={5}
-                    variant="filled"
-                  />
-                </InputBox>
-                <InputBox>
-                  <CreateProductButton
-                    type="submit"
-                    size="large"
-                    variant="contained"
-                  >
-                    Create Product
-                  </CreateProductButton>
-                </InputBox>
-              </form>
-              <ResponseMessage>{createProductResponseMessage}</ResponseMessage>
-              {createProductErrorMessage ? (
-                <ErrorResponseMessage>
-                  An error during product creation!
-                </ErrorResponseMessage>
-              ) : (
-                ""
-              )}
-            </ModalBox>
-          </Zoom>
-        </Modal>
       </Box>
     </Box>
   );

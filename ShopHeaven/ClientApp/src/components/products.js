@@ -16,14 +16,17 @@ export const products = [
     tags: ["auto", "home", "pets"],
     specifications: [
       {
+        id: "1",
         key: "Material",
         value: "Rubber",
       },
       {
+        id: "2",
         key: "Year",
         value: "1991",
       },
       {
+        id: "3",
         key: "Age",
         value: "18+",
       },
@@ -65,14 +68,17 @@ export const products = [
     tags: ["auto", "car", "volga"],
     specifications: [
       {
+        id: "1",
         key: "Material",
         value: "Iron",
       },
       {
+        id: "2",
         key: "Year",
         value: "1961",
       },
       {
+        id: "3",
         key: "Fuel",
         value: "Gas",
       },
@@ -113,14 +119,17 @@ export const products = [
     tags: ["CD", "music", "Ivana", "chalga","bulgarian"],
     specifications: [
       {
+        id: "1",
         key: "Country",
         value: "Bulgaria",
       },
       {
+        id: "2",
         key: "Year",
         value: "2006",
       },
       {
+        id: "3",
         key: "Is sexy",
         value: "No",
       },
