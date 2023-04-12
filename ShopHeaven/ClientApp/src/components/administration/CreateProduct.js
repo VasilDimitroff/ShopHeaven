@@ -12,7 +12,7 @@ import {
   TableBody,
   TableHead,
   TableContainer,
-  Modal,
+  MenuItem,
   Zoom,
   Backdrop,
   TextField,
@@ -24,7 +24,7 @@ import {
   ImageList,
   ImageListItem,
   ListItemIcon,
-  Pagination,
+  Autocomplete,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -40,13 +40,41 @@ import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
 
 export default function CreateProduct() {
-  const [open, setOpen] = useState(false);
 
-  const [tagsInput, setTagsInput] = useState(false);
+  const categories = [
+    {
+      id: '1',
+      name: 'Home and Garden',
+    },
+    {
+      id: '2',
+      name: 'Gaming',
+    },
+    {
+      id: '3',
+      name: 'Laptops and tablets',
+    },
+    {
+      id: '4',
+      name: 'Car',
+    },
+  ];
 
   const [productAvailable, setProductAvailable] = useState(
     true
   );
+
+  const [productHasGuarantee, setProductHasGuarantee] = useState(
+    true
+  );
+
+  useEffect(() => {
+    console.log("productAvailable has been updated:", productAvailable);
+  }, [productAvailable]);
+
+  useEffect(() => {
+    console.log("productHasGuarantee has been updated:", productHasGuarantee);
+  }, [productHasGuarantee]);
 
   let productNameRef = useRef();
   let productDescriptionRef = useRef();
@@ -56,24 +84,14 @@ export default function CreateProduct() {
     useState("");
   const [editProductErrorMessage, setEditProductErrorMessage] = useState(false);
 
-  const [productSpecifications, setProductSpecifications] = useState([{key: "K1", value: "V1"}, {key: "K2", value: "V2"}]);
-
-
-  useEffect(() => {
-    console.log("productSpecifications has been updated:", productSpecifications);
-  }, [productSpecifications]);
-
-  function handleSetProductSpecifications(key, value){
-    setProductSpecifications((prev) => ([...prev, { key: key, value: value}]));
-  }
-
-  function handleTagsInput(show) {
-    setTagsInput(show);
-  }
-
   function onChangeAvailability(e) {
-    console.log(productAvailabilityRef.current.checked);
     setProductAvailable(!productAvailable);
+    console.log("AVAILABLE: " + productAvailabilityRef.current.checked);
+  }
+
+  function handleProductHasGuarantee(e) {
+    setProductHasGuarantee(!productHasGuarantee);
+    console.log("HAS GUARANTEE: " + productAvailabilityRef.current.checked);
   }
 
   function clearFormValues() {
@@ -82,14 +100,8 @@ export default function CreateProduct() {
     document.getElementById("edit-product-image").value = "";
   }
 
-  const ProductNameTableCell = styled(TableCell)({
-    fontWeight: 500,
-    fontSize: 18,
-  });
-
   const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+
   });
 
   const EditProductButton = styled(Button)({
@@ -121,15 +133,6 @@ export default function CreateProduct() {
     marginTop: theme.spacing(4),
   });
 
-  const StyledChip = styled(Chip)({
-    cursor: "pointer",
-    textAlign: "left",
-    borderRadius: theme.shape.borderRadius,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
-  });
-
   const ProductInfoInput = styled(InputBase)({
     background: "rgb(255,249,249)",
     width: "100%",
@@ -148,218 +151,241 @@ export default function CreateProduct() {
     marginTop: theme.spacing(2),
   });
 
+  const GuaranteeFormControlLabel = styled(FormControlLabel)({
+    color: productHasGuarantee
+      ? theme.palette.success.main
+      : theme.palette.error.main,
+    marginTop: theme.spacing(2),
+  });
+
   const TagsInputBox = styled(InputBox)({
-    display: tagsInput ? "flex" : "none",
-  });
-
-  const AddSpecificationButton = styled(Button)({
-    width: "30%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(3),
-  });
-
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  });
-
-  const StyledImageList = styled(ImageList)({
-    padding: theme.spacing(0.5),
-  });
-
-  const StyledImageListItem = styled(ImageListItem)({
-    position: "relative",
-    cursor: "pointer",
-    "&:hover": {
-      outlineColor: theme.palette.primary.main,
-      outlineStyle: "solid",
-      outlineWidth: "3px",
-      boxShadow: theme.palette.dropdown.boxShadow.main,
-    },
+    width: "100%"
   });
 
   return (
     <Fragment>
-
-<TableContainer>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
-          <Collapse in={true} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 2 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                MAIN INFO
-              </Typography>
-              <form component="form">
-                <InputBox>
-                  <ProductInfoInput
-                    sx={{ fontSize: 24 }}
-                    inputRef={productNameRef}
-                    placeholder="Product name"
-                  />
-                </InputBox>
-                <InputBox>
-                  <ProductInfoInput
-                    inputRef={productNameRef}
-                    placeholder="Brand"
-                  />
-                </InputBox>
-                <InputBox>
-                  <ProductInfoInput
-                    multiline
-                    minRows={4}
-                    inputRef={productDescriptionRef}
-                    placeholder="Product Description"
-                  />
-                </InputBox>
-                <InputBox></InputBox>
-                <Box sx={{ display: "flex", marginTop: theme.spacing(5) }}>
-                  <InputBox>
-                    <Typography variant="h6">Availability:</Typography>
-                    <AvailabilityFormControlLabel
-                      sx={{
-                        width: "100%",
-                        display: "block",
-                        marginLeft: "auto",
-                      }}
-                      inputRef={productAvailabilityRef}
-                      onChange={() => onChangeAvailability()}
-                      control={
-                        productAvailable === true ? (
-                          <Switch defaultChecked />
-                        ) : (
-                          <Switch />
-                        )
-                      }
-                      label={productAvailable === true ? "Yes" : "No"}
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6">Guarantee:</Typography>
-                    <FormControlLabel
-                      sx={{
-                        width: "100%",
-                        display: "block",
-                        marginLeft: "auto",
-                      }}
-                      inputRef={productAvailabilityRef}
-                      control={<Switch defaultChecked />}
-                      label={"Yes"}
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6">Quantity:</Typography>
-                    <ProductInfoInput
-                      inputRef={productNameRef}
-                      placeholder={0}
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6">Currency:</Typography>
-                    <ProductInfoInput
-                      inputRef={productNameRef}
-                      placeholder="$"
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6">Price:</Typography>
-                    <ProductInfoInput
-                      inputRef={productNameRef}
-                      placeholder={0.00}
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6">Discount:</Typography>
-                    <ProductInfoInput
-                      inputRef={productNameRef}
-                      placeholder={`${0}%`}
-                    />
-                  </InputBox>
-                  <InputBox>
-                    <Typography variant="h6" color="error">
-                      Final Price:
-                    </Typography>
-                    <ProductInfoInput
-                      disabled
-                      inputRef={productNameRef}
-                      placeholder=""
-                    />
-                  </InputBox>
-                </Box>
-
-                <Box>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    component="div"
-                    sx={{ marginTop: theme.spacing(6) }}
-                  >
-                    SPECIFICATIONS
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableRow>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+              <Collapse in={true} timeout="auto" unmountOnExit>
+                <Box sx={{ margin: 2 }}>
+                  <Typography variant="h4" sx={{textAlign: "center"}} gutterBottom>
+                    CREATE NEW PRODUCT
                   </Typography>
-                  <ProductInfoInput
-                      sx={{
-                        marginTop: theme.spacing(0),
-                        marginLeft: theme.spacing(-2),
-                      }}
-                      inputRef={productNameRef}
-                      minRows={5}
-                      multiline
-                      defaultValue={`Specification key-specification value,
-Separated-by dash after key,
-And comma-after value`}
-                    />
+                  <form component="form">
+                    <InputBox>
+                      <ProductInfoInput
+                        sx={{ fontSize: 24 }}
+                        inputRef={productNameRef}
+                        placeholder="Product name"
+                      />
+                    </InputBox>
+                    <InputBox>
+                      <ProductInfoInput
+                        inputRef={productNameRef}
+                        placeholder="Brand"
+                      />
+                    </InputBox>
+                    <InputBox>
+                      <ProductInfoInput
+                        multiline
+                        minRows={4}
+                        inputRef={productDescriptionRef}
+                        placeholder="Product Description"
+                      />
+                    </InputBox>
+                    <Box sx={{display: "flex", gap: 10, marginTop: theme.spacing(5)}}>
+                    <InputBox>
+                      <TextField
+                        id="filled-select-category"
+                        select
+                        defaultValue={categories[0].name}
+                        helperText="Please select main category"
+                        variant="standard"
+                      >
+                        {categories.map((option) => (
+                          <MenuItem key={option.id} value={option.name}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </InputBox>
+
+                    <InputBox>
+                      <TextField
+                        id="filled-select-subcategory"
+                        select
+                        defaultValue={categories[0].name}
+                        helperText="Please select subcategory"
+                        variant="standard"
+                      >
+                        {categories.map((option) => (
+                          <MenuItem key={option.id} value={option.name}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </InputBox>
+                    </Box>
+                    <Box sx={{ display: "flex", marginTop: theme.spacing(5), gap: 1 }}>
+                      <InputBox>
+                        <Typography variant="h6">Availability:</Typography>
+                        <AvailabilityFormControlLabel
+                          sx={{
+                            width: "100%",
+                            display: "block",
+                            marginLeft: "auto",
+                          }}
+                          inputRef={productAvailabilityRef}
+                          onChange={onChangeAvailability}
+                          control={
+                            productAvailable === true ? (
+                              <Switch defaultChecked />
+                            ) : (
+                              <Switch />
+                            )
+                          }
+                          label={productAvailable === true ? "Yes" : "No"}
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6">Guarantee:</Typography>
+                        <GuaranteeFormControlLabel
+                          sx={{
+                            width: "100%",
+                            display: "block",
+                            marginLeft: "auto",
+                          }}
+                          inputRef={productAvailabilityRef}
+                          onChange={handleProductHasGuarantee}
+                          control={
+                            productHasGuarantee === true ? (
+                              <Switch defaultChecked />
+                            ) : (
+                              <Switch />
+                            )
+                          }
+                          label={productHasGuarantee === true ? "Yes" : "No"}
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6">Quantity:</Typography>
+                        <ProductInfoInput
+                          inputRef={productNameRef}
+                          placeholder={0}
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6">Currency:</Typography>
+                        <ProductInfoInput
+                          inputRef={productNameRef}
+                          placeholder="$"
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6">Price:</Typography>
+                        <ProductInfoInput
+                          inputRef={productNameRef}
+                          placeholder={0.0}
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6">Discount:</Typography>
+                        <ProductInfoInput
+                          inputRef={productNameRef}
+                          placeholder={`${0}%`}
+                        />
+                      </InputBox>
+                      <InputBox>
+                        <Typography variant="h6" color="error">
+                          Final Price:
+                        </Typography>
+                        <ProductInfoInput
+                          disabled
+                          inputRef={productNameRef}
+                          placeholder=""
+                        />
+                      </InputBox>
+                    </Box>
+                    <TagsWrapper>
+                      Tags:
+                      <TagsInputBox>
+                        <ProductInfoInput
+                          sx={{
+                            marginTop: theme.spacing(0),
+                          }}
+                          inputRef={productNameRef}
+                          multiline
+                          placeholder={`separated, with, comma`}
+                        />
+                      </TagsInputBox>
+                    </TagsWrapper>
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        component="div"
+                        sx={{ marginTop: theme.spacing(6) }}
+                      >
+                        SPECIFICATIONS
+                      </Typography>
+                      <ProductInfoInput
+                        sx={{
+                          marginTop: theme.spacing(0),
+                          marginLeft: theme.spacing(-2),
+                        }}
+                        inputRef={productNameRef}
+                        minRows={5}
+                        multiline
+                        placeholder={`Specification key-specification value,
+Separated by dash-after key,
+And by comma-after value`}
+                      />
+                    </Box>
+                    <EditProductButton
+                      type="submit"
+                      size="medium"
+                      variant="contained"
+                    >
+                      SAVE PRODUCT INFO
+                    </EditProductButton>
+                  </form>
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      component="div"
+                      sx={{ marginTop: theme.spacing(6) }}
+                    >
+                      PRODUCT IMAGES
+                    </Typography>
+                    <form>
+                      <InputBox>
+                        <ProductInfoInput
+                          accept=".jpg, .png"
+                          type="file"
+                          variant="outlined"
+                          id="upload-product-photos-image"
+                          inputProps={{
+                            multiple: true,
+                          }}
+                        />
+                      </InputBox>
+                      <EditProductButton
+                        type="submit"
+                        size="medium"
+                        variant="contained"
+                      >
+                        SAVE IMAGES
+                      </EditProductButton>
+                    </form>
+                  </Box>
                 </Box>
-                <TagsWrapper>
-                  Tags:
-                  <IconButton onClick={() => handleTagsInput(!tagsInput)}>
-                    <AddCircle />
-                  </IconButton>
-                  <TagsInputBox>
-                    <ProductInfoInput
-                      sx={{
-                        marginTop: theme.spacing(0),
-                        marginLeft: theme.spacing(-2),
-                      }}
-                      inputRef={productNameRef}
-                      multiline
-                      defaultValue={`separated, with, comma`}
-                    />
-                  </TagsInputBox>
-                </TagsWrapper>
-                <EditProductButton
-                  type="submit"
-                  size="medium"
-                  variant="contained"
-                >
-                  SAVE PRODUCT INFO
-                </EditProductButton>
-              </form>
-              <Box>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  component="div"
-                  sx={{ marginTop: theme.spacing(6) }}
-                >
-                  PRODUCT IMAGES
-                </Typography>
-                <form>
-                <EditProductButton
-                  type="submit"
-                  size="medium"
-                  variant="contained"
-                >
-                  SAVE IMAGES
-                </EditProductButton>
-                </form>
-              </Box>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-      </Table>
+              </Collapse>
+            </TableCell>
+          </TableRow>
+        </Table>
       </TableContainer>
       <ResponseMessage>{editProductResponseMessage}</ResponseMessage>
       {editProductErrorMessage ? (
