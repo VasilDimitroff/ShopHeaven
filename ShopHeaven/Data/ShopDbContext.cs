@@ -51,6 +51,8 @@ namespace ShopHeaven.Data
 
         public DbSet<ProductLabel> ProductsLabels { get; set; }
 
+        public DbSet<ProductLabel> ProductsImages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -128,22 +130,31 @@ namespace ShopHeaven.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SubCategory>()
-                .HasOne(x => x.Image)
-                .WithOne(x => x.SubCategory)
-                .HasForeignKey<Image>(x => x.SubCategoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+             .HasOne(x => x.Image)
+             .WithMany(x => x.SubCategories)
+             .HasForeignKey(x => x.ImageId)
+             .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<MainCategory>()
-               .HasOne(x => x.Image)
-               .WithOne(x => x.MainCategory)
-               .HasForeignKey<Image>(x => x.MainCategoryId)
-               .OnDelete(DeleteBehavior.NoAction);
+              .HasOne(x => x.Image)
+              .WithMany(x => x.Categories)
+              .HasForeignKey(x => x.ImageId)
+              .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Product>()
-             .HasMany(x => x.Images)
-             .WithOne(x => x.Product)
+            modelBuilder.Entity<ProductImage>()
+           .HasKey(x => new { x.ProductId, x.ImageId });
+
+            modelBuilder.Entity<ProductImage>()
+             .HasOne(x => x.Product)
+             .WithMany(x => x.Images)
              .HasForeignKey(x => x.ProductId)
              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ProductImage>()
+           .HasOne(x => x.Image)
+           .WithMany(x => x.Products)
+           .HasForeignKey(x => x.ImageId)
+           .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Product>()
             .HasOne(x => x.CreatedBy)
@@ -156,7 +167,6 @@ namespace ShopHeaven.Data
             .WithOne(x => x.Product)
             .HasForeignKey(x => x.ProductId)
             .OnDelete(DeleteBehavior.NoAction);
-
 
             modelBuilder
             .Entity<Product>()

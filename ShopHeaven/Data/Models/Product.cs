@@ -11,7 +11,7 @@ namespace ShopHeaven.Data.Models
         public Product()
         {
             Reviews = new HashSet<Review>();
-            Images = new HashSet<Image>();
+            Images = new HashSet<ProductImage>();
             Reviews = new HashSet<Review>();
             Tags = new HashSet<ProductTag>();
             Carts = new HashSet<ProductCart>();
@@ -55,8 +55,6 @@ namespace ShopHeaven.Data.Models
         [InverseProperty("Products")]
         public User CreatedBy { get; set; }
 
-        public ICollection<Image> Images { get; set; } // the product has these images
-
         public ICollection<Review> Reviews { get; set; } // the product has these reviews
 
         public ICollection<ProductTag> Tags { get; set; } // the product has these tags
@@ -68,6 +66,8 @@ namespace ShopHeaven.Data.Models
         public ICollection<ProductOrder> Orders { get; set; } // the product is presented in these orders
 
         public ICollection<ProductLabel> Labels { get; set; } // the product is presented in these labels
+
+        public ICollection<ProductImage> Images { get; set; } // the product has these images
 
         public ICollection<Specification> Specifications { get; set; } // the product has these specifications
 

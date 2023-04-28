@@ -55,7 +55,7 @@ namespace ShopHeaven.Data.Services
             }
 
             string extension = Path.GetExtension(fileName);
-            string basePath = "username/";
+            string basePath = $"{GlobalConstants.SystemName}/";
 
             string fullPathName = basePath + fileNameWithoutExt + "_" + randomNumber + extension;
 

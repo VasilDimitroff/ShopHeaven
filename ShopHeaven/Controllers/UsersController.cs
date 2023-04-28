@@ -21,6 +21,16 @@ namespace ShopHeaven.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestModel model)
         {
+            // add this as body when you want to create test user
+            //{
+            //     "username": "vasil",
+            //    "password": "TodorJivkov_91",
+            //    "confirmPassword": "TodorJivkov_91",
+            //    "cartId": "cartId",
+            //    "wishlistId": "wishlistId",
+            //    "isDeleted": "false"
+            //}
+
             try
             {
                IdentityResult result =  await this.usersService.CreateUser(model);

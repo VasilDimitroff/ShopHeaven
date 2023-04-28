@@ -12,17 +12,18 @@ namespace ShopHeaven.Data.Services
     public class CategoriesService : ICategoriesService
     {
         private readonly UserManager<User> userManager;
+        private readonly IStorageService storageService;
         private readonly ShopDbContext db;
 
-        public CategoriesService(UserManager<User> userManager, ShopDbContext db)
+        public CategoriesService(UserManager<User> userManager, IStorageService storageService, ShopDbContext db)
         {
             this.userManager = userManager;
+            this.storageService = storageService;
             this.db = db;
         }
 
         public async Task CreateCategory(CreateCategoryRequestModel model)
         {
-
             bool isUserExists = await this.db.Users.AnyAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
 
             if (isUserExists == false)
@@ -39,15 +40,25 @@ namespace ShopHeaven.Data.Services
 
             //implement logic for image
 
+            var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image });
+            string categoryImageUrl = imageUrls[0];
+
+            Image categoryImage = new Image()
+            {
+                CreatedById = model.CreatedBy,
+                Url = categoryImageUrl,
+            };
+
             MainCategory newCategory = new MainCategory
             {
                 Name = model.Name.Trim(),
                 Description = model.Description.Trim(),
                 CreatedById = model.CreatedBy,
                 IsDeleted = false,
-                ImageId = "someImageId",
+                Image = categoryImage,
             };
 
+            await this.db.Images.AddAsync(categoryImage);
             await this.db.MainCategories.AddAsync(newCategory);
 
             await this.db.SaveChangesAsync();

@@ -6,25 +6,15 @@ namespace ShopHeaven.Data.Models
 {
     public class Image : BaseModel, ICreatableModel
     {
+        public Image()
+        {
+            this.Categories = new HashSet<MainCategory>();
+            this.SubCategories = new HashSet<SubCategory>();         
+            this.Products = new HashSet<ProductImage>();         
+        }
+
         [Required]
         public string Url { get; set; }
-
-        [ForeignKey(nameof(Product))]
-        public string ProductId { get; set; }
-
-        public Product Product { get; set; }
-
-        [ForeignKey(nameof(MainCategory))]
-        public string MainCategoryId { get; set; }
-
-        public MainCategory MainCategory { get; set; } // the image is cover of this main category
-
-        [ForeignKey(nameof(SubCategory))]
-        public string SubCategoryId { get; set; }
-
-        public SubCategory SubCategory { get; set; } // the image is cover of this subcategory
-
-        public bool IsMainImage { get; set; } // if it is true, it is the main image of the product. Only 1 image can be main image
 
         [Required]
         public string CreatedById { get; set; }
@@ -33,5 +23,10 @@ namespace ShopHeaven.Data.Models
         [InverseProperty("Images")]
         public User CreatedBy { get; set; }
 
+        public ICollection<MainCategory> Categories { get; set; } //categories which has this image as cover
+
+        public ICollection<SubCategory> SubCategories { get; set; } //subcategories which has this image as cover
+
+        public ICollection<ProductImage> Products { get; set; } //products which has this image as cover
     }
 }

@@ -278,31 +278,6 @@ namespace ShopHeaven.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MainCategories",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MainCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MainCategories_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -386,37 +361,6 @@ namespace ShopHeaven.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubCategories",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MainCategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SubCategories_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SubCategories_MainCategories_MainCategoryId",
-                        column: x => x.MainCategoryId,
-                        principalTable: "MainCategories",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -438,6 +382,97 @@ namespace ShopHeaven.Migrations
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsMainImage = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MainCategories",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MainCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MainCategories_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MainCategories_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubCategories",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MainCategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubCategories_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubCategories_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SubCategories_MainCategories_MainCategoryId",
+                        column: x => x.MainCategoryId,
+                        principalTable: "MainCategories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -475,48 +510,6 @@ namespace ShopHeaven.Migrations
                         principalTable: "SubCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MainCategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SubCategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsMainImage = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Images_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Images_MainCategories_MainCategoryId",
-                        column: x => x.MainCategoryId,
-                        principalTable: "MainCategories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Images_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Images_SubCategories_SubCategoryId",
-                        column: x => x.SubCategoryId,
-                        principalTable: "SubCategories",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -689,7 +682,7 @@ namespace ShopHeaven.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Specification",
+                name: "Specifications",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -703,9 +696,9 @@ namespace ShopHeaven.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Specification", x => x.Id);
+                    table.PrimaryKey("PK_Specifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Specification_Products_ProductId",
+                        name: "FK_Specifications_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -774,21 +767,9 @@ namespace ShopHeaven.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_MainCategoryId",
-                table: "Images",
-                column: "MainCategoryId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Images_ProductId",
                 table: "Images",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Images_SubCategoryId",
-                table: "Images",
-                column: "SubCategoryId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Keys_Use",
@@ -799,6 +780,11 @@ namespace ShopHeaven.Migrations
                 name: "IX_MainCategories_CreatedById",
                 table: "MainCategories",
                 column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MainCategories_ImageId",
+                table: "MainCategories",
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CouponId",
@@ -882,14 +868,19 @@ namespace ShopHeaven.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Specification_ProductId",
-                table: "Specification",
+                name: "IX_Specifications_ProductId",
+                table: "Specifications",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CreatedById",
                 table: "SubCategories",
                 column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubCategories_ImageId",
+                table: "SubCategories",
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_MainCategoryId",
@@ -906,11 +897,38 @@ namespace ShopHeaven.Migrations
                 table: "Wishlists",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Images_Products_ProductId",
+                table: "Images",
+                column: "ProductId",
+                principalTable: "Products",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Images_AspNetUsers_CreatedById",
+                table: "Images");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_MainCategories_AspNetUsers_CreatedById",
+                table: "MainCategories");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Products_AspNetUsers_CreatedById",
+                table: "Products");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_SubCategories_AspNetUsers_CreatedById",
+                table: "SubCategories");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Images_Products_ProductId",
+                table: "Images");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -928,9 +946,6 @@ namespace ShopHeaven.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");
-
-            migrationBuilder.DropTable(
-                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Keys");
@@ -960,7 +975,7 @@ namespace ShopHeaven.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Specification");
+                name: "Specifications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -981,10 +996,13 @@ namespace ShopHeaven.Migrations
                 name: "Wishlists");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Coupons");
 
             migrationBuilder.DropTable(
-                name: "Coupons");
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "SubCategories");
@@ -993,7 +1011,7 @@ namespace ShopHeaven.Migrations
                 name: "MainCategories");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Images");
         }
     }
 }

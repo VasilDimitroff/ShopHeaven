@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230428130113_initialCreate")]
+    partial class initialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,8 +386,15 @@ namespace ShopHeaven.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsMainImage")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -393,6 +403,8 @@ namespace ShopHeaven.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Images");
                 });
@@ -666,36 +678,6 @@ namespace ShopHeaven.Migrations
                     b.ToTable("ProductsCarts");
                 });
 
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductImage", b =>
-                {
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductId", "ImageId");
-
-                    b.HasIndex("ImageId");
-
-                    b.ToTable("ProductImage");
-                });
-
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductLabel", b =>
                 {
                     b.Property<string>("LabelId")
@@ -723,7 +705,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductLabel");
+                    b.ToTable("ProductsLabels");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductOrder", b =>
@@ -1168,7 +1150,15 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopHeaven.Data.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.MainCategory", b =>
@@ -1254,25 +1244,6 @@ namespace ShopHeaven.Migrations
                         .IsRequired();
 
                     b.Navigation("Cart");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.ProductImage", b =>
-                {
-                    b.HasOne("ShopHeaven.Data.Models.Image", "Image")
-                        .WithMany("Products")
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("ShopHeaven.Data.Models.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Image");
 
                     b.Navigation("Product");
                 });
@@ -1445,8 +1416,6 @@ namespace ShopHeaven.Migrations
             modelBuilder.Entity("ShopHeaven.Data.Models.Image", b =>
                 {
                     b.Navigation("Categories");
-
-                    b.Navigation("Products");
 
                     b.Navigation("SubCategories");
                 });

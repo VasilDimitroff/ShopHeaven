@@ -42,7 +42,7 @@ export default function CreateCategory() {
     formData.append("name", categoryName);
     formData.append("description", categoryDescription);
     formData.append("image", categoryImage);
-    formData.append("createdBy", "3f2d0e68-950b-44fc-85b5-66a4e5d849e2");
+    formData.append("createdBy", ApiEndpoints.exampleUserId);
 
     createCategory(formData);
   }
@@ -56,7 +56,7 @@ export default function CreateCategory() {
       setCreateCategoryResponseMessage(response.data);
       clearFormValues();
     } catch (error) {
-      console.log("server returns erorr during category creating: " + error);
+      console.log("Server returns erorr during category creating: " + error);
       setCreateCategoryErrorMessage(true);
     }
   }
