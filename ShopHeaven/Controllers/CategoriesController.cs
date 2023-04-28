@@ -12,7 +12,7 @@ namespace ShopHeaven.Controllers
     {
         private readonly ICategoriesService categoriesService;
 
-        public CategoriesController(ICategoriesService categoriesService)
+        public CategoriesController(ICategoriesService categoriesService, IStorageService storageService)
         {
             this.categoriesService = categoriesService;
         }

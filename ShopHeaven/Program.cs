@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyModel;
 using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
@@ -31,6 +32,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<ICategoriesService, CategoriesService>();
+builder.Services.AddTransient<IStorageService, StorageService>();
+
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("Storage:ConnectionString").Value);
+});
 
 builder.Services.AddSwaggerGen();
 
