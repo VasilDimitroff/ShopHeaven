@@ -1,4 +1,4 @@
-import { React, Fragment, useState } from "react";
+import { React, useState } from "react";
 import {
   Box,
   Typography,
@@ -11,14 +11,15 @@ import {
   TableRow,
   TableContainer,
   TableBody,
-  Rating,
-  Button,
-  InputBase,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import ProductReviewsList from "./ProductReviewsList";
+import AddReviewForm from "./AddReviewForm";
+import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../theme";
 
 export default function ProductDetailInformation(props) {
+
   function TabPanel(props) {
     const { children, value, index } = props;
 
@@ -31,43 +32,6 @@ export default function ProductDetailInformation(props) {
         )}
       </div>
     );
-  }
-
-  function RenderTableBody() {
-    return props.product.specifications.map((spec, index) => {
-      return (
-        <StyledTableRow key={index}>
-          <KeyTableCell component="th" scope="row">
-            {spec.key}
-          </KeyTableCell>
-          <ValueTableCell align="left">{spec.value}</ValueTableCell>
-        </StyledTableRow>
-      );
-    });
-  }
-
-  function RenderReviewBox() {
-    return (
-      <Fragment>
-      <Typography variant="h6">LEAVE REVIEW</Typography>
-      <ProductInfoInput
-        placeholder="Your name"
-      />
-      <ProductInfoInput
-        placeholder="Your e-mail (optional)"
-      />
-      <Typography>Your rating:</Typography>
-      <Rating name="size-small" defaultValue={2} size="medium" sx={{display: "block"}}/>
-      <ProductInfoInput
-        multiline
-        placeholder="Type comment here…"
-        minRows={4}
-      />
-      <Button size="medium" variant="contained" sx={{mt: theme.spacing(2)}}>
-        SEND REVIEW
-      </Button>
-      </Fragment>
-    )
   }
 
   const [value, setValue] = useState(0);
@@ -89,20 +53,6 @@ export default function ProductDetailInformation(props) {
     },
   });
 
-  const KeyTableCell = styled(TableCell)({
-    minWidth: "10%",
-    textTransform: "uppercase",
-    fontWeight: 500,
-    fontSize: 15,
-  });
-
-  const ValueTableCell = styled(TableCell)({
-    textTransform: "uppercase",
-    fontWeight: 400,
-    fontSize: 15,
-    width: "50%",
-  });
-
   const HeadingTableCell = styled(TableCell)({
     textTransform: "uppercase",
     fontWeight: 600,
@@ -118,28 +68,6 @@ export default function ProductDetailInformation(props) {
     paddingTop: theme.spacing(1.9),
     paddingBottom: theme.spacing(3),
   });
-
-  const ProductInfoInput = styled(InputBase)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
 
   return (
     <MainWrapper>
@@ -172,12 +100,15 @@ export default function ProductDetailInformation(props) {
                     <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>{RenderTableBody()}</TableBody>
+                <TableBody>
+                  <ProductSpecifications specifications={props.product.specifications}/>
+                </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={value} index={2}>
-            {RenderReviewBox()}
+            <AddReviewForm/>
+            <ProductReviewsList reviews={props.product.reviews}/>
           </TabPanel>
         </Box>
       </Paper>

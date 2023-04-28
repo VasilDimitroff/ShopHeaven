@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, Fragment } from "react";
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -300,14 +300,43 @@ export default function Product(props) {
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    reviews: [
+      {
+        id: 1,
+        author: "Vasko",
+        email: "vasko@abv.bg",
+        content: "This product is awesome! Recommend it!",
+        ratingValue: 5,
+        createdBy: 10,
+        createdOn: "25-03-2023"
+      },
+      {
+        id: 2,
+        author: "Pecata",
+        email: "pecata@abv.bg",
+        content: "This product is bad! It is shit!",
+        ratingValue: 1,
+        createdBy: 20,
+        createdOn: "20-10-2021"
+      },
+      {
+        id: 3,
+        author: "Tombata",
+        email: "tombata@abv.bg",
+        content: "This product is not bad for the price but it can be better.",
+        ratingValue: 3,
+        createdBy: 30,
+        createdOn: "30-01-2022"
+      }
+    ]
   };
 
   return (
-    <div>
+    <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <ProductInfoWrapper product={product}/>
       <ProductsCarouselLine products={products} headingName="Similar Products" />
       <ProductDetailInformation product={product}/>
-    </div>
+    </Fragment>
   );
 }
