@@ -99,11 +99,11 @@ function Row(props) {
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <TableCell align="center">{props.coupon.id}</TableCell>
+        <TableCell align="left">{props.coupon.id}</TableCell>
         <CouponNameTableCell component="th" scope="row">
           {props.coupon.code}
         </CouponNameTableCell>
-        <TableCell align="center">{props.coupon.amount}</TableCell>
+        <TableCell align="center">{`${props.coupon.amount}%`}</TableCell>
         <TableCell align="center">{`${props.coupon.orders} orders`}</TableCell>
       </TableRow>
       <TableRow>
@@ -176,15 +176,15 @@ export default function Coupons(props) {
 
   return (
     <Box>
-  
+      <TableContainer>
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <TableCell />
-              <CouponTableCell align="center">ID</CouponTableCell>
+              <TableCell sx={{width: "50px"}} />
+              <CouponTableCell align="left">ID</CouponTableCell>
               <CouponTableCell>CODE</CouponTableCell>
               <CouponTableCell align="center">
-                AMOUNT(IN %)
+                AMOUNT
               </CouponTableCell>
               <CouponTableCell align="center">
                 APLLIED TO
@@ -197,6 +197,7 @@ export default function Coupons(props) {
             })}
           </TableBody>
         </Table>
+        </TableContainer>
         <StyledButtonBox>
           <Button
             onClick={handleShowCreateCoupon}

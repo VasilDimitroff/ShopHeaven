@@ -28,7 +28,7 @@ import {
   AddCircle,
   PhotoCamera,
 } from "@mui/icons-material";
-import { style } from "@mui/system";
+import CreateCategory from "./CreateCategory";
 import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
 
@@ -305,7 +305,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-      
+
       <EditCategoryModalHolder>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -381,62 +381,12 @@ function Row(props) {
 }
 
 export default function Categories(props) {
-  let categoryNameRef = useRef();
-  let categoryDescriptionRef = useRef();
-  let categoryImageRef = useRef();
-
-  const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
-  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState(false);
 
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
 
-
   function handleOpen() {
-    setOpenCreateCategoryModal(true);
+    setOpenCreateCategoryModal(!openCreateCategoryModal);
   } 
-  function handleClose(){
-    setOpenCreateCategoryModal(false);
-    setCreateCategoryResponseMessage("");
-    setCreateCategoryErrorMessage(false);
-  }
-
-  function clearFormValues() {
-    categoryNameRef.current.value = "";
-    categoryDescriptionRef.current.value = "";
-    document.getElementById('category-image').value = "";
-  }
-
-  function onCreateCategory(e){
-    e.preventDefault();
-
-    console.log("CATEGORY NAME " + categoryNameRef.current.value)
-    console.log("CATEGORY DESCR " + categoryDescriptionRef.current.value)
-    console.log("IMAGE " + document.getElementById('category-image').files[0]);
-
-    const categoryName = categoryNameRef.current.value;
-    const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById('category-image').files[0];
-
-    const formData = new FormData();
-
-    formData.append("name", categoryName);
-    formData.append("description", categoryDescription);
-    formData.append("image", categoryImage);
-    formData.append("createdBy", "3f2d0e68-950b-44fc-85b5-66a4e5d849e2");
-
-    createCategory(formData);
-  }
-
-  async function createCategory(formData) {
-    try {
-      const response = await axios.post(ApiEndpoints.categories.createCategory, formData);
-      setCreateCategoryResponseMessage(response.data);
-      clearFormValues();
-    } catch (error) {
-      console.log("server returns erorr during category creating: " + error);
-      setCreateCategoryErrorMessage(true);
-    } 
-  }
 
   const MainCategoryTableCell = styled(TableCell)({
     fontSize: 18,
@@ -539,78 +489,13 @@ export default function Categories(props) {
             size="small"
             startIcon={<AddCircle />}
           >
-            Add new category
+            ADD NEW CATEGORY
           </Button>
         </StyledButtonBox>
-      </TableContainer>
-      <Box>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openCreateCategoryModal}
-          onClose={handleClose}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
-        >
-          <Zoom in={openCreateCategoryModal}>
-            <ModalBox>
-              <form onSubmit={onCreateCategory}>
-              <Typography
-              sx={{marginLeft: theme.spacing(4),}}
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Create a new category
-              </Typography>
-              <InputBox>
-                <StyledInput
-                 inputRef={categoryNameRef}
-                  label="Category name"
-                  variant="filled"
-                />
-              </InputBox>
-              <InputBox>
-                <StyledInput
-                inputRef={categoryImageRef}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="start">
-                        <PhotoCamera />
-                      </InputAdornment>
-                    ),
-                  }}
-                  accept=".jpg, .png"
-                  type="file"
-                  variant="filled"
-                  id="category-image"
-                />
-              </InputBox>
-              <InputBox>
-                <StyledInput
-                  inputRef={categoryDescriptionRef}
-                  id="123"
-                  label="Category Description"
-                  multiline
-                  rows={5}
-                  variant="filled"
-                />
-              </InputBox>
-              <InputBox>
-              <CreateCategoryButton type="submit" size="large" variant="contained">Create category</CreateCategoryButton>
-              </InputBox>
-              </form>
-                <ResponseMessage>{createCategoryResponseMessage}</ResponseMessage>
-                { createCategoryErrorMessage ? <ErrorResponseMessage>An error during category creation!</ErrorResponseMessage> : ""}
-            </ModalBox>
-          </Zoom>
-        </Modal>
-      </Box>
+      </TableContainer>  
+       <Collapse in={openCreateCategoryModal} timeout="auto" unmountOnExit>
+          <CreateCategory/>
+       </Collapse>
     </Box>
   );
 }
