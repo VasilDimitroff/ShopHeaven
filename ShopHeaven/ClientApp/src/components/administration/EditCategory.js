@@ -12,21 +12,19 @@ import { PhotoCamera } from "@mui/icons-material";
 import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
 
-export default function CreateCategory() {
+export default function EditCategory(props) {
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
   let categoryImageRef = useRef();
 
-  const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
-  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState(false);
+  const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
+    useState("");
+  const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
+    useState(false);
 
-  function clearFormValues() {
-    categoryNameRef.current.value = "";
-    categoryDescriptionRef.current.value = "";
-    document.getElementById("category-image").value = "";
-  }
+  const [getCategoryResult, setGetCategoryResult] = useState({});
 
-  function onCreateCategory(e) {
+  function onEditCategory(e) {
     e.preventDefault();
 
     console.log("CATEGORY NAME " + categoryNameRef.current.value);
@@ -35,76 +33,97 @@ export default function CreateCategory() {
 
     const categoryName = categoryNameRef.current.value;
     const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById("category-image").files[0];
+    const categoryImage = document.getElementById("edit-category-image")
+      .files[0];
 
     const formData = new FormData();
 
     formData.append("name", categoryName);
     formData.append("description", categoryDescription);
     formData.append("image", categoryImage);
-    formData.append("createdBy", "3f2d0e68-950b-44fc-85b5-66a4e5d849e2");
+    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
 
-    createCategory(formData);
+    editCategory(formData);
   }
 
-  async function createCategory(formData) {
+  async function editCategory(formData) {
     try {
       const response = await axios.post(
-        ApiEndpoints.categories.createCategory,
+        ApiEndpoints.categories.editCategory,
         formData
       );
-      setCreateCategoryResponseMessage(response.data);
+      setEditCategoryResponseMessage(response.data);
       clearFormValues();
     } catch (error) {
-      console.log("server returns erorr during category creating: " + error);
-      setCreateCategoryErrorMessage(true);
+      console.log("server returns erorr during category editing: " + error);
+      setEditCategoryErrorMessage(true);
     }
+  }
+
+  async function getCategory(id) {
+    try {
+      const response = await axios.get(
+        ApiEndpoints.categories.getCategory + id
+      );
+      setGetCategoryResult(response.data);
+    } catch (error) {
+      console.log("server returns erorr during category getting: " + error);
+      setEditCategoryErrorMessage(true);
+    }
+  }
+
+  function clearFormValues() {
+    categoryNameRef.current.value = "";
+    categoryDescriptionRef.current.value = "";
+    document.getElementById("edit-category-image").value = "";
   }
 
   const ProductInfoInput = styled(TextField)({
     background: "rgb(255,249,249)",
-    width: "60%",
+    width: "100%",
     marginTop: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
   });
 
   const InputBox = styled(Box)({
     marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4)
+    marginRight: theme.spacing(4),
   });
 
   const CreateCategoryButton = styled(Button)({
-   width: "60%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1)
-  })
+    width: "100%",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  });
 
   const ResponseMessage = styled(Typography)({
     textAlign: "center",
-    color: theme.palette.success.main
+    color: theme.palette.success.main,
   });
 
   const ErrorResponseMessage = styled(Typography)({
     textAlign: "center",
-    color: theme.palette.error.main
-  })
+    color: theme.palette.error.main,
+  });
 
   return (
     <Fragment>
-       <Typography
-          sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
-          id="transition-modal-title"
-          variant="h6"
-          component="h2"
-        >
-           ADD NEW CATEGORY
-        </Typography>
-      <form onSubmit={onCreateCategory}>
+      <Typography
+        sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
+        id="transition-modal-title"
+        variant="h6"
+        component="h2"
+      >
+        EDIT CATEGORY {getCategoryResult.name}
+      </Typography>
+
+      <form onSubmit={onEditCategory}>
         <InputBox>
           <ProductInfoInput
             inputRef={categoryNameRef}
             label="Category name"
             variant="standard"
+            defaultValue={props.category.name}
           />
         </InputBox>
         <InputBox>
@@ -120,7 +139,7 @@ export default function CreateCategory() {
             accept=".jpg, .png"
             type="file"
             variant="standard"
-            id="category-image"
+            id="edit-category-image"
           />
         </InputBox>
         <InputBox>
@@ -131,18 +150,19 @@ export default function CreateCategory() {
             multiline
             rows={5}
             variant="standard"
+            defaultValue={props.category.description}
           />
         </InputBox>
         <InputBox>
           <CreateCategoryButton type="submit" size="large" variant="contained">
-            Create category
+            Edit category
           </CreateCategoryButton>
         </InputBox>
       </form>
-      <ResponseMessage>{createCategoryResponseMessage}</ResponseMessage>
-      {createCategoryErrorMessage ? (
+      <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
+      {editCategoryErrorMessage ? (
         <ErrorResponseMessage>
-          An error during category creation!
+          An error during category editing!
         </ErrorResponseMessage>
       ) : (
         ""

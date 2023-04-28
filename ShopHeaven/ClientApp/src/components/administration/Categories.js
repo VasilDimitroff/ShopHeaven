@@ -31,81 +31,14 @@ import {
 import CreateCategory from "./CreateCategory";
 import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
+import EditCategory from "./EditCategory";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
 
-  const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
-
-  let categoryNameRef = useRef();
-  let categoryDescriptionRef = useRef();
-  let categoryImageRef = useRef();
-
-  const [editCategoryResponseMessage, setEditCategoryResponseMessage] = useState("");
-  const [editCategoryErrorMessage, setEditCategoryErrorMessage] = useState(false);
-
-  const [getCategoryResult, setGetCategoryResult] = useState({});
-
-
-
   async function handleShowEditModal(id) {
-    setOpenEditCategoryModal(true);
-   await getCategory(id);
+    setOpen(!open);
   } 
-  function handleCloseEditModal(){
-    setOpenEditCategoryModal(false);
-    setEditCategoryResponseMessage("");
-    setEditCategoryErrorMessage(false);
-  }
-
-  function clearFormValues() {
-    categoryNameRef.current.value = "";
-    categoryDescriptionRef.current.value = "";
-    document.getElementById('edit-category-image').value = "";
-  }
-
-  function onEditCategory(e){
-    e.preventDefault();
-
-    console.log("CATEGORY NAME " + categoryNameRef.current.value)
-    console.log("CATEGORY DESCR " + categoryDescriptionRef.current.value)
-    console.log("IMAGE " + document.getElementById('category-image').files[0]);
-
-    const categoryName = categoryNameRef.current.value;
-    const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById('edit-category-image').files[0];
-
-    const formData = new FormData();
-
-    formData.append("name", categoryName);
-    formData.append("description", categoryDescription);
-    formData.append("image", categoryImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
-
-    editCategory(formData);
-  }
-
-  async function getCategory(id) {
-    try {
-      const response = await axios.get(ApiEndpoints.categories.getCategory + id);
-      setGetCategoryResult(response.data);
-
-    } catch (error) {
-      console.log("server returns erorr during category getting: " + error);
-      setEditCategoryErrorMessage(true);
-    }
-  }
-
-  async function editCategory(formData) {
-    try {
-      const response = await axios.post(ApiEndpoints.categories.editCategory, formData);
-      setEditCategoryResponseMessage(response.data);
-      clearFormValues();
-    } catch (error) {
-      console.log("server returns erorr during category editing: " + error);
-      setEditCategoryErrorMessage(true);
-    } 
-  }
 
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
@@ -132,54 +65,18 @@ function Row(props) {
     boxShadow: "none",
   });
 
-  const ModalBox = styled(Paper)({
-    position: "absolute",
-    top: "20%",
-    left: "25%",
-    right: "25%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    boxShadow: 24,
-    padding: theme.spacing(3),
-    border: "1px solid gray",
-    display: "block",
-    margin: "auto",
-    [theme.breakpoints.down("lg")]: {
-      width: "80%",
-      left: "10%",
-      right: "10%",
-    },
+  const ProductInfoInput = styled(TextField)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
   });
 
-  const StyledInput = styled(TextField)({
-    marginTop: theme.spacing(3),
-    width: "100%",
-  });
 
   const InputBox = styled(Box)({
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4)
   });
-
-  const CreateCategoryButton = styled(Button)({
-   width: "100%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1)
-  })
-
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main
-  })
-
-  const EditCategoryModalHolder = styled(Box)({
-
-  })
 
   function renderCategoryProductsCount() {
     return props.subcategories.reduce(function (a, b) {
@@ -270,6 +167,7 @@ function Row(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
+            <EditCategory category={props.category}/>
             <Box sx={{ margin: 2 }}>
               <Typography
                 variant="h6"
@@ -305,77 +203,6 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-
-      <EditCategoryModalHolder>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openEditCategoryModal}
-          onClose={handleCloseEditModal}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
-        >
-          <Zoom in={openEditCategoryModal}>
-            <ModalBox>
-              <form onSubmit={onEditCategory}>
-              <Typography
-              sx={{marginLeft: theme.spacing(4),}}
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Edit category { getCategoryResult.name }
-              </Typography>
-              <InputBox>
-                <StyledInput
-                 inputRef={categoryNameRef}
-                  label="Category name"
-                  variant="filled"
-                  defaultValue={getCategoryResult.name}
-                />
-              </InputBox>
-              <InputBox>
-                <StyledInput
-                inputRef={categoryImageRef}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="start">
-                        <PhotoCamera />
-                      </InputAdornment>
-                    ),
-                  }}
-                  accept=".jpg, .png"
-                  type="file"
-                  variant="filled"
-                  id="edit-category-image"
-                />
-              </InputBox>
-              <InputBox>
-                <StyledInput
-                  inputRef={categoryDescriptionRef}
-                  id="123"
-                  label="Category Description"
-                  multiline
-                  rows={5}
-                  variant="filled"
-                  defaultValue={getCategoryResult.description}
-                />
-              </InputBox>
-              <InputBox>
-              <CreateCategoryButton type="submit" size="large" variant="contained">Edit category</CreateCategoryButton>
-              </InputBox>
-              </form>
-                <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
-                { editCategoryErrorMessage ? <ErrorResponseMessage>An error during category editing!</ErrorResponseMessage> : ""}
-            </ModalBox>
-          </Zoom>
-        </Modal>
-      </EditCategoryModalHolder>
     </Fragment>
   );
 }
@@ -396,55 +223,6 @@ export default function Categories(props) {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
   });
-
-  const ModalBox = styled(Paper)({
-    position: "absolute",
-    top: "20%",
-    left: "25%",
-    right: "25%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    boxShadow: 24,
-    padding: theme.spacing(3),
-    border: "1px solid gray",
-    display: "block",
-    margin: "auto",
-    [theme.breakpoints.down("lg")]: {
-      width: "80%",
-      left: "10%",
-      right: "10%",
-    },
-  });
-
-  const StyledInput = styled(TextField)({
-    marginTop: theme.spacing(3),
-    width: "100%",
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4)
-  });
-
-  const CreateCategoryButton = styled(Button)({
-   width: "100%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1)
-  })
-
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main
-  })
-
-  const EditCategoryModalHolder = styled(Box)({
-
-  })
 
   return (
     <Box>
