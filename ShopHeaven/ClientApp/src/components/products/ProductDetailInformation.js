@@ -1,19 +1,20 @@
-import { React, useState } from "react";
+import { React, Fragment, useState } from "react";
 import {
   Box,
   Typography,
   Tabs,
   Tab,
   Paper,
-  Container,
   Table,
   TableHead,
   TableCell,
   TableRow,
   TableContainer,
   TableBody,
+  Rating,
+  Button,
+  InputBase,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
@@ -32,18 +33,41 @@ export default function ProductDetailInformation(props) {
     );
   }
 
-  
-  function RenderTableBody(){
+  function RenderTableBody() {
     return props.product.specifications.map((spec, index) => {
-        return <StyledTableRow key={index}>
+      return (
+        <StyledTableRow key={index}>
           <KeyTableCell component="th" scope="row">
             {spec.key}
           </KeyTableCell>
-          <ValueTableCell align="left">
-            {spec.value}
-          </ValueTableCell>
-        </StyledTableRow>;
-      })
+          <ValueTableCell align="left">{spec.value}</ValueTableCell>
+        </StyledTableRow>
+      );
+    });
+  }
+
+  function RenderReviewBox() {
+    return (
+      <Fragment>
+      <Typography variant="h6">LEAVE REVIEW</Typography>
+      <ProductInfoInput
+        placeholder="Your name"
+      />
+      <ProductInfoInput
+        placeholder="Your e-mail (optional)"
+      />
+      <Typography>Your rating:</Typography>
+      <Rating name="size-small" defaultValue={2} size="medium" sx={{display: "block"}}/>
+      <ProductInfoInput
+        multiline
+        placeholder="Type comment here…"
+        minRows={4}
+      />
+      <Button size="medium" variant="contained" sx={{mt: theme.spacing(2)}}>
+        SEND REVIEW
+      </Button>
+      </Fragment>
+    )
   }
 
   const [value, setValue] = useState(0);
@@ -66,10 +90,10 @@ export default function ProductDetailInformation(props) {
   });
 
   const KeyTableCell = styled(TableCell)({
-        minWidth: "10%",
-        textTransform: "uppercase",
-        fontWeight: 500,
-        fontSize: 15,
+    minWidth: "10%",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    fontSize: 15,
   });
 
   const ValueTableCell = styled(TableCell)({
@@ -77,23 +101,35 @@ export default function ProductDetailInformation(props) {
     fontWeight: 400,
     fontSize: 15,
     width: "50%",
-});
+  });
 
-const HeadingTableCell = styled(TableCell)({
+  const HeadingTableCell = styled(TableCell)({
     textTransform: "uppercase",
     fontWeight: 600,
     fontSize: 24,
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
-});
+  });
 
-const HeadingDescription = styled(Typography)({
+  const HeadingDescription = styled(Typography)({
     textTransform: "uppercase",
     fontWeight: 600,
     fontSize: 24,
     paddingTop: theme.spacing(1.9),
     paddingBottom: theme.spacing(3),
-});
+  });
+
+  const ProductInfoInput = styled(InputBase)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+  });
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
@@ -124,7 +160,7 @@ const HeadingDescription = styled(Typography)({
         </Box>
         <Box>
           <TabPanel value={value} index={0}>
-          <HeadingDescription>PRODUCT DESCRIPTION</HeadingDescription>
+            <HeadingDescription>PRODUCT DESCRIPTION</HeadingDescription>
             {props.product.description}
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -136,14 +172,12 @@ const HeadingDescription = styled(Typography)({
                     <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                     {RenderTableBody()}
-                </TableBody>
+                <TableBody>{RenderTableBody()}</TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Item Three
+            {RenderReviewBox()}
           </TabPanel>
         </Box>
       </Paper>

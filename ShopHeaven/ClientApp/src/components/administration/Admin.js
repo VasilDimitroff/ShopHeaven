@@ -30,7 +30,6 @@ export default function Admin() {
   let [selectedIndex, setSelectedIndex] = useState(1);
 
   useEffect(() => {
-    console.log("selectedIndex has been updated:", selectedIndex);   
   }, [selectedIndex]);
 
   const handleListItemClick = (event, index) => {
