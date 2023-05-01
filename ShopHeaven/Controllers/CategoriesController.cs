@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Responses.Categories;
@@ -12,7 +14,7 @@ namespace ShopHeaven.Controllers
     {
         private readonly ICategoriesService categoriesService;
 
-        public CategoriesController(ICategoriesService categoriesService, IStorageService storageService)
+        public CategoriesController(ICategoriesService categoriesService)
         {
             this.categoriesService = categoriesService;
         }
@@ -55,6 +57,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("create")]
         public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {

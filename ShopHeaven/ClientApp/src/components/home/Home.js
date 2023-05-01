@@ -1,8 +1,6 @@
 import React from "react";
 import { theme } from "../../theme";
 import HomeSliderAndCategories from "./HomeSliderAndCategories";
-import Header from "./../Header";
-import Footer from "../Footer";
 import ProductsCarouselLine from "../products/ProductsCarouselLine";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import FullWidthBannerWithOverlay from "../banners/FullWidthBannerWithOverlay";
@@ -488,7 +486,7 @@ const categories = [
 
 export default function Home() {
   return (
-    <div>   
+    <div>
       <HomeSliderAndCategories items={products} categories={categories} />
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
