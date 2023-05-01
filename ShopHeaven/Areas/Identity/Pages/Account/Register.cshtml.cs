@@ -115,6 +115,19 @@ namespace ShopHeaven.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                var wishlist = new Wishlist()
+                {
+                    UserId = user.Id
+                };
+
+                var cart = new Cart()
+                {
+                    UserId = user.Id,
+                };
+
+                user.CartId = cart.Id;
+                user.WishlistId = wishlist.Id;
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
