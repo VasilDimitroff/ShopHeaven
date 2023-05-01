@@ -20,7 +20,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpGet]
-        [Route("get")]
+        [Route(nameof(Get))]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -41,7 +41,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpGet]
-        [Route("getAll")]
+        [Route(nameof(GetAll))]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -57,8 +57,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        [Route("create")]
+        [Route(nameof(Create))]
         public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {
             try
@@ -73,7 +72,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
+        [Route(nameof(Delete))]
         public async Task<IActionResult> Delete([FromBody] DeleteCategoryRequestModel model)
         {
             try
