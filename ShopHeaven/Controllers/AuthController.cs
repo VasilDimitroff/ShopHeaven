@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,11 +16,13 @@ namespace ShopHeaven.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> userManager;
+        private readonly IUsersService usersService;
         private readonly ApplicationSettings applicationSettings;
 
-        public AuthController(UserManager<User> userManager, IOptions<ApplicationSettings> applicationSettings)
+        public AuthController(UserManager<User> userManager, IOptions<ApplicationSettings> applicationSettings, IUsersService usersService)
         {
             this.userManager = userManager;
+            this.usersService = usersService;
             this.applicationSettings = applicationSettings.Value;
         }
 
@@ -27,22 +30,16 @@ namespace ShopHeaven.Controllers
         [Route(nameof(Register))]
         public async Task<ActionResult> Register(CreateUserRequestModel model)
         {
-            User user = new User { Email = model.Email, IsDeleted = false};
-
-            Wishlist wishlist = new Wishlist { UserId = user.Id };
-            Cart cart = new Cart { UserId = user.Id };
-
-            user.CartId = cart.Id;
-            user.WishlistId = wishlist.Id;
-
-            IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
-
-            if(result.Succeeded)
+            try
             {
-                return this.Ok("You are registered!");
+                this.usersService.Register(model);
             }
-            
-            return BadRequest(result.Errors);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok(GlobalConstants.UserSuccessfullyRegistered);
         }
 
         [HttpPost]

@@ -14,21 +14,14 @@ import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import { validateEmail, validatePassword, passwordsMatch, registerUser } from "../../services/authService";
 
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
 export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
 
   const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
-
   const [pwd, setPwd] = useState("");
-  const [validPwd, setValidPassword] = useState(false);
-
   const [matchPwd, setMatchPwd] = useState("");
-  const [validMatch, setValidMatch] = useState(false);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -89,44 +82,23 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
-    const isEmailValid = validateEmail(emailRef.current.value);
-    
-    if (!isEmailValid) {
-      setErrMsg("Invalid Email");
-      setValidEmail(false);
-      return;
-    }
 
-    const isPasswordValid = validatePassword(passwordRef.current.value);
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const confirmPassword = confirmPasswordRef.current.value;
 
-    if (!isPasswordValid) {
-        setErrMsg("Invalid Password");
-        setValidPassword(false);
-        return;
-      }
-
-    const arePasswordsMatch = passwordsMatch(passwordRef.current.value, confirmPasswordRef.current.value)
-
-    if (!arePasswordsMatch) {
-        setErrMsg("Passwords must match!");
-        setValidMatch(false);
-        return;
-    }
+    validateForm(email, password, confirmPassword);
 
     const user = {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-        confirmPassword: confirmPasswordRef.current.value
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
     }
 
     try {
       const response = await registerUser(user)
       console.log("RESPONSE: " + JSON.stringify(response));
       setSuccess(true);
-      setValidEmail(true);
-      setValidPassword(true);
-      setValidMatch(true);
 
       setEmail("");
       setPwd("");
@@ -142,6 +114,29 @@ export default function Register() {
       }
     }
   };
+
+  function validateForm(email, password, confirmPassword) {
+    const isEmailValid = validateEmail(email);
+    
+    if (!isEmailValid) {
+      setErrMsg("Invalid Email");
+      return;
+    }
+
+    const isPasswordValid = validatePassword(password);
+
+    if (!isPasswordValid) {
+        setErrMsg("Invalid Password");
+        return;
+      }
+
+    const arePasswordsMatch = passwordsMatch(password, confirmPassword)
+
+    if (!arePasswordsMatch) {
+        setErrMsg("Passwords must match!");
+        return;
+    }
+  }
 
   return (
     <>

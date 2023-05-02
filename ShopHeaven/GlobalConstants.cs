@@ -16,6 +16,10 @@
 
         public const string UserNotFound = "User is not found!";
 
+        public const string UserWithThisEmailAlreadyExists = "User with this email already exists!";
+
+        public const string UserSuccessfullyRegistered = "User is registered successfully!";
+
         public const string CategoryWithThisNameAlreadyExist = "Category with given name already exists!";
 
         public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";

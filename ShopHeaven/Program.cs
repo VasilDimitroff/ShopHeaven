@@ -66,6 +66,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<ICategoriesService, CategoriesService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
+builder.Services.AddTransient<IUsersService, UsersService>();
 
 builder.Services.AddAzureClients(clientBuilder =>
 {
