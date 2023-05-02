@@ -38,65 +38,6 @@ export default function Register() {
     setErrMsg("");
   }, [email, pwd, matchPwd]);
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Register",
-      uri: "/register",
-    },
-  ];
-
-  const ProductInfoInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "80%",
-    display: "flex",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const FormWrapper = styled(Paper)({
-    width: "80%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(5),
-    paddingBottom: theme.spacing(5),
-    paddingTop: theme.spacing(5),
-  });
-
-  const RegisterButton = styled(Button)({
-    width: "80%",
-    display: "flex",
-    margin: "auto",
-    marginTop: theme.spacing(3),
-  });
-
-  const FormHeading = styled(Typography)({
-    textAlign: "center",
-    fontWeight: 500,
-    marginBottom: theme.spacing(4),
-  });
-
-  const LinkHolder = styled(Box)({
-    paddingTop: theme.spacing(2),
-    fontSize: 16,
-    width: "80%",
-    display: "flex",
-    margin: "auto",
-  });
-
-
-  const ErrorMessageHolder = styled(Typography)({
-    color: theme.palette.error.main,
-    paddingTop: theme.spacing(1),
-    width: "80%",
-    display: "flex",
-    margin: "auto",
-  })
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -179,20 +120,94 @@ export default function Register() {
     return isFormValid;
   }
 
+  const breadcrumbs = [
+    {
+      name: "Home",
+      uri: "/",
+    },
+    {
+      name: "Register",
+      uri: "/register",
+    },
+  ];
+
+  const ProductInfoInput = styled(TextField)({
+    background: "rgb(255,249,249)",
+    width: "80%",
+    display: "flex",
+    margin: "auto",
+    marginTop: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+  });
+
+  const FormWrapper = styled(Paper)({
+    width: "80%",
+    display: "block",
+    margin: "auto",
+    marginTop: theme.spacing(5),
+    paddingBottom: theme.spacing(5),
+    paddingTop: theme.spacing(5),
+  });
+
+  const RegisterButton = styled(Button)({
+    width: "80%",
+    display: "flex",
+    margin: "auto",
+    marginTop: theme.spacing(3),
+  });
+
+  const FormHeading = styled(Typography)({
+    textAlign: "center",
+    fontWeight: 500,
+    marginBottom: theme.spacing(4),
+  });
+
+  const LinkHolder = styled(Box)({
+    paddingTop: theme.spacing(2),
+    fontSize: 16,
+    width: "80%",
+    display: "flex",
+    margin: "auto",
+  });
+
+
+  const ErrorMessageHolder = styled(Typography)({
+    color: theme.palette.error.main,
+    paddingTop: theme.spacing(1),
+    width: "80%",
+    display: "flex",
+    margin: "auto",
+  });
+
+  const SuccessHolder = styled(Box)({
+    textAlign: "center",
+    color: theme.palette.success.main,
+    width: "80%",
+    display: "block",
+    margin: "auto",
+  })
+
+  const SignInButton = styled(Button)({
+    width: "60%",
+    display: "block",
+    margin: "auto",
+    marginTop: theme.spacing(3)
+  })
+
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-        {success === true ? (
-          <Box>
-            <Typography>You are registered succesfully!</Typography>
-            <p>
-              <a href="#">Sign In</a>
-            </p>
-          </Box>
+        {success === false ? (
+          <SuccessHolder>
+            <Typography variant="h5">Congratulations! You are registered successfully!</Typography>  
+            <SignInButton variant="contained" size="large">
+                <Link style={{textDecoration: "none", color: theme.palette.white.main}} to="/login">Sign in</Link>
+             </SignInButton>
+          </SuccessHolder>
         ) : (
-          <>
-            <FormHeading variant="h4"> REGISTER PROFILE</FormHeading>
+          <Fragment>
+            <FormHeading variant="h5"> REGISTER PROFILE</FormHeading>
             <Container>
             <ErrorMessageHolder><Typography variant="p"><b>{errMsg}</b></Typography></ErrorMessageHolder>
               <form onSubmit={handleSubmit}>
@@ -232,7 +247,7 @@ export default function Register() {
                 <Link to="/login">Already have a profile? Log in!</Link>
               </LinkHolder>
             </Container>
-          </>
+          </Fragment>
         )}
       </FormWrapper>
       <Box sx={{ mt: theme.spacing(3) }}>

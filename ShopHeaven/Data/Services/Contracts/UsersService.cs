@@ -20,7 +20,7 @@ namespace ShopHeaven.Data.Services.Contracts
         {
             User user = new User
             { 
-                UserName = "User" + this.db.Users.Count() + 6564,
+                UserName = "User" + (this.db.Users.Count() + 6564),
                 Email = model.Email.Trim(),
                 IsDeleted = false,
             };
