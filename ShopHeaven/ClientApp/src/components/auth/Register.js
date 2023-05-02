@@ -25,8 +25,11 @@ export default function Register() {
   const confirmPasswordRef = useRef();
 
   const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
   const [pwd, setPwd] = useState("");
+  const [validPassword, setValidPassword] = useState(true);
   const [matchPwd, setMatchPwd] = useState("");
+  const [validConfirmPassword, setValidConfirmPassword] = useState(true);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -106,47 +109,66 @@ export default function Register() {
 
     try {
       const response = await registerUser(user);
-      console.log("RESPONSE: " + response.data);
-      setErrMsg("");
       setSuccess(true);
-
-      setEmail("");
-      setPwd("");
-      setMatchPwd("");
+      refreshState();
     } catch (err) {
-      if (!err?.response) {
+      handleError(err);
+    }
+  };
+
+  function handleError(err){
+    if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response.status === 403) {
         setErrMsg("Email already taken!");
       } else {
         setErrMsg("Registration Failed!");
       }
-    }
-  };
+  }
+
+  function refreshState() {
+    setErrMsg("");
+
+    setEmail("");
+    setPwd("");
+    setMatchPwd("");
+
+    setValidEmail(true);
+    setValidPassword(true);
+    setValidConfirmPassword(true);
+  }
 
   function validateForm(email, password, confirmPassword) {
     const isEmailValid = validateEmail(email);
 
-    if (!isEmailValid) {
-      setErrMsg("Invalid Email");
-      return false;
-    }
+    let isFormValid = false;
 
+    if (!isEmailValid) {
+      setValidEmail(false);
+      isFormValid = false;
+    } else {
+        setValidEmail(true);
+    }    
     const isPasswordValid = validatePassword(password);
 
     if (!isPasswordValid) {
-      setErrMsg("Invalid Password");
-      return false;
+      setValidPassword(false);
+      isFormValid = false;
+    } else {
+        setValidPassword(true);
     }
 
     const arePasswordsMatch = passwordsMatch(password, confirmPassword);
 
     if (!arePasswordsMatch) {
-      setErrMsg("Passwords must match!");
-      return false;
+      setValidConfirmPassword(false);
+      isFormValid = false;
+    } else {
+      setValidConfirmPassword(true);
+      isFormValid = true;
     }
 
-    return true;
+    return isFormValid;
   }
 
   return (
@@ -154,12 +176,12 @@ export default function Register() {
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
         {success === true ? (
-          <section>
-            <h1>You are registered succesfully!</h1>
+          <Box>
+            <Typography>You are registered succesfully!</Typography>
             <p>
               <a href="#">Sign In</a>
             </p>
-          </section>
+          </Box>
         ) : (
           <>
             <FormHeading variant="h4"> REGISTER PROFILE</FormHeading>
@@ -175,7 +197,7 @@ export default function Register() {
                   type="text"
                   variant="filled"
                 />
-
+              {validEmail ? "" : <Typography variant="p">Invalid Email</Typography> }
                 <ProductInfoInput
                   inputRef={passwordRef}
                   required
@@ -184,7 +206,7 @@ export default function Register() {
                   type="password"
                   variant="filled"
                 />
-
+               {validPassword ? "" : <Typography variant="p">Invalid Password</Typography> }
                 <ProductInfoInput
                   inputRef={confirmPasswordRef}
                   required
@@ -193,7 +215,7 @@ export default function Register() {
                   type="password"
                   variant="filled"
                 />
-
+                {validConfirmPassword ? "" : <Typography variant="p">Passwords must match!</Typography> }
                 <RegisterButton type="submit" variant="contained" size="large">
                   REGISTER
                 </RegisterButton>

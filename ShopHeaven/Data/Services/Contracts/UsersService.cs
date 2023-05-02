@@ -38,7 +38,12 @@ namespace ShopHeaven.Data.Services.Contracts
                  throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
              }
 
-            IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
+             if(model.Password.Trim() != model.ConfirmPassword.Trim())
+            {
+                throw new ArgumentException(GlobalConstants.PasswordsDoesntMatch);
+            }
+
+            IdentityResult result = await this.userManager.CreateAsync(user, model.Password.Trim());
 
             if (!result.Succeeded)
             {
