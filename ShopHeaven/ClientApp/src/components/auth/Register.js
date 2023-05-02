@@ -88,6 +88,15 @@ export default function Register() {
     margin: "auto",
   });
 
+
+  const ErrorMessageHolder = styled(Typography)({
+    color: theme.palette.error.main,
+    paddingTop: theme.spacing(1),
+    width: "80%",
+    display: "flex",
+    margin: "auto",
+  })
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -141,7 +150,7 @@ export default function Register() {
   function validateForm(email, password, confirmPassword) {
     const isEmailValid = validateEmail(email);
 
-    let isFormValid = false;
+    let isFormValid = true;
 
     if (!isEmailValid) {
       setValidEmail(false);
@@ -165,7 +174,6 @@ export default function Register() {
       isFormValid = false;
     } else {
       setValidConfirmPassword(true);
-      isFormValid = true;
     }
 
     return isFormValid;
@@ -185,8 +193,8 @@ export default function Register() {
         ) : (
           <>
             <FormHeading variant="h4"> REGISTER PROFILE</FormHeading>
-            <p>{errMsg}</p>
             <Container>
+            <ErrorMessageHolder><Typography variant="p"><b>{errMsg}</b></Typography></ErrorMessageHolder>
               <form onSubmit={handleSubmit}>
                 <ProductInfoInput
                   inputRef={emailRef}
@@ -197,7 +205,7 @@ export default function Register() {
                   type="text"
                   variant="filled"
                 />
-              {validEmail ? "" : <Typography variant="p">Invalid Email</Typography> }
+              {validEmail ? "" : <ErrorMessageHolder><Typography variant="p">Invalid Email</Typography></ErrorMessageHolder> }
                 <ProductInfoInput
                   inputRef={passwordRef}
                   required
@@ -206,7 +214,7 @@ export default function Register() {
                   type="password"
                   variant="filled"
                 />
-               {validPassword ? "" : <Typography variant="p">Invalid Password</Typography> }
+               {validPassword ? "" : <ErrorMessageHolder><Typography variant="p">Invalid Password</Typography></ErrorMessageHolder> }
                 <ProductInfoInput
                   inputRef={confirmPasswordRef}
                   required
@@ -215,7 +223,7 @@ export default function Register() {
                   type="password"
                   variant="filled"
                 />
-                {validConfirmPassword ? "" : <Typography variant="p">Passwords must match!</Typography> }
+                {validConfirmPassword ? "" : <ErrorMessageHolder><Typography variant="p">Passwords must match!</Typography></ErrorMessageHolder> }
                 <RegisterButton type="submit" variant="contained" size="large">
                   REGISTER
                 </RegisterButton>
