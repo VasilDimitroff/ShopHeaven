@@ -5,6 +5,7 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import Home from "./components/home/Home";
 import Admin from './components/administration/Admin';
+import Register from './components/auth/Register';
 
 const AppRoutes = [
   {
@@ -26,6 +27,10 @@ const AppRoutes = [
   {
     path: '/admin',
     element: <Admin />
+  },
+  {
+    path: '/register',
+    element: <Register />
   },
   {
     path: '/fetch-data',
