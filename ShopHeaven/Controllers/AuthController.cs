@@ -32,10 +32,15 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                this.usersService.Register(model);
+                await this.usersService.Register(model);
             }
             catch (Exception ex)
             {
+                if (ex.Message == GlobalConstants.UserWithThisEmailAlreadyExists)
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+                }
+
                 return BadRequest(ex.Message);
             }
 

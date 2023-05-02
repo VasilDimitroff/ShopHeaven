@@ -20,6 +20,8 @@
 
         public const string UserSuccessfullyRegistered = "User is registered successfully!";
 
+        public const string UserNotCreated = "User is not created!";
+
         public const string CategoryWithThisNameAlreadyExist = "Category with given name already exists!";
 
         public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";

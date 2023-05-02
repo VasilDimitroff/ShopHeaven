@@ -18,7 +18,12 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public async Task Register(CreateUserRequestModel model)
         {
-            User user = new User { Email = model.Email.Trim(), IsDeleted = false };
+            User user = new User
+            { 
+                UserName = "User" + this.db.Users.Count() + 6564,
+                Email = model.Email.Trim(),
+                IsDeleted = false,
+            };
 
             Wishlist wishlist = new Wishlist { UserId = user.Id };
             Cart cart = new Cart { UserId = user.Id };
@@ -26,20 +31,18 @@ namespace ShopHeaven.Data.Services.Contracts
             user.CartId = cart.Id;
             user.WishlistId = wishlist.Id;
 
-            try
-            {
-                User userWithSameEmail = await this.db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim());
+             User userWithSameEmail = await this.db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim());
 
-                if (userWithSameEmail != null)
-                {
-                    throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
-                }
+             if (userWithSameEmail != null)
+             {
+                 throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
+             }
 
-                IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
-            }
-            catch (Exception ex)
+            IdentityResult result = await this.userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
             {
-                throw ex;
+                throw new ArgumentException(GlobalConstants.UserNotCreated);
             }
         }
     }

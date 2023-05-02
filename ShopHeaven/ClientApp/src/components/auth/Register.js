@@ -12,7 +12,12 @@ import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
-import { validateEmail, validatePassword, passwordsMatch, registerUser } from "../../services/authService";
+import {
+  validateEmail,
+  validatePassword,
+  passwordsMatch,
+  registerUser,
+} from "../../services/authService";
 
 export default function Register() {
   const emailRef = useRef();
@@ -87,74 +92,78 @@ export default function Register() {
     const password = passwordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
 
-    validateForm(email, password, confirmPassword);
+    const isFormValid = validateForm(email, password, confirmPassword);
 
-    const user = {
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword
+    if (!isFormValid) {
+        return;
     }
 
+    const user = {
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+
     try {
-      const response = await registerUser(user)
-      console.log("RESPONSE: " + JSON.stringify(response));
+      const response = await registerUser(user);
+      console.log("RESPONSE: " + response.data);
+      setErrMsg("");
       setSuccess(true);
 
       setEmail("");
       setPwd("");
       setMatchPwd("");
-
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
-      } else if (err.response?.status === 409) {
-        setErrMsg("Email Taken");
+      } else if (err.response.status === 403) {
+        setErrMsg("Email already taken!");
       } else {
-        setErrMsg("Registration Failed");
+        setErrMsg("Registration Failed!");
       }
     }
   };
 
   function validateForm(email, password, confirmPassword) {
     const isEmailValid = validateEmail(email);
-    
+
     if (!isEmailValid) {
       setErrMsg("Invalid Email");
-      return;
+      return false;
     }
 
     const isPasswordValid = validatePassword(password);
 
     if (!isPasswordValid) {
-        setErrMsg("Invalid Password");
-        return;
-      }
+      setErrMsg("Invalid Password");
+      return false;
+    }
 
-    const arePasswordsMatch = passwordsMatch(password, confirmPassword)
+    const arePasswordsMatch = passwordsMatch(password, confirmPassword);
 
     if (!arePasswordsMatch) {
-        setErrMsg("Passwords must match!");
-        return;
+      setErrMsg("Passwords must match!");
+      return false;
     }
+
+    return true;
   }
 
   return (
-    <>
-      {success === true ? (
-        <section>
-          <h1>Success!</h1>
-          <p>
-            <a href="#">Sign In</a>
-          </p>
-        </section>
-      ) : (
-        <Fragment>
-          <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-          <FormWrapper>
-            <FormHeading variant="h4"> REGISTER PROFILE</FormHeading>
+    <Fragment>
+      <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
+      <FormWrapper>
+        {success === true ? (
+          <section>
+            <h1>You are registered succesfully!</h1>
             <p>
-              {errMsg}
+              <a href="#">Sign In</a>
             </p>
+          </section>
+        ) : (
+          <>
+            <FormHeading variant="h4"> REGISTER PROFILE</FormHeading>
+            <p>{errMsg}</p>
             <Container>
               <form onSubmit={handleSubmit}>
                 <ProductInfoInput
@@ -193,17 +202,17 @@ export default function Register() {
                 <Link to="/login">Already have a profile? Log in!</Link>
               </LinkHolder>
             </Container>
-          </FormWrapper>
-          <Box sx={{ mt: theme.spacing(3) }}>
-            <FullWidthBanner
-              paddingTop={theme.spacing(3.5)}
-              height={250}
-              heightSm={180}
-              image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
-            />
-          </Box>
-        </Fragment>
-      )}
-    </>
+          </>
+        )}
+      </FormWrapper>
+      <Box sx={{ mt: theme.spacing(3) }}>
+        <FullWidthBanner
+          paddingTop={theme.spacing(3.5)}
+          height={250}
+          heightSm={180}
+          image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
+        />
+      </Box>
+    </Fragment>
   );
 }

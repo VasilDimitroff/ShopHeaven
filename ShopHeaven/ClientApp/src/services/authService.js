@@ -12,9 +12,13 @@ export async function registerUser(user){
         JSON.stringify({ email: user.email, password: user.password, confirmPassword: user.confirmPassword }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          withCredentials: false,
         }
       );
+
+    console.log("IN AUTHSERVICE RESPONSE IS " + response.data);
+
+    return response;
 }
 
 export function validateEmail(email) {
