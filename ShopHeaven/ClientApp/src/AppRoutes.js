@@ -6,6 +6,7 @@ import { FetchData } from "./components/FetchData";
 import Home from "./components/home/Home";
 import Admin from './components/administration/Admin';
 import Register from './components/auth/Register';
+import Login from './components/auth/Login';
 
 const AppRoutes = [
   {
@@ -31,6 +32,10 @@ const AppRoutes = [
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/login',
+    element: <Login />
   },
   {
     path: '/fetch-data',

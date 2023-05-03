@@ -1,55 +1,36 @@
 import { React, Fragment, useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Box,
-  TextField,
-  Paper,
-  Container,
-  Button,
-  Typography,
-} from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+import { Box, TextField, Paper, Container,Button, Typography } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
-import {
-  validateEmail,
-  validatePassword,
-  passwordsMatch,
-  register,
-} from "../../services/authService";
+import { validateEmail, validatePassword, login } from "../../services/authService";
 
-export default function Register() {
+export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const confirmPasswordRef = useRef();
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [pwd, setPwd] = useState("");
   const [validPassword, setValidPassword] = useState(true);
-  const [matchPwd, setMatchPwd] = useState("");
-  const [validConfirmPassword, setValidConfirmPassword] = useState(true);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     setErrMsg("");
-  }, [email, pwd, matchPwd]);
+  }, [email, pwd]);
 
   useEffect(() => {
     setValidEmail(validateEmail(email));
-  }, [validEmail]);
+}, [validEmail])
 
-  useEffect(() => {
-    setValidPassword(validatePassword(pwd));
-  }, [validPassword]);
-
-  useEffect(() => {
-    setValidConfirmPassword(passwordsMatch(pwd, matchPwd));
-  }, [validConfirmPassword]);
+useEffect(() => {
+  setValidPassword(validatePassword(pwd));
+}, [validPassword])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,43 +38,39 @@ export default function Register() {
     const user = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
-      confirmPassword: confirmPasswordRef.current.value,
     };
 
     setEmail(user.email);
     setPwd(user.password);
-    setMatchPwd(user.confirmPassword);
 
-    let emailValidation = validateEmail(user.email);
+    let emailValidation = validateEmail(user.email)
     setValidEmail(emailValidation);
 
-    let passwordValidation = validatePassword(user.password);
+    let passwordValidation = validatePassword(user.password)
     setValidPassword(passwordValidation);
 
-    let arePasswordsMatch = passwordsMatch(user.password, user.confirmPassword);
-    setValidConfirmPassword(arePasswordsMatch);
-
-    if (!emailValidation || !passwordValidation || !arePasswordsMatch) {
+    if (!emailValidation || !passwordValidation) {
       return;
     }
 
     try {
-      const response = await register(user);
+      const response = await login(user);
       setSuccess(true);
       refreshState();
+      console.log("TOKEN IS: " + response.data.jwtToken);
     } catch (err) {
       handleError(err);
     }
   };
 
-  function handleError(err) {
+  function handleError(err){
     if (!err?.response) {
-      setErrMsg("No Server Response");
-    } else if (err.response.status === 403) {
-      setErrMsg("Email already taken!");
-    } else {
-      setErrMsg("Registration Failed!");
-    }
+        setErrMsg("No Server Response");
+      } else if (err.response.status === 403) {
+        setErrMsg("Email already taken!");
+      } else {
+        setErrMsg("Login Failed!");
+      }
   }
 
   function refreshState() {
@@ -101,11 +78,9 @@ export default function Register() {
 
     setEmail("");
     setPwd("");
-    setMatchPwd("");
 
     setValidEmail(true);
     setValidPassword(true);
-    setValidConfirmPassword(true);
   }
 
   const breadcrumbs = [
@@ -114,8 +89,8 @@ export default function Register() {
       uri: "/",
     },
     {
-      name: "Register",
-      uri: "/register",
+      name: "Login",
+      uri: "/login",
     },
   ];
 
@@ -172,14 +147,14 @@ export default function Register() {
     width: "80%",
     display: "block",
     margin: "auto",
-  });
+  })
 
   const SignInButton = styled(Button)({
     width: "60%",
     display: "block",
     margin: "auto",
-    marginTop: theme.spacing(3),
-  });
+    marginTop: theme.spacing(3)
+  })
 
   return (
     <Fragment>
@@ -187,31 +162,16 @@ export default function Register() {
       <FormWrapper>
         {success === true ? (
           <SuccessHolder>
-            <Typography variant="h5">
-              <InfoIcon />
-              Congratulations! You are registered successfully!
-            </Typography>
+            <Typography variant="h5"><InfoIcon/>You logged in successfully!</Typography>  
             <SignInButton variant="contained" size="large">
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: theme.palette.white.main,
-                }}
-                to="/login"
-              >
-                Sign in
-              </Link>
-            </SignInButton>
+                <Link style={{textDecoration: "none", color: theme.palette.white.main}} to="/">Go to home</Link>
+             </SignInButton>
           </SuccessHolder>
         ) : (
           <Fragment>
-            <FormHeading variant="h5"> REGISTER PROFILE</FormHeading>
+            <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
             <Container>
-              <ErrorMessageHolder>
-                <Typography variant="p">
-                  <b>{errMsg}</b>
-                </Typography>
-              </ErrorMessageHolder>
+            <ErrorMessageHolder><Typography variant="p"><b>{errMsg}</b></Typography></ErrorMessageHolder>
               <form onSubmit={handleSubmit}>
                 <ProductInfoInput
                   inputRef={emailRef}
@@ -223,15 +183,7 @@ export default function Register() {
                   type="text"
                   variant="filled"
                 />
-                {!validEmail && email ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Email!
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
+              {!validEmail && email ? <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Email!</Typography></ErrorMessageHolder> : "" }
                 <ProductInfoInput
                   inputRef={passwordRef}
                   required
@@ -241,41 +193,13 @@ export default function Register() {
                   type="password"
                   variant="filled"
                 />
-                {!validPassword && pwd ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Password! Password must contain at
-                      least 10 characters, including lowercase and uppercase,
-                      digit and special symbol!{" "}
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <ProductInfoInput
-                  inputRef={confirmPasswordRef}
-                  required
-                  defaultValue={matchPwd}
-                  id="confirm-password"
-                  label="Confirm Password"
-                  type="password"
-                  variant="filled"
-                />
-                {!validConfirmPassword && matchPwd ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Passwords must match!
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
+               {!validPassword && pwd ? <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Password! Password must contain at least 10 characters, including lowercase and uppercase, digit  and special symbol! </Typography></ErrorMessageHolder> : "" }
                 <RegisterButton type="submit" variant="contained" size="large">
-                  REGISTER
+                  LOG IN 
                 </RegisterButton>
               </form>
               <LinkHolder>
-                <Link to="/login">Already have a profile? Log in!</Link>
+                <Link to="/register">You haven't account? Create one!</Link>
               </LinkHolder>
             </Container>
           </Fragment>

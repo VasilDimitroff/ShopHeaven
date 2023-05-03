@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ApiEndpoints } from "../endpoints";
 
-export async function registerUser(user){
+export async function register(user){
 
     console.log("EMAIL: " + user.email);
     console.log("PASSWORD: " + user.password);
@@ -19,6 +19,23 @@ export async function registerUser(user){
     return response;
 }
 
+export async function login(user){
+
+  console.log("LOGIN EMAIL: " + user.email);
+  console.log("LOGIN PASSWORD: " + user.password);
+
+  const response = await axios.post(
+      ApiEndpoints.auth.login,
+      JSON.stringify({ email: user.email, password: user.password}),
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: false,
+      }
+    );
+
+  return response;
+}
+
 export function validateEmail(email) {
     const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const isEmailValid = EMAIL_REGEX.test(email);
@@ -30,5 +47,5 @@ export function validatePassword(password) {
 }
 
 export function passwordsMatch(password, confirmPassword) {
-    return password.trim() !== confirmPassword.trim() ? false : true;
+    return password.trim() === confirmPassword.trim() ? true : false;
 }
