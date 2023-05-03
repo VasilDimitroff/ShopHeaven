@@ -6,12 +6,12 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ICategoriesService
     {
-        Task CreateCategory(CreateCategoryRequestModel model);
+        Task CreateCategoryAsync(CreateCategoryRequestModel model);
 
-        Task<GetCategoryResponseModel> GetCategoryById(string id);
+        Task<GetCategoryResponseModel> GetCategoryByIdAsync(string id);
 
-        Task<List<GetCategoriesResponseModel>> GetAllCategories();
+        Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync();
 
-        Task<string> DeleteCategory(DeleteCategoryRequestModel model);
+        Task<string> DeleteCategoryAsync(DeleteCategoryRequestModel model);
     }
 }

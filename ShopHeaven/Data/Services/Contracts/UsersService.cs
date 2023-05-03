@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Models.Requests.Users;
+using ShopHeaven.Models.Responses.Users;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
@@ -16,7 +17,7 @@ namespace ShopHeaven.Data.Services.Contracts
             this.db = db;
         }
 
-        public async Task Register(CreateUserRequestModel model)
+        public async Task RegisterAsync(CreateUserRequestModel model)
         {
             User user = new User
             { 
@@ -49,6 +50,20 @@ namespace ShopHeaven.Data.Services.Contracts
             {
                 throw new ArgumentException(GlobalConstants.UserNotCreated);
             }
+        }
+
+        public async Task<IList<string>> GetUserRolesAsync(string userId)
+        {
+            var user = await this.userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserNotFound);
+            }
+
+            IList<string> userRoles = await this.userManager.GetRolesAsync(user);
+
+            return userRoles;
         }
     }
 }

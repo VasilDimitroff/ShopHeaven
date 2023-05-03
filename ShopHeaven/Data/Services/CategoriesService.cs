@@ -22,7 +22,7 @@ namespace ShopHeaven.Data.Services
             this.db = db;
         }
 
-        public async Task CreateCategory(CreateCategoryRequestModel model)
+        public async Task CreateCategoryAsync(CreateCategoryRequestModel model)
         {
             bool isUserExists = await this.db.Users.AnyAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
 
@@ -64,7 +64,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<string> DeleteCategory(DeleteCategoryRequestModel model)
+        public async Task<string> DeleteCategoryAsync(DeleteCategoryRequestModel model)
         {
             User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
 
@@ -152,7 +152,7 @@ namespace ShopHeaven.Data.Services
             return category.Name;
         }
 
-        public async Task<List<GetCategoriesResponseModel>> GetAllCategories()
+        public async Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync()
         {
             List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
@@ -175,7 +175,7 @@ namespace ShopHeaven.Data.Services
             return allCategories;
         }
 
-        public async Task<GetCategoryResponseModel> GetCategoryById(string id)
+        public async Task<GetCategoryResponseModel> GetCategoryByIdAsync(string id)
         {
             GetCategoryResponseModel getCategoryResponseModel = await this.db.MainCategories
                 .Where(x => x.Id == id && x.IsDeleted != true)

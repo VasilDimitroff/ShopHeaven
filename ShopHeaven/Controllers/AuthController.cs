@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
+using ShopHeaven.Models.Responses.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -32,7 +33,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                await this.usersService.Register(model);
+                await this.usersService.RegisterAsync(model);
             }
             catch (Exception ex)
             {
@@ -51,37 +52,54 @@ namespace ShopHeaven.Controllers
         [Route(nameof(Login))]
         public async Task<ActionResult<string>> Login(LoginUserRequestModel model)
         {
-            var user = await this.userManager.FindByEmailAsync(model.Email);
-
-            if (user == null)
+            try
             {
-                return Unauthorized(GlobalConstants.UserNotFound);
-            }
+                var user = await this.userManager.FindByEmailAsync(model.Email.Trim());
 
-            var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
-
-            if (!passwordValid)
-            {
-                return Unauthorized(GlobalConstants.PasswordNotValid);
-            }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity( new Claim[]
+                if (user == null)
                 {
+                    return Unauthorized(GlobalConstants.UserNotFound);
+                }
+
+                var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
+
+                if (!passwordValid)
+                {
+                    return Unauthorized(GlobalConstants.PasswordNotValid);
+                }
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(60),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)        
-            };
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(60),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
 
-             var token = tokenHandler.CreateToken(tokenDescriptor);
-             var encryptedToken = tokenHandler.WriteToken(token);
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var encryptedToken = tokenHandler.WriteToken(token);
 
-            return Ok(new { jwtToken = encryptedToken });
+                IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
+
+                var response = new LoginUserResponseModel
+                {
+                    Id = user.Id,
+                    Email = user.Email.Trim(),
+                    JwtToken = encryptedToken,
+                    Roles = userRoles
+                };
+
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            } 
          }
     }
 }

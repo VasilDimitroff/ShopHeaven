@@ -32,7 +32,7 @@ export async function login(user){
         withCredentials: false,
       }
     );
-
+    
   return response;
 }
 

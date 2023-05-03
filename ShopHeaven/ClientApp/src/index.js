@@ -1,25 +1,26 @@
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 import { ThemeProvider } from "@emotion/react";
-import React from 'react';
+import React from "react";
 import { ReactDOM } from "react-dom";
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import {theme} from './theme';
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+import { theme } from "./theme";
+import { AuthProvider } from "./context/AuthProvider";
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
 root.render(
-
   <React.StrictMode>
+    <AuthProvider>
       <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider> 
-     </BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </BrowserRouter>
+    </AuthProvider>
   </React.StrictMode>
-
 );
 
 /*

@@ -25,7 +25,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                GetCategoriesResponseModel categoryResponseModel = await this.categoriesService.GetCategoryById(id);
+                GetCategoriesResponseModel categoryResponseModel = await this.categoriesService.GetCategoryByIdAsync(id);
 
                 if (categoryResponseModel == null)
                 {
@@ -46,7 +46,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                List<GetCategoriesResponseModel> categoriesWithSubcategories = await this.categoriesService.GetAllCategories();
+                List<GetCategoriesResponseModel> categoriesWithSubcategories = await this.categoriesService.GetAllCategoriesAsync();
 
                 return Ok(categoriesWithSubcategories);
             }
@@ -62,7 +62,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                await this.categoriesService.CreateCategory(model);
+                await this.categoriesService.CreateCategoryAsync(model);
                 return Ok($"Category {model.Name} successfully created!");
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var categoryName = await this.categoriesService.DeleteCategory(model);
+                var categoryName = await this.categoriesService.DeleteCategoryAsync(model);
                 return Ok($"Category {categoryName} successfully deleted!");
             }
             catch (Exception ex)

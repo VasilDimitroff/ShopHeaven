@@ -1,14 +1,35 @@
-import { React, Fragment, useRef, useEffect, useState } from "react";
+import {
+  React,
+  Fragment,
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import { Link } from "react-router-dom";
-import { Box, TextField, Paper, Container,Button, Typography } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import {
+  Box,
+  TextField,
+  Paper,
+  Container,
+  Button,
+  Typography,
+} from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
+import AuthContext from "../../context/AuthProvider";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
-import { validateEmail, validatePassword, login } from "../../services/authService";
+import {
+  validateEmail,
+  validatePassword,
+  login,
+} from "../../services/authService";
 
 export default function Login() {
+  const { setAuth } = useContext(AuthContext);
+
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -26,11 +47,11 @@ export default function Login() {
 
   useEffect(() => {
     setValidEmail(validateEmail(email));
-}, [validEmail])
+  }, [validEmail]);
 
-useEffect(() => {
-  setValidPassword(validatePassword(pwd));
-}, [validPassword])
+  useEffect(() => {
+    setValidPassword(validatePassword(pwd));
+  }, [validPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,10 +64,10 @@ useEffect(() => {
     setEmail(user.email);
     setPwd(user.password);
 
-    let emailValidation = validateEmail(user.email)
+    let emailValidation = validateEmail(user.email);
     setValidEmail(emailValidation);
 
-    let passwordValidation = validatePassword(user.password)
+    let passwordValidation = validatePassword(user.password);
     setValidPassword(passwordValidation);
 
     if (!emailValidation || !passwordValidation) {
@@ -55,22 +76,41 @@ useEffect(() => {
 
     try {
       const response = await login(user);
+
+      const userId = response?.data?.id;
+      const jwtToken = response?.data?.jwtToken;
+      const roles = response?.data?.roles;
+      const email = response?.data?.email;
+
+      setAuth({
+        userId: userId,
+        jwtToken: jwtToken,
+        roles: roles,
+        email: email,
+        isLogged: true,
+      });
+
       setSuccess(true);
       refreshState();
+
+      console.log("----------------");
       console.log("TOKEN IS: " + response.data.jwtToken);
+      console.log("EMAIL IS: " + response.data.email);
+      console.log("ID IS: " + response.data.id);
+      console.log("ROLES ARE: " + response.data.roles.length);
     } catch (err) {
       handleError(err);
     }
   };
 
-  function handleError(err){
+  function handleError(err) {
     if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response.status === 403) {
-        setErrMsg("Email already taken!");
-      } else {
-        setErrMsg("Login Failed!");
-      }
+      setErrMsg("No Server Response");
+    } else {
+      setErrMsg(
+        "Login failed! Check if the e-mail and password are entered correctly."
+      );
+    }
   }
 
   function refreshState() {
@@ -147,14 +187,14 @@ useEffect(() => {
     width: "80%",
     display: "block",
     margin: "auto",
-  })
+  });
 
   const SignInButton = styled(Button)({
     width: "60%",
     display: "block",
     margin: "auto",
-    marginTop: theme.spacing(3)
-  })
+    marginTop: theme.spacing(3),
+  });
 
   return (
     <Fragment>
@@ -162,16 +202,31 @@ useEffect(() => {
       <FormWrapper>
         {success === true ? (
           <SuccessHolder>
-            <Typography variant="h5"><InfoIcon/>You logged in successfully!</Typography>  
+            <Typography variant="h5">
+              <InfoIcon />
+              You logged in successfully!
+            </Typography>
             <SignInButton variant="contained" size="large">
-                <Link style={{textDecoration: "none", color: theme.palette.white.main}} to="/">Go to home</Link>
-             </SignInButton>
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: theme.palette.white.main,
+                }}
+                to="/"
+              >
+                Go to home
+              </Link>
+            </SignInButton>
           </SuccessHolder>
         ) : (
           <Fragment>
             <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
             <Container>
-            <ErrorMessageHolder><Typography variant="p"><b>{errMsg}</b></Typography></ErrorMessageHolder>
+              <ErrorMessageHolder>
+                <Typography variant="p">
+                  <b>{errMsg}</b>
+                </Typography>
+              </ErrorMessageHolder>
               <form onSubmit={handleSubmit}>
                 <ProductInfoInput
                   inputRef={emailRef}
@@ -183,7 +238,15 @@ useEffect(() => {
                   type="text"
                   variant="filled"
                 />
-              {!validEmail && email ? <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Email!</Typography></ErrorMessageHolder> : "" }
+                {!validEmail && email ? (
+                  <ErrorMessageHolder>
+                    <Typography variant="p">
+                      <InfoIcon /> Invalid Email!
+                    </Typography>
+                  </ErrorMessageHolder>
+                ) : (
+                  ""
+                )}
                 <ProductInfoInput
                   inputRef={passwordRef}
                   required
@@ -193,9 +256,19 @@ useEffect(() => {
                   type="password"
                   variant="filled"
                 />
-               {!validPassword && pwd ? <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Password! Password must contain at least 10 characters, including lowercase and uppercase, digit  and special symbol! </Typography></ErrorMessageHolder> : "" }
+                {!validPassword && pwd ? (
+                  <ErrorMessageHolder>
+                    <Typography variant="p">
+                      <InfoIcon /> Invalid Password! Password must contain at
+                      least 10 characters, including lowercase and uppercase,
+                      digit and special symbol!
+                    </Typography>
+                  </ErrorMessageHolder>
+                ) : (
+                  ""
+                )}
                 <RegisterButton type="submit" variant="contained" size="large">
-                  LOG IN 
+                  LOG IN
                 </RegisterButton>
               </form>
               <LinkHolder>
