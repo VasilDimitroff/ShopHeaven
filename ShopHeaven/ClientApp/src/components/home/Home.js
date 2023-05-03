@@ -1,4 +1,4 @@
-import React from "react";
+import { React, Fragment } from "react";
 import { theme } from "../../theme";
 import HomeSliderAndCategories from "./HomeSliderAndCategories";
 import ProductsCarouselLine from "../products/ProductsCarouselLine";
@@ -486,7 +486,7 @@ const categories = [
 
 export default function Home() {
   return (
-    <div>
+    <Fragment>
       <HomeSliderAndCategories items={products} categories={categories} />
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
@@ -520,7 +520,7 @@ export default function Home() {
         paddingBottom={theme.spacing(3)}
         infoText="Subscribe to our newsletter for better life"
       />
-    </div>
+    </Fragment>
   );
 }
 

@@ -16,8 +16,6 @@ export async function registerUser(user){
         }
       );
 
-    console.log("IN AUTHSERVICE RESPONSE IS " + response.data);
-
     return response;
 }
 
@@ -28,16 +26,9 @@ export function validateEmail(email) {
 }
 
 export function validatePassword(password) {
-    if (password.length < 10) {
-        return false;
-    }
-
-    return true;
+   return password.length < 10 ? false : true
 }
 
 export function passwordsMatch(password, confirmPassword) {
-    if (password.trim() !== confirmPassword.trim()) {
-        return false;
-    }
-    return true;
+    return password.trim() !== confirmPassword.trim() ? false : true;
 }

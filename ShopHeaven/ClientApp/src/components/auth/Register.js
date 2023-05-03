@@ -1,23 +1,12 @@
 import { React, Fragment, useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Box,
-  TextField,
-  Paper,
-  Container,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, TextField, Paper, Container,Button, Typography } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
-import {
-  validateEmail,
-  validatePassword,
-  passwordsMatch,
-  registerUser,
-} from "../../services/authService";
+import { validateEmail, validatePassword,passwordsMatch, registerUser } from "../../services/authService";
 
 export default function Register() {
   const emailRef = useRef();
@@ -41,21 +30,19 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-    const confirmPassword = confirmPasswordRef.current.value;
-
-    const isFormValid = validateForm(email, password, confirmPassword);
-
-    if (!isFormValid) {
-        return;
-    }
-
     const user = {
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      confirmPassword: confirmPasswordRef.current.value,
     };
+
+    setEmail(user.email);
+    setPwd(user.password);
+    setMatchPwd(user.confirmPassword);
+
+    if (!validateForm(user.email, user.password, user.confirmPassword)) {
+      return;
+    }
 
     try {
       const response = await registerUser(user);
@@ -89,32 +76,14 @@ export default function Register() {
   }
 
   function validateForm(email, password, confirmPassword) {
-    const isEmailValid = validateEmail(email);
+    setValidEmail(validateEmail(email));
+    setValidPassword(validatePassword(password));
+    setValidConfirmPassword(passwordsMatch(password, confirmPassword));
 
     let isFormValid = true;
 
-    if (!isEmailValid) {
-      setValidEmail(false);
+    if (!validEmail || !validPassword || !validConfirmPassword) {
       isFormValid = false;
-    } else {
-        setValidEmail(true);
-    }    
-    const isPasswordValid = validatePassword(password);
-
-    if (!isPasswordValid) {
-      setValidPassword(false);
-      isFormValid = false;
-    } else {
-        setValidPassword(true);
-    }
-
-    const arePasswordsMatch = passwordsMatch(password, confirmPassword);
-
-    if (!arePasswordsMatch) {
-      setValidConfirmPassword(false);
-      isFormValid = false;
-    } else {
-      setValidConfirmPassword(true);
     }
 
     return isFormValid;
@@ -170,7 +139,6 @@ export default function Register() {
     margin: "auto",
   });
 
-
   const ErrorMessageHolder = styled(Typography)({
     color: theme.palette.error.main,
     paddingTop: theme.spacing(1),
@@ -198,9 +166,9 @@ export default function Register() {
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-        {success === false ? (
+        {success === true ? (
           <SuccessHolder>
-            <Typography variant="h5">Congratulations! You are registered successfully!</Typography>  
+            <Typography variant="h5"><InfoIcon/>Congratulations! You are registered successfully!</Typography>  
             <SignInButton variant="contained" size="large">
                 <Link style={{textDecoration: "none", color: theme.palette.white.main}} to="/login">Sign in</Link>
              </SignInButton>
@@ -215,30 +183,33 @@ export default function Register() {
                   inputRef={emailRef}
                   autoComplete="off"
                   required
+                  defaultValue={email}
                   id="email"
                   label="Email"
                   type="text"
                   variant="filled"
                 />
-              {validEmail ? "" : <ErrorMessageHolder><Typography variant="p">Invalid Email</Typography></ErrorMessageHolder> }
+              {validEmail ? "" : <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Email!</Typography></ErrorMessageHolder> }
                 <ProductInfoInput
                   inputRef={passwordRef}
                   required
+                  defaultValue={pwd}
                   id="password"
                   label="Password"
                   type="password"
                   variant="filled"
                 />
-               {validPassword ? "" : <ErrorMessageHolder><Typography variant="p">Invalid Password</Typography></ErrorMessageHolder> }
+               {validPassword ? "" : <ErrorMessageHolder><Typography variant="p"><InfoIcon/> Invalid Password! Password must contain at least 10 characters, including lowercase and uppercase, digit  and special symbol! </Typography></ErrorMessageHolder> }
                 <ProductInfoInput
                   inputRef={confirmPasswordRef}
                   required
+                  defaultValue={matchPwd}
                   id="confirm-password"
                   label="Confirm Password"
                   type="password"
                   variant="filled"
                 />
-                {validConfirmPassword ? "" : <ErrorMessageHolder><Typography variant="p">Passwords must match!</Typography></ErrorMessageHolder> }
+                {validConfirmPassword ? "" : <ErrorMessageHolder><Typography variant="p"><InfoIcon/>  Passwords must match!</Typography></ErrorMessageHolder> }
                 <RegisterButton type="submit" variant="contained" size="large">
                   REGISTER
                 </RegisterButton>

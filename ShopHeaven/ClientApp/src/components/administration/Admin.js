@@ -61,7 +61,7 @@ export default function Admin() {
     },
     {
       name: "Admin",
-      uri: "/categories",
+      uri: "/admin",
     },
   ];
 
