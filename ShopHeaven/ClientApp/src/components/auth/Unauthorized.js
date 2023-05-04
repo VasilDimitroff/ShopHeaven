@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
-import { Box, Typography, Button, Paper } from "@mui/material";
+import { Typography, Button, Paper } from "@mui/material";
 
 const Unauthorized = () => {
     const navigate = useNavigate();
@@ -12,8 +12,8 @@ const Unauthorized = () => {
         width: "80%",
         display: "block",
         margin: "auto",
-        marginTop: theme.spacing(12),
-        padding: theme.spacing(3),
+        paddingTop: theme.spacing(15),
+        paddingBottom: theme.spacing(3),
         textAlign: "center"
       });
 

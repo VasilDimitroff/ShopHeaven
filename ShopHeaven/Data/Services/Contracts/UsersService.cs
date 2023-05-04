@@ -65,5 +65,20 @@ namespace ShopHeaven.Data.Services.Contracts
 
             return userRoles;
         }
+
+        public async Task<IList<BasicUserResponseModel>> GetAllAsync()
+        {
+            var users = await this.db.Users
+            .Select(x => new BasicUserResponseModel
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Username = x.UserName,
+                    CreatedOn = x.CreatedOn
+                })
+            .ToListAsync();
+
+            return users;
+        }
     }
 }
