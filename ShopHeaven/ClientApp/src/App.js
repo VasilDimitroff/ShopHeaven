@@ -40,7 +40,7 @@ export default function App() {
            <Route path="register" element={<Register/>}/>
 
             {/* admin only routes */}
-           <Route element={<RequireAuth allowedRoles={Roles.Admin} />}>
+          {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
               <Route path="admin" element={<Admin/>}>
                   <Route path="" element={<AdminDashboard/>}/>
                   <Route path="users" element={<AdminUsers/>}/>
@@ -49,7 +49,7 @@ export default function App() {
                   <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
                   <Route path="orders" element={<AdminOrders/>}/>
                   <Route path="reviews" element={<AdminReviews/>}/>
-              </Route>
+            {/*    </Route>  */}
            </Route>
 
             {/* all catch */}

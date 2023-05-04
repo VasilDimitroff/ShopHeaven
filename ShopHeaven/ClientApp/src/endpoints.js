@@ -6,6 +6,9 @@ export const ApiEndpoints = {
         register: apiUrl + "api/auth/register",
         login: apiUrl + "api/auth/login"
     },
+    users: {
+        getAll: apiUrl + "api/users/getall"
+    },
     categories: {
         createCategory: apiUrl + "api/categories/create",
         editCategory: apiUrl + "api/categories/edit",
