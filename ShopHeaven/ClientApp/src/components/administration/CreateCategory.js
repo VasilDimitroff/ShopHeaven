@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { PhotoCamera } from "@mui/icons-material";
 import axios from "axios";
-import { ApiEndpoints } from "../../endpoints";
+import { ApiEndpoints } from "../../api/endpoints";
 
 export default function CreateCategory() {
   let categoryNameRef = useRef();

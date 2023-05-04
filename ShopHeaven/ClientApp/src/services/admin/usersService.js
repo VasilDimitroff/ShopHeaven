@@ -1,5 +1,5 @@
-import axios from "axios";
-import { ApiEndpoints } from "../../endpoints";
+import axios from "../../api/axios";
+import { ApiEndpoints } from "../../api/endpoints";
 
 export async function getAll(controller){
 

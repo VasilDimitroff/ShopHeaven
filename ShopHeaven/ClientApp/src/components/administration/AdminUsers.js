@@ -1,6 +1,7 @@
 import { React, Fragment, useState, useEffect } from "react";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography, Button } from "@mui/material";
 import { getAll } from "../../services/admin/usersService";
+import useRefreshToken from "../../hooks/useRefreshToken";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
@@ -32,12 +33,13 @@ export default function AdminUsers() {
     <Fragment>
       <Box>
         <h2>Users</h2>
+        {}
         {users?.length ? (
-          <ul>
+          <div>
             {users.map((user, index) => {
-              <li key={index}>{user?.email}</li>;
+              <p key={index}>Email{user?.email}</p>;
             })}
-          </ul>
+          </div>
         ) : (
          <Typography>No users to display</Typography>
         )}

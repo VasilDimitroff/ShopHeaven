@@ -30,7 +30,7 @@ import {
   AddCircle,
 } from "@mui/icons-material";
 import axios from "axios";
-import { ApiEndpoints } from "../../endpoints";
+import { ApiEndpoints } from "../../api/endpoints";
 import CreateProduct from "./CreateProduct";
 
 function Row(props) {

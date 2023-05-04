@@ -1,13 +1,14 @@
-const apiUrl = "https://localhost:44349/";
+export const apiUrl = "https://localhost:44349/";
 
 export const ApiEndpoints = {
     exampleUserId: "fb88e2d4-24f4-411b-b14a-f727bf6e61b0",
     auth:{
-        register: apiUrl + "api/auth/register",
-        login: apiUrl + "api/auth/login"
+        register: "api/auth/register",
+        login: "api/auth/login",
+        refreshToken: "api/auth/refreshToken"
     },
     users: {
-        getAll: apiUrl + "api/users/getall"
+        getAll: "api/users/getall"
     },
     categories: {
         createCategory: apiUrl + "api/categories/create",
