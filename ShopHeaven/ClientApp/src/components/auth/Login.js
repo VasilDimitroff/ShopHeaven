@@ -1,11 +1,5 @@
-import {
-  React,
-  Fragment,
-  useRef,
-  useEffect,
-  useState,
-  useContext,
-} from "react";
+import { React, Fragment, useRef, useEffect, useState,} from "react";
+import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -18,7 +12,6 @@ import {
 import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
-import AuthContext from "../../context/AuthProvider";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import {
@@ -28,7 +21,7 @@ import {
 } from "../../services/authService";
 
 export default function Login() {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
 
   const emailRef = useRef();
   const passwordRef = useRef();
