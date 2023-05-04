@@ -33,7 +33,6 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                ;
                 await this.usersService.RegisterAsync(model);
             }
             catch (Exception ex)
