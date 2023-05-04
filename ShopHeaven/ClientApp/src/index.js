@@ -4,19 +4,24 @@ import React from "react";
 import { ReactDOM } from "react-dom";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { theme } from "./theme";
 import { AuthProvider } from "./context/AuthProvider";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
+
+
+
 root.render(
   <React.StrictMode>
     <AuthProvider>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <App />
+          <Routes>
+             <Route path="/*" element={<App/>} />
+          </Routes>
         </ThemeProvider>
       </BrowserRouter>
     </AuthProvider>
