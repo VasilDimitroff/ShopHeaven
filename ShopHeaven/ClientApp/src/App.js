@@ -16,9 +16,15 @@ import AdminUsers from './components/administration/AdminUsers';
 import AdminCoupons from './components/administration/AdminCoupons';
 import AdminReviews from './components/administration/AdminReviews';
 import RequireAuth from './components/auth/RequireAuth';
+import Unauthorized from './components/auth/Unauthorized';
 import { categories } from './components/categories';
 import { products } from './components/products';
 import { coupons } from './components/coupons';
+
+const Roles = {
+  User : "User",
+  Admin: "Admin"
+}
 
 export default function App() {
 
@@ -34,7 +40,7 @@ export default function App() {
            <Route path="register" element={<Register/>}/>
 
             {/* admin only routes */}
-           <Route element={<RequireAuth />}>
+           <Route element={<RequireAuth allowedRoles={Roles.Admin} />}>
               <Route path="admin" element={<Admin/>}>
                   <Route path="" element={<AdminDashboard/>}/>
                   <Route path="users" element={<AdminUsers/>}/>
@@ -46,7 +52,8 @@ export default function App() {
               </Route>
            </Route>
 
-            {/* 404 */}
+            {/* all catch */}
+            <Route path="unauthorized" element={<Unauthorized/>}/>
         </Route>
       </Routes>  
    </div>
