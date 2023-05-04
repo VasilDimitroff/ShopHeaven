@@ -5,7 +5,6 @@ import { theme } from "../../theme";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints, apiUrl } from "../../api/endpoints";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "../../api/axios";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState();

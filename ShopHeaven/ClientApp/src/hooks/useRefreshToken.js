@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../api/axios";
 import useAuth from "./useAuth";
 import { ApiEndpoints } from "../api/endpoints";
 
@@ -6,7 +6,7 @@ const useRefreshToken = () => {
   const { setAuth } = useAuth();
 
   const refresh = async () => {
-    const response = await axios.get(ApiEndpoints.refreshToken, {
+    const response = await axios.get(ApiEndpoints.auth.refreshToken, {
         withCredentials: false,
     });
 
