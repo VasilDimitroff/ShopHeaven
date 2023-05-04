@@ -271,7 +271,7 @@ export default function Layout() {
     return (
       <div className='App'>
         <Header categories={categories}/>
-         <Outlet/>
+          <Outlet/>
         <Footer/>
       </div>
     );

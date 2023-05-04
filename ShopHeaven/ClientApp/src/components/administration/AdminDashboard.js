@@ -4,13 +4,11 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
 
-export default function Orders() {
+export default function AdminDashboard() {
 
   return (
-
-
         <Box>
-            Orders
+            Dashboard
         </Box>
 
   )

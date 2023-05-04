@@ -27,9 +27,7 @@ import {
   KeyboardArrowUp,
   KeyboardArrowDown,
   Close,
-  Delete,
   AddCircle,
-  PhotoCamera,
 } from "@mui/icons-material";
 import axios from "axios";
 import { ApiEndpoints } from "../../endpoints";
@@ -70,12 +68,6 @@ function Row(props) {
   function onChangeAvailability(e) {
     console.log(productAvailabilityRef.current.checked);
     setProductAvailable(!productAvailable);
-  }
-
-  function clearFormValues() {
-    productNameRef.current.value = "";
-    productDescriptionRef.current.value = "";
-    document.getElementById("edit-product-image").value = "";
   }
 
   const ProductNameTableCell = styled(TableCell)({
@@ -154,11 +146,6 @@ function Row(props) {
     margin: "auto",
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(3),
-  });
-
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
   });
 
   const StyledImageList = styled(ImageList)({
@@ -463,7 +450,7 @@ function Row(props) {
   );
 }
 
-export default function Products(props) {
+export default function AdminProducts(props) {
   let productNameRef = useRef();
   let productDescriptionRef = useRef();
   let productImageRef = useRef();

@@ -12,11 +12,7 @@ import {
   TableBody,
   TableHead,
   TableContainer,
-  Modal,
-  Zoom,
-  Backdrop,
   TextField,
-  InputAdornment,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -26,11 +22,8 @@ import {
   Edit,
   Delete,
   AddCircle,
-  PhotoCamera,
 } from "@mui/icons-material";
 import CreateCategory from "./CreateCategory";
-import axios from "axios";
-import { ApiEndpoints } from "../../endpoints";
 import EditCategory from "./EditCategory";
 
 function Row(props) {
@@ -63,19 +56,6 @@ function Row(props) {
 
   const StyledButton = styled(Button)({
     boxShadow: "none",
-  });
-
-  const ProductInfoInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4)
   });
 
   function renderCategoryProductsCount() {
@@ -207,7 +187,7 @@ function Row(props) {
   );
 }
 
-export default function Categories(props) {
+export default function AdminCategories(props) {
 
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
 

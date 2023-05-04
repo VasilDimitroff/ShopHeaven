@@ -11,9 +11,6 @@ import { AuthProvider } from "./context/AuthProvider";
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
-
-
-
 root.render(
   <React.StrictMode>
     <AuthProvider>

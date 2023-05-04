@@ -7,6 +7,7 @@ import Home from "./components/home/Home";
 import Admin from './components/administration/Admin';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
+import AdminCategories from './components/administration/AdminCategories';
 
 const AppRoutes = [
   {

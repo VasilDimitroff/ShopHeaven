@@ -18,13 +18,9 @@ import { theme } from "../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
-  Close,
-  Delete,
   AddCircle,
   RemoveCircle,
 } from "@mui/icons-material";
-import axios from "axios";
-import { ApiEndpoints } from "../../endpoints";
 import CreateCoupon from './CreateCoupon'
 
 
@@ -155,7 +151,7 @@ function Row(props) {
   );
 }
 
-export default function Coupons(props) {
+export default function AdminCoupons(props) {
   let couponNameRef = useRef();
   let couponDescriptionRef = useRef();;
 
