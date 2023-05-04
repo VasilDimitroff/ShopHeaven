@@ -1,6 +1,6 @@
 import { React, Fragment, useRef, useEffect, useState,} from "react";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -23,6 +23,10 @@ import {
 export default function Login() {
   const { setAuth } = useAuth();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -32,7 +36,6 @@ export default function Login() {
   const [validPassword, setValidPassword] = useState(true);
 
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     setErrMsg("");
@@ -83,8 +86,8 @@ export default function Login() {
         isLogged: true,
       });
 
-      setSuccess(true);
       refreshState();
+      navigate(from, { replace: true });
 
       console.log("----------------");
       console.log("TOKEN IS: " + response.data.jwtToken);
@@ -145,7 +148,7 @@ export default function Login() {
     paddingTop: theme.spacing(5),
   });
 
-  const RegisterButton = styled(Button)({
+  const LoginButton = styled(Button)({
     width: "80%",
     display: "flex",
     margin: "auto",
@@ -174,44 +177,10 @@ export default function Login() {
     margin: "auto",
   });
 
-  const SuccessHolder = styled(Box)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-    width: "80%",
-    display: "block",
-    margin: "auto",
-  });
-
-  const SignInButton = styled(Button)({
-    width: "60%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(3),
-  });
-
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-        {success === true ? (
-          <SuccessHolder>
-            <Typography variant="h5">
-              <InfoIcon />
-              You logged in successfully!
-            </Typography>
-            <SignInButton variant="contained" size="large">
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: theme.palette.white.main,
-                }}
-                to="/"
-              >
-                Go to home
-              </Link>
-            </SignInButton>
-          </SuccessHolder>
-        ) : (
           <Fragment>
             <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
             <Container>
@@ -260,16 +229,15 @@ export default function Login() {
                 ) : (
                   ""
                 )}
-                <RegisterButton type="submit" variant="contained" size="large">
+                <LoginButton type="submit" variant="contained" size="large">
                   LOG IN
-                </RegisterButton>
+                </LoginButton>
               </form>
               <LinkHolder>
                 <Link to="/register">You haven't account? Create one!</Link>
               </LinkHolder>
             </Container>
           </Fragment>
-        )}
       </FormWrapper>
       <Box sx={{ mt: theme.spacing(3) }}>
         <FullWidthBanner

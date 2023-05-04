@@ -1,5 +1,5 @@
 import { React, Fragment, useRef, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -25,6 +25,8 @@ export default function Register() {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
 
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [pwd, setPwd] = useState("");
@@ -33,7 +35,6 @@ export default function Register() {
   const [validConfirmPassword, setValidConfirmPassword] = useState(true);
 
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     setErrMsg("");
@@ -46,10 +47,6 @@ export default function Register() {
   useEffect(() => {
     setValidPassword(validatePassword(pwd));
   }, [validPassword]);
-
-  useEffect(() => {
-    setValidConfirmPassword(passwordsMatch(pwd, matchPwd));
-  }, [validConfirmPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,8 +76,8 @@ export default function Register() {
 
     try {
       const response = await register(user);
-      setSuccess(true);
       refreshState();
+      navigate("/login");
     } catch (err) {
       handleError(err);
     }
@@ -166,44 +163,10 @@ export default function Register() {
     margin: "auto",
   });
 
-  const SuccessHolder = styled(Box)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-    width: "80%",
-    display: "block",
-    margin: "auto",
-  });
-
-  const SignInButton = styled(Button)({
-    width: "60%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(3),
-  });
-
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-        {success === true ? (
-          <SuccessHolder>
-            <Typography variant="h5">
-              <InfoIcon />
-              Congratulations! You are registered successfully!
-            </Typography>
-            <SignInButton variant="contained" size="large">
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: theme.palette.white.main,
-                }}
-                to="/login"
-              >
-                Sign in
-              </Link>
-            </SignInButton>
-          </SuccessHolder>
-        ) : (
           <Fragment>
             <FormHeading variant="h5"> REGISTER PROFILE</FormHeading>
             <Container>
@@ -279,7 +242,6 @@ export default function Register() {
               </LinkHolder>
             </Container>
           </Fragment>
-        )}
       </FormWrapper>
       <Box sx={{ mt: theme.spacing(3) }}>
         <FullWidthBanner
