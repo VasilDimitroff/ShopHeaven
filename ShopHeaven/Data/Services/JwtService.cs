@@ -3,12 +3,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
-using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
+using ShopHeaven.Models.Token;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace ShopHeaven.Data.Services
 {
@@ -17,25 +18,38 @@ namespace ShopHeaven.Data.Services
         private readonly UserManager<User> userManager;
         private readonly IUsersService usersService;
         private readonly IAuthService authService;
+        private readonly ShopDbContext db;
         private readonly ApplicationSettings applicationSettings;
 
-        public JwtService(UserManager<User> userManager, IOptions<ApplicationSettings> applicationSettings, IUsersService usersService, IAuthService authService)
+        public JwtService(UserManager<User> userManager,
+            IOptions<ApplicationSettings> applicationSettings,
+            IUsersService usersService,
+            IAuthService authService,
+            ShopDbContext db)
         {
             this.userManager = userManager;
             this.usersService = usersService;
             this.authService = authService;
+            this.db = db;
             this.applicationSettings = applicationSettings.Value;
         }
 
-        public string CreateToken(BasicUserResponseModel user, ICollection<string> userRoles)
+        public async Task<string> CreateTokenAsync(string userId, ICollection<string> userRoles)
         {
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
 
             var claims = new List<Claim>
                 {
                      new Claim(ClaimTypes.NameIdentifier, user.Id),
-                     new Claim(ClaimTypes.Name, user.Username),
+                     new Claim(ClaimTypes.Name, user.UserName),
                      new Claim(ClaimTypes.Email, user.Email),
                      new Claim(ClaimTypes.DateOfBirth, user.CreatedOn.ToString()),
                 };
@@ -48,7 +62,7 @@ namespace ShopHeaven.Data.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(60),
+                Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -56,6 +70,46 @@ namespace ShopHeaven.Data.Services
             var encryptedToken = tokenHandler.WriteToken(token);
 
             return encryptedToken;          
+        }
+
+        public async Task SetRefreshTokenAsync(RefreshToken refreshToken, string userId)
+        {
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                throw new ArgumentException(GlobalConstants.UserNotFound);
+            }
+
+            user.RefreshToken = refreshToken.Token;
+            user.TokenCreated = refreshToken.CreatedOn;
+            user.TokenExpires = refreshToken.Expires;
+
+            var result = await db.SaveChangesAsync();
+        }
+
+        public async Task<UserRefreshTokenResponse> FindUserByRefreshTokenAsync(string refreshToken)
+        {
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var roles = await this.usersService.GetUserRolesAsync(user.Id);
+
+            var userModel = new UserRefreshTokenResponse
+            {
+                Id = user.Id,
+                Email = user.Id,
+                Roles = roles,
+                RefreshToken = user.RefreshToken,
+                TokenCreated = user.TokenCreated,
+                TokenExpires = user.TokenExpires,
+            };
+
+            return userModel;
         }
     }
 }

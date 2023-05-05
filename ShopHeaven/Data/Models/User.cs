@@ -29,6 +29,12 @@ namespace ShopHeaven.Data.Models
 
         public Wishlist Wishlist { get; set; }
 
+        public string RefreshToken { get; set; }
+
+        public DateTime TokenCreated { get; set; }
+
+        public DateTime TokenExpires { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }

@@ -2,15 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Authentication;
+using System.Security.Cryptography;
+using ShopHeaven.Models.Token;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Text;
 
 namespace ShopHeaven.Controllers
 {
@@ -56,6 +55,8 @@ namespace ShopHeaven.Controllers
 
             return Ok(GlobalConstants.UserSuccessfullyRegistered);
         }
+
+
         [HttpGet, Authorize, Route(nameof(GetMe))]
         public ActionResult<object> GetMe()
         {
@@ -69,8 +70,9 @@ namespace ShopHeaven.Controllers
             return Ok(user);
         }
 
+
         [HttpPost, Route(nameof(Login))]
-        public async Task<ActionResult<string>> Login(LoginUserRequestModel model)
+        public async Task<ActionResult<UserRefreshTokenResponse>> Login(LoginUserRequestModel model)
         {
             try
             {
@@ -90,14 +92,20 @@ namespace ShopHeaven.Controllers
 
                 IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
 
-                var jwtToken = this.jwtService.CreateToken(user, userRoles);
+                string jwtToken = await this.jwtService.CreateTokenAsync(user.Id, userRoles);
 
-                var response = new LoginUserResponseModel
+                RefreshToken refreshToken = GenerateRefreshToken();
+                await SetRefreshToken(refreshToken, user.Id);
+
+                UserRefreshTokenResponse response = new UserRefreshTokenResponse
                 {
                     Id = user.Id,
                     Email = user.Email,
                     JwtToken = jwtToken,
                     Roles = user.Roles,
+                    RefreshToken = refreshToken.Token,
+                    TokenCreated = refreshToken.CreatedOn,
+                    TokenExpires = refreshToken.Expires 
                 };
 
                 return Ok(response);
@@ -107,5 +115,58 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             } 
          }
+
+
+        [HttpGet(nameof(RefreshToken))]
+        public async Task<ActionResult<UserRefreshTokenResponse>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            var userModel = await this.jwtService.FindUserByRefreshTokenAsync(refreshToken);
+
+            if (!userModel.RefreshToken.Equals(refreshToken))
+            {
+                return Unauthorized("Invalid Refresh Token.");
+            }
+            else if (userModel.TokenExpires < DateTime.UtcNow)
+            {
+                return Unauthorized("Token expired.");
+            }
+
+            var roles = await this.usersService.GetUserRolesAsync(userModel.Id);
+
+            string token = await this.jwtService.CreateTokenAsync(userModel.Id, roles);
+            var newRefreshToken = GenerateRefreshToken();
+            await SetRefreshToken(newRefreshToken, userModel.Id);
+
+            userModel.JwtToken = token;
+
+            return Ok(userModel);
+        }
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(1),
+                CreatedOn = DateTime.UtcNow,
+            };
+
+            return refreshToken;
+        }
+
+        private async Task SetRefreshToken(RefreshToken newRefreshToken, string userId)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false,
+                Expires = newRefreshToken.Expires,
+            };
+
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            await this.jwtService.SetRefreshTokenAsync(newRefreshToken, userId);
+        }
     }
 }
