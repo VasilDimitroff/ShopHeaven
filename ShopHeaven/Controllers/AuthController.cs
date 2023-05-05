@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol.Core.Types;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,14 +19,20 @@ namespace ShopHeaven.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> userManager;
+        private readonly IJwtService jwtService;
+        private readonly IAuthService authService;
         private readonly IUsersService usersService;
         private readonly ApplicationSettings applicationSettings;
 
         public AuthController(UserManager<User> userManager,
             IOptions<ApplicationSettings> applicationSettings,
+            IJwtService jwtService,
+            IAuthService authService,
             IUsersService usersService)
         {
             this.userManager = userManager;
+            this.jwtService = jwtService;
+            this.authService = authService;
             this.usersService = usersService;
             this.applicationSettings = applicationSettings.Value;
         }
@@ -68,55 +74,30 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var user = await this.userManager.FindByEmailAsync(model.Email.Trim());
+                var user = await this.usersService.GetUserByEmailAsync(model.Email.Trim());
 
                 if (user == null)
                 {
                     return Unauthorized(GlobalConstants.UserNotFound);
-                } 
+                }
 
-                var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
+                var passwordValid = await this.authService.ValidatePasswordAsync(user.Id, model.Password);
 
                 if (!passwordValid)
                 {
                     return Unauthorized(GlobalConstants.PasswordNotValid);
                 }
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
-
-
                 IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
 
-                var claims = new List<Claim>
-                {
-                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                     new Claim(ClaimTypes.Name, user.UserName),
-                     new Claim(ClaimTypes.Email, user.Email),
-                     new Claim(ClaimTypes.DateOfBirth, user.CreatedOn.ToString()),
-                };
-
-                foreach (var role in userRoles) 
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(claims),
-                    Expires = DateTime.UtcNow.AddDays(60),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var encryptedToken = tokenHandler.WriteToken(token);
+                var jwtToken = this.jwtService.CreateToken(user, userRoles);
 
                 var response = new LoginUserResponseModel
                 {
                     Id = user.Id,
-                    Email = user.Email.Trim(),
-                    JwtToken = encryptedToken,
-                    Roles = userRoles
+                    Email = user.Email,
+                    JwtToken = jwtToken,
+                    Roles = user.Roles,
                 };
 
                 return Ok(response);

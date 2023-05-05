@@ -124,5 +124,29 @@ namespace ShopHeaven.Data.Services.Contracts
 
             return user;
         }
+
+        public async Task<BasicUserResponseModel> GetUserByEmailAsync(string email)
+        {
+            
+           var user = await this.db.Users.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var userRoles = await this.GetUserRolesAsync(user.Id);
+
+            var userModel = new BasicUserResponseModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.UserName,
+                CreatedOn = user.CreatedOn.ToString(),
+                Roles = userRoles,
+            };
+
+            return userModel;
+        }
     }
 }
