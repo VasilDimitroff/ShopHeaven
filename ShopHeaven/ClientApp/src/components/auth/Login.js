@@ -94,6 +94,7 @@ export default function Login() {
       console.log("EMAIL IS: " + response.data.email);
       console.log("ID IS: " + response.data.id);
       console.log("ROLES ARE: " + response.data.roles.length);
+      console.log("ROLE IS: " + response.data.roles[0]);
     } catch (err) {
       handleError(err);
     }

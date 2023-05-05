@@ -13,7 +13,9 @@ namespace ShopHeaven.Models.Responses.Users
         [Required]
         public string Email { get; set; }
 
-        [Required]
-        public DateTime CreatedOn { get; set; }
+        public string CreatedOn { get; set; }
+
+        public IList<string> Roles { get; set; }
+
     }
 }

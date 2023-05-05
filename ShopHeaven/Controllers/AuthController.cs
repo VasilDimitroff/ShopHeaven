@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Core.Types;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
@@ -20,15 +22,16 @@ namespace ShopHeaven.Controllers
         private readonly IUsersService usersService;
         private readonly ApplicationSettings applicationSettings;
 
-        public AuthController(UserManager<User> userManager, IOptions<ApplicationSettings> applicationSettings, IUsersService usersService)
+        public AuthController(UserManager<User> userManager,
+            IOptions<ApplicationSettings> applicationSettings,
+            IUsersService usersService)
         {
             this.userManager = userManager;
             this.usersService = usersService;
             this.applicationSettings = applicationSettings.Value;
         }
 
-        [HttpPost]
-        [Route(nameof(Register))]
+        [HttpPost, Route(nameof(Register))]
         public async Task<ActionResult> Register(CreateUserRequestModel model)
         {
             try
@@ -47,9 +50,20 @@ namespace ShopHeaven.Controllers
 
             return Ok(GlobalConstants.UserSuccessfullyRegistered);
         }
+        [HttpGet, Authorize, Route(nameof(GetMe))]
+        public ActionResult<object> GetMe()
+        {
+            var user = this.usersService.GetUserInfo();
 
-        [HttpPost]
-        [Route(nameof(Login))]
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(user);
+        }
+
+        [HttpPost, Route(nameof(Login))]
         public async Task<ActionResult<string>> Login(LoginUserRequestModel model)
         {
             try
@@ -59,7 +73,7 @@ namespace ShopHeaven.Controllers
                 if (user == null)
                 {
                     return Unauthorized(GlobalConstants.UserNotFound);
-                }
+                } 
 
                 var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
 
@@ -71,20 +85,31 @@ namespace ShopHeaven.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
 
+
+                IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
+
+                var claims = new List<Claim>
+                {
+                     new Claim(ClaimTypes.NameIdentifier, user.Id),
+                     new Claim(ClaimTypes.Name, user.UserName),
+                     new Claim(ClaimTypes.Email, user.Email),
+                     new Claim(ClaimTypes.DateOfBirth, user.CreatedOn.ToString()),
+                };
+
+                foreach (var role in userRoles) 
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                    }),
+                    Subject = new ClaimsIdentity(claims),
                     Expires = DateTime.UtcNow.AddDays(60),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var encryptedToken = tokenHandler.WriteToken(token);
-
-                IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
 
                 var response = new LoginUserResponseModel
                 {

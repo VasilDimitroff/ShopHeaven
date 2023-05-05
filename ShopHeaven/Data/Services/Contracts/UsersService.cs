@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
+using System.Security.Claims;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
@@ -10,11 +11,13 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         private readonly UserManager<User> userManager;
         private readonly ShopDbContext db;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UsersService(UserManager<User> userManager, ShopDbContext db)
+        public UsersService(UserManager<User> userManager, ShopDbContext db, IHttpContextAccessor httpContextAccessor)
         {
             this.userManager = userManager;
             this.db = db;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task RegisterAsync(CreateUserRequestModel model)
@@ -74,11 +77,52 @@ namespace ShopHeaven.Data.Services.Contracts
                     Id = x.Id,
                     Email = x.Email,
                     Username = x.UserName,
-                    CreatedOn = x.CreatedOn
+                    CreatedOn = x.CreatedOn.ToString()
                 })
             .ToListAsync();
 
             return users;
+        }
+
+        public BasicUserResponseModel GetUserInfo()
+        {
+            if (httpContextAccessor.HttpContext == null)
+            {
+                return null;
+            }
+
+            string id = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (id == null)
+            {
+                return null;
+            }
+
+            var username = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            string email = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            string createdOn = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.DateOfBirth);    
+
+            IList<Claim> claimRoles = httpContextAccessor.HttpContext.User
+                .FindAll(ClaimTypes.Role)
+                .ToList();
+
+            IList<string> roles = new List<string>();
+
+            foreach (Claim role in claimRoles)
+            {
+                roles.Add(role.Value.ToString());
+            }
+
+            var user = new BasicUserResponseModel()
+            {
+                Id = id,
+                Username = username,
+                Email = email,
+                Roles = roles,
+                CreatedOn = createdOn,
+            };
+
+            return user;
         }
     }
 }

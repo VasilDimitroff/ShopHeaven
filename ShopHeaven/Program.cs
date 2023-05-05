@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services;
 using ShopHeaven.Data.Services.Contracts;
+using Swashbuckle.AspNetCore.Filters;
 using System.Configuration;
 using System.Text;
 
@@ -67,13 +69,25 @@ builder.Services.AddRazorPages();
 builder.Services.AddTransient<ICategoriesService, CategoriesService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("Storage:ConnectionString").Value);
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 var app = builder.Build();
 
