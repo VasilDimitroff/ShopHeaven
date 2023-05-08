@@ -18,19 +18,16 @@ namespace ShopHeaven.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<User> userManager;
         private readonly IJwtService jwtService;
         private readonly IAuthService authService;
         private readonly IUsersService usersService;
         private readonly ApplicationSettings applicationSettings;
 
-        public AuthController(UserManager<User> userManager,
-            IOptions<ApplicationSettings> applicationSettings,
+        public AuthController(IOptions<ApplicationSettings> applicationSettings,
             IJwtService jwtService,
             IAuthService authService,
             IUsersService usersService)
         {
-            this.userManager = userManager;
             this.jwtService = jwtService;
             this.authService = authService;
             this.usersService = usersService;

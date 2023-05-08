@@ -1,4 +1,4 @@
-import { React, Fragment, useState, useEffect } from "react";
+import { React, Fragment, useState, useEffect, useRef } from "react";
 import { Box, Grid, Paper, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -12,8 +12,9 @@ export default function AdminUsers() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const effectRun = useRef(false);
+
   useEffect(() => {
-    let isMounted = true;
     const controller = new AbortController();
 
     const getUsers = async () => {
@@ -23,18 +24,20 @@ export default function AdminUsers() {
         });
         console.log(response.data);
 
-        isMounted && setUsers(response.data);
+        setUsers(response.data);
       } catch (error) {
-        console.log(error);
-       // navigate("/login", { state: { from: location }, replace: true }); 
+        console.log("ERROR: " + error);
+        navigate("/login", { state: { from: location }, replace: true }); 
       }
     };
 
-    getUsers();
+    if (effectRun.current) {
+      getUsers();
+    }
 
     return () => {
-      isMounted = false;
       controller.abort();
+      effectRun.current = true; // update the value of effectRun to true
     };
   }, []);
 
