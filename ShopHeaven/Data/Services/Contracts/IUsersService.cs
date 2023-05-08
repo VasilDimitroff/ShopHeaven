@@ -11,7 +11,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<IList<BasicUserResponseModel>> GetAllAsync();
 
-        public BasicUserResponseModel GetUserInfo();
+        public BasicUserResponseModel GetUserInfoFromJwt();
 
         public Task<BasicUserResponseModel> GetUserByEmailAsync(string email);
     }

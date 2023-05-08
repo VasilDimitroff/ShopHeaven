@@ -1,6 +1,7 @@
 import { React, useState, Fragment } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link } from 'react-router-dom';
+import useLogout from "../hooks/useLogout";
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Badge,
   AppBar,
@@ -13,7 +14,6 @@ import {
   ListItemText,
   InputBase,
   Avatar,
-  ListItemAvatar,
   Slide,
   Divider,
   IconButton,
@@ -25,9 +25,6 @@ import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../theme";
 import {
   Close,
-  AddShoppingCart,
-  Image,
-  Delete,
   Search,
   Reviews,
   ShoppingCartCheckout,
@@ -38,6 +35,7 @@ import {
   Logout,
   Menu,
 } from "@mui/icons-material";
+import LoginIcon from '@mui/icons-material/Login';
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import CategoriesHomeList from "./home/CategoriesHomeList";
@@ -45,6 +43,8 @@ import CategoriesHomeList from "./home/CategoriesHomeList";
 
 export default function Header(props) {
   const  { auth } = useAuth();
+  const logout = useLogout();
+  const navigate = useNavigate();
 
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -66,6 +66,11 @@ export default function Header(props) {
   function handleShowUserMenu(value) {
     setShowUserMenu(value);
   }
+
+ async function signOut() {
+    await logout();
+    navigate("/");
+ }
 
   const products = [
     {
@@ -286,21 +291,28 @@ export default function Header(props) {
               alignItems: "center",
             }}
           >
-            <MenuIcon  onClick={() =>
-                  showMobileMenu === true
-                    ? handleShowMobileMenu(false)
-                    : HideAllMenusExcept(handleShowMobileMenu)
-                }>
+            <MenuIcon
+              onClick={() =>
+                showMobileMenu === true
+                  ? handleShowMobileMenu(false)
+                  : HideAllMenusExcept(handleShowMobileMenu)
+              }
+            >
               <Menu
                 sx={{ fontSize: "35px", color: theme.palette.white.main }}
-               
               />
             </MenuIcon>
-            <CloseIcon  onClick={() => handleShowMobileMenu(!showMobileMenu)}>
-              <Close sx={{ fontSize: "35px", color: theme.palette.white.main }}/>
+            <CloseIcon onClick={() => handleShowMobileMenu(!showMobileMenu)}>
+              <Close
+                sx={{ fontSize: "35px", color: theme.palette.white.main }}
+              />
             </CloseIcon>
-            <Link to="/"><BigLogoImage src={LogoBig} /></Link>
-            <Link to="/"><SmallLogoImage src={LogoSmall} /></Link>
+            <Link to="/">
+              <BigLogoImage src={LogoBig} />
+            </Link>
+            <Link to="/">
+              <SmallLogoImage src={LogoSmall} />
+            </Link>
           </Box>
           <CustomSearchField>
             <Search
@@ -319,62 +331,71 @@ export default function Header(props) {
 
           <IconsArea>
             <CustomSearchButton onClick={() => handleShowSearchBar(true)} />
-            
-     {
-      !auth.isLogged
-        ? ""
-        :
 
-     <Fragment>
-            <CustomBadge
-              badgeContent={1}
-              color="secondary"
-              onClick={() =>
-                showFavoritesMenu === true
-                  ? handleShowFavoritesMenu(false)
-                  : HideAllMenusExcept(handleShowFavoritesMenu)
-              }
-              sx={{
-                cursor: "pointer",
-                "&:hover": {
-                  opacity: 0.7,
-                },
-              }}
-            >
-              <Label>Favorites</Label>
-              <Favorite />
-            </CustomBadge>
-            <CustomBadge
-              badgeContent={3}
-              color="secondary"
-              sx={{
-                border: "white",
-                "&:hover": {
-                  opacity: 0.7,
-                },
-              }}
-            >
-              <Label>Cart</Label>
-              <ShoppingCart />
-            </CustomBadge>
+            {!auth.isLogged ? (
+              <Link to="/login">
+              <Button
+                sx={{
+                  backgroundColor: theme.palette.secondary.main,
+                  marginLeft: theme.spacing(2),
+                }}
+                variant="contained"
+                endIcon={<LoginIcon />}
+              >
+                Login
+              </Button>
+              </Link>
+            ) : (
+              <Fragment>
+                <CustomBadge
+                  badgeContent={1}
+                  color="secondary"
+                  onClick={() =>
+                    showFavoritesMenu === true
+                      ? handleShowFavoritesMenu(false)
+                      : HideAllMenusExcept(handleShowFavoritesMenu)
+                  }
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      opacity: 0.7,
+                    },
+                  }}
+                >
+                  <Label>Favorites</Label>
+                  <Favorite />
+                </CustomBadge>
+                <CustomBadge
+                  badgeContent={3}
+                  color="secondary"
+                  sx={{
+                    border: "white",
+                    "&:hover": {
+                      opacity: 0.7,
+                    },
+                  }}
+                >
+                  <Label>Cart</Label>
+                  <ShoppingCart />
+                </CustomBadge>
 
-            <CustomBadge
-              color="secondary"
-              onClick={() =>
-                showUserMenu === true
-                  ? handleShowUserMenu(false)
-                  : HideAllMenusExcept(handleShowUserMenu)
-              }
-              sx={{ cursor: "pointer" }}
-            >
-              <IconButton>
-                <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
-                  V
-                </Avatar>
-              </IconButton>
-            </CustomBadge>
-           </Fragment> 
-         }
+                <CustomBadge
+                  color="secondary"
+                  onClick={() =>
+                    showUserMenu === true
+                      ? handleShowUserMenu(false)
+                      : HideAllMenusExcept(handleShowUserMenu)
+                  }
+                  sx={{ cursor: "pointer" }}
+                >
+                  <IconButton>
+                    <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
+                      V
+                    </Avatar>
+                  </IconButton>
+                </CustomBadge>
+              </Fragment>
+            )}
           </IconsArea>
         </CustomToolbar>
       </AppBar>
@@ -390,12 +411,10 @@ export default function Header(props) {
           <List>
             <ListItem disablePadding>
               <Container>
-                <UserNameText component="h4" >
-                  VASIL DIMITROV
-                </UserNameText>
+                <UserNameText component="h4">VASIL DIMITROV</UserNameText>
               </Container>
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem disablePadding>
               <DropDownMenuListItemButton>
                 <AccountCircle />
@@ -424,7 +443,7 @@ export default function Header(props) {
               </DropDownMenuListItemButton>
             </ListItem>
             <Divider />
-            <ListItem disablePadding>
+            <ListItem disablePadding onClick={signOut}>
               <DropDownMenuListItemButton>
                 <Logout />
                 <UserMenuListItem primary="Logout" />

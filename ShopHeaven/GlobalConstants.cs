@@ -29,5 +29,9 @@
         public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";
 
         public const string UserHaveNoPermissionsToDeleteCategories = "You have no permissions to delete categories!";
+
+        public const string RefreshTokenCookieName = "refreshToken";
+
+        public const string SuccessfullLogout = "You are successfully logout!";
     }
 }

@@ -13,5 +13,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<UserAuthorizationModel> FindUserByRefreshTokenAsync(string refreshToken);
 
         RefreshToken CreateRefreshToken();
+
+        Task DeleteRefreshTokenAsync(string token);
     }
 }

@@ -31,9 +31,9 @@ namespace ShopHeaven.Data.Models
 
         public string RefreshToken { get; set; }
 
-        public DateTime TokenCreated { get; set; }
+        public DateTime? TokenCreated { get; set; }
 
-        public DateTime TokenExpires { get; set; }
+        public DateTime? TokenExpires { get; set; }
 
         public bool IsDeleted { get; set; }
 

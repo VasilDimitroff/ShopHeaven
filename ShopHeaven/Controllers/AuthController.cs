@@ -58,7 +58,7 @@ namespace ShopHeaven.Controllers
         [HttpGet, Authorize, Route(nameof(GetMe))]
         public ActionResult<object> GetMe()
         {
-            var user = this.usersService.GetUserInfo();
+            var user = this.usersService.GetUserInfoFromJwt();
 
             if (user == null)
             {
@@ -110,7 +110,7 @@ namespace ShopHeaven.Controllers
             }
             catch(Exception ex)
             {
-                return Unauthorized(ex.Message);
+                return BadRequest(ex.Message);
             } 
          }
 
@@ -118,7 +118,7 @@ namespace ShopHeaven.Controllers
         [HttpGet(nameof(RefreshToken))]
         public async Task<ActionResult<UserAuthorizationModel>> RefreshToken()
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = Request.Cookies[GlobalConstants.RefreshTokenCookieName];
 
             var userModel = new UserAuthorizationModel();
 
@@ -155,6 +155,39 @@ namespace ShopHeaven.Controllers
             return Ok(userModel);
         }
 
+
+        [Route(nameof(Logout)), HttpGet]
+        public async Task<ActionResult> Logout()
+        {
+            var refreshTokenCookie = Request.Cookies[GlobalConstants.RefreshTokenCookieName];
+
+            if (refreshTokenCookie == null)
+            {
+                return NoContent();
+            }
+
+            try
+            {
+                var user = await this.jwtService.FindUserByRefreshTokenAsync(refreshTokenCookie);
+
+                if (user == null)
+                {
+                    return BadRequest(GlobalConstants.UserNotFound);
+                }
+
+                await this.jwtService.DeleteRefreshTokenAsync(refreshTokenCookie);
+
+                Response.Cookies.Delete(GlobalConstants.RefreshTokenCookieName);
+
+                return Ok(GlobalConstants.SuccessfullLogout);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
         private async Task SetRefreshToken(RefreshToken newRefreshToken, string userId)
         {
             var cookieOptions = new CookieOptions
@@ -163,7 +196,7 @@ namespace ShopHeaven.Controllers
                 Expires = newRefreshToken.Expires,
             };
 
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            Response.Cookies.Append(GlobalConstants.RefreshTokenCookieName, newRefreshToken.Token, cookieOptions);
 
             await this.jwtService.SetRefreshTokenAsync(newRefreshToken, userId);
         }

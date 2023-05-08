@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Fragment, useEffect, useRef, useState } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
+import { theme } from "../../theme";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -41,7 +42,7 @@ const PersistLogin = () => {
         <Fragment>
           <Backdrop
             open={true}
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            sx={{backgroundColor:theme.palette.primary.main, color: theme.palette.white.main, zIndex: (theme) => theme.zIndex.drawer + 1 }}
           >
             <CircularProgress color="inherit" />
           </Backdrop>

@@ -34,31 +34,31 @@ export default function App() {
       <Routes>
         {/* public routes */}
         <Route element={<PersistLogin/>}>
-        <Route path="/" element={<Layout/>}>
-           <Route path="" element={<Home/>}/>
-           <Route path="categories" element={<Categories/>}/>
-           <Route path="products/:productId" element={<Product/>}/>
-           <Route path="login" element={<Login/>}/>
-           <Route path="register" element={<Register/>}/>
+          <Route path="/" element={<Layout/>}>
+            <Route path="" element={<Home/>}/>
+            <Route path="categories" element={<Categories/>}/>
+            <Route path="products/:productId" element={<Product/>}/>
+            <Route path="login" element={<Login/>}/>
+            <Route path="register" element={<Register/>}/>
 
-            {/* admin only routes */}
-          
-            {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
-              <Route path="admin" element={<Admin/>}>
-                  <Route path="" element={<AdminDashboard/>}/>
-                  <Route path="users" element={<AdminUsers/>}/>
-                  <Route path="products" element={<AdminProducts products={products}/>}/>
-                  <Route path="categories" element={<AdminCategories categories={categories}/>}/>
-                  <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
-                  <Route path="orders" element={<AdminOrders/>}/>
-                  <Route path="reviews" element={<AdminReviews/>}/>
-              {/*    </Route>  */}
+              {/* admin only routes */}
             
-           </Route>
+              {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
+                <Route path="admin" element={<Admin/>}>
+                    <Route path="" element={<AdminDashboard/>}/>
+                    <Route path="users" element={<AdminUsers/>}/>
+                    <Route path="products" element={<AdminProducts products={products}/>}/>
+                    <Route path="categories" element={<AdminCategories categories={categories}/>}/>
+                    <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
+                    <Route path="orders" element={<AdminOrders/>}/>
+                    <Route path="reviews" element={<AdminReviews/>}/>
+                {/*    </Route>  */}
+              
+            </Route>
 
-            {/* all catch */}
-            <Route path="unauthorized" element={<Unauthorized/>}/>
-        </Route>
+              {/* all catch */}
+              <Route path="unauthorized" element={<Unauthorized/>}/>
+          </Route>
         </Route>
       </Routes>  
    </div>

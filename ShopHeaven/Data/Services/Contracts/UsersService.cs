@@ -47,7 +47,7 @@ namespace ShopHeaven.Data.Services.Contracts
                 throw new ArgumentException(GlobalConstants.PasswordsDoesntMatch);
             }
 
-            IdentityResult result = await this.userManager.CreateAsync(user, model.Password.Trim());
+            var result = await this.userManager.CreateAsync(user, model.Password.Trim());
 
             if (!result.Succeeded)
             {
@@ -85,7 +85,7 @@ namespace ShopHeaven.Data.Services.Contracts
             return users;
         }
 
-        public BasicUserResponseModel GetUserInfo()
+        public BasicUserResponseModel GetUserInfoFromJwt()
         {
             if (httpContextAccessor.HttpContext == null)
             {
