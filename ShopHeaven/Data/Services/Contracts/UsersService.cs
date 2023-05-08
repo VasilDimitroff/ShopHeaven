@@ -22,30 +22,34 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public async Task RegisterAsync(CreateUserRequestModel model)
         {
+
+            User userWithSameEmail = await this.db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim());
+
+            if (userWithSameEmail != null)
+            {
+                throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
+            }
+
+            if (model.Password.Trim() != model.ConfirmPassword.Trim())
+            {
+                throw new ArgumentException(GlobalConstants.PasswordsDoesntMatch);
+            }
+
             User user = new User
-            { 
+            {
                 UserName = "User" + (this.db.Users.Count() + 6564),
                 Email = model.Email.Trim(),
                 IsDeleted = false,
+                TokenCreated = null,
+                TokenExpires = null,
+                RefreshToken = ""
             };
-
+       
             Wishlist wishlist = new Wishlist { UserId = user.Id };
             Cart cart = new Cart { UserId = user.Id };
 
             user.CartId = cart.Id;
             user.WishlistId = wishlist.Id;
-
-             User userWithSameEmail = await this.db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim());
-
-             if (userWithSameEmail != null)
-             {
-                 throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
-             }
-
-             if(model.Password.Trim() != model.ConfirmPassword.Trim())
-            {
-                throw new ArgumentException(GlobalConstants.PasswordsDoesntMatch);
-            }
 
             var result = await this.userManager.CreateAsync(user, model.Password.Trim());
 
