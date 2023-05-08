@@ -12,7 +12,7 @@ export async function register(user){
         JSON.stringify({ email: user.email, password: user.password, confirmPassword: user.confirmPassword }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: false,
+          withCredentials: true,
         }
       );
 
@@ -29,7 +29,7 @@ export async function login(user){
       JSON.stringify({ email: user.email, password: user.password}),
       {
         headers: { "Content-Type": "application/json" },
-        withCredentials: false,
+        withCredentials: true,
       }
     );
     

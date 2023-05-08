@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Responses.Users
 {
-    public class UserRefreshTokenResponse
+    public class UserAuthorizationModel
     {
         public string Id { get; set; }
 

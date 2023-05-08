@@ -10,6 +10,7 @@ using System.Text;
 using ShopHeaven.Models.Token;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using System.Security.Cryptography;
 
 namespace ShopHeaven.Data.Services
 {
@@ -34,13 +35,13 @@ namespace ShopHeaven.Data.Services
             this.applicationSettings = applicationSettings.Value;
         }
 
-        public async Task<string> CreateTokenAsync(string userId, ICollection<string> userRoles)
+        public async Task<string> CreateJwtTokenAsync(string userId, ICollection<string> userRoles)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user == null)
             {
-                return null;
+                throw new NullReferenceException(GlobalConstants.UserNotFound);
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -62,7 +63,7 @@ namespace ShopHeaven.Data.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddSeconds(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -88,7 +89,7 @@ namespace ShopHeaven.Data.Services
             var result = await db.SaveChangesAsync();
         }
 
-        public async Task<UserRefreshTokenResponse> FindUserByRefreshTokenAsync(string refreshToken)
+        public async Task<UserAuthorizationModel> FindUserByRefreshTokenAsync(string refreshToken)
         {
             User user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
 
@@ -99,7 +100,7 @@ namespace ShopHeaven.Data.Services
 
             var roles = await this.usersService.GetUserRolesAsync(user.Id);
 
-            var userModel = new UserRefreshTokenResponse
+            var userModel = new UserAuthorizationModel
             {
                 Id = user.Id,
                 Email = user.Id,
@@ -110,6 +111,18 @@ namespace ShopHeaven.Data.Services
             };
 
             return userModel;
+        }
+
+        public RefreshToken CreateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(1),
+                CreatedOn = DateTime.UtcNow,
+            };
+
+            return refreshToken;
         }
     }
 }

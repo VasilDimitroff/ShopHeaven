@@ -7,13 +7,14 @@ const useRefreshToken = () => {
 
   const refresh = async () => {
     const response = await axios.get(ApiEndpoints.auth.refreshToken, {
-        withCredentials: false,
+        withCredentials: true,
     });
 
     setAuth(prev => {
         console.log(JSON.stringify(prev));
-        console.log(response.data.jwtToken);
-        return {...prev, jwtToken: response.data.jwtToken}
+        console.log("REFRESH TOKEN: " + response.data.refreshToken)
+        console.log("JWT TOKEN: " + response.data.jwtToken)
+        return {...prev, jwtToken: response.data.jwtToken, refreshToken: response.data.refreshToken}
     });
 
     return response.data.jwtToken;

@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using ShopHeaven.Models.Token;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace ShopHeaven.Controllers
 {
@@ -72,7 +73,7 @@ namespace ShopHeaven.Controllers
 
 
         [HttpPost, Route(nameof(Login))]
-        public async Task<ActionResult<UserRefreshTokenResponse>> Login(LoginUserRequestModel model)
+        public async Task<ActionResult<UserAuthorizationModel>> Login(LoginUserRequestModel model)
         {
             try
             {
@@ -92,12 +93,12 @@ namespace ShopHeaven.Controllers
 
                 IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
 
-                string jwtToken = await this.jwtService.CreateTokenAsync(user.Id, userRoles);
+                string jwtToken = await this.jwtService.CreateJwtTokenAsync(user.Id, userRoles);
 
-                RefreshToken refreshToken = GenerateRefreshToken();
+                RefreshToken refreshToken = this.jwtService.CreateRefreshToken();
                 await SetRefreshToken(refreshToken, user.Id);
 
-                UserRefreshTokenResponse response = new UserRefreshTokenResponse
+                UserAuthorizationModel response = new UserAuthorizationModel
                 {
                     Id = user.Id,
                     Email = user.Email,
@@ -118,49 +119,50 @@ namespace ShopHeaven.Controllers
 
 
         [HttpGet(nameof(RefreshToken))]
-        public async Task<ActionResult<UserRefreshTokenResponse>> RefreshToken()
+        public async Task<ActionResult<UserAuthorizationModel>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
-            var userModel = await this.jwtService.FindUserByRefreshTokenAsync(refreshToken);
+            var userModel = new UserAuthorizationModel();
 
-            if (!userModel.RefreshToken.Equals(refreshToken))
+            try
             {
-                return Unauthorized("Invalid Refresh Token.");
+                userModel = await this.jwtService.FindUserByRefreshTokenAsync(refreshToken);
+
+                if (!userModel.RefreshToken.Equals(refreshToken))
+                {
+                    return Unauthorized("Invalid Refresh Token.");
+                }
+                else if (userModel.TokenExpires < DateTime.UtcNow)
+                {
+                    return Unauthorized("Token expired.");
+                }
+
+                var roles = await this.usersService.GetUserRolesAsync(userModel.Id);
+
+                string token = await this.jwtService.CreateJwtTokenAsync(userModel.Id, roles);
+
+
+                var newRefreshToken = this.jwtService.CreateRefreshToken();
+                await SetRefreshToken(newRefreshToken, userModel.Id);
+
+                userModel.JwtToken = token;
             }
-            else if (userModel.TokenExpires < DateTime.UtcNow)
+            catch (Exception ex)
             {
-                return Unauthorized("Token expired.");
+
+                return BadRequest(ex.Message);
             }
 
-            var roles = await this.usersService.GetUserRolesAsync(userModel.Id);
-
-            string token = await this.jwtService.CreateTokenAsync(userModel.Id, roles);
-            var newRefreshToken = GenerateRefreshToken();
-            await SetRefreshToken(newRefreshToken, userModel.Id);
-
-            userModel.JwtToken = token;
 
             return Ok(userModel);
-        }
-
-        private RefreshToken GenerateRefreshToken()
-        {
-            var refreshToken = new RefreshToken
-            {
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(1),
-                CreatedOn = DateTime.UtcNow,
-            };
-
-            return refreshToken;
         }
 
         private async Task SetRefreshToken(RefreshToken newRefreshToken, string userId)
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = false,
+                HttpOnly = true,
                 Expires = newRefreshToken.Expires,
             };
 

@@ -5,6 +5,7 @@ import ProductsCarouselLine from "../products/ProductsCarouselLine";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import FullWidthBannerWithOverlay from "../banners/FullWidthBannerWithOverlay";
 import SubscribeForm from "../forms/SubscribeForm";
+import { Link } from "react-router-dom";
 
 let products = [
   {
@@ -488,11 +489,13 @@ export default function Home() {
   return (
     <Fragment>
       <HomeSliderAndCategories items={products} categories={categories} />
+      <Link to="/admin/users">USERS</Link>
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
         products={products}
         headingName="Similar to {subcategoryName} (You may also like)"
       />
+
       <ProductsCarouselLine
         products={products}
         headingName="Frequently Purchased"

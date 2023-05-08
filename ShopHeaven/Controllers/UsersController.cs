@@ -6,7 +6,7 @@ namespace ShopHeaven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    //[Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService usersService;
@@ -16,8 +16,7 @@ namespace ShopHeaven.Controllers
             this.usersService = usersService;
         }
 
-        [HttpGet]
-        [Route(nameof(GetAll))]
+        [HttpGet, Route(nameof(GetAll)), Authorize]
         public async Task<ActionResult> GetAll()
         {
             try

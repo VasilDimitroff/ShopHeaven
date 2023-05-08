@@ -6,10 +6,12 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface IJwtService
     {
-        Task<string> CreateTokenAsync(string userId, ICollection<string> userRoles);
+        Task<string> CreateJwtTokenAsync(string userId, ICollection<string> userRoles);
 
         Task SetRefreshTokenAsync(RefreshToken refreshToken, string userId);
 
-        Task<UserRefreshTokenResponse> FindUserByRefreshTokenAsync(string refreshToken);
+        Task<UserAuthorizationModel> FindUserByRefreshTokenAsync(string refreshToken);
+
+        RefreshToken CreateRefreshToken();
     }
 }

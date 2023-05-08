@@ -77,10 +77,12 @@ export default function Login() {
       const jwtToken = response?.data?.jwtToken;
       const roles = response?.data?.roles;
       const email = response?.data?.email;
+      const refreshToken = response?.data?.refreshToken;
 
       setAuth({
         userId: userId,
         jwtToken: jwtToken,
+        refreshToken: refreshToken,
         roles: roles,
         email: email,
         isLogged: true,
@@ -95,6 +97,9 @@ export default function Login() {
       console.log("ID IS: " + response.data.id);
       console.log("ROLES ARE: " + response.data.roles.length);
       console.log("ROLE IS: " + response.data.roles[0]);
+      console.log("REFRESH TOKEN IS: " + response.data.refreshToken);
+      console.log("CREATED REFRESH TOKEN IS: " + response.data.tokenCreated);
+      console.log("EXPIRES  REFRESH TOKEN IS: " + response.data.tokenExpires);
     } catch (err) {
       handleError(err);
     }
