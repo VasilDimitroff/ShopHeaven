@@ -13,7 +13,11 @@ const useRefreshToken = () => {
     setAuth(prev => {
         console.log(JSON.stringify(prev));
         console.log("REFRESH TOKEN: " + response.data.refreshToken)
-        return {...prev, jwtToken: response.data.jwtToken, refreshToken: response.data.refreshToken}
+        return {
+          ...prev,
+          roles: response.data.roles,
+          jwtToken: response.data.jwtToken,
+          refreshToken: response.data.refreshToken}
     });
 
     return response.data.jwtToken;

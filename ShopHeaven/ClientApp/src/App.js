@@ -16,6 +16,7 @@ import AdminUsers from './components/administration/AdminUsers';
 import AdminCoupons from './components/administration/AdminCoupons';
 import AdminReviews from './components/administration/AdminReviews';
 import RequireAuth from './components/auth/RequireAuth';
+import PersistLogin from './components/auth/PersistLogin';
 import Unauthorized from './components/auth/Unauthorized';
 import { categories } from './components/categories';
 import { products } from './components/products';
@@ -40,7 +41,8 @@ export default function App() {
            <Route path="register" element={<Register/>}/>
 
             {/* admin only routes */}
-          {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
+          <Route element={<PersistLogin/>}>
+            {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
               <Route path="admin" element={<Admin/>}>
                   <Route path="" element={<AdminDashboard/>}/>
                   <Route path="users" element={<AdminUsers/>}/>
@@ -49,7 +51,8 @@ export default function App() {
                   <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
                   <Route path="orders" element={<AdminOrders/>}/>
                   <Route path="reviews" element={<AdminReviews/>}/>
-            {/*    </Route>  */}
+              {/*    </Route>  */}
+              </Route>
            </Route>
 
             {/* all catch */}
