@@ -90,8 +90,6 @@ export default function Register() {
       setErrMsg("Email already taken!");
     } else {
       setErrMsg("Registration Failed!");
-      console.log("STATUS IS " + err.response.status);
-      console.log("CONFIC IS " + err.response.config);
     }
   }
 
