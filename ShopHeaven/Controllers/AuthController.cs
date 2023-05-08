@@ -110,7 +110,7 @@ namespace ShopHeaven.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(ex.Message);
             } 
          }
 

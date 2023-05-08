@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+import { React, useState, Fragment } from "react";
+import useAuth from "../hooks/useAuth";
 import { Link } from 'react-router-dom';
 import {
   Badge,
@@ -18,6 +19,7 @@ import {
   IconButton,
   Fade,
   Container,
+  Button
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../theme";
@@ -38,11 +40,12 @@ import {
 } from "@mui/icons-material";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
-import { display } from "@mui/system";
 import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
 export default function Header(props) {
+  const  { auth } = useAuth();
+
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
@@ -316,6 +319,13 @@ export default function Header(props) {
 
           <IconsArea>
             <CustomSearchButton onClick={() => handleShowSearchBar(true)} />
+            
+     {
+      !auth.isLogged
+        ? ""
+        :
+
+     <Fragment>
             <CustomBadge
               badgeContent={1}
               color="secondary"
@@ -363,43 +373,12 @@ export default function Header(props) {
                 </Avatar>
               </IconButton>
             </CustomBadge>
+           </Fragment> 
+         }
           </IconsArea>
         </CustomToolbar>
       </AppBar>
 
-      <Slide in={showFavoritesMenu}>
-        <FavoritesList
-          onMouseLeave={() =>
-            showFavoritesMenu === true
-              ? handleShowFavoritesMenu(false)
-              : handleShowFavoritesMenu(true)
-          }
-        >
-          {products.map((product, index) => {
-            return (
-              <Box sx={{ display: "flex" }}  key={index} spacing={2}>
-                <DropDownMenuListItemButton>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Image />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={product.name}
-                    secondary={`Price: ${product.price}`}
-                  />
-                </DropDownMenuListItemButton>
-                <StyledIconButton sx={{ color: theme.palette.success.main }}>
-                  <AddShoppingCart sx={{ fontSize: "30px" }} />
-                </StyledIconButton>
-                <StyledIconButton sx={{ color: theme.palette.error.main }}>
-                  <Delete sx={{ fontSize: "30px" }} />
-                </StyledIconButton>
-              </Box>
-            );
-          })}
-        </FavoritesList>
-      </Slide>
       <Slide in={showUserMenu} direction="down">
         <UserMenu
           onMouseLeave={() =>

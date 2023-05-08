@@ -33,6 +33,7 @@ export default function App() {
    <div style={{backgroundColor: theme.palette.appBackground.main }}>
       <Routes>
         {/* public routes */}
+        <Route element={<PersistLogin/>}>
         <Route path="/" element={<Layout/>}>
            <Route path="" element={<Home/>}/>
            <Route path="categories" element={<Categories/>}/>
@@ -41,7 +42,7 @@ export default function App() {
            <Route path="register" element={<Register/>}/>
 
             {/* admin only routes */}
-          <Route element={<PersistLogin/>}>
+          
             {/*  <Route element={<RequireAuth allowedRoles={Roles.Admin} />}> */}
               <Route path="admin" element={<Admin/>}>
                   <Route path="" element={<AdminDashboard/>}/>
@@ -52,11 +53,12 @@ export default function App() {
                   <Route path="orders" element={<AdminOrders/>}/>
                   <Route path="reviews" element={<AdminReviews/>}/>
               {/*    </Route>  */}
-              </Route>
+            
            </Route>
 
             {/* all catch */}
             <Route path="unauthorized" element={<Unauthorized/>}/>
+        </Route>
         </Route>
       </Routes>  
    </div>

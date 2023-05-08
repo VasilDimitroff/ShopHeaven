@@ -1,12 +1,15 @@
 import { Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const { auth } = useAuth();
+  const isRan = useRef(false);
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
@@ -19,7 +22,12 @@ const PersistLogin = () => {
       }
     };
 
-    !auth?.jwtToken ? verifyRefreshToken() : setIsLoading(false);
+    if (!isRan.current) {
+      !auth?.jwtToken ? verifyRefreshToken() : setIsLoading(false);
+    }
+    return () => {
+      isRan.current = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -27,7 +35,22 @@ const PersistLogin = () => {
     console.log("jwt " + auth?.jwtToken);
   }, [isLoading]);
 
-  return <>{isLoading ? <p>Loading...</p> : <Outlet />}</>;
+  return (
+    <>
+      {isLoading ? (
+        <Fragment>
+          <Backdrop
+            open={true}
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        </Fragment>
+      ) : (
+        <Outlet />
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;
