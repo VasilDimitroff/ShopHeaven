@@ -1,7 +1,7 @@
 import { React, useState, Fragment } from "react";
 import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import {
   Badge,
   AppBar,
@@ -19,7 +19,7 @@ import {
   IconButton,
   Fade,
   Container,
-  Button
+  Button,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../theme";
@@ -35,14 +35,14 @@ import {
   Logout,
   Menu,
 } from "@mui/icons-material";
-import LoginIcon from '@mui/icons-material/Login';
+import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import CategoriesHomeList from "./home/CategoriesHomeList";
 //import { Button } from "bootstrap";
 
 export default function Header(props) {
-  const  { auth } = useAuth();
+  const { auth } = useAuth();
   const logout = useLogout();
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ export default function Header(props) {
   function handleShowFavoritesMenu(value) {
     setShowFavoritesMenu(value);
   }
-  
+
   function handleShowSearchBar(value) {
     setShowSearchBar(value);
   }
@@ -67,10 +67,10 @@ export default function Header(props) {
     setShowUserMenu(value);
   }
 
- async function signOut() {
+  async function signOut() {
     await logout();
     navigate("/");
- }
+  }
 
   const products = [
     {
@@ -206,9 +206,13 @@ export default function Header(props) {
   const UserNameText = styled(Typography)({
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(1),
-    fontSize: "21px",
-    fontWeight: "400",
-    textAlign: "center"
+    fontSize: "18px",
+    fontWeight: "600",
+    textAlign: "center",
+    display: "block",
+    width: "100%",
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5),
   });
 
   const Label = styled(Typography)({
@@ -334,16 +338,16 @@ export default function Header(props) {
 
             {!auth.isLogged ? (
               <Link to="/login">
-              <Button
-                sx={{
-                  backgroundColor: theme.palette.secondary.main,
-                  marginLeft: theme.spacing(2),
-                }}
-                variant="contained"
-                endIcon={<LoginIcon />}
-              >
-                Login
-              </Button>
+                <Button
+                  sx={{
+                    backgroundColor: theme.palette.secondary.main,
+                    marginLeft: theme.spacing(2),
+                  }}
+                  variant="contained"
+                  endIcon={<LoginIcon />}
+                >
+                  Login
+                </Button>
               </Link>
             ) : (
               <Fragment>
@@ -390,7 +394,7 @@ export default function Header(props) {
                 >
                   <IconButton>
                     <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
-                      V
+                      {auth.email[0].toUpperCase()}
                     </Avatar>
                   </IconButton>
                 </CustomBadge>
@@ -399,59 +403,60 @@ export default function Header(props) {
           </IconsArea>
         </CustomToolbar>
       </AppBar>
-
-      <Slide in={showUserMenu} direction="down">
-        <UserMenu
-          onMouseLeave={() =>
-            showUserMenu === true
-              ? handleShowUserMenu(false)
-              : handleShowUserMenu(true)
-          }
-        >
-          <List>
-            <ListItem disablePadding>
-              <Container>
-                <UserNameText component="h4">VASIL DIMITROV</UserNameText>
-              </Container>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <DropDownMenuListItemButton>
-                <AccountCircle />
-                <UserMenuListItem primary="My Account" />
-              </DropDownMenuListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <DropDownMenuListItemButton>
-                <ShoppingCartCheckout />
-                <UserMenuListItem primary="My Orders" />
-              </DropDownMenuListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <DropDownMenuListItemButton>
-                <Reviews />
-                <UserMenuListItem primary="My Reviews" />
-              </DropDownMenuListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-              <DropDownMenuListItemButton>
-                <Favorite />
-                <UserMenuListItem primary="Favorites" />
-              </DropDownMenuListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding onClick={signOut}>
-              <DropDownMenuListItemButton>
-                <Logout />
-                <UserMenuListItem primary="Logout" />
-              </DropDownMenuListItemButton>
-            </ListItem>
-          </List>
-        </UserMenu>
-      </Slide>
+      {!auth.isLogged ? (
+        ""
+      ) : (
+        <Slide in={showUserMenu} direction="down">
+          <UserMenu
+            onMouseLeave={() =>
+              showUserMenu === true
+                ? handleShowUserMenu(false)
+                : handleShowUserMenu(true)
+            }
+          >
+            <List>
+              <ListItem disablePadding>
+                <UserNameText component="h4">{auth.email}</UserNameText>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding>
+                <DropDownMenuListItemButton>
+                  <AccountCircle />
+                  <UserMenuListItem primary="My Account" />
+                </DropDownMenuListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding>
+                <DropDownMenuListItemButton>
+                  <ShoppingCartCheckout />
+                  <UserMenuListItem primary="My Orders" />
+                </DropDownMenuListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding>
+                <DropDownMenuListItemButton>
+                  <Reviews />
+                  <UserMenuListItem primary="My Reviews" />
+                </DropDownMenuListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding>
+                <DropDownMenuListItemButton>
+                  <Favorite />
+                  <UserMenuListItem primary="Favorites" />
+                </DropDownMenuListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding onClick={signOut}>
+                <DropDownMenuListItemButton>
+                  <Logout />
+                  <UserMenuListItem primary="Logout" />
+                </DropDownMenuListItemButton>
+              </ListItem>
+            </List>
+          </UserMenu>
+        </Slide>
+      )}
 
       <Fade in={showMobileMenu} timeout={500}>
         <MobileMenuWrapper>

@@ -96,7 +96,7 @@ namespace ShopHeaven.Data.Services
             var userModel = new UserAuthorizationModel
             {
                 Id = user.Id,
-                Email = user.Id,
+                Email = user.Email,
                 Roles = roles,
                 RefreshToken = user.RefreshToken,
                 TokenCreated = (DateTime)user.TokenCreated,
