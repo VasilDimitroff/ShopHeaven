@@ -19,10 +19,14 @@ export default function SubcategoryProductsSidebar() {
     alignItems: "center"
   })
 
+  const ApplyFiltersButton = styled(Button)({
+    width: "100%"
+  })
+
   return (
     <Fragment>
         <Stack spacing={2}>
-          <Typography variant="h5">FILTERS</Typography>
+          <Typography variant="h5" sx={{textAlign:"center"}}>FILTERS</Typography>
           <StyledPaper>
           <Typography variant="h6">In Stock</Typography>
             <Switch defaultChecked />
@@ -39,7 +43,6 @@ export default function SubcategoryProductsSidebar() {
             <FormControlLabel control={<Checkbox />} label="1500-2000" />
             <FormControlLabel control={<Checkbox />} label="2000+" />
           </FormGroup>
-        <Button onClick={applyFilters}>APPLY FILTERS</Button>
           </StyledPaper>
           <StyledPaper>
           <Typography variant="h6">Rating</Typography>
@@ -59,7 +62,8 @@ export default function SubcategoryProductsSidebar() {
              <FormControlLabel label="1" control={<Checkbox />}/><Rating readOnly value={1} />
            </RatingHolder>
           </StyledPaper>
-        </Stack>
+          <ApplyFiltersButton onClick={applyFilters} variant="contained">APPLY FILTERS</ApplyFiltersButton>
+        </Stack>      
     </Fragment>
   );
 }
