@@ -1,16 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
-using System.Security.Cryptography;
 using ShopHeaven.Models.Token;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace ShopHeaven.Controllers
 {

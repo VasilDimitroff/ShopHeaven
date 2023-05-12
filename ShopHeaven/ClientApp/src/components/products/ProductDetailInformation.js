@@ -27,7 +27,7 @@ export default function ProductDetailInformation(props) {
       <div hidden={value !== index}>
         {value === index && (
           <StyledTabContent>
-            <Typography>{children}</Typography>
+            {children}
           </StyledTabContent>
         )}
       </div>
@@ -89,7 +89,7 @@ export default function ProductDetailInformation(props) {
         <Box>
           <TabPanel value={value} index={0}>
             <HeadingDescription>PRODUCT DESCRIPTION</HeadingDescription>
-            {props.product.description}
+            <p>{props.product.description}</p>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <TableContainer>

@@ -21,6 +21,7 @@ import Unauthorized from './components/auth/Unauthorized';
 import { categories } from './components/categories';
 import { products } from './components/products';
 import { coupons } from './components/coupons';
+import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
 
 const Roles = {
   User : "User",
@@ -36,7 +37,9 @@ export default function App() {
         <Route element={<PersistLogin/>}>
           <Route path="/" element={<Layout/>}>
             <Route path="" element={<Home/>}/>
-            <Route path="categories" element={<Categories/>}/>
+            <Route path="categories/:categoryId" element={<Categories/>}/>
+            <Route path="categories/:categoryId/subcategories/:subcategoryId" element={<Categories/>}/>
+            <Route path="categories/:categoryId/subcategories/:subcategoryId/products" element={<SubcategoryProducts/>}/>
             <Route path="products/:productId" element={<Product/>}/>
             <Route path="login" element={<Login/>}/>
             <Route path="register" element={<Register/>}/>
