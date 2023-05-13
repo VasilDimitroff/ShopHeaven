@@ -3,7 +3,6 @@ import {
   Box,
   Grid,
   Button,
-  Slide,
   TextField,
   MenuItem,
   Typography,
@@ -15,9 +14,28 @@ import BreadcrumbsBar from "../../BreadcrumbsBar";
 import SubcategoryProductsSidebar from "./SubcategoryProductsSidebar";
 import SubcategoryProductsMain from "./SubcategoryProductsMain";
 
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: "Categories",
+    uri: "/categories/1",
+  },
+  {
+    name: "Subcategory",
+    uri: "/categories/1/subcategories/1",
+  },
+  {
+    name: "Products",
+    uri: "/categories/1/subcategories/1/products",
+  },
+];
+
 export default function SubcategoryProducts() {
   const [showSidebar, setShowSidebar] = useState(true);
-  const[sortCriteria, setSortCriteria] = useState("Newest");
+  const [sortCriteria, setSortCriteria] = useState("Newest");
   const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
@@ -32,25 +50,6 @@ export default function SubcategoryProducts() {
     setSortCriteria(newCriteria);
   }
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Categories",
-      uri: "/categories/1",
-    },
-    {
-      name: "Subcategory",
-      uri: "/categories/1/subcategories/1",
-    },
-    {
-      name: "Products",
-      uri: "/categories/1/subcategories/1/products",
-    },
-  ];
-
   const MainWrapper = styled(Box)({
     width: "80%",
     margin: "auto",
@@ -61,9 +60,7 @@ export default function SubcategoryProducts() {
   });
 
   const SidebarHolder = styled(Box)({
-    [theme.breakpoints.down("md")]: {
-      display: showSidebar ? "block" : "none",
-    },
+    display: showSidebar ? "block" : "none",
   });
 
   const FiltersButton = styled(Box)({
@@ -77,7 +74,7 @@ export default function SubcategoryProducts() {
     gap: 10,
     marginBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
-    alignItems: "center"
+    alignItems: "center",
   });
 
   const ButtonsHolder = styled(Box)({
@@ -92,7 +89,7 @@ export default function SubcategoryProducts() {
     [theme.breakpoints.down("md")]: {
       display: "none",
     },
-  })
+  });
 
   return (
     <Fragment>
@@ -138,17 +135,9 @@ export default function SubcategoryProducts() {
           </Box>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={3} lg={3}>
-              <Slide
-                in={showSidebar}
-                easing={theme.transitions.easing.easeInOut}
-                timeout={200}
-                direction="right"
-                unmountOnExit
-              >
-                <SidebarHolder>
-                  <SubcategoryProductsSidebar />
-                </SidebarHolder>
-              </Slide>
+              <SidebarHolder>
+                <SubcategoryProductsSidebar />
+              </SidebarHolder>
             </Grid>
             <Grid
               item
