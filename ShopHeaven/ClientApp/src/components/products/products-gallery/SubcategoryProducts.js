@@ -1,5 +1,5 @@
 import { React, useState, Fragment, useEffect } from "react";
-import { Box, Grid, Typography, Button, Slide } from "@mui/material";
+import { Box, Grid, Button, Slide, TextField, MenuItem } from "@mui/material";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -39,10 +39,6 @@ export default function SubcategoryProducts() {
     },
   ];
 
-  const ContentWrapper = styled(Box)({
-   
-  });
-
   const MainWrapper = styled(Box)({
     width: "80%",
     margin: "auto",
@@ -66,7 +62,9 @@ export default function SubcategoryProducts() {
 
   const ButtonsHolder = styled(Box)({
     display: "flex",
-    gap: 2,
+    gap: 10,
+    marginBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
       marginLeft: "26%"
     },
@@ -76,26 +74,47 @@ export default function SubcategoryProducts() {
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <MainWrapper>
-        <ContentWrapper>
+        <Box>
               <ButtonsHolder>
-                <Box><Button variant="contained">Sort</Button></Box>
-                <FiltersButton><Button variant="contained" onClick={handleOpenSidebar}>Filters</Button></FiltersButton>
+                  <TextField
+                      sx={{width: "150px"}}
+                      select
+                      label="Sort products"
+                      defaultValue="Newest"
+                      variant="filled"
+                      size="small"
+                    >
+                    <MenuItem value="Newest">
+                      Newest
+                    </MenuItem>
+                    <MenuItem value="Price low to high">
+                      Price low to high
+                    </MenuItem>
+                    <MenuItem value="Price high to low">
+                      Price high to low
+                    </MenuItem>
+                    <MenuItem value="Rating (descending)">
+                    Rating (descending)
+                    </MenuItem>
+                    <MenuItem value="% discount">
+                      % discount
+                    </MenuItem>
+                 </TextField>  
+                <FiltersButton><Button size="large" variant="contained" onClick={handleOpenSidebar}>Filters</Button></FiltersButton>
               </ButtonsHolder>
           <Grid container spacing={3}> 
             <Grid item xs={12} sm={12} md={3} lg={3}>
              <Slide in={showSidebar} easing={theme.transitions.easing.easeInOut} timeout={200} direction="right" unmountOnExit>
                 <SidebarHolder>
-                  {/* first important part of the page */}
                   <SubcategoryProductsSidebar />
                 </SidebarHolder>
               </Slide>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={9} sx={{position: "relative"}}>
-              {/* second important part of the page */}  
               <SubcategoryProductsMain />
             </Grid>
           </Grid>
-        </ContentWrapper>
+        </Box>
       </MainWrapper>
     </Fragment>
   );
