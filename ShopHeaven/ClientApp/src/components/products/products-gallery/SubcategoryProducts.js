@@ -15,6 +15,11 @@ export default function SubcategoryProducts() {
     setShowSidebar(isBiggerOrMd)
   }, [isBiggerOrMd])
 
+  
+  function handleOpenSidebar(){
+    setShowSidebar(prev => !prev);
+  }
+
   const breadcrumbs = [
     {
       name: "Home",
@@ -55,23 +60,27 @@ export default function SubcategoryProducts() {
 
   const FiltersButton = styled(Box)({
     [theme.breakpoints.up("md")]: {
-      display: "none"
+      display: "block"
     },
   })
 
-  function handleOpenSidebar(){
-    setShowSidebar(prev => !prev);
-  }
+  const ButtonsHolder = styled(Box)({
+    display: "flex",
+    gap: 2,
+    [theme.breakpoints.up("md")]: {
+      marginLeft: "26%"
+    },
+  })
 
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <MainWrapper>
         <ContentWrapper>
-              <Box sx={{display: "flex"}}>
-                <Box><Button>Sort</Button></Box>
-                <FiltersButton><Button onClick={handleOpenSidebar}>Filters</Button></FiltersButton>
-              </Box>
+              <ButtonsHolder>
+                <Box><Button variant="contained">Sort</Button></Box>
+                <FiltersButton><Button variant="contained" onClick={handleOpenSidebar}>Filters</Button></FiltersButton>
+              </ButtonsHolder>
           <Grid container spacing={3}> 
             <Grid item xs={12} sm={12} md={3} lg={3}>
              <Slide in={showSidebar} easing={theme.transitions.easing.easeInOut} timeout={200} direction="right" unmountOnExit>
@@ -81,7 +90,7 @@ export default function SubcategoryProducts() {
                 </SidebarHolder>
               </Slide>
             </Grid>
-            <Grid item xs={12} sm={12} md={9} lg={9}>
+            <Grid item xs={12} sm={12} md={9} lg={9} sx={{position: "relative"}}>
               {/* second important part of the page */}  
               <SubcategoryProductsMain />
             </Grid>
