@@ -26,7 +26,6 @@ export default function SubcategoryProductsSidebar() {
   return (
     <Fragment>
         <Stack spacing={2}>
-          <Typography variant="h5" sx={{textAlign:"center"}}>FILTERS</Typography>
           <StyledPaper>
           <Typography variant="h6">In Stock</Typography>
             <Switch defaultChecked />

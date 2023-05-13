@@ -9,7 +9,6 @@ export default function SubcategoryProductsMain() {
   const ContentWrapper = styled(Box)({
     width: "100%",
     margin: "auto",
-    marginTop: theme.spacing(2),
     [theme.breakpoints.down("md")]: {
       width: "100%",
     },
@@ -32,7 +31,7 @@ export default function SubcategoryProductsMain() {
               <Grid
                 item 
                 xs={12}
-                sm={12}
+                sm={6}
                 md={6}
                 lg={4}
                 xl={3}
