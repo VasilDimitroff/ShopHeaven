@@ -489,7 +489,6 @@ export default function Home() {
   return (
     <Fragment>
       <HomeSliderAndCategories items={products} categories={categories} />
-      <Link to="/admin/users">USERS</Link>
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
         products={products}

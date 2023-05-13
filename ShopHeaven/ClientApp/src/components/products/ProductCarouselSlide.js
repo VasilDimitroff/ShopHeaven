@@ -5,8 +5,6 @@ import ProductCarouselCard from "./ProductCarouselCard";
 
 function ProductCarouselSlide(props) {
 
-  const StyledProductCarouselCard = styled(ProductCarouselCard)({});
-
   const SlideWrapper = styled(Box)({
     marginTop: theme.spacing(2.5),
     display: "flex",
@@ -37,7 +35,7 @@ function ProductCarouselSlide(props) {
                 xl={2}
                 sx={{ display: "block" }}
               >              
-                <StyledProductCarouselCard product={product} />             
+                <ProductCarouselCard product={product} />             
               </Grid>
               </Slide>
             )

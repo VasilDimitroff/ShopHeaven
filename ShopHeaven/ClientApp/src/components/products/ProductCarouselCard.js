@@ -20,8 +20,6 @@ function ProductCarouselCard(props) {
     position: "relative",
   });
 
-  const StyledCardContent = styled(CardContent)({});
-
   const ImageRibbon = styled(Chip)({
     position: "absolute",
     top: theme.spacing(2),
@@ -96,7 +94,7 @@ function ProductCarouselCard(props) {
         />
         <ImageRibbon label="primary" color="secondary" variant="contained" />
       </CardActionArea>
-      <StyledCardContent>
+      <CardContent>
         <Button variant="outlined" size="small">
           Category
         </Button>
@@ -149,7 +147,7 @@ function ProductCarouselCard(props) {
             </ActionsWrapper>
           </PriceAndActionsWrapper>
         </Box>
-      </StyledCardContent>
+      </CardContent>
     </StyledCard>
   );
 }

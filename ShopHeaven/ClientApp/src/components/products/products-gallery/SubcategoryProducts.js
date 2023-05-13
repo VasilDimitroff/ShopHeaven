@@ -45,13 +45,13 @@ export default function SubcategoryProducts() {
       <MainWrapper>
         <ContentWrapper>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} sm={12} md={3} lg={3}>
               <Box>
                 {/* first important part of the page */}
                 <SubcategoryProductsSidebar />
               </Box>
             </Grid>
-            <Grid item xs={12} md={9} lg={9}>
+            <Grid item xs={12} sm={12} md={9} lg={9}>
               {/* second important part of the page */}
               <SubcategoryProductsMain />
             </Grid>

@@ -47,19 +47,19 @@ export default function SubcategoryProductsSidebar() {
           <StyledPaper>
           <Typography variant="h6">Rating</Typography>
           <RatingHolder>
-             <FormControlLabel label="5" control={<Checkbox />}/><Rating readOnly value={5} />
+             <FormControlLabel label="5" control={<Checkbox />}/><Rating readOnly value={5} size="small" />
            </RatingHolder>
            <RatingHolder>
-             <FormControlLabel label="4" control={<Checkbox />}/><Rating readOnly value={4} />
+             <FormControlLabel label="4" control={<Checkbox />}/><Rating readOnly value={4} size="small" />
            </RatingHolder>
            <RatingHolder>
-             <FormControlLabel label="3" control={<Checkbox />}/><Rating readOnly value={3} />
+             <FormControlLabel label="3" control={<Checkbox />}/><Rating readOnly value={3} size="small" />
            </RatingHolder>
            <RatingHolder>
-             <FormControlLabel label="2" control={<Checkbox />}/><Rating readOnly value={2} />
+             <FormControlLabel label="2" control={<Checkbox />}/><Rating readOnly value={2} size="small" />
            </RatingHolder>
            <RatingHolder>
-             <FormControlLabel label="1" control={<Checkbox />}/><Rating readOnly value={1} />
+             <FormControlLabel label="1" control={<Checkbox />}/><Rating readOnly value={1} size="small" />
            </RatingHolder>
           </StyledPaper>
           <ApplyFiltersButton onClick={applyFilters} variant="contained">APPLY FILTERS</ApplyFiltersButton>
