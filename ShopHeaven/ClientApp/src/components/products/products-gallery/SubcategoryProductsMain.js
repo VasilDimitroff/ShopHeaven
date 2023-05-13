@@ -1,5 +1,5 @@
 import { React, useState, Fragment } from "react";
-import { Box, Paper, Typography, Grid, Slide } from "@mui/material";
+import { Box, Paper, Typography, Grid, Slide, } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ProductCarouselCard from "../ProductCarouselCard";
 import { theme } from "../../../theme";
