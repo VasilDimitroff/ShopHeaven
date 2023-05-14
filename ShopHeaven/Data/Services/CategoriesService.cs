@@ -23,11 +23,11 @@ namespace ShopHeaven.Data.Services
             this.db = db;
         }
 
-        public async Task CreateCategoryAsync(CreateCategoryRequestModel model)
+        public async Task<GetCategoriesResponseModel> CreateCategoryAsync(CreateCategoryRequestModel model)
         {
-            bool isUserExists = await this.db.Users.AnyAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
 
-            if (isUserExists == false)
+            if (user == null)
             {
                 throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
             }
@@ -68,6 +68,18 @@ namespace ShopHeaven.Data.Services
             await this.db.MainCategories.AddAsync(newCategory);
 
             await this.db.SaveChangesAsync();
+
+            var returnedCategory = new GetCategoriesResponseModel()
+            {
+               Id = newCategory.Id,
+               Name = newCategory.Name,
+               Description = newCategory.Description,
+               CreatedBy = user.Email,
+               Image = categoryImageUrl,
+               Subcategories = new HashSet<SubcategoriesResponseModel>(),
+            };
+
+            return returnedCategory;
         }
 
         public async Task<string> DeleteCategoryAsync(DeleteCategoryRequestModel model)

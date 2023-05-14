@@ -7,13 +7,13 @@ import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
 
 export default function AdminCategoriesRow(props) {
-  const [category, setCategories] = useState(props.category)
+  const [category, setCategory] = useState(props.category)
   const [subcategories, setSubcategories] = useState(props.subcategories)
   const [open, setOpen] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
 
   function updateCategoryName(newName, newDescription) {
-    setCategories(prev => {
+    setCategory(prev => {
       return {
           ...prev,
           name: newName,

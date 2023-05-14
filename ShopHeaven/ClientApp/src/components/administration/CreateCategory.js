@@ -12,7 +12,7 @@ import { PhotoCamera } from "@mui/icons-material";
 import useAuth from "./../../hooks/useAuth"
 import { createCategory } from "../../services/categoriesService";
 
-export default function CreateCategory() {
+export default function CreateCategory(props) {
   let  { auth } = useAuth();
 
   let categoryNameRef = useRef();
@@ -54,8 +54,8 @@ export default function CreateCategory() {
   async function createNewCategory(formData) {
     try {
        const response = await createCategory(formData, auth.jwtToken);
-
-       setCreateCategoryResponseMessage(response?.data);
+       setCreateCategoryResponseMessage(`Category ${formData.get("name")} successfully created`);
+       props.categoriesListChanged(response?.data);
        refreshState();
     } catch (error) {
        setCreateCategoryResponseMessage("");

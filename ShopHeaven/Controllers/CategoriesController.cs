@@ -75,8 +75,8 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                await this.categoriesService.CreateCategoryAsync(model);
-                return Ok($"Category {model.Name} successfully created!");
+                var newCategory = await this.categoriesService.CreateCategoryAsync(model);
+                return Ok(newCategory);
             }
             catch (Exception ex)
             {

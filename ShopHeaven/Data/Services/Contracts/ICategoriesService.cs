@@ -7,7 +7,7 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ICategoriesService
     {
-        Task CreateCategoryAsync(CreateCategoryRequestModel model);
+        Task<GetCategoriesResponseModel> CreateCategoryAsync(CreateCategoryRequestModel model);
 
         Task EditCategoryAsync(EditCategoryRequestModel model);
 

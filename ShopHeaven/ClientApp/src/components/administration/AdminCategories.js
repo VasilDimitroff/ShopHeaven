@@ -23,12 +23,22 @@ export default function AdminCategories() {
 
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
 
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
 
   const effectRun = useRef(false);
+
+  function categoriesListChanged(newCategory) {
+    setCategories(prev => {
+      return [
+       ...prev,
+        newCategory
+      ]
+    })
+    console.log(newCategory);
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -117,7 +127,7 @@ export default function AdminCategories() {
         </StyledButtonBox>
       </TableContainer>  
        <Collapse in={openCreateCategoryModal} timeout="auto" unmountOnExit>
-          <CreateCategory/>
+          <CreateCategory categoriesListChanged={categoriesListChanged}/>
        </Collapse>
     </Box>
   );
