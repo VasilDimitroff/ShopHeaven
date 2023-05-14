@@ -15,7 +15,6 @@ namespace ShopHeaven.Models.Responses.Categories
 
         public string Image { get; set; }
 
-        [Required]
         public string CreatedBy { get; set; }
 
         public IEnumerable<SubcategoriesResponseModel> Subcategories { get; set; }

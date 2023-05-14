@@ -13,7 +13,6 @@ namespace ShopHeaven.Models.Responses.Subcategories
 
         public string Image { get; set; }
 
-        [Required]
         public string CreatedBy { get; set; }
 
         public int ProductsCount { get; set; }

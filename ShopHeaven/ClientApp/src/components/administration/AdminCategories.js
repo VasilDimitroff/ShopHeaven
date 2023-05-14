@@ -1,4 +1,7 @@
-import { React, useState, Fragment, useRef } from "react";
+import { React, useState, Fragment, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { ApiEndpoints } from "../../api/endpoints";
 import {
   Box,
   Button,
@@ -200,6 +203,40 @@ function Row(props) {
 export default function AdminCategories(props) {
 
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
+
+  const [categories, setCategories] = useState();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const effectRun = useRef(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCategories = async () => {
+      try {
+        const response = await axiosPrivate.get(ApiEndpoints.categories.getAll, {
+          signal: controller.signal,
+        });
+        console.log(response.data);
+
+        setCategories(response.data);
+      } catch (error) {
+        console.log(error);
+        navigate("/login", { state: { from: location }, replace: true }); 
+      }
+    };
+
+    if (effectRun.current) {
+      getCategories();
+    }
+
+    return () => {
+      controller.abort();
+      effectRun.current = true; // update the value of effectRun to true
+    };
+  }, []);
 
   function handleOpen() {
     setOpenCreateCategoryModal(!openCreateCategoryModal);
