@@ -9,8 +9,6 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import axios from "axios";
-import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "./../../hooks/useAuth"
 import { createCategory } from "../../services/categoriesService";
 
@@ -23,7 +21,6 @@ export default function CreateCategory() {
 
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
-  const [categoryImage, setCategoryImage] = useState(undefined);
 
   const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
   const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState("");
@@ -35,9 +32,13 @@ export default function CreateCategory() {
     const formCategoryDescription = categoryDescriptionRef.current.value;
     const formCategoryImage = document.getElementById("category-image").files[0];
 
+    if(formCategoryName.trim().length < 1) {
+      setCreateCategoryErrorMessage("Category name must contain almost 1 character");
+      return;
+    }
+
     setCategoryName(formCategoryName);
     setCategoryDescription(formCategoryDescription);
-    setCategoryImage(formCategoryImage);
 
     const formData = new FormData();
 
@@ -56,12 +57,11 @@ export default function CreateCategory() {
        setCreateCategoryResponseMessage(response?.data);
        refreshState();
     } catch (error) {
-       if (error?.request) {
-        setCreateCategoryErrorMessage("No Server Response");
-       }  else if(error?.response?.status === 401 || error?.response?.status === 403) {
+       setCreateCategoryResponseMessage("");
+        if(error?.response?.status === 401 || error?.response?.status === 403) {
           setCreateCategoryErrorMessage("You have no permissions to perform the operation");
         } else {
-          setCreateCategoryErrorMessage("Error!")
+          setCreateCategoryErrorMessage("Error! Check if all fields are filled");
       }
       console.log(error.message);
     }
@@ -71,7 +71,6 @@ export default function CreateCategory() {
     setCreateCategoryErrorMessage("");
     setCategoryName("");
     setCategoryDescription("");
-    setCategoryImage(undefined);
   }
 
   const ProductInfoInput = styled(TextField)({
@@ -129,7 +128,7 @@ export default function CreateCategory() {
                 </InputAdornment>
               ),
             }}
-            accept=".jpg, .png"
+            accept=".jpg, .png, .jpeg"
             type="file"
             variant="standard"
             id="category-image"
