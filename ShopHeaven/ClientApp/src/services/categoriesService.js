@@ -16,9 +16,9 @@ export async function createCategory(formData, token){
 }
 
 export async function createSubcategory(formData, token){
-
+  console.log("FORM DATA: " + formData);
   const response = await axios.post(
-    ApiEndpoints.categories.createSubcategory,
+    ApiEndpoints.subcategories.createSubcategory,
     formData,
     {
       headers: {  'Authorization': `Bearer ${token}` },

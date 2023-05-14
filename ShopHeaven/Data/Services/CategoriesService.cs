@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Subcategories;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UserDoesNotExist);
             }
 
-            var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Name == model.Name);
+            var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Name == model.Name && x.IsDeleted != true);
 
             if (category != null)
             {
@@ -40,7 +41,7 @@ namespace ShopHeaven.Data.Services
 
             //implement logic for image
 
-            var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image });
+            var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image }, model.CreatedBy);
             string categoryImageUrl = imageUrls[0];
 
             Image categoryImage = new Image()
@@ -156,17 +157,23 @@ namespace ShopHeaven.Data.Services
         {
             List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
-                .Include(x => x.SubCategories)
                 .Select(x => new GetCategoriesResponseModel
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    Description = x.Description,
+                    Image = x.Image.Url,
+                    CreatedBy = x.CreatedBy.Email,
                     Subcategories = x.SubCategories
                     .Where(s => s.IsDeleted != true)
-                    .Select(x => new SubcategoriesBaseResponseModel
+                    .Select(x => new SubcategoriesResponseModel
                     {
-                        Name = x.Name,
                         Id = x.Id,
+                        Name = x.Name,
+                        Description = x.Description,
+                        Image = x.Image.Url,
+                        ProductsCount = x.Products.Count(),
+                        CreatedBy = x.CreatedBy.Email,
                     })
                     .ToList()
                 })
@@ -175,17 +182,26 @@ namespace ShopHeaven.Data.Services
             return allCategories;
         }
 
-        public async Task<GetCategoryResponseModel> GetCategoryByIdAsync(string id)
+        public async Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id)
         {
-            GetCategoryResponseModel getCategoryResponseModel = await this.db.MainCategories
+            GetCategoriesResponseModel getCategoryResponseModel = await this.db.MainCategories
                 .Where(x => x.Id == id && x.IsDeleted != true)
-                .Include(x => x.Image)
-                .Select(x => new GetCategoryResponseModel
+                .Select(x => new GetCategoriesResponseModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    ImageUrl = x.Image.Url
+                    Image = x.Image.Url,
+                    CreatedBy = x.CreatedBy.Email,
+                    Subcategories = x.SubCategories.Select(s => new SubcategoriesResponseModel
+                    {
+                        Id = s.Id,
+                        Name= s.Name,
+                        Description= s.Description,
+                        Image = s.Image.Url,
+                        CreatedBy = s.CreatedBy.Email,
+                        ProductsCount = s.Products.Count()
+                    })
                 })
                 .FirstOrDefaultAsync();
 

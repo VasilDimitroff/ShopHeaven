@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 using System.Security.Claims;
 
-namespace ShopHeaven.Data.Services.Contracts
+namespace ShopHeaven.Data.Services
 {
     public class UsersService : IUsersService
     {
@@ -23,7 +24,7 @@ namespace ShopHeaven.Data.Services.Contracts
         public async Task RegisterAsync(CreateUserRequestModel model)
         {
 
-            User userWithSameEmail = await this.db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim());
+            User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim() && x.IsDeleted != true);
 
             if (userWithSameEmail != null)
             {
@@ -37,21 +38,21 @@ namespace ShopHeaven.Data.Services.Contracts
 
             User user = new User
             {
-                UserName = "User" + (this.db.Users.Count() + 6564),
+                UserName = "User" + (db.Users.Count() + 6564),
                 Email = model.Email.Trim(),
                 IsDeleted = false,
                 TokenCreated = null,
                 TokenExpires = null,
                 RefreshToken = ""
             };
-       
+
             Wishlist wishlist = new Wishlist { UserId = user.Id };
             Cart cart = new Cart { UserId = user.Id };
 
             user.CartId = cart.Id;
             user.WishlistId = wishlist.Id;
 
-            var result = await this.userManager.CreateAsync(user, model.Password.Trim());
+            var result = await userManager.CreateAsync(user, model.Password.Trim());
 
             if (!result.Succeeded)
             {
@@ -61,29 +62,30 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public async Task<IList<string>> GetUserRolesAsync(string userId)
         {
-            var user = await this.userManager.FindByIdAsync(userId);
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
 
             if (user == null)
             {
                 throw new ArgumentNullException(GlobalConstants.UserNotFound);
             }
 
-            IList<string> userRoles = await this.userManager.GetRolesAsync(user);
+            IList<string> userRoles = await userManager.GetRolesAsync(user);
 
             return userRoles;
         }
 
         public async Task<IList<BasicUserResponseModel>> GetAllAsync()
         {
- 
-            var users = await this.db.Users
+
+            var users = await db.Users
+            .Where(x => x.IsDeleted != true)
             .Select(x => new BasicUserResponseModel
-                {
-                    Id = x.Id,
-                    Email = x.Email,
-                    Username = x.UserName,
-                    CreatedOn = x.CreatedOn.ToString(),
-                })
+            {
+                Id = x.Id,
+                Email = x.Email,
+                Username = x.UserName,
+                CreatedOn = x.CreatedOn.ToString(),
+            })
             .ToListAsync();
 
             return users;
@@ -105,7 +107,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
             var username = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
             string email = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
-            string createdOn = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.DateOfBirth);    
+            string createdOn = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.DateOfBirth);
 
             IList<Claim> claimRoles = httpContextAccessor.HttpContext.User
                 .FindAll(ClaimTypes.Role)
@@ -132,15 +134,15 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public async Task<BasicUserResponseModel> GetUserByEmailAsync(string email)
         {
-            
-           var user = await this.db.Users.FirstOrDefaultAsync(x => x.Email == email);
+
+            var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
 
             if (user == null)
             {
                 return null;
             }
 
-            var userRoles = await this.GetUserRolesAsync(user.Id);
+            var userRoles = await GetUserRolesAsync(user.Id);
 
             var userModel = new BasicUserResponseModel
             {

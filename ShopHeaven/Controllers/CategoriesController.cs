@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
 
 namespace ShopHeaven.Controllers
@@ -40,8 +39,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpGet]
-        [Route(nameof(GetAll))]
+        [HttpGet, Route(nameof(GetAll))]
         public async Task<IActionResult> GetAll()
         {
             try

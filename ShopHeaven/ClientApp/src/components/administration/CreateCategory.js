@@ -33,6 +33,7 @@ export default function CreateCategory() {
     const formCategoryImage = document.getElementById("category-image").files[0];
 
     if(formCategoryName.trim().length < 1) {
+      setCreateCategoryResponseMessage("");
       setCreateCategoryErrorMessage("Category name must contain almost 1 character");
       return;
     }

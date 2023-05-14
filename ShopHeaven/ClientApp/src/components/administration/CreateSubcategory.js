@@ -33,6 +33,7 @@ export default function CreateSubcategory(props) {
     const formSubCategoryImage = document.getElementById("subcategory-image").files[0];
 
     if(formSubCategoryName.trim().length < 1) {
+      setCreateSubcategoryResponseMessage("");
       setCreateSubcategoryErrorMessage("Subcategory name must contain almost 1 character");
       return;
     }
@@ -48,8 +49,6 @@ export default function CreateSubcategory(props) {
     formData.append("categoryId", props.categoryId);
     formData.append("createdBy", auth.userId);
 
-    console.log("CATEGORY ID IS: " + props.categoryId);
-
     createNewSubCategory(formData);
   }
 
@@ -57,7 +56,7 @@ export default function CreateSubcategory(props) {
     try {
        const response = await createSubcategory(formData, auth.jwtToken);
 
-       setCreateSubcategoryResponseMessage("Subcategory successfully created");
+       setCreateSubcategoryResponseMessage(response?.data);
        refreshState();
     } catch (error) {
       setCreateSubcategoryResponseMessage("");

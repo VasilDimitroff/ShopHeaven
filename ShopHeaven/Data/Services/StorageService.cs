@@ -16,7 +16,7 @@ namespace ShopHeaven.Data.Services
             this.configuration = configuration;
         }
 
-        public async Task<List<string>> UploadImageAsync(List<IFormFile> files)
+        public async Task<List<string>> UploadImageAsync(List<IFormFile> files, string userId)
         {
             //TODO: Validate file
             var containerName = configuration.GetSection("Storage:ContainerName").Value;
@@ -26,7 +26,7 @@ namespace ShopHeaven.Data.Services
 
             foreach (IFormFile file in files)
             {
-                var blobClient = containerClient.GetBlobClient(GetFileName(file.FileName));
+                var blobClient = containerClient.GetBlobClient(GetFileName(file.FileName, userId));
 
                 using var stream = file.OpenReadStream();
 
@@ -44,7 +44,7 @@ namespace ShopHeaven.Data.Services
             return imageUrls;
         }
 
-        private string GetFileName(string fileName)
+        private string GetFileName(string fileName, string userId)
         {
             string randomNumber = new Random().Next(1000, 1000000).ToString();
             string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
@@ -55,7 +55,7 @@ namespace ShopHeaven.Data.Services
             }
 
             string extension = Path.GetExtension(fileName);
-            string basePath = $"{GlobalConstants.SystemName}/";
+            string basePath = $"{GlobalConstants.SystemName}/{userId}/";
 
             string fullPathName = basePath + fileNameWithoutExt + "_" + randomNumber + extension;
 

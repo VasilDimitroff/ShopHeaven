@@ -30,7 +30,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<string> CreateJwtTokenAsync(string userId, ICollection<string> userRoles)
         {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
 
             if (user == null)
             {
@@ -68,7 +68,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task SetRefreshTokenAsync(RefreshToken refreshToken, string userId)
         {
-            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
 
             if (user == null)
             {
@@ -84,7 +84,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<UserAuthorizationModel> FindUserByRefreshTokenAsync(string refreshToken)
         {
-            User user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken && x.IsDeleted != true);
 
             if (user == null)
             {
@@ -120,7 +120,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task DeleteRefreshTokenAsync(string token)
         {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == token);
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == token && x.IsDeleted != true);
             user.RefreshToken = "";
             await this.db.SaveChangesAsync();
         }

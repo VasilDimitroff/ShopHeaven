@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ShopHeaven.Models.Responses.Subcategories;
 
-namespace ShopHeaven.Models.Responses.Categories
+namespace ShopHeaven.Models.Responses.Subcategories
 {
-    public class GetCategoriesResponseModel
+    public class SubcategoriesResponseModel
     {
         [Required]
         public string Id { get; set; }
 
         [Required]
         public string Name { get; set; }
-
         public string Description { get; set; }
 
         public string Image { get; set; }
@@ -18,6 +16,6 @@ namespace ShopHeaven.Models.Responses.Categories
         [Required]
         public string CreatedBy { get; set; }
 
-        public IEnumerable<SubcategoriesResponseModel> Subcategories { get; set; }
+        public int ProductsCount { get; set; }
     }
 }

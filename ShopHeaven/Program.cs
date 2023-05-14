@@ -67,6 +67,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<ICategoriesService, CategoriesService>();
+builder.Services.AddTransient<ISubcategoriesService, SubcategoriesService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IJwtService, JwtService>();

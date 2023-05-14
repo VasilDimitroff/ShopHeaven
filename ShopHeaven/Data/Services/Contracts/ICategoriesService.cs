@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
 
 namespace ShopHeaven.Data.Services.Contracts
@@ -8,7 +9,7 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task CreateCategoryAsync(CreateCategoryRequestModel model);
 
-        Task<GetCategoryResponseModel> GetCategoryByIdAsync(string id);
+        Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id);
 
         Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync();
 

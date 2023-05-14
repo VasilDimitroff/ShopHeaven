@@ -2,6 +2,6 @@
 {
     public interface IStorageService
     {
-        Task<List<string>> UploadImageAsync(List<IFormFile> formFiles);
+        Task<List<string>> UploadImageAsync(List<IFormFile> formFiles, string userId);
     }
 }
