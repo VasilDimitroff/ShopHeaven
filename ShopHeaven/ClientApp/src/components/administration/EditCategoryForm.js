@@ -1,15 +1,16 @@
-import { React, useState, Fragment, useRef } from "react";
+import { React, useState, useRef } from "react";
 import {
   Box,
   Button,
   InputAdornment,
   Typography,
   TextField,
-  Paper
+  Paper,
+  IconButton
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, Close } from "@mui/icons-material";
 import { editCategory } from "../../services/categoriesService";
 import useAuth from "../../hooks/useAuth";
 
@@ -117,6 +118,18 @@ export default function EditCategoryForm(props) {
     color: theme.palette.error.main,
   });
 
+  const ImageHolder = styled(Box)({
+    position: "relative",
+    marginLeft: theme.spacing(4),
+    marginTop: theme.spacing(3),
+  })
+
+  const CloseButtonHolder = styled(Box)({
+    position: "absolute",
+    top: 7,
+    left: 210,
+  })
+
   return (
     <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
       <Typography
@@ -137,6 +150,15 @@ export default function EditCategoryForm(props) {
             defaultValue={category.name}
           />
         </InputBox>
+        <ImageHolder>
+          <img style={{objectFit: "cover"}} width="250px" height="150px" src={category.image} />
+          <CloseButtonHolder> 
+            <IconButton color="error" size="small">
+           <Close />
+         </IconButton>
+      </CloseButtonHolder>
+      <Typography sx={{color: theme.palette.warning.main}}>Warning! If you submit a new image, the old one will be deleted</Typography>
+        </ImageHolder>
         <InputBox>
           <StyledInput
             inputRef={categoryImageRef}
