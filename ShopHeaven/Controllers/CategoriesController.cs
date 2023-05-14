@@ -56,8 +56,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost]
-        [Route(nameof(Create))]
+        [HttpPost, Authorize, Route(nameof(Create))]
         public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {
             try

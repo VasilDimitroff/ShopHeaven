@@ -11,54 +11,67 @@ import { theme } from "../../theme";
 import { PhotoCamera } from "@mui/icons-material";
 import axios from "axios";
 import { ApiEndpoints } from "../../api/endpoints";
+import useAuth from "./../../hooks/useAuth"
+import { createCategory } from "../../services/categoriesService";
 
 export default function CreateCategory() {
+  let  { auth } = useAuth();
+
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
   let categoryImageRef = useRef();
 
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryDescription, setCategoryDescription] = useState("");
+  const [categoryImage, setCategoryImage] = useState(undefined);
+
   const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
-  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState(false);
+  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState("");
 
-  function clearFormValues() {
-    categoryNameRef.current.value = "";
-    categoryDescriptionRef.current.value = "";
-    document.getElementById("category-image").value = "";
-  }
-
-  function onCreateCategory(e) {
+ function onCreateCategory(e) {
     e.preventDefault();
 
-    console.log("CATEGORY NAME " + categoryNameRef.current.value);
-    console.log("CATEGORY DESCR " + categoryDescriptionRef.current.value);
-    console.log("IMAGE " + document.getElementById("category-image").files[0]);
+    const formCategoryName = categoryNameRef.current.value;
+    const formCategoryDescription = categoryDescriptionRef.current.value;
+    const formCategoryImage = document.getElementById("category-image").files[0];
 
-    const categoryName = categoryNameRef.current.value;
-    const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById("category-image").files[0];
+    setCategoryName(formCategoryName);
+    setCategoryDescription(formCategoryDescription);
+    setCategoryImage(formCategoryImage);
 
     const formData = new FormData();
 
-    formData.append("name", categoryName);
-    formData.append("description", categoryDescription);
-    formData.append("image", categoryImage);
-    formData.append("createdBy", ApiEndpoints.exampleUserId);
+    formData.append("name", formCategoryName);
+    formData.append("description", formCategoryDescription);
+    formData.append("image", formCategoryImage);
+    formData.append("createdBy", auth.userId);
 
-    createCategory(formData);
+    createNewCategory(formData);
   }
 
-  async function createCategory(formData) {
+  async function createNewCategory(formData) {
     try {
-      const response = await axios.post(
-        ApiEndpoints.categories.createCategory,
-        formData
-      );
-      setCreateCategoryResponseMessage(response.data);
-      clearFormValues();
+       const response = await createCategory(formData, auth.jwtToken);
+
+       setCreateCategoryResponseMessage(response?.data);
+       refreshState();
     } catch (error) {
-      console.log("Server returns erorr during category creating: " + error);
-      setCreateCategoryErrorMessage(true);
+       if (error?.request) {
+        setCreateCategoryErrorMessage("No Server Response");
+       }  else if(error?.response?.status === 401 || error?.response?.status === 403) {
+          setCreateCategoryErrorMessage("You have no permissions to perform the operation");
+        } else {
+          setCreateCategoryErrorMessage("Error!")
+      }
+      console.log(error.message);
     }
+  }
+
+  function refreshState() {
+    setCreateCategoryErrorMessage("");
+    setCategoryName("");
+    setCategoryDescription("");
+    setCategoryImage(undefined);
   }
 
   const ProductInfoInput = styled(TextField)({
@@ -80,12 +93,10 @@ export default function CreateCategory() {
   })
 
   const ResponseMessage = styled(Typography)({
-    textAlign: "center",
     color: theme.palette.success.main
   });
 
   const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
     color: theme.palette.error.main
   })
 
@@ -104,6 +115,7 @@ export default function CreateCategory() {
           <ProductInfoInput
             inputRef={categoryNameRef}
             label="Category name"
+            defaultValue={categoryName}
             variant="standard"
           />
         </InputBox>
@@ -128,6 +140,7 @@ export default function CreateCategory() {
             inputRef={categoryDescriptionRef}
             id="123"
             label="Category Description"
+            defaultValue={categoryDescription}
             multiline
             rows={5}
             variant="standard"
@@ -140,13 +153,9 @@ export default function CreateCategory() {
         </InputBox>
       </form>
       <ResponseMessage>{createCategoryResponseMessage}</ResponseMessage>
-      {createCategoryErrorMessage ? (
         <ErrorResponseMessage>
-          An error during category creation!
+          {createCategoryErrorMessage}
         </ErrorResponseMessage>
-      ) : (
-        ""
-      )}
     </Fragment>
   );
 }

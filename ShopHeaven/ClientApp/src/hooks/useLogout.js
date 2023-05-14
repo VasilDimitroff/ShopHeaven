@@ -11,7 +11,7 @@ const useLogout = () => {
         try {
             const response = await axios(ApiEndpoints.auth.logout,
                 {
-                    widthCredentials: true
+                    withCredentials: true
                 });
         } catch(error) {
             console.log(error);

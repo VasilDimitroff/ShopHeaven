@@ -18,7 +18,7 @@ const useRefreshToken = () => {
           roles: response.data.roles,
           jwtToken: response.data.jwtToken,
           refreshToken: response.data.refreshToken,
-          userId: response.data.userId,
+          userId: response.data.id,
           email: response.data.email,
           isLogged: response ? true : false,
         }
