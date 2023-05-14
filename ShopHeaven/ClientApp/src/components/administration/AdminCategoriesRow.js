@@ -50,7 +50,6 @@ export default function AdminCategoriesRow(props) {
   function renderSubcategories() {
     return props.subcategories.map((subcategory) => (
       <StyledTableRow key={subcategory?.id}>
-        <TableCell align="center">{subcategory?.id}</TableCell>
         <TableCell component="th" scope="row">
           {subcategory?.name}
         </TableCell>
@@ -141,7 +140,6 @@ export default function AdminCategoriesRow(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">ID</TableCell>
                     <TableCell align="left">NAME</TableCell>
                     <TableCell align="center">PRODUCTS</TableCell>
                     <TableCell align="center">CREATOR</TableCell>
@@ -158,7 +156,7 @@ export default function AdminCategoriesRow(props) {
                   size="small"
                   startIcon={<AddCircle />}
                 >
-                  Add new subcategory
+                  Add new subcategory to {props.category.name}
                 </Button>
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
                   <CreateSubcategory categoryId={props.category?.id} />
