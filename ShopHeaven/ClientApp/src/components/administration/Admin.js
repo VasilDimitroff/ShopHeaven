@@ -19,9 +19,6 @@ export default function Admin() {
   let [seventhSelected, setSeventhSelected] = useState(false);
 
 
-  useEffect(() => {
-  }, []);
-
   function setSelectedItem (item) {
         if (item === 1) {
           setFirstSelected(true);

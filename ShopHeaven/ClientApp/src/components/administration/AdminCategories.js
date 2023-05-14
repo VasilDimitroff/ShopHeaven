@@ -25,12 +25,18 @@ import {
 } from "@mui/icons-material";
 import CreateCategory from "./CreateCategory";
 import EditCategory from "./EditCategory";
+import CreateSubcategory from "./CreateSubcategory";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
+  const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false)
 
-  async function handleShowEditModal(id) {
+ function handleShowEditModal(id) {
     setOpen(!open);
+  } 
+
+  function handleOpenSubcategoryForm() {
+    setOpenSubcategoryForm( prev => !prev);
   } 
 
   const StyledButtonBox = styled(Box)({
@@ -172,12 +178,16 @@ function Row(props) {
               </Table>
               <StyledButtonBox>
                 <Button
+                  onClick={handleOpenSubcategoryForm}
                   variant="contained"
                   size="small"
                   startIcon={<AddCircle />}
                 >
                   Add new subcategory
                 </Button>
+                <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
+                    <CreateSubcategory categoryId={props.category.id}/>
+                </Collapse>
               </StyledButtonBox>
             </Box>
           </Collapse>

@@ -12,9 +12,12 @@ export const ApiEndpoints = {
         getAll: "api/users/getall"
     },
     categories: {
-        createCategory: apiUrl + "api/categories/create",
+        createCategory: "api/categories/create",
         editCategory: apiUrl + "api/categories/edit",
         getCategory: apiUrl + "api/categories/get?id=",
+    },
+    subcategories: {
+        createSubcategory : "api/subcategories/create"
     },
     products: {
         createProduct: apiUrl + "api/products/create",

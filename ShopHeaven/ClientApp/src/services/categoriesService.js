@@ -14,3 +14,17 @@ export async function createCategory(formData, token){
 
     return response;
 }
+
+export async function createSubcategory(formData, token){
+
+  const response = await axios.post(
+    ApiEndpoints.categories.createSubcategory,
+    formData,
+    {
+      headers: {  'Authorization': `Bearer ${token}` },
+      withCredentials: true,
+    }
+  );
+
+    return response;
+}
