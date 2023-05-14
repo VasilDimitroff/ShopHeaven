@@ -12,7 +12,6 @@ import {
   TableBody,
   TableHead,
   TableContainer,
-  Paper
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -107,11 +106,11 @@ export default function AdminCategories() {
           <TableBody>
             {categories?.map((category, index) => {
               return (
-                <Paper key={index}>
                 <AdminCategoriesRow
+                  key={index}
                   category={category}
                   subcategories={category?.subcategories}
-                /></Paper>
+                />
               );
             })}
           </TableBody>

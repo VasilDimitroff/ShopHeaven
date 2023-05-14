@@ -183,7 +183,7 @@ export default function AdminCategoriesRow(props) {
                 </Button>)
                 }
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
-                  <Paper sx={{padding: theme.spacing(2)}}><CreateSubcategory categoryId={category?.id} /></Paper>
+                  <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}><CreateSubcategory categoryId={category?.id} /></Paper>
                 </Collapse>
               </StyledButtonBox>
             </Box>
