@@ -28,6 +28,8 @@
 
         public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";
 
+        public const string CategoryNameCannotBeEmpty = "Category name cannot be empty!";
+
         public const string UserHaveNoPermissionsToDeleteCategories = "You have no permissions to delete categories!";
 
         public const string RefreshTokenCookieName = "refreshToken";

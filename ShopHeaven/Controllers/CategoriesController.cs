@@ -54,6 +54,22 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpPost, Route(nameof(Edit))]
+        public async Task<IActionResult> Edit([FromForm] EditCategoryRequestModel model)
+        {
+            try
+            {
+                await this.categoriesService.EditCategoryAsync(model);
+
+                return Ok($"Category {model.Name} edited");
+            }
+            catch (Exception ex)
+            {
+                ;
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost, Authorize, Route(nameof(Create))]
         public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {

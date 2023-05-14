@@ -9,76 +9,82 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import axios from "axios";
-import { ApiEndpoints } from "../../api/endpoints";
+import { editCategory } from "../../services/categoriesService";
+import useAuth from "../../hooks/useAuth";
 
-export default function EditCategory(props) {
+export default function EditCategoryForm(props) {
+  let { auth } = useAuth();
+
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
   let categoryImageRef = useRef();
+
+  const [categoryId, setCategoryId] = useState(props.category.id);
+  const [categoryName, setCategoryName] = useState(props.category.name);
+  const [categoryDescription, setCategoryDescription] = useState(
+    props.category.description
+  );
 
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
   const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
     useState(false);
 
-  const [getCategoryResult, setGetCategoryResult] = useState({});
-
-  function onEditCategory(e) {
+ function onEditCategory(e) {
     e.preventDefault();
 
-    console.log("CATEGORY NAME " + categoryNameRef.current.value);
-    console.log("CATEGORY DESCR " + categoryDescriptionRef.current.value);
-    console.log("IMAGE " + document.getElementById("category-image").files[0]);
-
-    const categoryName = categoryNameRef.current.value;
-    const categoryDescription = categoryDescriptionRef.current.value;
-    const categoryImage = document.getElementById("edit-category-image")
+    const formCategoryName = categoryNameRef.current.value;
+    const formCategoryDescription = categoryDescriptionRef.current.value;
+    const formCategoryImage = document.getElementById("edit-category-image")
       .files[0];
+
+      console.log("NAME: " + formCategoryName);
+      console.log("DESC: " + formCategoryDescription);
+      console.log("IMG: " + formCategoryImage);
+      console.log("AUTH IS: " + auth.userId);
+      console.log("AUTH JWT: " + auth.jwtToken);
+
+    if (formCategoryName.trim().length < 1) {
+      setEditCategoryResponseMessage("");
+      setEditCategoryErrorMessage(
+        "Category name must contain at least 1 character"
+      );
+      return;
+    }
+
+    setCategoryName(formCategoryName);
+    setCategoryDescription(formCategoryDescription);
 
     const formData = new FormData();
 
-    formData.append("name", categoryName);
-    formData.append("description", categoryDescription);
-    formData.append("image", categoryImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
+    formData.append("id", categoryId);
+    formData.append("name", formCategoryName);
+    formData.append("description", formCategoryDescription);
+    formData.append("image", formCategoryImage);
+    formData.append("createdBy", auth.userId);
 
-    editCategory(formData);
+    editCurrentCategory(formData);
   }
 
-  async function editCategory(formData) {
+  async function editCurrentCategory(formData) {
     try {
-      const response = await axios.post(
-        ApiEndpoints.categories.editCategory,
-        formData
-      );
-      setEditCategoryResponseMessage(response.data);
-      clearFormValues();
+      const response = await editCategory(formData, auth.jwtToken);
+      setEditCategoryErrorMessage("")
+      setEditCategoryResponseMessage(response?.data);
     } catch (error) {
-      console.log("server returns erorr during category editing: " + error);
-      setEditCategoryErrorMessage(true);
+      setEditCategoryResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setEditCategoryErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setEditCategoryErrorMessage("Error! Check if all fields are filled");
+      }
+      console.log(error.message);
     }
   }
 
-  async function getCategory(id) {
-    try {
-      const response = await axios.get(
-        ApiEndpoints.categories.getCategory + id
-      );
-      setGetCategoryResult(response.data);
-    } catch (error) {
-      console.log("server returns erorr during category getting: " + error);
-      setEditCategoryErrorMessage(true);
-    }
-  }
-
-  function clearFormValues() {
-    categoryNameRef.current.value = "";
-    categoryDescriptionRef.current.value = "";
-    document.getElementById("edit-category-image").value = "";
-  }
-
-  const ProductInfoInput = styled(TextField)({
+  const StyledInput = styled(TextField)({
     background: "rgb(255,249,249)",
     width: "100%",
     marginTop: theme.spacing(2),
@@ -114,20 +120,20 @@ export default function EditCategory(props) {
         variant="h6"
         component="h2"
       >
-        EDIT CATEGORY {getCategoryResult.name}
+        EDIT CATEGORY {categoryName}
       </Typography>
 
       <form onSubmit={onEditCategory}>
         <InputBox>
-          <ProductInfoInput
+          <StyledInput
             inputRef={categoryNameRef}
             label="Category name"
             variant="standard"
-            defaultValue={props.category.name}
+            defaultValue={categoryName}
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <StyledInput
             inputRef={categoryImageRef}
             InputProps={{
               endAdornment: (
@@ -143,14 +149,14 @@ export default function EditCategory(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <StyledInput
             inputRef={categoryDescriptionRef}
             id="123"
             label="Category Description"
             multiline
             rows={5}
             variant="standard"
-            defaultValue={props.category.description}
+            defaultValue={categoryDescription}
           />
         </InputBox>
         <InputBox>
@@ -160,13 +166,7 @@ export default function EditCategory(props) {
         </InputBox>
       </form>
       <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
-      {editCategoryErrorMessage ? (
-        <ErrorResponseMessage>
-          An error during category editing!
-        </ErrorResponseMessage>
-      ) : (
-        ""
-      )}
+      <ErrorResponseMessage>{editCategoryErrorMessage}</ErrorResponseMessage>
     </Fragment>
   );
 }

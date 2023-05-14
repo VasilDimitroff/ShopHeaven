@@ -3,7 +3,7 @@ import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Tab
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle, RemoveCircle } from "@mui/icons-material";
-import EditCategory from "./EditCategory";
+import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
 
 export default function AdminCategoriesRow(props) {
@@ -127,7 +127,7 @@ export default function AdminCategoriesRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <EditCategory category={props.category} />
+            <EditCategoryForm category={props.category} />
             <Box sx={{ margin: 2 }}>
               <Typography
                 variant="h6"

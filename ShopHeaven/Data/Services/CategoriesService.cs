@@ -29,7 +29,7 @@ namespace ShopHeaven.Data.Services
 
             if (isUserExists == false)
             {
-                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
             }
 
             var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Name == model.Name && x.IsDeleted != true);
@@ -37,6 +37,11 @@ namespace ShopHeaven.Data.Services
             if (category != null)
             {
                 throw new ArgumentException(GlobalConstants.CategoryWithThisNameAlreadyExist);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryNameCannotBeEmpty);
             }
 
             //implement logic for image
@@ -152,6 +157,52 @@ namespace ShopHeaven.Data.Services
 
             return category.Name;
         }
+
+        public async Task EditCategoryAsync(EditCategoryRequestModel model)
+        {
+            var searchedCategory = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (searchedCategory == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryWithThisIdDoesntExist);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryNameCannotBeEmpty);
+            }
+
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true );
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
+            }
+
+            if (model.Image != null)
+            {
+                var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image }, model.CreatedBy);
+                string categoryImageUrl = imageUrls[0];
+
+                Image categoryImage = new Image()
+                {
+                    CreatedById = model.CreatedBy,
+                    Url = categoryImageUrl,
+                };
+
+                await this.db.Images.AddAsync(categoryImage);
+                await this.db.SaveChangesAsync();
+
+                searchedCategory.Image = categoryImage;
+            }
+
+            searchedCategory.Name = model.Name;
+            searchedCategory.Description = model.Description;
+            searchedCategory.CreatedBy = user;
+
+            await this.db.SaveChangesAsync();
+        }
+
 
         public async Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync()
         {

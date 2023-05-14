@@ -12,7 +12,7 @@ export const ApiEndpoints = {
     },
     categories: {
         createCategory: "api/categories/create",
-        editCategory: apiUrl + "api/categories/edit",
+        editCategory: "api/categories/edit",
         getAll: "api/categories/getall",
         getCategory: apiUrl + "api/categories/get?id=",
     },
