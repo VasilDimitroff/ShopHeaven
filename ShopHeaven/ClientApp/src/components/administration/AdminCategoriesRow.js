@@ -2,7 +2,7 @@ import { React, useState, Fragment } from "react";
 import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle } from "@mui/icons-material";
+import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle, RemoveCircle } from "@mui/icons-material";
 import EditCategory from "./EditCategory";
 import CreateSubcategory from "./CreateSubcategory";
 
@@ -150,6 +150,17 @@ export default function AdminCategoriesRow(props) {
                 <TableBody>{renderSubcategories()}</TableBody>
               </Table>
               <StyledButtonBox>
+                {
+                openSubcategoryForm ?
+                (<Button
+                  onClick={handleOpenSubcategoryForm}
+                  variant="contained"
+                  size="small"
+                  startIcon={<RemoveCircle />}
+                >
+                  Hide creation form
+                </Button>)
+                :(
                 <Button
                   onClick={handleOpenSubcategoryForm}
                   variant="contained"
@@ -157,7 +168,8 @@ export default function AdminCategoriesRow(props) {
                   startIcon={<AddCircle />}
                 >
                   Add new subcategory to {props.category.name}
-                </Button>
+                </Button>)
+                }
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
                   <CreateSubcategory categoryId={props.category?.id} />
                 </Collapse>

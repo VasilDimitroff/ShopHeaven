@@ -78,7 +78,7 @@ export default function CreateSubcategory(props) {
 
   const StyledInput = styled(TextField)({
     background: "rgb(255,249,249)",
-    width: "60%",
+    width: "100%",
     marginTop: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
   });
