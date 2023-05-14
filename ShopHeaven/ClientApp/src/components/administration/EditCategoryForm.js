@@ -19,11 +19,7 @@ export default function EditCategoryForm(props) {
   let categoryDescriptionRef = useRef();
   let categoryImageRef = useRef();
 
-  const [categoryId, setCategoryId] = useState(props.category.id);
-  const [categoryName, setCategoryName] = useState(props.category.name);
-  const [categoryDescription, setCategoryDescription] = useState(
-    props.category.description
-  );
+  const [category, setCategory] = useState(props.category)
 
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
@@ -38,12 +34,6 @@ export default function EditCategoryForm(props) {
     const formCategoryImage = document.getElementById("edit-category-image")
       .files[0];
 
-      console.log("NAME: " + formCategoryName);
-      console.log("DESC: " + formCategoryDescription);
-      console.log("IMG: " + formCategoryImage);
-      console.log("AUTH IS: " + auth.userId);
-      console.log("AUTH JWT: " + auth.jwtToken);
-
     if (formCategoryName.trim().length < 1) {
       setEditCategoryResponseMessage("");
       setEditCategoryErrorMessage(
@@ -51,13 +41,25 @@ export default function EditCategoryForm(props) {
       );
       return;
     }
-
-    setCategoryName(formCategoryName);
-    setCategoryDescription(formCategoryDescription);
+    setCategory(prev => {
+      return  {
+         ...prev, 
+         name: formCategoryName, 
+         description: formCategoryDescription 
+      }
+    });
 
     const formData = new FormData();
 
-    formData.append("id", categoryId);
+    console.log("NAME: " + formCategoryName);
+    console.log("DESC: " + formCategoryDescription);
+    console.log("IMG: " + formCategoryImage);
+    console.log("AUTH IS: " + auth.userId);
+    console.log("AUTH JWT: " + auth.jwtToken);
+    console.log("CAT ID: " + category.id);
+
+
+    formData.append("id", category.id);
     formData.append("name", formCategoryName);
     formData.append("description", formCategoryDescription);
     formData.append("image", formCategoryImage);
@@ -71,6 +73,8 @@ export default function EditCategoryForm(props) {
       const response = await editCategory(formData, auth.jwtToken);
       setEditCategoryErrorMessage("")
       setEditCategoryResponseMessage(response?.data);
+      
+      props.updateCategoryName(formData.get("name"), formData.get("description"));
     } catch (error) {
       setEditCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -120,7 +124,7 @@ export default function EditCategoryForm(props) {
         variant="h6"
         component="h2"
       >
-        EDIT CATEGORY {categoryName}
+        EDIT CATEGORY {category.name}
       </Typography>
 
       <form onSubmit={onEditCategory}>
@@ -129,7 +133,7 @@ export default function EditCategoryForm(props) {
             inputRef={categoryNameRef}
             label="Category name"
             variant="standard"
-            defaultValue={categoryName}
+            defaultValue={category.name}
           />
         </InputBox>
         <InputBox>
@@ -156,7 +160,7 @@ export default function EditCategoryForm(props) {
             multiline
             rows={5}
             variant="standard"
-            defaultValue={categoryDescription}
+            defaultValue={category.description}
           />
         </InputBox>
         <InputBox>

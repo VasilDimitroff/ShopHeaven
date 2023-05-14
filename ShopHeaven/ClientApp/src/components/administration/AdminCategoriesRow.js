@@ -7,8 +7,20 @@ import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
 
 export default function AdminCategoriesRow(props) {
+  const [category, setCategories] = useState(props.category)
+  const [subcategories, setSubcategories] = useState(props.subcategories)
   const [open, setOpen] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
+
+  function updateCategoryName(newName, newDescription) {
+    setCategories(prev => {
+      return {
+          ...prev,
+          name: newName,
+          description: newDescription
+      }
+    });
+  }
 
   function handleShowEditModal() {
     setOpen(prev => !prev);
@@ -42,13 +54,13 @@ export default function AdminCategoriesRow(props) {
   });
 
   function renderCategoryProductsCount() {
-    return props.subcategories.reduce(function (a, b) {
+    return subcategories.reduce(function (a, b) {
       return a + b.productsCount;
     }, 0);
   }
 
   function renderSubcategories() {
-    return props.subcategories.map((subcategory) => (
+    return subcategories.map((subcategory) => (
       <StyledTableRow key={subcategory?.id}>
         <TableCell component="th" scope="row">
           {subcategory?.name}
@@ -97,11 +109,11 @@ export default function AdminCategoriesRow(props) {
           </IconButton>
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
-          {props.category?.name}
+          {category?.name}
         </CategoryNameTableCell>
         <TableCell align="center">{renderCategoryProductsCount()}</TableCell>
-        <TableCell align="center">{props.subcategories?.length}</TableCell>
-        <TableCell align="center">{props.category?.createdBy}</TableCell>
+        <TableCell align="center">{subcategories?.length}</TableCell>
+        <TableCell align="center">{category?.createdBy}</TableCell>
         <TableCell align="center">
           <StyledButton
             onClick={() => handleShowEditModal()}
@@ -127,7 +139,7 @@ export default function AdminCategoriesRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <EditCategoryForm category={props.category} />
+            <EditCategoryForm category={category} updateCategoryName={updateCategoryName} />
             <Box sx={{ margin: 2 }}>
               <Typography
                 variant="h6"
@@ -135,7 +147,7 @@ export default function AdminCategoriesRow(props) {
                 component="div"
                 sx={{ mt: theme.spacing(5) }}
               >
-                Subcategories of {props.category?.name}
+                Subcategories of {category?.name}
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -167,11 +179,11 @@ export default function AdminCategoriesRow(props) {
                   size="small"
                   startIcon={<AddCircle />}
                 >
-                  Add new subcategory to {props.category.name}
+                  Add new subcategory to {category.name}
                 </Button>)
                 }
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
-                  <CreateSubcategory categoryId={props.category?.id} />
+                  <CreateSubcategory categoryId={category?.id} />
                 </Collapse>
               </StyledButtonBox>
             </Box>

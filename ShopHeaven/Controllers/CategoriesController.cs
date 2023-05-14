@@ -61,7 +61,7 @@ namespace ShopHeaven.Controllers
             {
                 await this.categoriesService.EditCategoryAsync(model);
 
-                return Ok($"Category {model.Name} edited");
+                return Ok($"The new name of the category is {model.Name}");
             }
             catch (Exception ex)
             {

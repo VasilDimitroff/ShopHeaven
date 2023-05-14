@@ -19,7 +19,7 @@ import { AddCircle } from "@mui/icons-material";
 import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
 
-export default function AdminCategories(props) {
+export default function AdminCategories() {
 
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
 
