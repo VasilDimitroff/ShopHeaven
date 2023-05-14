@@ -1,5 +1,5 @@
 import { React, useState, Fragment } from "react";
-import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead } from "@mui/material";
+import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -183,7 +183,7 @@ export default function AdminCategoriesRow(props) {
                 </Button>)
                 }
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
-                  <CreateSubcategory categoryId={category?.id} />
+                  <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}><CreateSubcategory categoryId={category?.id} /></Paper>
                 </Collapse>
               </StyledButtonBox>
             </Box>

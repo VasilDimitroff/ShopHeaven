@@ -5,6 +5,7 @@ import {
   InputAdornment,
   Typography,
   TextField,
+  Paper
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -76,7 +77,7 @@ export default function CreateCategory(props) {
 
   const ProductInfoInput = styled(TextField)({
     background: "rgb(255,249,249)",
-    width: "60%",
+    width: "100%",
     marginTop: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
   });
@@ -87,7 +88,7 @@ export default function CreateCategory(props) {
   });
 
   const CreateCategoryButton = styled(Button)({
-   width: "60%",
+   width: "100%",
    marginTop: theme.spacing(3),
    marginBottom: theme.spacing(1)
   })
@@ -101,7 +102,7 @@ export default function CreateCategory(props) {
   })
 
   return (
-    <Fragment>
+    <Paper sx={{padding: theme.spacing(2)}}>
        <Typography
           sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
           id="transition-modal-title"
@@ -156,6 +157,6 @@ export default function CreateCategory(props) {
         <ErrorResponseMessage>
           {createCategoryErrorMessage}
         </ErrorResponseMessage>
-    </Fragment>
+    </Paper>
   );
 }

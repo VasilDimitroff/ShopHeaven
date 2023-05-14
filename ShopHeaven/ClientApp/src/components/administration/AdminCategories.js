@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { AddCircle } from "@mui/icons-material";
+import { AddCircle, RemoveCircle } from "@mui/icons-material";
 import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
 
@@ -116,7 +116,18 @@ export default function AdminCategories() {
           </TableBody>
         </Table>
         <StyledButtonBox>
-          <Button
+         {
+          openCreateCategoryModal
+          ? (<Button
+            onClick={handleOpen}
+            variant="contained"
+            size="small"
+            startIcon={<RemoveCircle />}
+          >
+            Hide creation form
+          </Button>)
+          : (
+            <Button
             onClick={handleOpen}
             variant="contained"
             size="small"
@@ -124,6 +135,8 @@ export default function AdminCategories() {
           >
             ADD NEW CATEGORY
           </Button>
+          )
+         } 
         </StyledButtonBox>
       </TableContainer>  
        <Collapse in={openCreateCategoryModal} timeout="auto" unmountOnExit>

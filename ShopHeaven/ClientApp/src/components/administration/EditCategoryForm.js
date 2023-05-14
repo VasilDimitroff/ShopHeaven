@@ -5,6 +5,7 @@ import {
   InputAdornment,
   Typography,
   TextField,
+  Paper
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -117,7 +118,7 @@ export default function EditCategoryForm(props) {
   });
 
   return (
-    <Fragment>
+    <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
@@ -171,6 +172,6 @@ export default function EditCategoryForm(props) {
       </form>
       <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
       <ErrorResponseMessage>{editCategoryErrorMessage}</ErrorResponseMessage>
-    </Fragment>
+    </Paper>
   );
 }
