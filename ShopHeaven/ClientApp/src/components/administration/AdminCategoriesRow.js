@@ -1,5 +1,5 @@
 import { React, useState, Fragment } from "react";
-import { Box, Button, Chip, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead, Paper } from "@mui/material";
+import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -7,45 +7,40 @@ import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
 
 export default function AdminCategoriesRow(props) {
-  const [category, setCategory] = useState(props.category)
-  const [subcategories, setSubcategories] = useState(props.subcategories)
+  const [category, setCategory] = useState(props.category);
+  const [subcategories, setSubcategories] = useState(props.subcategories);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
 
   function updateCategoryName(newName, newDescription) {
-    setCategory(prev => {
+    setCategory((prev) => {
       return {
-          ...prev,
-          name: newName,
-          description: newDescription
-      }
+        ...prev,
+        name: newName,
+        description: newDescription,
+      };
     });
   }
 
-  function subcategoriesUpdated(newSubcategory){
-    setSubcategories(prev => {
-      return [
-        ...prev,
-        newSubcategory
-      ]
+  function subcategoriesUpdated(newSubcategory) {
+    setSubcategories((prev) => {
+      return [...prev, newSubcategory];
     });
     console.log(newSubcategory);
   }
 
   function handleShowEditForm() {
-    setOpenEditForm(prev => !prev);
+    setOpenEditForm((prev) => !prev);
   }
 
   function handleShowSubcategories() {
-    setOpenEditForm(false)
-    setShowSubcategories(prev => !prev);
+    setOpenEditForm(false);
+    setShowSubcategories((prev) => !prev);
   }
-
 
   function handleOpenSubcategoryForm() {
     setOpenSubcategoryForm((prev) => !prev);
-  
   }
 
   const StyledButtonBox = styled(Box)({
@@ -61,7 +56,7 @@ export default function AdminCategoriesRow(props) {
     "&:nth-of-type(odd)": {
       /* backgroundColor: theme.palette.action.hover, */
       backgroundColor: "#Cdf3d0",
-      color: theme.palette.white.main
+      color: theme.palette.white.main,
     },
     // hide last border
     "&:last-child td, &:last-child th": {
@@ -73,14 +68,6 @@ export default function AdminCategoriesRow(props) {
     boxShadow: "none",
   });
 
-  const StyledChip = styled(Chip)({
-    fontSize: 22,
-    backgroundColor: "#5ac662",
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3)
-  })
-
-
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
@@ -91,12 +78,8 @@ export default function AdminCategoriesRow(props) {
         <TableCell component="th" scope="row">
           {subcategory?.name}
         </TableCell>
-        <TableCell align="center">
-          {subcategory?.productsCount}
-        </TableCell>
-        <TableCell align="center">
-          {subcategory?.createdBy}
-        </TableCell>
+        <TableCell align="center">{subcategory?.productsCount}</TableCell>
+        <TableCell align="center">{subcategory?.createdBy}</TableCell>
         <TableCell align="center">
           <StyledButton
             color="warning"
@@ -130,7 +113,11 @@ export default function AdminCategoriesRow(props) {
             size="small"
             onClick={() => handleShowSubcategories()}
           >
-            {showSubcategories && !openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            {showSubcategories && !openEditForm ? (
+              <KeyboardArrowUp />
+            ) : (
+              <KeyboardArrowDown />
+            )}
           </IconButton>
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
@@ -163,19 +150,30 @@ export default function AdminCategoriesRow(props) {
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
-          <Collapse in={openEditForm || showSubcategories} timeout="auto" unmountOnExit>
-            <Box sx={{display: openEditForm ? "block" : "none"}}>
-             <EditCategoryForm  category={category} updateCategoryName={updateCategoryName} />
-           </Box>
-            <Box sx={{ margin: 2, display: showSubcategories && !openEditForm ? "block" : "none" }}>
+          <Collapse
+            in={openEditForm || showSubcategories}
+            timeout="auto"
+            unmountOnExit
+          >
+            <Box sx={{ display: openEditForm ? "block" : "none" }}>
+              <EditCategoryForm
+                category={category}
+                updateCategoryName={updateCategoryName}
+              />
+            </Box>
+            <Box
+              sx={{
+                margin: 2,
+                display: showSubcategories && !openEditForm ? "block" : "none",
+              }}
+            >
               <Typography
-                variant="h6"
+                variant="h5"
                 gutterBottom
                 component="div"
-                sx={{ mt: theme.spacing(5), mb: theme.spacing(4) }}
+                sx={{ fontWeight: 500, mt: theme.spacing(5), mb: theme.spacing(4) }}
               >
-                 <StyledChip label={`Subcategories of ${category?.name}`} />
-                
+                {`Subcategories of ${category?.name}`}
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -190,29 +188,36 @@ export default function AdminCategoriesRow(props) {
                 <TableBody>{renderSubcategories()}</TableBody>
               </Table>
               <StyledButtonBox>
-                {
-                openSubcategoryForm ?
-                (<Button
-                  onClick={handleOpenSubcategoryForm}
-                  variant="contained"
-                  size="small"
-                  startIcon={<RemoveCircle />}
-                >
-                  Hide creation form
-                </Button>)
-                :(
-                <Button
-                  onClick={handleOpenSubcategoryForm}
-                  variant="contained"
-                  size="small"
-                  startIcon={<AddCircle />}
-                >
-                  Add new subcategory to {category.name}
-                </Button>)
-                }
+                {openSubcategoryForm ? (
+                  <Button
+                    onClick={handleOpenSubcategoryForm}
+                    variant="contained"
+                    size="small"
+                    startIcon={<RemoveCircle />}
+                  >
+                    Hide creation form
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleOpenSubcategoryForm}
+                    variant="contained"
+                    size="small"
+                    startIcon={<AddCircle />}
+                  >
+                    Add new subcategory to {category.name}
+                  </Button>
+                )}
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
-                  <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
-                    <CreateSubcategory subcategoriesUpdated={subcategoriesUpdated} categoryId={category?.id} />
+                  <Paper
+                    sx={{
+                      padding: theme.spacing(2),
+                      marginTop: theme.spacing(2),
+                    }}
+                  >
+                    <CreateSubcategory
+                      subcategoriesUpdated={subcategoriesUpdated}
+                      categoryId={category?.id}
+                    />
                   </Paper>
                 </Collapse>
               </StyledButtonBox>
