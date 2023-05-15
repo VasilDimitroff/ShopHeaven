@@ -92,7 +92,7 @@ export default function AdminCategories() {
                 PRODUCTS
               </MainCategoryTableCell>
               <MainCategoryTableCell align="center">
-                SUBCATEGORIES
+                SUBCATs
               </MainCategoryTableCell>
               <MainCategoryTableCell align="center">
                 CREATOR

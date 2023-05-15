@@ -9,7 +9,8 @@ import CreateSubcategory from "./CreateSubcategory";
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category)
   const [subcategories, setSubcategories] = useState(props.subcategories)
-  const [open, setOpen] = useState(false);
+  const [openEditForm, setOpenEditForm] = useState(false);
+  const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
 
   function updateCategoryName(newName, newDescription) {
@@ -32,12 +33,19 @@ export default function AdminCategoriesRow(props) {
     console.log(newSubcategory);
   }
 
-  function handleShowEditModal() {
-    setOpen(prev => !prev);
+  function handleShowEditForm() {
+    setOpenEditForm(prev => !prev);
   }
+
+  function handleShowSubcategories() {
+    setOpenEditForm(false)
+    setShowSubcategories(prev => !prev);
+  }
+
 
   function handleOpenSubcategoryForm() {
     setOpenSubcategoryForm((prev) => !prev);
+  
   }
 
   const StyledButtonBox = styled(Box)({
@@ -74,8 +82,7 @@ export default function AdminCategoriesRow(props) {
 
 
   function renderCategoryProductsCount() {
-    let productsCount = subcategories?.reduce((a, b) => a + b?.productsCount, 0);
-    return productsCount;
+    return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
 
   function renderSubcategories() {
@@ -91,7 +98,6 @@ export default function AdminCategoriesRow(props) {
           {subcategory?.createdBy}
         </TableCell>
         <TableCell align="center">
-          {" "}
           <StyledButton
             color="warning"
             variant="contained"
@@ -122,9 +128,9 @@ export default function AdminCategoriesRow(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={() => handleShowSubcategories()}
           >
-            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            {showSubcategories && !openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
@@ -135,7 +141,7 @@ export default function AdminCategoriesRow(props) {
         <TableCell align="center">{category?.createdBy}</TableCell>
         <TableCell align="center">
           <StyledButton
-            onClick={() => handleShowEditModal()}
+            onClick={() => handleShowEditForm()}
             color="warning"
             variant="contained"
             size="small"
@@ -157,9 +163,11 @@ export default function AdminCategoriesRow(props) {
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <EditCategoryForm category={category} updateCategoryName={updateCategoryName} />
-            <Box sx={{ margin: 2 }}>
+          <Collapse in={openEditForm || showSubcategories} timeout="auto" unmountOnExit>
+            <Box sx={{display: openEditForm ? "block" : "none"}}>
+             <EditCategoryForm  category={category} updateCategoryName={updateCategoryName} />
+           </Box>
+            <Box sx={{ margin: 2, display: showSubcategories && !openEditForm ? "block" : "none" }}>
               <Typography
                 variant="h6"
                 gutterBottom
