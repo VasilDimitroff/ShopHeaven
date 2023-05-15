@@ -152,12 +152,6 @@ export default function EditCategoryForm(props) {
         </InputBox>
         <ImageHolder>
           <img style={{objectFit: "cover"}} width="250px" height="150px" src={category.image} />
-          <CloseButtonHolder> 
-            <IconButton color="error" size="small">
-           <Close />
-         </IconButton>
-      </CloseButtonHolder>
-      <Typography sx={{color: theme.palette.warning.main}}>Warning! If you submit a new image, the old one will be deleted</Typography>
         </ImageHolder>
         <InputBox>
           <StyledInput
@@ -169,16 +163,19 @@ export default function EditCategoryForm(props) {
                 </InputAdornment>
               ),
             }}
-            accept=".jpg, .png"
+            accept=".jpg, .png, .jpeg"
             type="file"
             variant="standard"
             id="edit-category-image"
           />
+          <ul style={{color: theme.palette.warning.main, marginTop: theme.spacing(2)}}>
+            <li>Warning! If you submit a new image, the old one will be deleted</li>
+            <li>.jpg, .jpeg and .png file formats are allowed</li>
+          </ul>
         </InputBox>
         <InputBox>
           <StyledInput
             inputRef={categoryDescriptionRef}
-            id="123"
             label="Category Description"
             multiline
             rows={5}

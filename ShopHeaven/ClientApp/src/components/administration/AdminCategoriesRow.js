@@ -22,6 +22,16 @@ export default function AdminCategoriesRow(props) {
     });
   }
 
+  function subcategoriesUpdated(newSubcategory){
+    setSubcategories(prev => {
+      return [
+        ...prev,
+        newSubcategory
+      ]
+    });
+    console.log(newSubcategory);
+  }
+
   function handleShowEditModal() {
     setOpen(prev => !prev);
   }
@@ -62,14 +72,14 @@ export default function AdminCategoriesRow(props) {
     paddingBottom: theme.spacing(3)
   })
 
+
   function renderCategoryProductsCount() {
-    return subcategories.reduce(function (a, b) {
-      return a + b.productsCount;
-    }, 0);
+    let productsCount = subcategories?.reduce((a, b) => a + b?.productsCount, 0);
+    return productsCount;
   }
 
   function renderSubcategories() {
-    return subcategories.map((subcategory) => (
+    return subcategories?.map((subcategory) => (
       <StyledTableRow key={subcategory?.id}>
         <TableCell component="th" scope="row">
           {subcategory?.name}
@@ -193,7 +203,9 @@ export default function AdminCategoriesRow(props) {
                 </Button>)
                 }
                 <Collapse in={openSubcategoryForm} timeout="auto" unmountOnExit>
-                  <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}><CreateSubcategory categoryId={category?.id} /></Paper>
+                  <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
+                    <CreateSubcategory subcategoriesUpdated={subcategoriesUpdated} categoryId={category?.id} />
+                  </Paper>
                 </Collapse>
               </StyledButtonBox>
             </Box>

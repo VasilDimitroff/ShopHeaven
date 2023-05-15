@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Data.Services
 {
@@ -15,11 +16,11 @@ namespace ShopHeaven.Data.Services
             this.db = db;
             this.storageService = storageService;
         }
-        public async Task CreateSubcategoryAsync(CreateSubcategoryRequestModel model)
+        public async Task<SubcategoriesResponseModel> CreateSubcategoryAsync(CreateSubcategoryRequestModel model)
         {
-            bool isUserExists = await this.db.Users.AnyAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
+            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
         
-            if (!isUserExists)
+            if (user == null)
             {
                 throw new ArgumentException(GlobalConstants.UserDoesNotExist);
             }
@@ -52,6 +53,18 @@ namespace ShopHeaven.Data.Services
             await this.db.Images.AddAsync(subcategoryImage);
             await this.db.SubCategories.AddAsync(subcategory);
             await this.db.SaveChangesAsync();
+
+            var newSubcategoryResponseModel = new SubcategoriesResponseModel()
+            {
+                Id = subcategory.Id,
+                Description = subcategory.Description,
+                Name = subcategory.Name,
+                CreatedBy = user.Email,
+                Image = subcategoryImage.Url,
+                ProductsCount = subcategory.Products.Count()
+            };
+
+            return newSubcategoryResponseModel;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Controllers
 {
@@ -17,12 +18,12 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize, Route(nameof(Create))]
-        public async Task<IActionResult> Create([FromForm] CreateSubcategoryRequestModel model)
+        public async Task<ActionResult<SubcategoriesResponseModel>> Create([FromForm] CreateSubcategoryRequestModel model)
         {
             try
             {
-                await this.subcategoriesService.CreateSubcategoryAsync(model);
-                return Ok($"Subcategory {model.Name} successfully created!");
+                SubcategoriesResponseModel newSubcategory = await this.subcategoriesService.CreateSubcategoryAsync(model);
+                return Ok(newSubcategory);
             }
             catch (Exception ex)
             {

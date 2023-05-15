@@ -1,9 +1,10 @@
 ﻿using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ISubcategoriesService
     {
-        Task CreateSubcategoryAsync(CreateSubcategoryRequestModel model);
+        Task<SubcategoriesResponseModel> CreateSubcategoryAsync(CreateSubcategoryRequestModel model);
     }
 }

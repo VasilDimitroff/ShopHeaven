@@ -56,8 +56,9 @@ export default function CreateSubcategory(props) {
     try {
        const response = await createSubcategory(formData, auth.jwtToken);
 
-       setCreateSubcategoryResponseMessage(response?.data);
+       setCreateSubcategoryResponseMessage("Subcategory" + formData.get["name"] + "successfully created!");
        refreshState();
+       props.subcategoriesUpdated(response?.data)
     } catch (error) {
       setCreateSubcategoryResponseMessage("");
 
