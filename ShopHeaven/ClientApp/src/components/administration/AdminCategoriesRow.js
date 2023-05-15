@@ -54,9 +54,9 @@ export default function AdminCategoriesRow(props) {
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
-      /* backgroundColor: theme.palette.action.hover, */
-      backgroundColor: "#Cdf3d0",
-      color: theme.palette.white.main,
+       backgroundColor: theme.palette.action.hover, 
+      //backgroundColor: "#Cdf3d0",
+      //color: theme.palette.white.main,
     },
     // hide last border
     "&:last-child td, &:last-child th": {
@@ -161,9 +161,10 @@ export default function AdminCategoriesRow(props) {
                 updateCategoryName={updateCategoryName}
               />
             </Box>
-            <Box
+            <Paper
               sx={{
                 margin: 2,
+                padding: theme.spacing(3),
                 display: showSubcategories && !openEditForm ? "block" : "none",
               }}
             >
@@ -171,7 +172,7 @@ export default function AdminCategoriesRow(props) {
                 variant="h5"
                 gutterBottom
                 component="div"
-                sx={{ fontWeight: 500, mt: theme.spacing(5), mb: theme.spacing(4) }}
+                sx={{ fontWeight: 500}}
               >
                 {`Subcategories of ${category?.name}`}
               </Typography>
@@ -212,6 +213,7 @@ export default function AdminCategoriesRow(props) {
                     sx={{
                       padding: theme.spacing(2),
                       marginTop: theme.spacing(2),
+                      border: "1px solid gray"
                     }}
                   >
                     <CreateSubcategory
@@ -221,7 +223,7 @@ export default function AdminCategoriesRow(props) {
                   </Paper>
                 </Collapse>
               </StyledButtonBox>
-            </Box>
+            </Paper>
           </Collapse>
         </TableCell>
       </TableRow>
