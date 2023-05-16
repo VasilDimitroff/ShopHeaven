@@ -1,10 +1,30 @@
 import { React, useState, Fragment } from "react";
-import { Box, Button, TableRow, TableCell, IconButton, Collapse, Typography, Table, TableBody, TableHead, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  TableRow,
+  TableCell,
+  IconButton,
+  Collapse,
+  Typography,
+  Table,
+  TableBody,
+  TableHead,
+  Paper,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { KeyboardArrowUp, KeyboardArrowDown, Edit, Delete, AddCircle, RemoveCircle } from "@mui/icons-material";
+import {
+  KeyboardArrowUp,
+  KeyboardArrowDown,
+  Edit,
+  Delete,
+  AddCircle,
+  RemoveCircle,
+} from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
+import EditSubcategoryForm from "./EditSubcategoryForm";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
@@ -12,6 +32,7 @@ export default function AdminCategoriesRow(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
+  const [openEditSubcategoryForm, setOpenEditSubcategoryForm] = useState(false);
 
   function updateCategoryName(newName, newDescription) {
     setCategory((prev) => {
@@ -31,7 +52,12 @@ export default function AdminCategoriesRow(props) {
   }
 
   function handleShowEditForm() {
+    setShowSubcategories(false);
     setOpenEditForm((prev) => !prev);
+  }
+
+  function handleOpenEditSubcategoryForm() {
+    setOpenEditSubcategoryForm((prev) => !prev);
   }
 
   function handleShowSubcategories() {
@@ -54,7 +80,7 @@ export default function AdminCategoriesRow(props) {
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
-       backgroundColor: theme.palette.action.hover, 
+      backgroundColor: theme.palette.action.hover,
       //backgroundColor: "#Cdf3d0",
       //color: theme.palette.white.main,
     },
@@ -72,37 +98,7 @@ export default function AdminCategoriesRow(props) {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
 
-  function renderSubcategories() {
-    return subcategories?.map((subcategory) => (
-      <StyledTableRow key={subcategory?.id}>
-        <TableCell component="th" scope="row">
-          {subcategory?.name}
-        </TableCell>
-        <TableCell align="center">{subcategory?.productsCount}</TableCell>
-        <TableCell align="center">{subcategory?.createdBy}</TableCell>
-        <TableCell align="center">
-          <StyledButton
-            color="warning"
-            variant="contained"
-            size="small"
-            startIcon={<Edit />}
-          >
-            EDIT
-          </StyledButton>
-        </TableCell>
-        <TableCell align="center">
-          <StyledButton
-            color="error"
-            variant="contained"
-            size="small"
-            startIcon={<Delete />}
-          >
-            DELETE
-          </StyledButton>
-        </TableCell>
-      </StyledTableRow>
-    ));
-  }
+  function renderSubcategories() {}
 
   return (
     <Fragment>
@@ -172,7 +168,7 @@ export default function AdminCategoriesRow(props) {
                 variant="h5"
                 gutterBottom
                 component="div"
-                sx={{ fontWeight: 500}}
+                sx={{ fontWeight: 500 }}
               >
                 {`Subcategories of ${category?.name}`}
               </Typography>
@@ -186,7 +182,54 @@ export default function AdminCategoriesRow(props) {
                     <TableCell align="center">DELETE</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>{renderSubcategories()}</TableBody>
+                <TableBody>
+                  {subcategories?.map((subcategory) => (
+                    <Fragment key={subcategory?.id}>
+                    <StyledTableRow>
+                      <TableCell component="th" scope="row">
+                        {subcategory?.name}
+                      </TableCell>
+                      <TableCell align="center">
+                        {subcategory?.productsCount}
+                      </TableCell>
+                      <TableCell align="center">
+                        {subcategory?.createdBy}
+                      </TableCell>
+                      <TableCell align="center">
+                        <StyledButton
+                          onClick={handleOpenEditSubcategoryForm}
+                          color="warning"
+                          variant="contained"
+                          size="small"
+                          startIcon={<Edit />}
+                        >
+                          EDIT
+                        </StyledButton>
+                      </TableCell>
+                      <TableCell align="center">
+                        <StyledButton
+                          color="error"
+                          variant="contained"
+                          size="small"
+                          startIcon={<Delete />}
+                        >
+                          DELETE
+                        </StyledButton>
+                      </TableCell>
+                    </StyledTableRow>
+                  
+                      <Collapse
+                      in={openEditSubcategoryForm}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      {subcategory.name}
+                      
+                    </Collapse>
+                    </Fragment>
+                  ))}
+                 
+                </TableBody>
               </Table>
               <StyledButtonBox>
                 {openSubcategoryForm ? (
@@ -213,7 +256,7 @@ export default function AdminCategoriesRow(props) {
                     sx={{
                       padding: theme.spacing(2),
                       marginTop: theme.spacing(2),
-                      border: "1px solid gray"
+                      border: "1px solid gray",
                     }}
                   >
                     <CreateSubcategory
