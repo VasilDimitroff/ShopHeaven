@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { deleteCategory } from "../../../services/categoriesService";
+import { deleteCategory, undeleteCategory } from "../../../services/categoriesService";
 import useAuth from "../../../hooks/useAuth";
 
 export default function DeleteCategoryForm(props) {
@@ -55,6 +55,36 @@ export default function DeleteCategoryForm(props) {
       console.log(error.message);
     }
   }
+  
+  function onUndeleteCategory() {
+    console.log("AUTH IS: " + auth.userId);
+    console.log("AUTH JWT: " + auth.jwtToken);
+    console.log("CAT ID: " + category.id);
+
+    undeleteCurrentCategory(category.id);
+  }
+
+  async function undeleteCurrentCategory(categoryId) {
+    try {
+      const response = await undeleteCategory(categoryId, auth.jwtToken);
+      setDeleteCategoryErrorMessage("");
+      setDeleteCategoryResponseMessage(
+        "Category " + category.name + " undeleted!"
+      );
+      setResponse(response?.data);
+      console.log(response?.data);
+    } catch (error) {
+      setDeleteCategoryResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setDeleteCategoryErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setDeleteCategoryErrorMessage("Error!");
+      }
+      console.log(error.message);
+    }
+  }
 
   const DeleteCategoryButton = styled(Button)({
     width: "100%",
@@ -84,24 +114,24 @@ export default function DeleteCategoryForm(props) {
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       {response ? (
         <Alert severity="info">
-          <AlertTitle>Category {category.name} successfuly deleted!</AlertTitle>
+          <AlertTitle>Category {category.name} state successfuly updated!</AlertTitle>
           <ul>
-            <li>1 category deleted</li>
-            <li>{response?.deletedSubcategories} subcategories deleted</li>
-            <li>{response?.deletedProducts} products deleted</li>
-            <li>{response?.deletedReviews} reviews deleted</li>
-            <li>{response?.deletedTags} tags deleted</li>
-            <li>{response?.deletedCarts} cart products deleted</li>
-            <li>{response?.deletedWishlists} wishlist products deleted</li>
-            <li>{response?.deletedOrders} order products deleted</li>
-            <li>{response?.deletedLabels} labels of products deleted</li>
-            <li>{response?.deletedImages} product images deleted</li>
+            <li>1 category affected</li>
+            <li>{response?.deletedSubcategories} subcategories affected</li>
+            <li>{response?.deletedProducts} products affected</li>
+            <li>{response?.deletedReviews} reviews affected</li>
+            <li>{response?.deletedTags} tags affected</li>
+            <li>{response?.deletedCarts} cart products affected</li>
+            <li>{response?.deletedWishlists} wishlist products affected</li>
+            <li>{response?.deletedOrders} order products affected</li>
+            <li>{response?.deletedLabels} labels of products affected</li>
+            <li>{response?.deletedImages} product images affected</li>
             <li>
-              {response?.deletedSpecifications} product specifications deleted
+              {response?.deletedSpecifications} product specifications affected
             </li>
           </ul>
           <Box sx={{display: "flex", gap: 2}}>
-            <Button size="small" variant="contained" color="error" onClick={refreshPage}>UNDO</Button>
+            <Button size="small" variant="contained" color="error" onClick={onUndeleteCategory}>UNDO</Button>
             <Button size="small" variant="contained" onClick={refreshPage}>REFRESH</Button>
           </Box>
         </Alert>

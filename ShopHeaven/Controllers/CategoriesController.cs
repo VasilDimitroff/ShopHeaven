@@ -44,7 +44,8 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                List<GetCategoriesResponseModel> categoriesWithSubcategories = await this.categoriesService.GetAllCategoriesAsync();
+                List<GetCategoriesResponseModel> categoriesWithSubcategories = 
+                    await this.categoriesService.GetAllCategoriesAsync();
 
                 return Ok(categoriesWithSubcategories);
             }
