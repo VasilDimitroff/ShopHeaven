@@ -89,8 +89,22 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var deletedCategory = await this.categoriesService.DeleteCategoryAsync(model);
+                var deletedCategory = await this.categoriesService.DeleteCategoryAsync(model, true);
                 return Ok(deletedCategory);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
+        public async Task<IActionResult> Undelete([FromBody] DeleteCategoryRequestModel model)
+        {
+            try
+            {
+                var undeletedCategory = await this.categoriesService.DeleteCategoryAsync(model, false);
+                return Ok(undeletedCategory);
             }
             catch (Exception ex)
             {

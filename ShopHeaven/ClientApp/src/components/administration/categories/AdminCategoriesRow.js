@@ -150,7 +150,7 @@ export default function AdminCategoriesRow(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}> 
           <Collapse in={showDeleteForm} timeout="auto" unmountOnExit>
             <Box>
               <DeleteCategoryForm category={category}/>
@@ -178,7 +178,7 @@ export default function AdminCategoriesRow(props) {
                 component="div"
                 sx={{ fontWeight: 500 }}
               >
-                {`Subcategories of ${category?.name.toUpperCase()}`}
+                {`Subcategories of ${category?.name?.toUpperCase()}`}
               </Typography>
               <Table size="small">
                 <TableHead>

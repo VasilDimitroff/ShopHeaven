@@ -29,6 +29,23 @@ export async function editCategory(formData, token){
     return response;
 }
 
+export async function deleteCategory(categoryId, token){
+
+  const response = await axios.post(
+    ApiEndpoints.categories.deleteCategory,
+    JSON.stringify({ categoryId: categoryId}),
+    {
+      headers: { 
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+       },
+      withCredentials: true,
+    }
+  );
+
+  return response;
+}
+
 export async function createSubcategory(formData, token){
   console.log("FORM DATA: " + formData);
   const response = await axios.post(

@@ -59,7 +59,7 @@ export default function AdminCategories() {
     if (effectRun.current) {
       getCategories();
     }
-
+ 
     return () => {
       controller.abort();
       effectRun.current = true; // update the value of effectRun to true
