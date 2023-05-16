@@ -100,7 +100,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
-        public async Task<IActionResult> Undelete([FromBody] DeleteCategoryRequestModel model)
+        public async Task<IActionResult> Undelete([FromBody] UndeleteCategoryRequestModel model)
         {
             try
             {
