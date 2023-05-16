@@ -8,7 +8,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Categories from './components/categories/Categories';
 import Admin from './components/administration/Admin';
-import AdminCategories from './components/administration/AdminCategories';
+import AdminCategories from './components/administration/categories/AdminCategories';
 import AdminProducts from './components/administration/AdminProducts';
 import AdminOrders from './components/administration/AdminOrders';
 import AdminDashboard from './components/administration/AdminDashboard';

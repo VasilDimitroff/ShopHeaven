@@ -1,9 +1,8 @@
 import { React, useState, Fragment } from "react";
-import { TableRow, TableCell, Button, Collapse, Box } from "@mui/material";
+import { TableRow, TableCell, Button, Collapse } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit } from "@mui/icons-material";
 import EditSubcategoryForm from "./EditSubcategoryForm";
-import { theme } from "../../theme";
 
 export default function CategorySubcategoriesRow(props) {
   const [subcategory, setSubcategory] = useState(props.subcategory);
@@ -16,8 +15,6 @@ export default function CategorySubcategoriesRow(props) {
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
-      //backgroundColor: "#Cdf3d0",
-      //color: theme.palette.white.main,
     },
     // hide last border
     "&:last-child td, &:last-child th": {

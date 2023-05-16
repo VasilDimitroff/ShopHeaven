@@ -13,7 +13,7 @@ import {
   Paper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -23,8 +23,8 @@ import {
   RemoveCircle,
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
-import CreateSubcategory from "./CreateSubcategory";
-import CategorySubcategories from "./CategorySubcategories";
+import CreateSubcategory from "./subcategories/CreateSubcategory";
+import CategorySubcategories from "./subcategories/CategorySubcategories";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);

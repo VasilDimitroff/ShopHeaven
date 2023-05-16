@@ -7,10 +7,10 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import useAuth from "../../hooks/useAuth"
-import { createSubcategory } from "../../services/categoriesService";
+import useAuth from "../../../../hooks/useAuth";
+import { createSubcategory } from "../../../../services/categoriesService";
 
 export default function CreateSubcategory(props) {
   let  { auth } = useAuth();

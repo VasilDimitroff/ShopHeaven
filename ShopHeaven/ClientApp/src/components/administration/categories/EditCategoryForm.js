@@ -5,78 +5,85 @@ import {
   InputAdornment,
   Typography,
   TextField,
-  Paper,
+  Paper
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import { editCategory } from "../../services/categoriesService";
-import useAuth from "../../hooks/useAuth";
+import { editCategory } from "../../../services/categoriesService";
+import useAuth from "../../../hooks/useAuth";
 
-export default function EditSubcategoryForm(props) {
+export default function EditCategoryForm(props) {
   let { auth } = useAuth();
 
-  let subcategoryNameRef = useRef();
-  let subcategoryDescriptionRef = useRef();
-  let subcategoryImageRef = useRef();
+  let categoryNameRef = useRef();
+  let categoryDescriptionRef = useRef();
+  let categoryImageRef = useRef();
 
-  const [subcategory, setSubcategory] = useState(props.subcategory)
+  const [category, setCategory] = useState(props.category)
 
-  const [editSubcategoryResponseMessage, setEditSubcategoryResponseMessage] =
+  const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
-  const [editSubcategoryErrorMessage, setEditSubcategoryErrorMessage] =
+  const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
     useState(false);
 
- function onEditSubcategory(e) {
+ function onEditCategory(e) {
     e.preventDefault();
 
-    const formSubcategoryName = subcategoryNameRef.current.value;
-    const formSubcategoryDescription = subcategoryDescriptionRef.current.value;
-    const formSubcategoryImage = document.getElementById("edit-subcategory-image")
+    const formCategoryName = categoryNameRef.current.value;
+    const formCategoryDescription = categoryDescriptionRef.current.value;
+    const formCategoryImage = document.getElementById("edit-category-image")
       .files[0];
 
-    if (formSubcategoryName.trim().length < 1) {
-      setEditSubcategoryResponseMessage("");
-      setEditSubcategoryErrorMessage(
-        "Subcategory name must contain at least 1 character"
+    if (formCategoryName.trim().length < 1) {
+      setEditCategoryResponseMessage("");
+      setEditCategoryErrorMessage(
+        "Category name must contain at least 1 character"
       );
       return;
     }
+    setCategory(prev => {
+      return  {
+         ...prev, 
+         name: formCategoryName, 
+         description: formCategoryDescription 
+      }
+    });
 
     const formData = new FormData();
 
-    console.log("NAME: " + formSubcategoryName);
-    console.log("DESC: " + formSubcategoryDescription);
-    console.log("IMG: " + formSubcategoryImage);
+    console.log("NAME: " + formCategoryName);
+    console.log("DESC: " + formCategoryDescription);
+    console.log("IMG: " + formCategoryImage);
     console.log("AUTH IS: " + auth.userId);
     console.log("AUTH JWT: " + auth.jwtToken);
-    console.log("SUBCAT ID: " + subcategory.id);
+    console.log("CAT ID: " + category.id);
 
 
-    formData.append("id", subcategory.id);
-    formData.append("name", formSubcategoryName);
-    formData.append("description", formSubcategoryDescription);
-    formData.append("image", formSubcategoryImage);
+    formData.append("id", category.id);
+    formData.append("name", formCategoryName);
+    formData.append("description", formCategoryDescription);
+    formData.append("image", formCategoryImage);
     formData.append("createdBy", auth.userId);
 
-    editCurrentSubcategory(formData);
+    editCurrentCategory(formData);
   }
 
-  async function editCurrentSubcategory(formData) {
+  async function editCurrentCategory(formData) {
     try {
       const response = await editCategory(formData, auth.jwtToken);
-      setEditSubcategoryErrorMessage("")
-      setEditSubcategoryResponseMessage(response?.data);
+      setEditCategoryErrorMessage("")
+      setEditCategoryResponseMessage(response?.data);
       
       props.updateCategoryName(formData.get("name"), formData.get("description"));
     } catch (error) {
-      setEditSubcategoryResponseMessage("");
+      setEditCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setEditSubcategoryErrorMessage(
+        setEditCategoryErrorMessage(
           "You have no permissions to perform the operation"
         );
       } else {
-        setEditSubcategoryErrorMessage("Error! Check if all fields are filled");
+        setEditCategoryErrorMessage("Error! Check if all fields are filled");
       }
       console.log(error.message);
     }
@@ -116,32 +123,38 @@ export default function EditSubcategoryForm(props) {
     marginTop: theme.spacing(3),
   })
 
+  const CloseButtonHolder = styled(Box)({
+    position: "absolute",
+    top: 7,
+    left: 210,
+  })
+
   return (
-    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
+    <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
         variant="h6"
         component="h2"
       >
-        EDIT SUBCATEGORY {subcategory.name}
+        EDIT CATEGORY {category.name}
       </Typography>
 
-      <form onSubmit={onEditSubcategory}>
+      <form onSubmit={onEditCategory}>
         <InputBox>
           <StyledInput
-            inputRef={subcategoryNameRef}
-            label="Subcategory name"
+            inputRef={categoryNameRef}
+            label="Category name"
             variant="standard"
-            defaultValue={subcategory.name}
+            defaultValue={category.name}
           />
         </InputBox>
         <ImageHolder>
-          <img style={{objectFit: "cover"}} width="250px" height="150px" src={subcategory.image} />
+          <img style={{objectFit: "cover"}} width="250px" height="150px" src={category.image} />
         </ImageHolder>
         <InputBox>
           <StyledInput
-            inputRef={subcategoryImageRef}
+            inputRef={categoryImageRef}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -152,7 +165,7 @@ export default function EditSubcategoryForm(props) {
             accept=".jpg, .png, .jpeg"
             type="file"
             variant="standard"
-            id="edit-subcategory-image"
+            id="edit-category-image"
           />
           <ul style={{color: theme.palette.warning.main, marginTop: theme.spacing(2)}}>
             <li>Warning! If you submit a new image, the old one will be deleted</li>
@@ -161,22 +174,22 @@ export default function EditSubcategoryForm(props) {
         </InputBox>
         <InputBox>
           <StyledInput
-            inputRef={subcategoryDescriptionRef}
-            label="Subcategory Description"
+            inputRef={categoryDescriptionRef}
+            label="Category Description"
             multiline
             rows={5}
             variant="standard"
-            defaultValue={subcategory.description}
+            defaultValue={category.description}
           />
         </InputBox>
         <InputBox>
           <CreateCategoryButton type="submit" size="large" variant="contained">
-            Edit subcategory
+            Edit category
           </CreateCategoryButton>
         </InputBox>
       </form>
-      <ResponseMessage>{editSubcategoryResponseMessage}</ResponseMessage>
-      <ErrorResponseMessage>{editSubcategoryErrorMessage}</ErrorResponseMessage>
+      <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
+      <ErrorResponseMessage>{editCategoryErrorMessage}</ErrorResponseMessage>
     </Paper>
   );
 }

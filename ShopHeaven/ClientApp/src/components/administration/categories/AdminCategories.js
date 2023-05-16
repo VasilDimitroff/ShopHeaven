@@ -1,7 +1,7 @@
 import { React, useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { ApiEndpoints } from "../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { ApiEndpoints } from "../../../api/endpoints";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
   TableContainer,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import { AddCircle, RemoveCircle } from "@mui/icons-material";
 import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
