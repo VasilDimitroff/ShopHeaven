@@ -29,7 +29,7 @@ export default function CategorySubcategoriesRow(props) {
 
   const SubcategoryInfoText = styled(Box)({
     fontSize: 13,
-    fontWeight:400,
+    fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
       marginTop: theme.spacing(0.4)
     },
@@ -60,7 +60,7 @@ export default function CategorySubcategoriesRow(props) {
           <Typography sx={{fontSize: 17, fontWeight: 500}}>{subcategory?.name}</Typography>
           <CategoryInfoHolder>
            <SubcategoryInfoText><Chip color="primary" variant="outlined" label={`${subcategory?.productsCount} products`} size="small"/></SubcategoryInfoText>
-           <SubcategoryInfoText><Chip variant="outlined" label={`${subcategory?.createdBy} products`} size="small"/></SubcategoryInfoText>
+           <SubcategoryInfoText><Chip variant="outlined" label={`Author: ${subcategory?.createdBy}`} size="small"/></SubcategoryInfoText>
           </CategoryInfoHolder>
         </TableCell>
         <TableCell align="center">

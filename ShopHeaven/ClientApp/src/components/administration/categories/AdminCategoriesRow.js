@@ -81,7 +81,7 @@ export default function AdminCategoriesRow(props) {
 
   const CategoryInfoText = styled(Box)({
     fontSize: 13,
-    fontWeight:500,
+    fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
       marginTop: theme.spacing(0.4)
     },
