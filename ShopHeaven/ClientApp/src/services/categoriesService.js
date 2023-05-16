@@ -42,3 +42,17 @@ export async function createSubcategory(formData, token){
 
     return response;
 }
+
+export async function editSubcategory(formData, token){
+  console.log(formData);
+  const response = await axios.post(
+    ApiEndpoints.subcategories.editSubcategory,
+    formData,
+    {
+      headers: {  'Authorization': `Bearer ${token}` },
+      withCredentials: true,
+    }
+  );
+
+    return response;
+}

@@ -172,7 +172,9 @@ namespace ShopHeaven.Data.Services
 
         public async Task EditCategoryAsync(EditCategoryRequestModel model)
         {
-            var searchedCategory = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+            var searchedCategory = await this.db.MainCategories
+                .Include(x => x.Image)
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
 
             if (searchedCategory == null)
             {

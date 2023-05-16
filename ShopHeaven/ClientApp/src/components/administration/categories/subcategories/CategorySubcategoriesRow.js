@@ -8,6 +8,10 @@ export default function CategorySubcategoriesRow(props) {
   const [subcategory, setSubcategory] = useState(props.subcategory);
   const [openEditSubcategoryForm, setOpenEditSubcategoryForm] = useState(false);
 
+  function subcategoryUpdated(newCategory) {
+      setSubcategory(newCategory)
+  }
+
   function handleOpenEditSubcategoryForm() {
     setOpenEditSubcategoryForm((prev) => !prev);
   }
@@ -59,7 +63,7 @@ export default function CategorySubcategoriesRow(props) {
       <TableRow>
         <TableCell colSpan={9}>
           <Collapse in={openEditSubcategoryForm} timeout="auto" unmountOnExit>      
-              <EditSubcategoryForm subcategory={subcategory} />
+              <EditSubcategoryForm subcategoryUpdated={subcategoryUpdated} subcategory={subcategory} />
           </Collapse>
         </TableCell>
       </TableRow>

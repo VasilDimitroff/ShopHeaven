@@ -30,5 +30,19 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize, Route(nameof(Edit))]
+        public async Task<ActionResult<SubcategoriesResponseModel>> Edit([FromForm] EditSubcategoryRequestModel model)
+        {
+            try
+            {
+                SubcategoriesResponseModel updatedSubcategory = await this.subcategoriesService.EditSubcategoryAsync(model);
+                return Ok(updatedSubcategory);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

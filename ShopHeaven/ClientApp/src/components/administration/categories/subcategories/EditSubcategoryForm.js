@@ -10,7 +10,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import { editCategory } from "../../../../services/categoriesService";
+import { editSubcategory } from "../../../../services/categoriesService";
 import useAuth from "../../../../hooks/useAuth";
 
 export default function EditSubcategoryForm(props) {
@@ -52,7 +52,6 @@ export default function EditSubcategoryForm(props) {
     console.log("AUTH JWT: " + auth.jwtToken);
     console.log("SUBCAT ID: " + subcategory.id);
 
-
     formData.append("id", subcategory.id);
     formData.append("name", formSubcategoryName);
     formData.append("description", formSubcategoryDescription);
@@ -64,11 +63,11 @@ export default function EditSubcategoryForm(props) {
 
   async function editCurrentSubcategory(formData) {
     try {
-      const response = await editCategory(formData, auth.jwtToken);
+      const response = await editSubcategory(formData, auth.jwtToken);
       setEditSubcategoryErrorMessage("")
-      setEditSubcategoryResponseMessage(response?.data);
-      
-      props.updateCategoryName(formData.get("name"), formData.get("description"));
+      setEditSubcategoryResponseMessage("Subcategory now has name " + formData.get("name"));
+      setSubcategory(response?.data);
+      props.subcategoryUpdated(response?.data);
     } catch (error) {
       setEditSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {

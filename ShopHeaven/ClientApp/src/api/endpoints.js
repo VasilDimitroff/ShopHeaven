@@ -17,7 +17,8 @@ export const ApiEndpoints = {
         getCategory: apiUrl + "api/categories/get?id=",
     },
     subcategories: {
-        createSubcategory : "api/subcategories/create"
+        createSubcategory : "api/subcategories/create",
+        editSubcategory: "api/subcategories/edit"
     },
     products: {
         createProduct: apiUrl + "api/products/create",

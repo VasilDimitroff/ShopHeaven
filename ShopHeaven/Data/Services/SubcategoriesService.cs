@@ -66,5 +66,64 @@ namespace ShopHeaven.Data.Services
 
             return newSubcategoryResponseModel;
         }
+
+        public async Task<SubcategoriesResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model)
+        {
+            var searchedSubcategory = await this.db.SubCategories
+                .Include(x => x.Image)
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (searchedSubcategory == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                throw new ArgumentNullException(GlobalConstants.SubcategoryNameCannotBeEmpty);
+            }
+
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
+            }
+
+            if (model.Image != null)
+            {
+                var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image }, model.CreatedBy);
+                string subcategoryImageUrl = imageUrls[0];
+
+                Image subcategoryImage = new Image()
+                {
+                    CreatedById = model.CreatedBy,
+                    Url = subcategoryImageUrl,
+                };
+
+                await this.db.Images.AddAsync(subcategoryImage);
+                await this.db.SaveChangesAsync();
+
+                searchedSubcategory.Image = subcategoryImage;
+            }
+
+            searchedSubcategory.Name = model.Name;
+            searchedSubcategory.Description = model.Description;
+            searchedSubcategory.CreatedBy = user;
+
+            var returnedSubcategory = new SubcategoriesResponseModel()
+            {
+                Id = searchedSubcategory.Id,
+                Name = searchedSubcategory.Name,
+                Description = searchedSubcategory.Description,
+                Image = searchedSubcategory.Image.Url,
+                CreatedBy = user.Email,
+                ProductsCount = searchedSubcategory.Products.Count,
+            };
+
+            await this.db.SaveChangesAsync();
+
+            return returnedSubcategory;
+        }
     }
 }
