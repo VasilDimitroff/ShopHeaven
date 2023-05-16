@@ -116,6 +116,7 @@ export default function CreateSubcategory(props) {
       <form onSubmit={onCreateSubcategory}>
         <InputBox>
           <StyledInput
+            required
             inputRef={subcategoryNameRef}
             label="Subcategory name"
             defaultValue={subcategoryName}
@@ -124,6 +125,7 @@ export default function CreateSubcategory(props) {
         </InputBox>
         <InputBox>
           <StyledInput
+            required
             inputRef={subcategoryImageRef}
             InputProps={{
               endAdornment: (

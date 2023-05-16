@@ -114,6 +114,7 @@ export default function CreateCategory(props) {
       <form onSubmit={onCreateCategory}>
         <InputBox>
           <ProductInfoInput
+            required
             inputRef={categoryNameRef}
             label="Category name"
             defaultValue={categoryName}
@@ -122,6 +123,7 @@ export default function CreateCategory(props) {
         </InputBox>
         <InputBox>
           <ProductInfoInput
+            required
             inputRef={categoryImageRef}
             InputProps={{
               endAdornment: (

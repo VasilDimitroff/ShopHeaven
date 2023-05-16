@@ -129,6 +129,7 @@ export default function EditSubcategoryForm(props) {
       <form onSubmit={onEditSubcategory}>
         <InputBox>
           <StyledInput
+            required
             inputRef={subcategoryNameRef}
             label="Subcategory name"
             variant="standard"

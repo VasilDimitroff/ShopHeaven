@@ -11,6 +11,7 @@ import {
   TableBody,
   TableHead,
   Paper,
+  Chip
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -80,7 +81,29 @@ export default function AdminCategoriesRow(props) {
 
   const CategoryInfoText = styled(Box)({
     fontSize: 13,
-    fontWeight:400
+    fontWeight:500,
+    [theme.breakpoints.down("lg")]: {
+      marginTop: theme.spacing(0.4)
+    },
+  })
+
+  const CategoryInfoHolder = styled(Box)({
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.up("lg")]: {
+      display: "flex",
+      alignItems: "center",
+      gap: 15,
+    },
+  });
+
+  const DeleteIconButton = styled(StyledIconButton)({
+    borderColor: theme.palette.error.main,
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(2),
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginTop: theme.spacing(2)
+    },
   })
 
   function renderCategoryProductsCount() {
@@ -101,19 +124,19 @@ export default function AdminCategoriesRow(props) {
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
           {category?.name}
-          <Box sx={{marginLeft: theme.spacing(1.5)}}>
-            <CategoryInfoText>Subcategories: {subcategories?.length}</CategoryInfoText>
-            <CategoryInfoText>Products: {renderCategoryProductsCount()}</CategoryInfoText>
-            <CategoryInfoText>Created by: {category?.createdBy}</CategoryInfoText>
-          </Box>
+          <CategoryInfoHolder>
+            <CategoryInfoText><Chip variant="outlined" color="secondary" label={`${subcategories?.length} subcategories`} size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip variant="outlined" color="primary" label={`${renderCategoryProductsCount()} products`} size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip variant="outlined" label={`Author: ${category?.createdBy}`}size="small"/></CategoryInfoText>
+          </CategoryInfoHolder>
         </CategoryNameTableCell>
         <TableCell align="center">
           <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
             <Edit sx={{ color: theme.palette.warning.main }} />
           </StyledIconButton>
-          <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.error.main, margin: theme.spacing(2)}} size="small">
+          <DeleteIconButton onClick={() => handleShowEditForm()} size="small">
             <Delete sx={{ color: theme.palette.error.main }} />
-          </StyledIconButton>
+          </DeleteIconButton>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -146,7 +169,7 @@ export default function AdminCategoriesRow(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell align="left">NAME</TableCell>
-                    <TableCell align="center">ACTION</TableCell>
+                    <TableCell align="center"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

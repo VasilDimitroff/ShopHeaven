@@ -1,5 +1,5 @@
 import { React, useState, Fragment } from "react";
-import { TableRow, TableCell, Collapse, Typography, Box, IconButton } from "@mui/material";
+import { TableRow, TableCell, Chip, Collapse, Typography, Box, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit } from "@mui/icons-material";
 import EditSubcategoryForm from "./EditSubcategoryForm";
@@ -29,7 +29,10 @@ export default function CategorySubcategoriesRow(props) {
 
   const SubcategoryInfoText = styled(Box)({
     fontSize: 13,
-    fontWeight:400
+    fontWeight:400,
+    [theme.breakpoints.down("lg")]: {
+      marginTop: theme.spacing(0.4)
+    },
   });
 
   const StyledIconButton = styled(IconButton)({
@@ -41,13 +44,24 @@ export default function CategorySubcategoriesRow(props) {
     },
   });
 
+  const CategoryInfoHolder = styled(Box)({
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.up("lg")]: {
+      display: "flex",
+      alignItems: "center",
+      gap: 15,
+    },
+  });
+
   return (
     <Fragment>
       <StyledTableRow>
         <TableCell component="th" scope="row">
           <Typography sx={{fontSize: 17, fontWeight: 500}}>{subcategory?.name}</Typography>
-          <SubcategoryInfoText>Products: {subcategory?.productsCount}</SubcategoryInfoText>
-          <SubcategoryInfoText>Created By: {subcategory?.createdBy}</SubcategoryInfoText>
+          <CategoryInfoHolder>
+           <SubcategoryInfoText><Chip color="primary" variant="outlined" label={`${subcategory?.productsCount} products`} size="small"/></SubcategoryInfoText>
+           <SubcategoryInfoText><Chip variant="outlined" label={`${subcategory?.createdBy} products`} size="small"/></SubcategoryInfoText>
+          </CategoryInfoHolder>
         </TableCell>
         <TableCell align="center">
            <StyledIconButton onClick={() => handleOpenEditSubcategoryForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
