@@ -164,6 +164,7 @@ export default function DeleteCategoryForm(props) {
               DELETE CATEGORY
             </DeleteCategoryButton>
             <DeleteCategoryButton
+              onClick={props.onCancelButtonClicked}
               type="submit"
               size="large"
               variant="contained"

@@ -53,6 +53,10 @@ export default function AdminCategoriesRow(props) {
     console.log(newSubcategory);
   }
 
+  function onCancelButtonClicked() {
+    setShowDeleteForm(prev => !prev);
+  }
+
   function handleShowEditForm() {
     setShowSubcategories(false);
     setShowDeleteForm(false);
@@ -153,7 +157,7 @@ export default function AdminCategoriesRow(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}> 
           <Collapse in={showDeleteForm} timeout="auto" unmountOnExit>
             <Box>
-              <DeleteCategoryForm category={category}/>
+              <DeleteCategoryForm onCancelButtonClicked={onCancelButtonClicked} category={category}/>
             </Box>
           </Collapse>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
