@@ -9,7 +9,7 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<GetCategoriesResponseModel> CreateCategoryAsync(CreateCategoryRequestModel model);
 
-        Task EditCategoryAsync(EditCategoryRequestModel model);
+        Task<EditCategoryResponseModel> EditCategoryAsync(EditCategoryRequestModel model);
 
         Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id);
 

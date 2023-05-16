@@ -54,14 +54,14 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Route(nameof(Edit))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<IActionResult> Edit([FromForm] EditCategoryRequestModel model)
         {
             try
             {
-                await this.categoriesService.EditCategoryAsync(model);
+                var editedCategory = await this.categoriesService.EditCategoryAsync(model);
 
-                return Ok($"The new name of the category is {model.Name}");
+                return Ok(editedCategory);
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize, Route(nameof(Create))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
         public async Task<IActionResult> Create([FromForm]CreateCategoryRequestModel model)
         {
             try
@@ -84,8 +84,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route(nameof(Delete))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
         public async Task<IActionResult> Delete([FromBody] DeleteCategoryRequestModel model)
         {
             try

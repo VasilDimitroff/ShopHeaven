@@ -26,6 +26,7 @@ import {
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
 import CategorySubcategories from "./subcategories/CategorySubcategories";
+import DeleteCategoryForm from "./DeleteCategoryForm";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
@@ -33,6 +34,7 @@ export default function AdminCategoriesRow(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
 
   function updateCategoryName(newName, newDescription) {
     setCategory((prev) => {
@@ -53,11 +55,19 @@ export default function AdminCategoriesRow(props) {
 
   function handleShowEditForm() {
     setShowSubcategories(false);
+    setShowDeleteForm(false);
     setOpenEditForm((prev) => !prev);
+  }
+
+  function handleShowDeleteForm() {
+    setShowSubcategories(false);
+    setOpenEditForm(false);
+    setShowDeleteForm(prev => !prev);
   }
 
   function handleShowSubcategories() {
     setOpenEditForm(false);
+    setShowDeleteForm(false);
     setShowSubcategories((prev) => !prev);
   }
 
@@ -134,13 +144,18 @@ export default function AdminCategoriesRow(props) {
           <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
             <Edit sx={{ color: theme.palette.warning.main }} />
           </StyledIconButton>
-          <DeleteIconButton onClick={() => handleShowEditForm()} size="small">
+          <DeleteIconButton onClick={() => handleShowDeleteForm()} size="small">
             <Delete sx={{ color: theme.palette.error.main }} />
           </DeleteIconButton>
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+          <Collapse in={showDeleteForm} timeout="auto" unmountOnExit>
+            <Box>
+              <DeleteCategoryForm category={category}/>
+            </Box>
+          </Collapse>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
             <Box>
               <EditCategoryForm

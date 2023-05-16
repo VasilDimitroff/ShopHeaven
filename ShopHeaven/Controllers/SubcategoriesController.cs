@@ -17,7 +17,7 @@ namespace ShopHeaven.Controllers
             this.subcategoriesService = subcategoriesService;
         }
 
-        [HttpPost, Authorize, Route(nameof(Create))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
         public async Task<ActionResult<SubcategoriesResponseModel>> Create([FromForm] CreateSubcategoryRequestModel model)
         {
             try
@@ -31,7 +31,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize, Route(nameof(Edit))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<ActionResult<SubcategoriesResponseModel>> Edit([FromForm] EditSubcategoryRequestModel model)
         {
             try

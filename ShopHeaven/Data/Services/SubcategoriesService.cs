@@ -110,6 +110,7 @@ namespace ShopHeaven.Data.Services
             searchedSubcategory.Name = model.Name;
             searchedSubcategory.Description = model.Description;
             searchedSubcategory.CreatedBy = user;
+            searchedSubcategory.ModifiedOn = DateTime.UtcNow;
 
             var returnedSubcategory = new SubcategoriesResponseModel()
             {

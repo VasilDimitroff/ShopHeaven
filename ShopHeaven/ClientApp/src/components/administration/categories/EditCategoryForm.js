@@ -42,13 +42,7 @@ export default function EditCategoryForm(props) {
       );
       return;
     }
-    setCategory(prev => {
-      return  {
-         ...prev, 
-         name: formCategoryName, 
-         description: formCategoryDescription 
-      }
-    });
+    
 
     const formData = new FormData();
 
@@ -72,8 +66,19 @@ export default function EditCategoryForm(props) {
   async function editCurrentCategory(formData) {
     try {
       const response = await editCategory(formData, auth.jwtToken);
+
+      setCategory(prev => {
+        return  {
+           ...prev, 
+           name: response?.data?.name, 
+           description: response?.data?.description,
+           image: response?.data?.image,
+           id: response?.data?.id
+        }
+      });
+
       setEditCategoryErrorMessage("")
-      setEditCategoryResponseMessage(response?.data);
+      setEditCategoryResponseMessage("The new name of the category is " + response?.data?.name);
       
       props.updateCategoryName(formData.get("name"), formData.get("description"));
     } catch (error) {
@@ -121,12 +126,6 @@ export default function EditCategoryForm(props) {
     position: "relative",
     marginLeft: theme.spacing(4),
     marginTop: theme.spacing(3),
-  })
-
-  const CloseButtonHolder = styled(Box)({
-    position: "absolute",
-    top: 7,
-    left: 210,
   })
 
   return (

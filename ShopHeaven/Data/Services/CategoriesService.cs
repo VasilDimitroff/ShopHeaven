@@ -170,9 +170,9 @@ namespace ShopHeaven.Data.Services
             return category.Name;
         }
 
-        public async Task EditCategoryAsync(EditCategoryRequestModel model)
+        public async Task<EditCategoryResponseModel> EditCategoryAsync(EditCategoryRequestModel model)
         {
-            var searchedCategory = await this.db.MainCategories
+            var searchedCategory = await this.db.MainCategories       
                 .Include(x => x.Image)
                 .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
 
@@ -213,10 +213,21 @@ namespace ShopHeaven.Data.Services
             searchedCategory.Name = model.Name;
             searchedCategory.Description = model.Description;
             searchedCategory.CreatedBy = user;
+            searchedCategory.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
-        }
 
+            var editedCategory = new EditCategoryResponseModel()
+            {
+                Id = searchedCategory.Id,
+                Name = searchedCategory.Name,
+                Description = searchedCategory.Description,
+                CreatedBy = user.Email,
+                Image = searchedCategory.Image.Url,
+            };
+
+            return editedCategory;
+        }
 
         public async Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync()
         {
