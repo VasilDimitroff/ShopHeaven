@@ -25,7 +25,6 @@ import {
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
 import CategorySubcategories from "./subcategories/CategorySubcategories";
-import { borderColor } from "@mui/system";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
@@ -79,6 +78,11 @@ export default function AdminCategoriesRow(props) {
     borderStyle: "solid",
   });
 
+  const CategoryInfoText = styled(Box)({
+    fontSize: 13,
+    fontWeight:400
+  })
+
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
@@ -97,9 +101,11 @@ export default function AdminCategoriesRow(props) {
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
           {category?.name}
-          <Typography>Subcategories: {subcategories?.length}</Typography>
-          <Typography>Products: {renderCategoryProductsCount()}</Typography>
-          <Typography>Created by: {category?.createdBy}</Typography>
+          <Box sx={{marginLeft: theme.spacing(1.5)}}>
+            <CategoryInfoText>Subcategories: {subcategories?.length}</CategoryInfoText>
+            <CategoryInfoText>Products: {renderCategoryProductsCount()}</CategoryInfoText>
+            <CategoryInfoText>Created by: {category?.createdBy}</CategoryInfoText>
+          </Box>
         </CategoryNameTableCell>
         <TableCell align="center">
           <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
@@ -140,10 +146,7 @@ export default function AdminCategoriesRow(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell align="left">NAME</TableCell>
-                    <TableCell align="center">PRODUCTS</TableCell>
-                    <TableCell align="center">CREATOR</TableCell>
-                    <TableCell align="center">EDIT</TableCell>
-                    <TableCell align="center">DELETE</TableCell>
+                    <TableCell align="center">ACTION</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

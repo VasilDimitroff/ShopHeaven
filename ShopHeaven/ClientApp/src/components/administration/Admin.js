@@ -127,7 +127,6 @@ export default function Admin() {
     [theme.breakpoints.down("lg")]: {
       display: "none",
     },
-    marginLeft: theme.spacing(-2),
   });
 
   const StyledList = styled(List)({
@@ -144,6 +143,9 @@ export default function Admin() {
     fontWeight: 600,
     color: "#000",
     display: "block",
+    [theme.breakpoints.up("lg")]: {
+      width: "100%",
+    },
   });
 
   const MobileMenuText = styled(Typography)({
@@ -152,6 +154,12 @@ export default function Admin() {
       display: "block",
     },
     display: "none",
+  });
+
+  const StyledListItemButton = styled(ListItemButton)({
+    [theme.breakpoints.up("lg")]: {
+      paddingLeft: 0,
+    },
   });
 
   return (
@@ -164,7 +172,7 @@ export default function Admin() {
               <StyledList>
                 <Grid container spacing={1}>
                   <StyledLink to="/admin">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(1);
                       }}
@@ -174,12 +182,12 @@ export default function Admin() {
                         <DashboardIcon sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Dashboard" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Dashboard</MobileMenuText>
                   </StyledLink>
                   <Divider />
                   <StyledLink to="/admin/users">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(2);
                       }}
@@ -189,12 +197,12 @@ export default function Admin() {
                         <PeopleAlt sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Users" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Users</MobileMenuText>
                   </StyledLink>
                   <Divider />
                   <StyledLink to="/admin/products">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(3);
                       }}
@@ -204,12 +212,12 @@ export default function Admin() {
                         <ShoppingBag sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Products" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Products</MobileMenuText>
                   </StyledLink>
                   <Divider />
                   <StyledLink to="/admin/categories">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(4);
                       }}
@@ -219,12 +227,12 @@ export default function Admin() {
                         <Category sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Categories" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Categories</MobileMenuText>
                   </StyledLink>
                   <Divider />
                   <StyledLink to="/admin/coupons">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(5);
                       }}
@@ -234,11 +242,11 @@ export default function Admin() {
                         <Discount sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Coupons" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Coupons</MobileMenuText>
                   </StyledLink>
                   <StyledLink to="/admin/orders">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(6);
                       }}
@@ -248,12 +256,12 @@ export default function Admin() {
                         <ShoppingCartCheckout sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Orders" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Orders</MobileMenuText>
                   </StyledLink>
                   <Divider />
                   <StyledLink to="/admin/reviews">
-                    <ListItemButton
+                    <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(7);
                       }}
@@ -263,7 +271,7 @@ export default function Admin() {
                         <ReviewsIcon sx={{ margin: "auto" }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Reviews" />
-                    </ListItemButton>
+                    </StyledListItemButton>
                     <MobileMenuText>Reviews</MobileMenuText>
                   </StyledLink>
                   <Divider />

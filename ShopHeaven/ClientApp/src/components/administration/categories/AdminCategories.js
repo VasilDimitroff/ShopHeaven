@@ -20,7 +20,6 @@ import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
 
 export default function AdminCategories() {
-
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
 
   const [categories, setCategories] = useState([]);
@@ -31,12 +30,9 @@ export default function AdminCategories() {
   const effectRun = useRef(false);
 
   function categoriesListChanged(newCategory) {
-    setCategories(prev => {
-      return [
-       ...prev,
-        newCategory
-      ]
-    })
+    setCategories((prev) => {
+      return [...prev, newCategory];
+    });
     console.log(newCategory);
   }
 
@@ -45,15 +41,18 @@ export default function AdminCategories() {
 
     const getCategories = async () => {
       try {
-        const response = await axiosPrivate.get(ApiEndpoints.categories.getAll, {
-          signal: controller.signal,
-        });
+        const response = await axiosPrivate.get(
+          ApiEndpoints.categories.getAll,
+          {
+            signal: controller.signal,
+          }
+        );
         console.log(response.data);
 
         setCategories(response.data);
       } catch (error) {
         console.log(error);
-        navigate("/login", { state: { from: location }, replace: true }); 
+        navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
@@ -69,7 +68,7 @@ export default function AdminCategories() {
 
   function handleOpen() {
     setOpenCreateCategoryModal(!openCreateCategoryModal);
-  } 
+  }
 
   const MainCategoryTableCell = styled(TableCell)({
     fontSize: 18,
@@ -87,7 +86,13 @@ export default function AdminCategories() {
         <Table>
           <TableHead>
             <TableRow>
-            <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}></TableCell>
+              <TableCell
+                sx={{
+                  width: "20px",
+                  padding: 0,
+                  paddingLeft: theme.spacing(1),
+                }}
+              ></TableCell>
               <MainCategoryTableCell>CATEGORY</MainCategoryTableCell>
               <MainCategoryTableCell align="center"></MainCategoryTableCell>
             </TableRow>
@@ -105,32 +110,30 @@ export default function AdminCategories() {
           </TableBody>
         </Table>
         <StyledButtonBox>
-         {
-          openCreateCategoryModal
-          ? (<Button
-            onClick={handleOpen}
-            variant="contained"
-            size="small"
-            startIcon={<RemoveCircle />}
-          >
-            HIDE CREATION FORM
-          </Button>)
-          : (
+          {openCreateCategoryModal ? (
             <Button
-            onClick={handleOpen}
-            variant="contained"
-            size="small"
-            startIcon={<AddCircle />}
-          >
-            ADD NEW CATEGORY
-          </Button>
-          )
-         } 
+              onClick={handleOpen}
+              variant="contained"
+              size="small"
+              startIcon={<RemoveCircle />}
+            >
+              HIDE CREATION FORM
+            </Button>
+          ) : (
+            <Button
+              onClick={handleOpen}
+              variant="contained"
+              size="small"
+              startIcon={<AddCircle />}
+            >
+              ADD NEW CATEGORY
+            </Button>
+          )}
         </StyledButtonBox>
-      </TableContainer>  
-       <Collapse in={openCreateCategoryModal} timeout="auto" unmountOnExit>
-          <CreateCategory categoriesListChanged={categoriesListChanged}/>
-       </Collapse>
+      </TableContainer>
+      <Collapse in={openCreateCategoryModal} timeout="auto" unmountOnExit>
+        <CreateCategory categoriesListChanged={categoriesListChanged} />
+      </Collapse>
     </Box>
   );
 }

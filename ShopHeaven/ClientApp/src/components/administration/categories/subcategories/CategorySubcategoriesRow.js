@@ -1,8 +1,9 @@
 import { React, useState, Fragment } from "react";
-import { TableRow, TableCell, Button, Collapse } from "@mui/material";
+import { TableRow, TableCell, Collapse, Typography, Box, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit } from "@mui/icons-material";
 import EditSubcategoryForm from "./EditSubcategoryForm";
+import { theme } from "../../../../theme";
 
 export default function CategorySubcategoriesRow(props) {
   const [subcategory, setSubcategory] = useState(props.subcategory);
@@ -26,36 +27,35 @@ export default function CategorySubcategoriesRow(props) {
     },
   }));
 
-  const StyledButton = styled(Button)({
-    boxShadow: "none",
+  const SubcategoryInfoText = styled(Box)({
+    fontSize: 13,
+    fontWeight:400
+  });
+
+  const StyledIconButton = styled(IconButton)({
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    margin: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(1)
+    },
   });
 
   return (
     <Fragment>
       <StyledTableRow>
         <TableCell component="th" scope="row">
-          {subcategory?.name}
-        </TableCell>
-        <TableCell align="center">{subcategory?.productsCount}</TableCell>
-        <TableCell align="center">{subcategory?.createdBy}</TableCell>
-        <TableCell align="center">
-          <StyledButton
-            onClick={handleOpenEditSubcategoryForm}
-            color="warning"
-            variant="contained"
-            size="small"
-            startIcon={<Edit />}
-          >
-          </StyledButton>
+          <Typography sx={{fontSize: 17, fontWeight: 500}}>{subcategory?.name}</Typography>
+          <SubcategoryInfoText>Products: {subcategory?.productsCount}</SubcategoryInfoText>
+          <SubcategoryInfoText>Created By: {subcategory?.createdBy}</SubcategoryInfoText>
         </TableCell>
         <TableCell align="center">
-          <StyledButton
-            color="error"
-            variant="contained"
-            size="small"
-            startIcon={<Delete />}
-          >
-           </StyledButton>
+           <StyledIconButton onClick={() => handleOpenEditSubcategoryForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
+            <Edit sx={{ color: theme.palette.warning.main }} />
+          </StyledIconButton>
+          <StyledIconButton onClick={() => handleOpenEditSubcategoryForm()} sx={{borderColor: theme.palette.error.main}} size="small">
+            <Delete sx={{ color: theme.palette.error.main }} />
+          </StyledIconButton>
         </TableCell>
       </StyledTableRow>
       <TableRow>
