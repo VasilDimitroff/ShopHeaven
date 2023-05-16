@@ -46,7 +46,6 @@ export default function CategorySubcategoriesRow(props) {
             size="small"
             startIcon={<Edit />}
           >
-            EDIT
           </StyledButton>
         </TableCell>
         <TableCell align="center">
@@ -56,8 +55,7 @@ export default function CategorySubcategoriesRow(props) {
             size="small"
             startIcon={<Delete />}
           >
-            DELETE
-          </StyledButton>
+           </StyledButton>
         </TableCell>
       </StyledTableRow>
       <TableRow>

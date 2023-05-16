@@ -1,5 +1,5 @@
-import { React, useState, useEffect } from "react";
-import { Box, Grid, Paper, List, ListItemButton, ListItemIcon, ListItemText,  Divider,} from "@mui/material";
+import { React, useState } from "react";
+import { Box, Stack, Grid, Paper, List, ListItemButton, ListItemIcon, ListItemText,  Divider, Typography,} from "@mui/material";
 import { Outlet, Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../BreadcrumbsBar";
@@ -7,6 +7,17 @@ import { theme } from "../../theme";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { PeopleAlt,ShoppingBag, Category, Discount, ShoppingCartCheckout,} from "@mui/icons-material";
+
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: "Admin",
+    uri: "/admin",
+  },
+];
 
 export default function Admin() {
 
@@ -79,16 +90,6 @@ export default function Admin() {
         }
   }
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Admin",
-      uri: "/admin",
-    },
-  ];
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -118,6 +119,7 @@ export default function Admin() {
 
   const StyledList = styled(List)({
     display: "block",
+    margin: "auto",  
     [theme.breakpoints.down("lg")]: {
       display: "flex",
     },
@@ -127,7 +129,18 @@ export default function Admin() {
     textDecoration: "none",
     textTransform: "uppercase",
     fontWeight: 600,
-    color: "#000"
+    color: "#000",
+    display: "block",
+  })
+
+  const MobileMenuText = styled (Typography)({
+    [theme.breakpoints.down("lg")]: {
+      fontSize: 12,
+     display: "block",
+      textAlign: "left",
+      paddingLeft: theme.spacing(1)
+    },
+    display: "none",
   })
 
   return (
@@ -138,6 +151,8 @@ export default function Admin() {
           <Grid item xs={12} sm={12} md={12} lg={2}>
             <Item>
               <StyledList>
+                
+              <Grid container spacing={1} >
                <StyledLink to="/admin">
                 <ListItemButton
                   onClick={() => { setSelectedItem(1)}}
@@ -147,6 +162,7 @@ export default function Admin() {
                   </ListItemIcon>
                   <StyledListItemText primary="Dashboard" />
                 </ListItemButton>
+                <MobileMenuText>Dashboard</MobileMenuText>
                 </StyledLink>
                 <Divider />
                 <StyledLink to="/admin/users">
@@ -156,8 +172,9 @@ export default function Admin() {
                   <ListItemIcon>
                     <PeopleAlt />
                   </ListItemIcon>
-                  <StyledListItemText primary="Users" />
+                  <StyledListItemText primary="Users" /> 
                 </ListItemButton>
+                <MobileMenuText>Users</MobileMenuText>
                 </StyledLink>
                 <Divider />
                 <StyledLink to="/admin/products">
@@ -167,8 +184,9 @@ export default function Admin() {
                   <ListItemIcon>
                     <ShoppingBag />
                   </ListItemIcon>
-                  <StyledListItemText primary="Products" />
+                  <StyledListItemText primary="Products"/>
                 </ListItemButton>
+                <MobileMenuText>Products</MobileMenuText>
                 </StyledLink>
                 <Divider />
                 <StyledLink to="/admin/categories">
@@ -180,6 +198,7 @@ export default function Admin() {
                   </ListItemIcon>
                   <StyledListItemText primary="Categories" />
                 </ListItemButton>
+                <MobileMenuText>Categories</MobileMenuText>
                 </StyledLink>
                 <Divider />
                 <StyledLink to="/admin/coupons">
@@ -191,6 +210,7 @@ export default function Admin() {
                   </ListItemIcon>
                   <StyledListItemText primary= "Coupons" />
                 </ListItemButton>
+                  <MobileMenuText>Coupons</MobileMenuText>
                 </StyledLink>
                 <StyledLink to="/admin/orders">
                 <ListItemButton
@@ -201,6 +221,7 @@ export default function Admin() {
                   </ListItemIcon>
                   <StyledListItemText primary="Orders"/>
                 </ListItemButton>
+                <MobileMenuText>Orders</MobileMenuText>
                 </StyledLink>
                 <Divider />
                 <StyledLink to="/admin/reviews">
@@ -212,9 +233,13 @@ export default function Admin() {
                   </ListItemIcon>
                   <StyledListItemText primary="Reviews" />
                 </ListItemButton>
+                <MobileMenuText>Reviews</MobileMenuText>
                 </StyledLink>
                 <Divider />
+                </Grid>
+
               </StyledList>
+            
             </Item>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={10}>

@@ -82,21 +82,12 @@ export default function AdminCategories() {
 
   return (
     <Box>
-      <TableContainer component={Box}>
-        <Table aria-label="collapsible table">
+      <TableContainer>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell />
               <MainCategoryTableCell>CATEGORY</MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                PRODUCTS
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                SUBCATs
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                CREATOR
-              </MainCategoryTableCell>
               <MainCategoryTableCell align="center">EDIT</MainCategoryTableCell>
               <MainCategoryTableCell align="center">
                 DELETE

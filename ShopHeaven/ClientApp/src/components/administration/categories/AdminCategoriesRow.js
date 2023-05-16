@@ -32,7 +32,6 @@ export default function AdminCategoriesRow(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
-  
 
   function updateCategoryName(newName, newDescription) {
     setCategory((prev) => {
@@ -91,19 +90,15 @@ export default function AdminCategoriesRow(props) {
             size="small"
             onClick={() => handleShowSubcategories()}
           >
-            {showSubcategories && !openEditForm ? (
-              <KeyboardArrowUp />
-            ) : (
-              <KeyboardArrowDown />
-            )}
+            {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
         <CategoryNameTableCell component="th" scope="row">
           {category?.name}
+          <Typography>Subcategories: {subcategories?.length}</Typography>
+          <Typography>Products: {renderCategoryProductsCount()}</Typography>
+          <Typography>Created by: {category?.createdBy}</Typography>
         </CategoryNameTableCell>
-        <TableCell align="center">{renderCategoryProductsCount()}</TableCell>
-        <TableCell align="center">{subcategories?.length}</TableCell>
-        <TableCell align="center">{category?.createdBy}</TableCell>
         <TableCell align="center">
           <StyledButton
             onClick={() => handleShowEditForm()}
@@ -112,7 +107,6 @@ export default function AdminCategoriesRow(props) {
             size="small"
             startIcon={<Edit />}
           >
-            EDIT
           </StyledButton>
         </TableCell>
         <TableCell align="center">
@@ -122,28 +116,25 @@ export default function AdminCategoriesRow(props) {
             size="small"
             startIcon={<Delete />}
           >
-            DELETE
           </StyledButton>
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
-          <Collapse
-            in={openEditForm || showSubcategories}
-            timeout="auto"
-            unmountOnExit
-          >
-            <Box sx={{ display: openEditForm ? "block" : "none" }}>
+          <Collapse in={openEditForm} timeout="auto" unmountOnExit>
+            <Box>
               <EditCategoryForm
                 category={category}
                 updateCategoryName={updateCategoryName}
               />
             </Box>
+          </Collapse>
+          <Collapse in={showSubcategories} timeout="auto" unmountOnExit>
             <Paper
               sx={{
                 margin: 2,
                 padding: theme.spacing(3),
-                display: showSubcategories && !openEditForm ? "block" : "none",
+                display: "block",
               }}
             >
               <Typography
@@ -152,7 +143,7 @@ export default function AdminCategoriesRow(props) {
                 component="div"
                 sx={{ fontWeight: 500 }}
               >
-                {`Subcategories of ${category?.name}`}
+                {`Subcategories of ${category?.name.toUpperCase()}`}
               </Typography>
               <Table size="small">
                 <TableHead>
@@ -165,7 +156,7 @@ export default function AdminCategoriesRow(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                   <CategorySubcategories subcategories={subcategories}/>                 
+                  <CategorySubcategories subcategories={subcategories} />
                 </TableBody>
               </Table>
               <StyledButtonBox>
