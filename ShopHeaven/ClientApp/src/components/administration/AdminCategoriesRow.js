@@ -24,7 +24,7 @@ import {
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./CreateSubcategory";
-import EditSubcategoryForm from "./EditSubcategoryForm";
+import CategorySubcategories from "./CategorySubcategories";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
@@ -32,7 +32,7 @@ export default function AdminCategoriesRow(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [openSubcategoryForm, setOpenSubcategoryForm] = useState(false);
-  const [openEditSubcategoryForm, setOpenEditSubcategoryForm] = useState(false);
+  
 
   function updateCategoryName(newName, newDescription) {
     setCategory((prev) => {
@@ -56,10 +56,6 @@ export default function AdminCategoriesRow(props) {
     setOpenEditForm((prev) => !prev);
   }
 
-  function handleOpenEditSubcategoryForm() {
-    setOpenEditSubcategoryForm((prev) => !prev);
-  }
-
   function handleShowSubcategories() {
     setOpenEditForm(false);
     setShowSubcategories((prev) => !prev);
@@ -78,18 +74,6 @@ export default function AdminCategoriesRow(props) {
     fontSize: 18,
   });
 
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-      //backgroundColor: "#Cdf3d0",
-      //color: theme.palette.white.main,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
-
   const StyledButton = styled(Button)({
     boxShadow: "none",
   });
@@ -97,8 +81,6 @@ export default function AdminCategoriesRow(props) {
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
-
-  function renderSubcategories() {}
 
   return (
     <Fragment>
@@ -172,7 +154,7 @@ export default function AdminCategoriesRow(props) {
               >
                 {`Subcategories of ${category?.name}`}
               </Typography>
-              <Table size="small" aria-label="purchases">
+              <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell align="left">NAME</TableCell>
@@ -183,52 +165,7 @@ export default function AdminCategoriesRow(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {subcategories?.map((subcategory) => (
-                    <Fragment key={subcategory?.id}>
-                    <StyledTableRow>
-                      <TableCell component="th" scope="row">
-                        {subcategory?.name}
-                      </TableCell>
-                      <TableCell align="center">
-                        {subcategory?.productsCount}
-                      </TableCell>
-                      <TableCell align="center">
-                        {subcategory?.createdBy}
-                      </TableCell>
-                      <TableCell align="center">
-                        <StyledButton
-                          onClick={handleOpenEditSubcategoryForm}
-                          color="warning"
-                          variant="contained"
-                          size="small"
-                          startIcon={<Edit />}
-                        >
-                          EDIT
-                        </StyledButton>
-                      </TableCell>
-                      <TableCell align="center">
-                        <StyledButton
-                          color="error"
-                          variant="contained"
-                          size="small"
-                          startIcon={<Delete />}
-                        >
-                          DELETE
-                        </StyledButton>
-                      </TableCell>
-                    </StyledTableRow>
-                  
-                      <Collapse
-                      in={openEditSubcategoryForm}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      {subcategory.name}
-                      
-                    </Collapse>
-                    </Fragment>
-                  ))}
-                 
+                   <CategorySubcategories subcategories={subcategories}/>                 
                 </TableBody>
               </Table>
               <StyledButtonBox>
