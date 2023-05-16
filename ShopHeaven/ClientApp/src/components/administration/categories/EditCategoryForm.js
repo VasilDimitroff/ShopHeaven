@@ -18,7 +18,6 @@ export default function EditCategoryForm(props) {
 
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
-  let categoryImageRef = useRef();
 
   const [category, setCategory] = useState(props.category)
 
@@ -53,7 +52,6 @@ export default function EditCategoryForm(props) {
     console.log("AUTH JWT: " + auth.jwtToken);
     console.log("CAT ID: " + category.id);
 
-
     formData.append("id", category.id);
     formData.append("name", formCategoryName);
     formData.append("description", formCategoryDescription);
@@ -73,7 +71,8 @@ export default function EditCategoryForm(props) {
            name: response?.data?.name, 
            description: response?.data?.description,
            image: response?.data?.image,
-           id: response?.data?.id
+           id: response?.data?.id,
+           createdBy: response?.data?.createdBy
         }
       });
 
@@ -142,6 +141,7 @@ export default function EditCategoryForm(props) {
       <form onSubmit={onEditCategory}>
         <InputBox>
           <StyledInput
+            required
             inputRef={categoryNameRef}
             label="Category name"
             variant="standard"
@@ -153,7 +153,6 @@ export default function EditCategoryForm(props) {
         </ImageHolder>
         <InputBox>
           <StyledInput
-            inputRef={categoryImageRef}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">

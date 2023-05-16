@@ -89,8 +89,8 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var categoryName = await this.categoriesService.DeleteCategoryAsync(model);
-                return Ok($"Category {categoryName} successfully deleted!");
+                var deletedCategory = await this.categoriesService.DeleteCategoryAsync(model);
+                return Ok(deletedCategory);
             }
             catch (Exception ex)
             {

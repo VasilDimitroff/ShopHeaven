@@ -16,9 +16,6 @@ import useAuth from "../../../hooks/useAuth";
 export default function DeleteCategoryForm(props) {
   let { auth } = useAuth();
 
-  let categoryNameRef = useRef();
-  let categoryDescriptionRef = useRef();
-
   const [category, setCategory] = useState(props.category)
 
   const [deleteCategoryResponseMessage, setDeleteCategoryResponseMessage] =
@@ -89,7 +86,7 @@ export default function DeleteCategoryForm(props) {
       <Typography variant="h6">
         You are on the way to delete category {(category.name).toUpperCase()}!
       </Typography>
-      <Typography variant="p">If you do that, you will delete all related subcategories and products in it!</Typography>
+      <Typography variant="p" color="error">If you do that, you will delete all related subcategories and products in it!</Typography>
       </Box>
       <ButtonsHolder>
           <DeleteCategoryButton type="submit" size="large" variant="outlined" color="error">
