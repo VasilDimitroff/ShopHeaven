@@ -25,6 +25,7 @@ import {
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
 import CategorySubcategories from "./subcategories/CategorySubcategories";
+import { borderColor } from "@mui/system";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
@@ -73,8 +74,9 @@ export default function AdminCategoriesRow(props) {
     fontSize: 18,
   });
 
-  const StyledButton = styled(Button)({
-    boxShadow: "none",
+  const StyledIconButton = styled(IconButton)({
+    borderWidth: "1.5px",
+    borderStyle: "solid",
   });
 
   function renderCategoryProductsCount() {
@@ -84,7 +86,7 @@ export default function AdminCategoriesRow(props) {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell>
+        <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -100,23 +102,12 @@ export default function AdminCategoriesRow(props) {
           <Typography>Created by: {category?.createdBy}</Typography>
         </CategoryNameTableCell>
         <TableCell align="center">
-          <StyledButton
-            onClick={() => handleShowEditForm()}
-            color="warning"
-            variant="contained"
-            size="small"
-            startIcon={<Edit />}
-          >
-          </StyledButton>
-        </TableCell>
-        <TableCell align="center">
-          <StyledButton
-            color="error"
-            variant="contained"
-            size="small"
-            startIcon={<Delete />}
-          >
-          </StyledButton>
+          <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
+            <Edit sx={{ color: theme.palette.warning.main }} />
+          </StyledIconButton>
+          <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.error.main, margin: theme.spacing(2)}} size="small">
+            <Delete sx={{ color: theme.palette.error.main }} />
+          </StyledIconButton>
         </TableCell>
       </TableRow>
       <TableRow>

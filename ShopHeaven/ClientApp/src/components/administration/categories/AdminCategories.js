@@ -78,6 +78,7 @@ export default function AdminCategories() {
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
+    marginLeft: theme.spacing(1),
   });
 
   return (
@@ -86,12 +87,9 @@ export default function AdminCategories() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell />
+            <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}></TableCell>
               <MainCategoryTableCell>CATEGORY</MainCategoryTableCell>
-              <MainCategoryTableCell align="center">EDIT</MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                DELETE
-              </MainCategoryTableCell>
+              <MainCategoryTableCell align="center"></MainCategoryTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,7 +113,7 @@ export default function AdminCategories() {
             size="small"
             startIcon={<RemoveCircle />}
           >
-            Hide creation form
+            HIDE CREATION FORM
           </Button>)
           : (
             <Button

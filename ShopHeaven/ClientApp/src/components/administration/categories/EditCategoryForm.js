@@ -137,7 +137,7 @@ export default function EditCategoryForm(props) {
         variant="h6"
         component="h2"
       >
-        EDIT CATEGORY {category.name}
+        Edit Category {(category.name).toUpperCase()}
       </Typography>
 
       <form onSubmit={onEditCategory}>
