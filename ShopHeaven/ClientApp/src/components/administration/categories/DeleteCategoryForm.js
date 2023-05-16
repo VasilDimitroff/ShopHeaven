@@ -1,4 +1,4 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, Fragment, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,18 +9,77 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { deleteCategory, undeleteCategory } from "../../../services/categoriesService";
+import { ApiEndpoints } from "../../../api/endpoints";
+import {
+  deleteCategory,
+  undeleteCategory,
+} from "../../../services/categoriesService";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function DeleteCategoryForm(props) {
   let { auth } = useAuth();
 
+  const axiosPrivate = useAxiosPrivate();
+  const effectRun = useRef(false);
   const [category, setCategory] = useState(props.category);
   const [response, setResponse] = useState(undefined);
+  const [deleteButtonClicked, setDeleteButtonClicked] = useState(false);
   const [deleteCategoryResponseMessage, setDeleteCategoryResponseMessage] =
     useState("");
   const [deleteCategoryErrorMessage, setDeleteCategoryErrorMessage] =
     useState(false);
+
+    useEffect(() => {
+      
+      const controller = new AbortController();
+  
+      const deleteCategory = async () => {
+        try {
+          console.log(category.id)
+          const response = await axiosPrivate.post(
+            ApiEndpoints.categories.deleteCategory,
+            JSON.stringify({ categoryId: category.id }),
+            {
+              signal: controller.signal,
+            }
+          );
+  
+          setDeleteCategoryErrorMessage("");
+          setDeleteCategoryResponseMessage(
+            "Category " + category.name + " deleted!"
+          );
+          setResponse(response?.data);
+          console.log(response?.data);
+  
+        } catch (error) {
+          setDeleteCategoryResponseMessage("");
+          if (
+            error?.response?.status === 401 ||
+            error?.response?.status === 403
+          ) {
+            setDeleteCategoryErrorMessage(
+              "You have no permissions to perform the operation"
+            );
+          } else {
+            setDeleteCategoryErrorMessage("Error!");
+          }
+          console.log(error.message);
+          //navigate("/login", { state: { from: location }, replace: true })
+        }
+  
+        return response;
+      };
+      if (effectRun.current) {
+        deleteCategory();
+      }
+  
+      return () => {
+        controller.abort();
+        effectRun.current = true; // update the value of effectRun to true
+      };
+    }, []);
+
 
   function refreshPage() {
     window.location.reload(false);
@@ -31,10 +90,11 @@ export default function DeleteCategoryForm(props) {
     console.log("AUTH JWT: " + auth.jwtToken);
     console.log("CAT ID: " + category.id);
 
-    deleteCurrentCategory(category.id);
+    setDeleteButtonClicked(prev => !prev);
+    //deleteCurrentCategory(category.id);
   }
 
-  async function deleteCurrentCategory(categoryId) {
+  async function deleteCurrentCategoryOLD(categoryId) {
     try {
       const response = await deleteCategory(categoryId, auth.jwtToken);
       setDeleteCategoryErrorMessage("");
@@ -55,7 +115,7 @@ export default function DeleteCategoryForm(props) {
       console.log(error.message);
     }
   }
-  
+
   function onUndeleteCategory() {
     console.log("AUTH IS: " + auth.userId);
     console.log("AUTH JWT: " + auth.jwtToken);
@@ -84,7 +144,7 @@ export default function DeleteCategoryForm(props) {
       }
       console.log(error.message);
     }
-  }
+  } 
 
   const DeleteCategoryButton = styled(Button)({
     width: "100%",
@@ -114,7 +174,9 @@ export default function DeleteCategoryForm(props) {
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       {response ? (
         <Alert severity="info">
-          <AlertTitle>Category {category.name} state successfuly updated!</AlertTitle>
+          <AlertTitle>
+            Category {category.name} state successfuly updated!
+          </AlertTitle>
           <ul>
             <li>1 category affected</li>
             <li>{response?.deletedSubcategories} subcategories affected</li>
@@ -130,9 +192,18 @@ export default function DeleteCategoryForm(props) {
               {response?.deletedSpecifications} product specifications affected
             </li>
           </ul>
-          <Box sx={{display: "flex", gap: 2}}>
-            <Button size="small" variant="contained" color="error" onClick={onUndeleteCategory}>UNDO</Button>
-            <Button size="small" variant="contained" onClick={refreshPage}>REFRESH</Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={onUndeleteCategory}
+            >
+              UNDO
+            </Button>
+            <Button size="small" variant="contained" onClick={refreshPage}>
+              REFRESH
+            </Button>
           </Box>
         </Alert>
       ) : (
@@ -155,15 +226,6 @@ export default function DeleteCategoryForm(props) {
           </Box>
           <ButtonsHolder>
             <DeleteCategoryButton
-              onClick={onDeleteCategory}
-              type="submit"
-              size="large"
-              variant="outlined"
-              color="error"
-            >
-              DELETE CATEGORY
-            </DeleteCategoryButton>
-            <DeleteCategoryButton
               onClick={props.onCancelButtonClicked}
               type="submit"
               size="large"
@@ -171,6 +233,15 @@ export default function DeleteCategoryForm(props) {
               color="error"
             >
               CANCEL
+            </DeleteCategoryButton>
+            <DeleteCategoryButton
+              onClick={onDeleteCategory}
+              type="submit"
+              size="large"
+              variant="outlined"
+              color="error"
+            >
+              DELETE CATEGORY
             </DeleteCategoryButton>
           </ButtonsHolder>
           <ResponseMessage>{deleteCategoryResponseMessage}</ResponseMessage>
