@@ -3,7 +3,7 @@ import { Box, Grid, Paper, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { ApiEndpoints, apiUrl } from "../../api/endpoints";
+import { ApiEndpoints } from "../../api/endpoints";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AdminUsers() {

@@ -5,28 +5,32 @@ import {
   InputAdornment,
   Typography,
   TextField,
-  Paper
+  Paper,
+  Alert,
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import { editCategory } from "../../../services/categoriesService";
+import { ApiEndpoints } from "../../../api/endpoints";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 
 export default function EditCategoryForm(props) {
   let { auth } = useAuth();
+  const axiosPrivateForm = useAxiosPrivateForm();
 
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
 
-  const [category, setCategory] = useState(props.category)
+  const [category, setCategory] = useState(props.category);
 
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
   const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
     useState(false);
 
- function onEditCategory(e) {
+  function onEditCategory(e) {
     e.preventDefault();
 
     const formCategoryName = categoryNameRef.current.value;
@@ -41,16 +45,8 @@ export default function EditCategoryForm(props) {
       );
       return;
     }
-    
 
     const formData = new FormData();
-
-    console.log("NAME: " + formCategoryName);
-    console.log("DESC: " + formCategoryDescription);
-    console.log("IMG: " + formCategoryImage);
-    console.log("AUTH IS: " + auth.userId);
-    console.log("AUTH JWT: " + auth.jwtToken);
-    console.log("CAT ID: " + category.id);
 
     formData.append("id", category.id);
     formData.append("name", formCategoryName);
@@ -58,28 +54,43 @@ export default function EditCategoryForm(props) {
     formData.append("image", formCategoryImage);
     formData.append("createdBy", auth.userId);
 
-    editCurrentCategory(formData);
+    editCategory(formData);
   }
 
-  async function editCurrentCategory(formData) {
+  async function editCategory(formData) {
     try {
-      const response = await editCategory(formData, auth.jwtToken);
+      const controller = new AbortController();
 
-      setCategory(prev => {
-        return  {
-           ...prev, 
-           name: response?.data?.name, 
-           description: response?.data?.description,
-           image: response?.data?.image,
-           id: response?.data?.id,
-           createdBy: response?.data?.createdBy
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.categories.editCategory,
+        formData,
+        {
+          signal: controller.signal,
         }
+      );
+
+      controller.abort();
+
+      setCategory((prev) => {
+        return {
+          ...prev,
+          name: response?.data?.name,
+          description: response?.data?.description,
+          image: response?.data?.image,
+          id: response?.data?.id,
+          createdBy: response?.data?.createdBy,
+        };
       });
 
-      setEditCategoryErrorMessage("")
-      setEditCategoryResponseMessage("The new name of the category is " + response?.data?.name);
-      
-      props.updateCategoryName(formData.get("name"), formData.get("description"));
+      setEditCategoryErrorMessage("");
+      setEditCategoryResponseMessage(
+        "The new name of the category is " + response?.data?.name
+      );
+
+      props.updateCategoryName(
+        formData.get("name"),
+        formData.get("description")
+      );
     } catch (error) {
       setEditCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -87,7 +98,7 @@ export default function EditCategoryForm(props) {
           "You have no permissions to perform the operation"
         );
       } else {
-        setEditCategoryErrorMessage("Error! Check if all fields are filled");
+        setEditCategoryErrorMessage("Error!");
       }
       console.log(error.message);
     }
@@ -111,33 +122,22 @@ export default function EditCategoryForm(props) {
     marginBottom: theme.spacing(1),
   });
 
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main,
-  });
-
   const ImageHolder = styled(Box)({
     position: "relative",
     marginLeft: theme.spacing(4),
     marginTop: theme.spacing(3),
-  })
+  });
 
   return (
-    <Paper sx={{padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
+    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
         variant="h6"
         component="h2"
       >
-        Edit Category {(category.name).toUpperCase()}
+        Edit Category {category.name.toUpperCase()}
       </Typography>
-
       <form onSubmit={onEditCategory}>
         <InputBox>
           <StyledInput
@@ -149,7 +149,12 @@ export default function EditCategoryForm(props) {
           />
         </InputBox>
         <ImageHolder>
-          <img style={{objectFit: "cover"}} width="250px" height="150px" src={category.image} />
+          <img
+            style={{ objectFit: "cover" }}
+            width="250px"
+            height="150px"
+            src={category.image}
+          />
         </ImageHolder>
         <InputBox>
           <StyledInput
@@ -165,8 +170,15 @@ export default function EditCategoryForm(props) {
             variant="standard"
             id="edit-category-image"
           />
-          <ul style={{color: theme.palette.warning.main, marginTop: theme.spacing(2)}}>
-            <li>Warning! If you submit a new image, the old one will be deleted</li>
+          <ul
+            style={{
+              color: theme.palette.warning.main,
+              marginTop: theme.spacing(2),
+            }}
+          >
+            <li>
+              Warning! If you submit a new image, the old one will be deleted
+            </li>
             <li>.jpg, .jpeg and .png file formats are allowed</li>
           </ul>
         </InputBox>
@@ -186,8 +198,14 @@ export default function EditCategoryForm(props) {
           </CreateCategoryButton>
         </InputBox>
       </form>
-      <ResponseMessage>{editCategoryResponseMessage}</ResponseMessage>
-      <ErrorResponseMessage>{editCategoryErrorMessage}</ErrorResponseMessage>
+      { editCategoryResponseMessage
+         ? <Zoom in={editCategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{editCategoryResponseMessage}</Alert></Zoom>
+         : ""
+      }
+        { editCategoryErrorMessage
+         ? <Zoom in={editCategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{editCategoryErrorMessage}</Alert></Zoom>
+         : ""
+      }
     </Paper>
   );
 }

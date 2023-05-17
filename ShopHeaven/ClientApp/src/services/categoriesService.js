@@ -15,6 +15,7 @@ export async function createCategory(formData, token){
     return response;
 }
 
+//replaced
 export async function editCategory(formData, token){
   console.log(formData);
   const response = await axios.post(

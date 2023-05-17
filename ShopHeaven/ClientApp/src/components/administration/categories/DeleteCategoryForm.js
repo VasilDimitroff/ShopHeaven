@@ -42,7 +42,6 @@ export default function DeleteCategoryForm(props) {
         "Category " + category.name + " deleted!"
       );
       setResponse(response?.data);
-      console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
