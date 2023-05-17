@@ -23,6 +23,17 @@ namespace ShopHeaven.Data.Services
 
         public async Task<GetCategoriesResponseModel> CreateCategoryAsync(CreateCategoryRequestModel model)
         {
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryNameCannotBeEmpty);
+            }
+
+            if (model.Image == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryImageCannotBeEmpty);
+            }
+
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
 
             if (user == null)
@@ -35,11 +46,6 @@ namespace ShopHeaven.Data.Services
             if (category != null)
             {
                 throw new ArgumentException(GlobalConstants.CategoryWithThisNameAlreadyExist);
-            }
-
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                throw new ArgumentNullException(GlobalConstants.CategoryNameCannotBeEmpty);
             }
 
             var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image }, model.CreatedBy);
@@ -223,6 +229,7 @@ namespace ShopHeaven.Data.Services
         {
             var searchedCategory = await this.db.MainCategories       
                 .Include(x => x.Image)
+                .Include(x => x.CreatedBy)
                 .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
 
             if (searchedCategory == null)
@@ -261,7 +268,6 @@ namespace ShopHeaven.Data.Services
 
             searchedCategory.Name = model.Name;
             searchedCategory.Description = model.Description;
-            searchedCategory.CreatedBy = user;
             searchedCategory.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
@@ -271,7 +277,7 @@ namespace ShopHeaven.Data.Services
                 Id = searchedCategory.Id,
                 Name = searchedCategory.Name,
                 Description = searchedCategory.Description,
-                CreatedBy = user.Email,
+                CreatedBy = searchedCategory.CreatedBy.Email,
                 Image = searchedCategory.Image.Url,
             };
 

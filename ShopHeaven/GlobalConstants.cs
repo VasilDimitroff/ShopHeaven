@@ -30,7 +30,9 @@
 
         public const string SubcategoryWithThisIdDoesntExist = "Subcategory with given Id doesn't exists!";
 
-        public const string CategoryNameCannotBeEmpty = "Category name cannot be empty!";
+        public const string CategoryNameCannotBeEmpty = "Category Name cannot be empty!";
+        
+        public const string CategoryImageCannotBeEmpty = "Category Image cannot be empty!";
 
         public const string SubcategoryNameCannotBeEmpty = "Subcategory name cannot be empty!";
 

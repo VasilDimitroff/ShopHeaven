@@ -1,6 +1,7 @@
 import axios from "../api/axios";
 import { ApiEndpoints } from "../api/endpoints";
 
+//replaced
 export async function createCategory(formData, token){
 
   const response = await axios.post(

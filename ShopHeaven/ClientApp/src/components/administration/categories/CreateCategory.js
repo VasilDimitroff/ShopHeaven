@@ -1,41 +1,49 @@
-import { React, useState, Fragment, useRef } from "react";
+import { React, useState, useRef } from "react";
 import {
   Box,
   Button,
   InputAdornment,
   Typography,
   TextField,
-  Paper
+  Paper,
+  Alert,
+  Zoom
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import useAuth from "../../../hooks/useAuth"
-import { createCategory } from "../../../services/categoriesService";
+import useAuth from "../../../hooks/useAuth";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 
 export default function CreateCategory(props) {
-  let  { auth } = useAuth();
+  let { auth } = useAuth();
+  let axiosPrivateForm = useAxiosPrivateForm();
 
   let categoryNameRef = useRef();
   let categoryDescriptionRef = useRef();
-  let categoryImageRef = useRef();
 
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
 
-  const [createCategoryResponseMessage, setCreateCategoryResponseMessage] = useState("");
-  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] = useState("");
+  const [createCategoryResponseMessage, setCreateCategoryResponseMessage] =
+    useState("");
+  const [createCategoryErrorMessage, setCreateCategoryErrorMessage] =
+    useState("");
 
- function onCreateCategory(e) {
+  function onCreateCategory(e) {
     e.preventDefault();
 
     const formCategoryName = categoryNameRef.current.value;
     const formCategoryDescription = categoryDescriptionRef.current.value;
-    const formCategoryImage = document.getElementById("category-image").files[0];
+    const formCategoryImage =
+      document.getElementById("category-image").files[0];
 
-    if(formCategoryName.trim().length < 1) {
+    if (formCategoryName.trim().length < 1) {
       setCreateCategoryResponseMessage("");
-      setCreateCategoryErrorMessage("Category name must contain almost 1 character");
+      setCreateCategoryErrorMessage(
+        "Category name must contain almost 1 character"
+      );
       return;
     }
 
@@ -49,21 +57,36 @@ export default function CreateCategory(props) {
     formData.append("image", formCategoryImage);
     formData.append("createdBy", auth.userId);
 
-    createNewCategory(formData);
+    createCategory(formData);
   }
 
-  async function createNewCategory(formData) {
+  async function createCategory(formData) {
     try {
-       const response = await createCategory(formData, auth.jwtToken);
-       setCreateCategoryResponseMessage(`Category ${formData.get("name")} successfully created`);
-       props.categoriesListChanged(response?.data);
-       refreshState();
+      const controller = new AbortController();
+
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.categories.createCategory,
+        formData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setCreateCategoryResponseMessage(
+        `Category ${formData.get("name")} successfully created`
+      );
+      props.categoriesListChanged(response?.data);
+      refreshState();
     } catch (error) {
-       setCreateCategoryResponseMessage("");
-        if(error?.response?.status === 401 || error?.response?.status === 403) {
-          setCreateCategoryErrorMessage("You have no permissions to perform the operation");
-        } else {
-          setCreateCategoryErrorMessage("Error! Check if all fields are filled");
+      setCreateCategoryResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCreateCategoryErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setCreateCategoryErrorMessage("Error! Check if all fields are filled");
       }
       console.log(error.message);
     }
@@ -84,33 +107,25 @@ export default function CreateCategory(props) {
 
   const InputBox = styled(Box)({
     marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4)
+    marginRight: theme.spacing(4),
   });
 
   const CreateCategoryButton = styled(Button)({
-   width: "100%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1)
-  })
-
-  const ResponseMessage = styled(Typography)({
-    color: theme.palette.success.main
+    width: "100%",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
   });
 
-  const ErrorResponseMessage = styled(Typography)({
-    color: theme.palette.error.main
-  })
-
   return (
-    <Paper sx={{padding: theme.spacing(2)}}>
-       <Typography
-          sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
-          id="transition-modal-title"
-          variant="h6"
-          component="h2"
-        >
-           ADD NEW CATEGORY
-        </Typography>
+    <Paper sx={{ padding: theme.spacing(2) }}>
+      <Typography
+        sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
+        id="transition-modal-title"
+        variant="h6"
+        component="h2"
+      >
+        ADD NEW CATEGORY
+      </Typography>
       <form onSubmit={onCreateCategory}>
         <InputBox>
           <ProductInfoInput
@@ -124,7 +139,6 @@ export default function CreateCategory(props) {
         <InputBox>
           <ProductInfoInput
             required
-            inputRef={categoryImageRef}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -155,10 +169,14 @@ export default function CreateCategory(props) {
           </CreateCategoryButton>
         </InputBox>
       </form>
-      <ResponseMessage>{createCategoryResponseMessage}</ResponseMessage>
-        <ErrorResponseMessage>
-          {createCategoryErrorMessage}
-        </ErrorResponseMessage>
+      { createCategoryResponseMessage
+         ? <Zoom in={createCategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{createCategoryResponseMessage}</Alert></Zoom>
+         : ""
+      }
+        { createCategoryErrorMessage
+         ? <Zoom in={createCategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{createCategoryErrorMessage}</Alert></Zoom>
+         : ""
+      }
     </Paper>
   );
 }
