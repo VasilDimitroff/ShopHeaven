@@ -21,7 +21,9 @@ export const ApiEndpoints = {
     },
     subcategories: {
         createSubcategory : "api/subcategories/create",
-        editSubcategory: "api/subcategories/edit"
+        editSubcategory: "api/subcategories/edit",
+        deleteSubcategory: "api/subcategories/delete",
+        undeleteSubcategory: "api/subcategories/undelete"
     },
     products: {
         createProduct: apiUrl + "api/products/create",

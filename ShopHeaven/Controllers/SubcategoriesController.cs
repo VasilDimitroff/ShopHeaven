@@ -44,5 +44,20 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
+        public async Task<ActionResult<SubcategoriesResponseModel>> Delete([FromBody] DeleteSubcategoryRequestModel model)
+        {
+            try
+            {
+                ;
+               // SubcategoriesResponseModel updatedSubcategory = await this.subcategoriesService.EditSubcategoryAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

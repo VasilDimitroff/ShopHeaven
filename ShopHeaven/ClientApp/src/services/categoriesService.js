@@ -31,6 +31,7 @@ export async function editCategory(formData, token){
     return response;
 }
 
+//replaced
 export async function deleteCategory(categoryId, token){
 
   const response = await axios.post(
@@ -48,6 +49,7 @@ export async function deleteCategory(categoryId, token){
   return response;
 }
 
+//replaced
 export async function undeleteCategory(categoryId, token){
 
   const response = await axios.post(

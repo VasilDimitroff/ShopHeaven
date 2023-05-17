@@ -130,7 +130,7 @@ export default function AdminCategoriesRow(props) {
 
   return (
     <Fragment>
-      <TableRow  sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}>
           <IconButton
             aria-label="expand row"

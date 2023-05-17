@@ -16,7 +16,6 @@ export const theme  = createTheme({
         },
         dropdown: {
             main: "#fff",         
-            //main: "#dde7f5",
             color: "#000",
             boxShadow: "1px 4px 6px 4px rgba(0,0,0,0.42)",     
         },
