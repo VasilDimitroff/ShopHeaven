@@ -126,7 +126,7 @@ export default function DeleteCategoryForm(props) {
         deleteResponse ? (
           <Alert severity="warning">
             <AlertTitle>
-              Category {category.name} successfuly deleted!
+              Category {category.name} successfully deleted!
             </AlertTitle>
             <ul>
               <li>1 category deleted</li>
@@ -171,7 +171,7 @@ export default function DeleteCategoryForm(props) {
         ) : (
           <Alert severity="success">
             <AlertTitle>
-              Category {category.name} successfuly revealed!
+              Category {category.name} successfully revealed!
             </AlertTitle>
             <ul>
               <li>1 category revealed</li>

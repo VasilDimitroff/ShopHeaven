@@ -9,6 +9,6 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<SubcategoriesResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model);
 
-        Task<DeleteSubcategoryResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete);
+        Task<DeleteSubcategoryBaseResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete);
     }
 }

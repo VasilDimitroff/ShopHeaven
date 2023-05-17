@@ -2,7 +2,6 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
-using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Data.Services
@@ -68,7 +67,8 @@ namespace ShopHeaven.Data.Services
             return newSubcategoryResponseModel;
         }
 
-        public async Task<DeleteSubcategoryResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
+        //this method is used for undelete too dependent of bool parameter
+        public async Task<DeleteSubcategoryBaseResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
         {
             var subcategoryToDelete = await this.db.SubCategories
               .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != delete);
@@ -179,22 +179,45 @@ namespace ShopHeaven.Data.Services
 
             await this.db.SaveChangesAsync();
 
-            var responseModel = new DeleteSubcategoryResponseModel()
+            if(delete)
             {
-                SubcategoryId = subcategoryToDelete.Id,
-                Name = subcategoryToDelete.Name,
-                DeletedCarts = deletedCarts,
-                DeletedImages = deletedImages,
-                DeletedLabels = deletedLabels,
-                DeletedOrders = deletedOrders,
-                DeletedProducts = deletedProducts,
-                DeletedReviews = deletedReviews,
-                DeletedSpecifications = deletedSpecifications,
-                DeletedTags = deletedTags,
-                DeletedWishlists = deletedWishlists
-            };
+                var responseModel = new DeleteSubcategoryResponseModel()
+                {
+                    SubcategoryId = subcategoryToDelete.Id,
+                    Name = subcategoryToDelete.Name,
+                    DeletedCarts = deletedCarts,
+                    DeletedImages = deletedImages,
+                    DeletedLabels = deletedLabels,
+                    DeletedOrders = deletedOrders,
+                    DeletedProducts = deletedProducts,
+                    DeletedReviews = deletedReviews,
+                    DeletedSpecifications = deletedSpecifications,
+                    DeletedTags = deletedTags,
+                    DeletedWishlists = deletedWishlists
+                };
 
-            return responseModel;
+                return responseModel;
+            }
+            else
+            {
+                var responseModel = new UndeleteSubcategoryResponseModel()
+                {
+                    SubcategoryId = subcategoryToDelete.Id,
+                    Name = subcategoryToDelete.Name,
+                    RevealedCarts = deletedCarts,
+                    RevealedImages = deletedImages,
+                    RevealedLabels = deletedLabels,
+                    RevealedOrders = deletedOrders,
+                    RevealedProducts = deletedProducts,
+                    RevealedReviews = deletedReviews,
+                    RevealedSpecifications = deletedSpecifications,
+                    RevealedTags = deletedTags,
+                    RevealedWishlists = deletedWishlists
+                };
+
+                return responseModel;
+            }
+
         }
 
         public async Task<SubcategoriesResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model)

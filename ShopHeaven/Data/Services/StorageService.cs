@@ -35,9 +35,9 @@ namespace ShopHeaven.Data.Services
                     Response<BlobContentInfo> response = await blobClient.UploadAsync(stream);
                     imageUrls.Add(blobClient.Uri.AbsoluteUri);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -46,7 +46,7 @@ namespace ShopHeaven.Data.Services
 
         private string GetFileName(string fileName, string userId)
         {
-            string randomNumber = new Random().Next(1000, 1000000).ToString();
+            string randomNumber = new Random().Next(100, int.MaxValue).ToString();
             string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
 
             if (fileNameWithoutExt.Length > 15)
