@@ -17,7 +17,8 @@ export default function DeleteCategoryForm(props) {
   let axiosPrivate = useAxiosPrivate();
 
   const [category, setCategory] = useState(props.category);
-  const [response, setResponse] = useState(undefined);
+  const [deleteResponse, setDeleteResponse] = useState(undefined);
+  const [undeleteResponse, setUndeleteResponse] = useState(undefined);
   const [undoDeleteButtonClicked, setUndoDeleteButtonClicked] = useState(false);
   const [deleteCategoryResponseMessage, setDeleteCategoryResponseMessage] =
     useState("");
@@ -50,8 +51,10 @@ export default function DeleteCategoryForm(props) {
       setDeleteCategoryResponseMessage(
         "Category " + category.name + " deleted!"
       );
-      setResponse(response?.data);
+      setUndeleteResponse(undefined);
+      setDeleteResponse(response?.data);
       setUndoDeleteButtonClicked(false);
+      console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -86,8 +89,9 @@ export default function DeleteCategoryForm(props) {
       setDeleteCategoryResponseMessage(
         "Category " + category.name + " undeleted!"
       );
-      setResponse(response?.data);
-      setUndoDeleteButtonClicked(true)
+      setDeleteResponse(undefined);
+      setUndeleteResponse(response?.data);
+      setUndoDeleteButtonClicked(true);
       console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
@@ -118,44 +122,86 @@ export default function DeleteCategoryForm(props) {
 
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
-      {response ? (
-        <Alert severity="info">
-          <AlertTitle>
-            Category {category.name} state successfuly updated!
-          </AlertTitle>
-          <ul>
-            <li>1 category affected</li>
-            <li>{response?.deletedSubcategories} subcategories affected</li>
-            <li>{response?.deletedProducts} products affected</li>
-            <li>{response?.deletedReviews} reviews affected</li>
-            <li>{response?.deletedTags} tags affected</li>
-            <li>{response?.deletedCarts} cart products affected</li>
-            <li>{response?.deletedWishlists} wishlist products affected</li>
-            <li>{response?.deletedOrders} order products affected</li>
-            <li>{response?.deletedLabels} labels of products affected</li>
-            <li>{response?.deletedImages} product images affected</li>
-            <li>
-              {response?.deletedSpecifications} product specifications affected
-            </li>
-          </ul>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {
-              !undoDeleteButtonClicked
-              ?
-              (<Button
-              size="small"
-              variant="contained"
-              color="error"
-              onClick={onUndeleteCategory}>UNDO DELETE
-              </Button>)
-              :
-              ""
-            }
-            <Button size="small" variant="contained" onClick={refreshPage}>
-              REFRESH
-            </Button>
-          </Box>
-        </Alert>
+      {deleteResponse || undeleteResponse ? (
+        deleteResponse ? (
+          <Alert severity="warning">
+            <AlertTitle>
+              Category {category.name} successfuly deleted!
+            </AlertTitle>
+            <ul>
+              <li>1 category deleted</li>
+              <li>
+                {deleteResponse?.deletedSubcategories} subcategories deleted
+              </li>
+              <li>{deleteResponse?.deletedProducts} products deleted</li>
+              <li>{deleteResponse?.deletedReviews} reviews deleted</li>
+              <li>{deleteResponse?.deletedTags} tags deleted</li>
+              <li>{deleteResponse?.deletedCarts} cart products deleted</li>
+              <li>
+                {deleteResponse?.deletedWishlists} wishlist products deleted
+              </li>
+              <li>{deleteResponse?.deletedOrders} order products deleted</li>
+              <li>
+                {deleteResponse?.deletedLabels} labels of products deleted
+              </li>
+              <li>{deleteResponse?.deletedImages} product images deleted</li>
+              <li>
+                {deleteResponse?.deletedSpecifications} product specifications
+                deleted
+              </li>
+            </ul>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              {!undoDeleteButtonClicked ? (
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={onUndeleteCategory}
+                >
+                  UNDO DELETE
+                </Button>
+              ) : (
+                ""
+              )}
+              <Button size="small" variant="contained" onClick={refreshPage}>
+                REFRESH
+              </Button>
+            </Box>
+          </Alert>
+        ) : (
+          <Alert severity="success">
+            <AlertTitle>
+              Category {category.name} successfuly revealed!
+            </AlertTitle>
+            <ul>
+              <li>1 category revealed</li>
+              <li>
+                {undeleteResponse?.revealedSubcategories} subcategories revealed
+              </li>
+              <li>{undeleteResponse?.revealedProducts} products revealed</li>
+              <li>{undeleteResponse?.revealedReviews} reviews revealed</li>
+              <li>{undeleteResponse?.revealedTags} tags revealed</li>
+              <li>{undeleteResponse?.revealedCarts} cart products revealed</li>
+              <li>
+                {undeleteResponse?.revealedWishlists} wishlist products revealed
+              </li>
+              <li>{undeleteResponse?.revealedOrders} order products revealed</li>
+              <li>
+                {undeleteResponse?.revealedLabels} labels of products revealed
+              </li>
+              <li>{undeleteResponse?.revealedImages} product images revealed</li>
+              <li>
+                {undeleteResponse?.revealedSpecifications} product specifications
+                revealed
+              </li>
+            </ul>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button size="small" variant="contained" onClick={refreshPage}>
+                REFRESH
+              </Button>
+            </Box>
+          </Alert>
+        )
       ) : (
         <Fragment>
           <Box

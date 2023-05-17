@@ -102,11 +102,11 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
-        public async Task<IActionResult> Delete([FromBody] DeleteCategoryRequestModel model)
+        public async Task<ActionResult<DeleteCategoryResponseModel>> Delete([FromBody] DeleteCategoryRequestModel model)
         {
             try
             {
-                var deletedCategory = await this.categoriesService.DeleteCategoryAsync(model, true);
+                var deletedCategory = (DeleteCategoryResponseModel) await this.categoriesService.DeleteCategoryAsync(model, true);
                 return Ok(deletedCategory);
             }
             catch (Exception ex)
@@ -116,11 +116,11 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
-        public async Task<IActionResult> Undelete([FromBody] UndeleteCategoryRequestModel model)
+        public async Task<ActionResult<UndeleteCategoryResponseModel>> Undelete([FromBody] UndeleteCategoryRequestModel model)
         {
             try
             {
-                var undeletedCategory = await this.categoriesService.DeleteCategoryAsync(model, false);
+                var undeletedCategory = (UndeleteCategoryResponseModel) await this.categoriesService.DeleteCategoryAsync(model, false);
                 return Ok(undeletedCategory);
             }
             catch (Exception ex)

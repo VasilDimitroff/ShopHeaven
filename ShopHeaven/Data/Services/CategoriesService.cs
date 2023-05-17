@@ -84,7 +84,7 @@ namespace ShopHeaven.Data.Services
         }
 
         //this method works for delete and undelete dependent of delete parameter
-        public async Task<DeleteCategoryResponseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
+        public async Task<DeleteCategoryBaseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
         {
             var categoryToDelete = await this.db.MainCategories
                 .FirstOrDefaultAsync(x => x.Id == model.CategoryId && x.IsDeleted != delete);
@@ -215,23 +215,47 @@ namespace ShopHeaven.Data.Services
 
             await this.db.SaveChangesAsync();
 
-            var responseModel = new DeleteCategoryResponseModel()
+            if (delete == true)
             {
-                CategoryId = categoryToDelete.Id,
-                Name = categoryToDelete.Name,
-                DeletedSubcategories = deletedSubcategories,
-                DeletedCarts = deletedCarts,
-                DeletedImages = deletedImages,
-                DeletedLabels = deletedLabels,
-                DeletedOrders = deletedOrders,
-                DeletedProducts = deletedProducts,
-                DeletedReviews = deletedReviews,
-                DeletedSpecifications = deletedSpecifications,
-                DeletedTags = deletedTags,
-                DeletedWishlists = deletedWishlists
-            };
+                var responseModel = new DeleteCategoryResponseModel()
+                {
+                    CategoryId = categoryToDelete.Id,
+                    Name = categoryToDelete.Name,
+                    DeletedSubcategories = deletedSubcategories,
+                    DeletedCarts = deletedCarts,
+                    DeletedImages = deletedImages,
+                    DeletedLabels = deletedLabels,
+                    DeletedOrders = deletedOrders,
+                    DeletedProducts = deletedProducts,
+                    DeletedReviews = deletedReviews,
+                    DeletedSpecifications = deletedSpecifications,
+                    DeletedTags = deletedTags,
+                    DeletedWishlists = deletedWishlists
+                };
 
-            return responseModel;
+                return responseModel;
+            }
+
+            else
+            {
+                var responseModel = new UndeleteCategoryResponseModel()
+                {
+                    CategoryId = categoryToDelete.Id,
+                    Name = categoryToDelete.Name,
+                    RevealedSubcategories = deletedSubcategories,
+                    RevealedCarts = deletedCarts,
+                    RevealedImages = deletedImages,
+                    RevealedLabels = deletedLabels,
+                    RevealedOrders = deletedOrders,
+                    RevealedProducts = deletedProducts,
+                    RevealedReviews = deletedReviews,
+                    RevealedSpecifications = deletedSpecifications,
+                    RevealedTags = deletedTags,
+                    RevealedWishlists = deletedWishlists
+                };
+
+                return responseModel;
+            }   
         }
 
         public async Task<EditCategoryResponseModel> EditCategoryAsync(EditCategoryRequestModel model)

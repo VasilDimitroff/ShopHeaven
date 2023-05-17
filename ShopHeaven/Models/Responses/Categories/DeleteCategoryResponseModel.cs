@@ -1,11 +1,7 @@
 ﻿namespace ShopHeaven.Models.Responses.Categories
 {
-    public class DeleteCategoryResponseModel
+    public class DeleteCategoryResponseModel : DeleteCategoryBaseModel
     {
-        public string CategoryId { get; set; }
-
-        public string Name { get; set; }
-
         public int DeletedSubcategories { get; set; }
 
         public int DeletedProducts { get; set; }
