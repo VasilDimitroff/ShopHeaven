@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -22,30 +22,64 @@ import {
   ArrowBackIos,
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ApiEndpoints } from "../../api/endpoints";
+import axios from "../../api/axios";
 
-let subcategories = [];
 let mainCategoryOfSubcategoriesName;
 
-export default function CategoriesHomeList(props) {
+export default function CategoriesHomeList() {
+  const [showSubmenu, setShowSubmenu] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+
   let categoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 9;
   let subCategoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true
       ? categoriesToShow + 1
       : subcategories.length;
-  const [showSubmenu, setShowSubmenu] = useState(false);
 
-  function handleShowSubmenu(value) {
-    setShowSubmenu(value);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const effectRun = useRef(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(ApiEndpoints.categories.getCategoryNames, {
+          signal: controller.signal,
+        });
+        console.log(response?.data);
+
+        setCategories(response?.data);
+      } catch (error) {
+        console.log(error);
+        navigate("/login", { state: { from: location }, replace: true }); 
+      }
+    };
+
+    if (effectRun.current) {
+      getCategories();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
+
+  function handleShowSubmenu() {
+    setShowSubmenu(prev => !prev);
   }
 
-  function setSubCategoriesData(mainCategoryId, show) {
-    handleShowSubmenu(show);
-    let searchedMainCategory = props.categories.find(
-      (category) => category.id === mainCategoryId
-    );
-    subcategories = searchedMainCategory.subcategories;
-    mainCategoryOfSubcategoriesName = searchedMainCategory.name;
+  function setSubCategoriesData(mainCategoryId) {
+    setShowSubmenu(true);
+    setSubcategories(sub => categories.find(cat => cat.id == mainCategoryId).subcategories);
+    mainCategoryOfSubcategoriesName = categories.find(cat => cat.id == mainCategoryId).name;
   }
 
   const ViewAllButton = styled(Button)({
@@ -53,7 +87,7 @@ export default function CategoriesHomeList(props) {
     paddingBottom: theme.spacing(1.75),
     paddingTop: theme.spacing(1.75),
     backgroundColor: theme.palette.secondary.main,
-    display: props.categories.length > categoriesToShow ? "block" : "none",
+    display: categories.length > categoriesToShow ? "block" : "none",
     "&:hover": {},
     [theme.breakpoints.down("md")]: {
       color: theme.palette.white.main,
@@ -222,11 +256,11 @@ export default function CategoriesHomeList(props) {
   });
 
   return (
-    <CategoriesWrapper>
+    <CategoriesWrapper sx={{border: "2px solid black"}}>
       <StyledList component="nav" aria-label="mailbox folders">
-        <MenuHolder onMouseLeave={() => handleShowSubmenu(false)}>
+        <MenuHolder onMouseLeave={() => handleShowSubmenu()}>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
-          {props.categories.slice(0, categoriesToShow).map((category) => {
+          {categories.slice(0, categoriesToShow).map((category) => {
             return (
               <div key={category.id}>
                 <Divider />
@@ -241,8 +275,7 @@ export default function CategoriesHomeList(props) {
                 >
                   <Box
                     sx={{ display: "flex" }}
-                    onClick={() => setSubCategoriesData(category.id, true)}
-                    onMouseLeave={() => handleShowSubmenu(false)}
+                    onClick={() => setSubCategoriesData(category.id)}
                   >
                     <CategoryItem>
                       <RadioButtonChecked />
@@ -268,11 +301,10 @@ export default function CategoriesHomeList(props) {
 
         <Fade in={showSubmenu} timeout={400}>
           <Submenu
-            onMouseEnter={() => handleShowSubmenu(true)}
-            onMouseLeave={() => handleShowSubmenu(false)}
+            onMouseEnter={() => handleShowSubmenu()}
           >
             <SubcategoriesHeading>
-              <CategoryItem onClick={() => handleShowSubmenu(false)}>
+              <CategoryItem onClick={() => setShowSubmenu(true)}>
                 <ArrowBackIos />
                 <MainCategoryNameText variant="h5">
                   {mainCategoryOfSubcategoriesName}
@@ -286,9 +318,9 @@ export default function CategoriesHomeList(props) {
             </MainCategoryName>
             {subcategories
               .slice(0, subCategoriesToShow)
-              .map((subcategory, index) => {
+              .map((subcategory) => {
                 return (
-                  <Box key={index}>
+                  <Box key={subcategory.id}>
                     <SubCategoryItem>
                       <Label sx={{ fontSize: "14px" }} />
                       <Typography
@@ -297,7 +329,7 @@ export default function CategoriesHomeList(props) {
                           fontSize: "16px",
                         }}
                       >
-                        {subcategory}
+                        {subcategory.name}
                       </Typography>
                     </SubCategoryItem>
                     <Divider />

@@ -55,6 +55,22 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpGet, Route(nameof(GetCategoryNames))]
+        public async Task<IActionResult> GetCategoryNames()
+        {
+            try
+            {
+                var categoriesWithSubcategories =
+                    await this.categoriesService.GetAllCategoryNamesAsync();
+
+                return Ok(categoriesWithSubcategories);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<IActionResult> Edit([FromForm] EditCategoryRequestModel model)
         {

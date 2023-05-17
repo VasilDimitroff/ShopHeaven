@@ -15,6 +15,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync();
 
+        Task<List<CategoryNamesResponseModel>> GetAllCategoryNamesAsync();
+
         Task<DeleteCategoryResponseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete);
     }
 }

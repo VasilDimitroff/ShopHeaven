@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Subcategories;
-using System.Linq;
 
 namespace ShopHeaven.Data.Services
 {
@@ -311,6 +309,27 @@ namespace ShopHeaven.Data.Services
                 .ToListAsync();
 
             return allCategories;
+        }
+
+        public async Task<List<CategoryNamesResponseModel>> GetAllCategoryNamesAsync()
+        {
+            var categories = await this.db.MainCategories
+                .Where(x => x.IsDeleted != true)
+                .Select(x => new CategoryNamesResponseModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Subcategories = x.SubCategories
+                    .Where(x => x.IsDeleted != true)
+                    .Select(s => new SubcategoryNamesResponseModel {
+                        Id = s.Id,
+                        Name = s.Name,
+                    })
+                    .ToList()
+                })
+                .ToListAsync();
+
+            return categories;
         }
 
         public async Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id)

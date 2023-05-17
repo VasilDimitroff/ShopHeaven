@@ -16,6 +16,7 @@ export const ApiEndpoints = {
         getAll: "api/categories/getall",
         deleteCategory: "api/categories/delete",
         undeleteCategory: "api/categories/undelete",
+        getCategoryNames: "api/categories/getcategorynames",
         getCategory: apiUrl + "api/categories/get?id=",
     },
     subcategories: {
