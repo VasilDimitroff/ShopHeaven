@@ -6,7 +6,7 @@ import {
   Typography,
   TextField,
   Alert,
-  Zoom
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
@@ -16,7 +16,7 @@ import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 
 export default function CreateSubcategory(props) {
-  let  { auth } = useAuth();
+  let { auth } = useAuth();
   let axiosPrivateForm = useAxiosPrivateForm();
 
   let subcategoryNameRef = useRef();
@@ -25,19 +25,26 @@ export default function CreateSubcategory(props) {
   const [subcategoryName, setSubcategoryName] = useState("");
   const [subcategoryDescription, setSubcategoryDescription] = useState("");
 
-  const [createSubcategoryResponseMessage, setCreateSubcategoryResponseMessage] = useState("");
-  const [createSubcategoryErrorMessage, setCreateSubcategoryErrorMessage] = useState("");
+  const [
+    createSubcategoryResponseMessage,
+    setCreateSubcategoryResponseMessage,
+  ] = useState("");
+  const [createSubcategoryErrorMessage, setCreateSubcategoryErrorMessage] =
+    useState("");
 
- function onCreateSubcategory(e) {
+  function onCreateSubcategory(e) {
     e.preventDefault();
 
     const formSubCategoryName = subcategoryNameRef.current.value;
     const formSubCategoryDescription = subcategoryDescriptionRef.current.value;
-    const formSubCategoryImage = document.getElementById("subcategory-image").files[0];
+    const formSubCategoryImage =
+      document.getElementById("subcategory-image").files[0];
 
-    if(formSubCategoryName.trim().length < 1) {
+    if (formSubCategoryName.trim().length < 1) {
       setCreateSubcategoryResponseMessage("");
-      setCreateSubcategoryErrorMessage("Subcategory name must contain almost 1 character");
+      setCreateSubcategoryErrorMessage(
+        "Subcategory name must contain almost 1 character"
+      );
       return;
     }
 
@@ -69,16 +76,22 @@ export default function CreateSubcategory(props) {
 
       controller.abort();
 
-       setCreateSubcategoryResponseMessage("Subcategory" + formData.get["name"] + "successfully created!");
-       props.subcategoriesUpdated(response?.data)
-       console.log("RESP MESS: " + createSubcategoryResponseMessage)
+      setCreateSubcategoryResponseMessage(
+        "Subcategory" + formData.get["name"] + "successfully created!"
+      );
+      props.subcategoriesUpdated(response?.data);
+      console.log("RESP MESS: " + createSubcategoryResponseMessage);
     } catch (error) {
       setCreateSubcategoryResponseMessage("");
 
-        if(error?.response?.status === 401 || error?.response?.status === 403) {
-          setCreateSubcategoryErrorMessage("You have no permissions to perform the operation");
-        } else {
-          setCreateSubcategoryErrorMessage("Error! Check if all fields are filled");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCreateSubcategoryErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setCreateSubcategoryErrorMessage(
+          "Error! Check if all fields are filled"
+        );
       }
 
       console.log(error.message);
@@ -94,25 +107,25 @@ export default function CreateSubcategory(props) {
 
   const InputBox = styled(Box)({
     marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4)
+    marginRight: theme.spacing(4),
   });
 
   const CreateSubCategoryButton = styled(Button)({
-   width: "100%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1)
-  })
+    width: "100%",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  });
 
   return (
     <Fragment>
-       <Typography
-          sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
-          id="transition-modal-title"
-          variant="h6"
-          component="h2"
-        >
-           ADD NEW SUBCATEGORY
-        </Typography>
+      <Typography
+        sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
+        id="transition-modal-title"
+        variant="h6"
+        component="h2"
+      >
+        ADD NEW SUBCATEGORY
+      </Typography>
       <form onSubmit={onCreateSubcategory}>
         <InputBox>
           <StyledInput
@@ -151,19 +164,33 @@ export default function CreateSubcategory(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateSubCategoryButton type="submit" size="large" variant="contained">
+          <CreateSubCategoryButton
+            type="submit"
+            size="large"
+            variant="contained"
+          >
             Create subcategory
           </CreateSubCategoryButton>
         </InputBox>
-      </form><p>{createSubcategoryErrorMessage} {createSubcategoryResponseMessage}</p>
-      { createSubcategoryResponseMessage
-         ? <Zoom in={createSubcategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{createSubcategoryResponseMessage}</Alert></Zoom>
-         : ""
-      }
-        { createSubcategoryErrorMessage
-         ? <Zoom in={createSubcategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{createSubcategoryErrorMessage}</Alert></Zoom>
-         : ""
-      }
+      </form>
+      {createSubcategoryResponseMessage ? (
+        <Zoom in={createSubcategoryResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {createSubcategoryResponseMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+      {createSubcategoryErrorMessage ? (
+        <Zoom in={createSubcategoryErrorMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            {createSubcategoryErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
     </Fragment>
   );
 }

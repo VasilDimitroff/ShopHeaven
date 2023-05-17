@@ -6,34 +6,38 @@ import {
   Typography,
   TextField,
   Paper,
+  Zoom,
+  Alert
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
-import { editSubcategory } from "../../../../services/categoriesService";
+import { ApiEndpoints } from "../../../../api/endpoints";
+import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../../hooks/useAuth";
 
 export default function EditSubcategoryForm(props) {
   let { auth } = useAuth();
+  let axiosPrivateForm = useAxiosPrivateForm();
 
   let subcategoryNameRef = useRef();
   let subcategoryDescriptionRef = useRef();
-  let subcategoryImageRef = useRef();
 
-  const [subcategory, setSubcategory] = useState(props.subcategory)
+  const [subcategory, setSubcategory] = useState(props.subcategory);
 
   const [editSubcategoryResponseMessage, setEditSubcategoryResponseMessage] =
     useState("");
   const [editSubcategoryErrorMessage, setEditSubcategoryErrorMessage] =
     useState(false);
 
- function onEditSubcategory(e) {
+  function onEditSubcategory(e) {
     e.preventDefault();
 
     const formSubcategoryName = subcategoryNameRef.current.value;
     const formSubcategoryDescription = subcategoryDescriptionRef.current.value;
-    const formSubcategoryImage = document.getElementById("edit-subcategory-image")
-      .files[0];
+    const formSubcategoryImage = document.getElementById(
+      "edit-subcategory-image"
+    ).files[0];
 
     if (formSubcategoryName.trim().length < 1) {
       setEditSubcategoryResponseMessage("");
@@ -63,9 +67,22 @@ export default function EditSubcategoryForm(props) {
 
   async function editCurrentSubcategory(formData) {
     try {
-      const response = await editSubcategory(formData, auth.jwtToken);
-      setEditSubcategoryErrorMessage("")
-      setEditSubcategoryResponseMessage("Subcategory now has name " + formData.get("name"));
+      const controller = new AbortController();
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.subcategories.editSubcategory,
+        formData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setEditSubcategoryErrorMessage("");
+      setEditSubcategoryResponseMessage(
+        "Subcategory now has name " + formData.get("name")
+      );
+      console.log("MSG: " + editSubcategoryResponseMessage)
       setSubcategory(response?.data);
       props.subcategoryUpdated(response?.data);
     } catch (error) {
@@ -99,31 +116,21 @@ export default function EditSubcategoryForm(props) {
     marginBottom: theme.spacing(1),
   });
 
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main,
-  });
-
   const ImageHolder = styled(Box)({
     position: "relative",
     marginLeft: theme.spacing(4),
     marginTop: theme.spacing(3),
-  })
+  });
 
   return (
-    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2)}}>
+    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
         variant="h6"
         component="h2"
       >
-        Edit Subcategory {(subcategory.name).toUpperCase()}
+        Edit Subcategory {subcategory.name.toUpperCase()}
       </Typography>
 
       <form onSubmit={onEditSubcategory}>
@@ -137,11 +144,15 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <ImageHolder>
-          <img style={{objectFit: "cover"}} width="250px" height="150px" src={subcategory.image} />
+          <img
+            style={{ objectFit: "cover" }}
+            width="250px"
+            height="150px"
+            src={subcategory.image}
+          />
         </ImageHolder>
         <InputBox>
           <StyledInput
-            inputRef={subcategoryImageRef}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -154,8 +165,15 @@ export default function EditSubcategoryForm(props) {
             variant="standard"
             id="edit-subcategory-image"
           />
-          <ul style={{color: theme.palette.warning.main, marginTop: theme.spacing(2)}}>
-            <li>Warning! If you submit a new image, the old one will be deleted</li>
+          <ul
+            style={{
+              color: theme.palette.warning.main,
+              marginTop: theme.spacing(2),
+            }}
+          >
+            <li>
+              Warning! If you submit a new image, the old one will be deleted
+            </li>
             <li>.jpg, .jpeg and .png file formats are allowed</li>
           </ul>
         </InputBox>
@@ -175,8 +193,24 @@ export default function EditSubcategoryForm(props) {
           </CreateCategoryButton>
         </InputBox>
       </form>
-      <ResponseMessage>{editSubcategoryResponseMessage}</ResponseMessage>
-      <ErrorResponseMessage>{editSubcategoryErrorMessage}</ErrorResponseMessage>
+      {editSubcategoryResponseMessage ? (
+        <Zoom in={editSubcategoryResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {editSubcategoryResponseMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+      {editSubcategoryErrorMessage ? (
+        <Zoom in={editSubcategoryErrorMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            {editSubcategoryErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
     </Paper>
   );
 }

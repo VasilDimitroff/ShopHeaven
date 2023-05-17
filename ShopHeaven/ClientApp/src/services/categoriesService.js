@@ -81,6 +81,7 @@ export async function createSubcategory(formData, token){
     return response;
 }
 
+//replaced
 export async function editSubcategory(formData, token){
 
   const response = await axios.post(
