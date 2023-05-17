@@ -78,7 +78,6 @@ export default function CreateCategory(props) {
         `Category ${formData.get("name")} successfully created`
       );
       props.categoriesListChanged(response?.data);
-      refreshState();
     } catch (error) {
       setCreateCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -90,12 +89,6 @@ export default function CreateCategory(props) {
       }
       console.log(error.message);
     }
-  }
-
-  function refreshState() {
-    setCreateCategoryErrorMessage("");
-    setCategoryName("");
-    setCategoryDescription("");
   }
 
   const ProductInfoInput = styled(TextField)({

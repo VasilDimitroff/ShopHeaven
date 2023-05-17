@@ -25,6 +25,9 @@ export default function EditCategoryForm(props) {
 
   const [category, setCategory] = useState(props.category);
 
+  const [subcategoryName, setSubategoryName] = useState("");
+  const [subcategoryDescription, setSubcategoryDescription] = useState("");
+
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
   const [editCategoryErrorMessage, setEditCategoryErrorMessage] =

@@ -5,19 +5,22 @@ import {
   InputAdornment,
   Typography,
   TextField,
+  Alert,
+  Zoom
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
 import { PhotoCamera } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
-import { createSubcategory } from "../../../../services/categoriesService";
+import { ApiEndpoints } from "../../../../api/endpoints";
+import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 
 export default function CreateSubcategory(props) {
   let  { auth } = useAuth();
+  let axiosPrivateForm = useAxiosPrivateForm();
 
   let subcategoryNameRef = useRef();
   let subcategoryDescriptionRef = useRef();
-  let subcategoryImageRef = useRef();
 
   const [subcategoryName, setSubcategoryName] = useState("");
   const [subcategoryDescription, setSubcategoryDescription] = useState("");
@@ -49,16 +52,26 @@ export default function CreateSubcategory(props) {
     formData.append("categoryId", props.categoryId);
     formData.append("createdBy", auth.userId);
 
-    createNewSubCategory(formData);
+    createSubcategory(formData);
   }
 
-  async function createNewSubCategory(formData) {
+  async function createSubcategory(formData) {
     try {
-       const response = await createSubcategory(formData, auth.jwtToken);
+      const controller = new AbortController();
+
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.subcategories.createSubcategory,
+        formData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
 
        setCreateSubcategoryResponseMessage("Subcategory" + formData.get["name"] + "successfully created!");
-       refreshState();
        props.subcategoriesUpdated(response?.data)
+       console.log("RESP MESS: " + createSubcategoryResponseMessage)
     } catch (error) {
       setCreateSubcategoryResponseMessage("");
 
@@ -67,14 +80,9 @@ export default function CreateSubcategory(props) {
         } else {
           setCreateSubcategoryErrorMessage("Error! Check if all fields are filled");
       }
+
       console.log(error.message);
     }
-  }
-
-  function refreshState() {
-    setCreateSubcategoryErrorMessage("");
-    setSubcategoryName("");
-    setSubcategoryDescription("");
   }
 
   const StyledInput = styled(TextField)({
@@ -93,14 +101,6 @@ export default function CreateSubcategory(props) {
    width: "100%",
    marginTop: theme.spacing(3),
    marginBottom: theme.spacing(1)
-  })
-
-  const ResponseMessage = styled(Typography)({
-    color: theme.palette.success.main
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    color: theme.palette.error.main
   })
 
   return (
@@ -126,7 +126,6 @@ export default function CreateSubcategory(props) {
         <InputBox>
           <StyledInput
             required
-            inputRef={subcategoryImageRef}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -156,11 +155,15 @@ export default function CreateSubcategory(props) {
             Create subcategory
           </CreateSubCategoryButton>
         </InputBox>
-      </form>
-      <ResponseMessage>{createSubcategoryResponseMessage}</ResponseMessage>
-        <ErrorResponseMessage>
-          {createSubcategoryErrorMessage}
-        </ErrorResponseMessage>
+      </form><p>{createSubcategoryErrorMessage} {createSubcategoryResponseMessage}</p>
+      { createSubcategoryResponseMessage
+         ? <Zoom in={createSubcategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{createSubcategoryResponseMessage}</Alert></Zoom>
+         : ""
+      }
+        { createSubcategoryErrorMessage
+         ? <Zoom in={createSubcategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{createSubcategoryErrorMessage}</Alert></Zoom>
+         : ""
+      }
     </Fragment>
   );
 }

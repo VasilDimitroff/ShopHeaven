@@ -65,8 +65,10 @@ export async function undeleteCategory(categoryId, token){
   return response;
 }
 
+
+//replaced
 export async function createSubcategory(formData, token){
-  console.log("FORM DATA: " + formData);
+ 
   const response = await axios.post(
     ApiEndpoints.subcategories.createSubcategory,
     formData,
@@ -80,7 +82,7 @@ export async function createSubcategory(formData, token){
 }
 
 export async function editSubcategory(formData, token){
-  console.log(formData);
+
   const response = await axios.post(
     ApiEndpoints.subcategories.editSubcategory,
     formData,

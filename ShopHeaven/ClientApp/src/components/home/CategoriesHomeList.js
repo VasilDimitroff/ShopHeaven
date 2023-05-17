@@ -256,7 +256,7 @@ export default function CategoriesHomeList() {
   });
 
   return (
-    <CategoriesWrapper sx={{border: "2px solid black"}}>
+    <CategoriesWrapper>
       <StyledList component="nav" aria-label="mailbox folders">
         <MenuHolder onMouseLeave={() => handleShowSubmenu()}>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
