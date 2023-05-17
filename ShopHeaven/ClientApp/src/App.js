@@ -9,7 +9,7 @@ import Register from './components/auth/Register';
 import Categories from './components/categories/Categories';
 import Admin from './components/administration/Admin';
 import AdminCategories from './components/administration/categories/AdminCategories';
-import AdminProducts from './components/administration/AdminProducts';
+import AdminProducts from './components/administration/products/AdminProducts';
 import AdminOrders from './components/administration/AdminOrders';
 import AdminDashboard from './components/administration/AdminDashboard';
 import AdminUsers from './components/administration/AdminUsers';
@@ -18,10 +18,10 @@ import AdminReviews from './components/administration/AdminReviews';
 import RequireAuth from './components/auth/RequireAuth';
 import PersistLogin from './components/auth/PersistLogin';
 import Unauthorized from './components/auth/Unauthorized';
+import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
 import { categories } from './components/categories';
 import { products } from './components/products';
 import { coupons } from './components/coupons';
-import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
 
 const Roles = {
   User : "User",

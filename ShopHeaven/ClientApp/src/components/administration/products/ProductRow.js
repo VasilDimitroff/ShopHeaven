@@ -22,7 +22,7 @@ import {
   Pagination,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -30,10 +30,11 @@ import {
   AddCircle,
 } from "@mui/icons-material";
 import axios from "axios";
-import { ApiEndpoints } from "../../api/endpoints";
+import { ApiEndpoints } from "../../../api/endpoints";
 import CreateProduct from "./CreateProduct";
 
-function Row(props) {
+export default function ProductRow(props) {
+  const [product, setProduct] = useState(props.product);
   const [open, setOpen] = useState(false);
 
   const [tagsInput, setTagsInput] = useState(false);
@@ -175,13 +176,12 @@ function Row(props) {
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <TableCell align="center">{props.product.id}</TableCell>
         <ProductNameTableCell component="th" scope="row">
-          {props.product.name}
+          {product.name}
         </ProductNameTableCell>
-        <TableCell align="center">{props.product.createdBy}</TableCell>
-        <TableCell align="center">{props.product.reviewsCount}</TableCell>
-        <TableCell align="center">{props.product.rating}</TableCell>
+        <TableCell align="center">{product.createdBy}</TableCell>
+        <TableCell align="center">{product.reviewsCount}</TableCell>
+        <TableCell align="center">{product.rating}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
@@ -195,13 +195,13 @@ function Row(props) {
                   <ProductInfoInput
                     sx={{ fontSize: 24 }}
                     inputRef={productNameRef}
-                    defaultValue={props.product.name}
+                    defaultValue={product.name}
                   />
                 </InputBox>
                 <InputBox>
                   <ProductInfoInput
                     inputRef={productNameRef}
-                    defaultValue={props.product.brand}
+                    defaultValue={product.brand}
                   />
                 </InputBox>
                 <InputBox>
@@ -209,8 +209,8 @@ function Row(props) {
                     multiline
                     minRows={4}
                     inputRef={productDescriptionRef}
-                    placeholder={props.product.description}
-                    defaultValue={props.product.description}
+                    placeholder={product.description}
+                    defaultValue={product.description}
                   />
                 </InputBox>
 
@@ -252,28 +252,28 @@ function Row(props) {
                     <Typography variant="h6">Quantity:</Typography>
                     <ProductInfoInput
                       inputRef={productNameRef}
-                      defaultValue={props.product.quantity}
+                      defaultValue={product.quantity}
                     />
                   </InputBox>
                   <InputBox>
                     <Typography variant="h6">Currency:</Typography>
                     <ProductInfoInput
                       inputRef={productNameRef}
-                      defaultValue={props.product.currency}
+                      defaultValue={product.currency}
                     />
                   </InputBox>
                   <InputBox>
                     <Typography variant="h6">Price:</Typography>
                     <ProductInfoInput
                       inputRef={productNameRef}
-                      defaultValue={props.product.price}
+                      defaultValue={product.price}
                     />
                   </InputBox>
                   <InputBox>
                     <Typography variant="h6">Discount:</Typography>
                     <ProductInfoInput
                       inputRef={productNameRef}
-                      defaultValue={`${props.product.discount}%`}
+                      defaultValue={`${product.discount}%`}
                     />
                   </InputBox>
                   <InputBox>
@@ -284,8 +284,8 @@ function Row(props) {
                       disabled
                       inputRef={productNameRef}
                       defaultValue={
-                        props.product.price -
-                        props.product.price * (props.product.discount / 100)
+                        product.price -
+                        product.price * (product.discount / 100)
                       }
                     />
                   </InputBox>
@@ -349,7 +349,7 @@ function Row(props) {
                 </Box>
                 <TagsWrapper>
                   Tags:
-                  {props.product.tags.map((tag, index) => (
+                  {product.tags.map((tag, index) => (
                     <StyledChip
                       key={index}
                       label={tag}
@@ -367,7 +367,7 @@ function Row(props) {
                       }}
                       inputRef={productNameRef}
                       multiline
-                      defaultValue={`${props.product.tags.map((tag, index) => {
+                      defaultValue={`${product.tags.map((tag, index) => {
                         return tag;
                       })}`}
                     />
@@ -397,7 +397,7 @@ function Row(props) {
                 </Typography>
                 <form>
                 <StyledImageList cols={5}>
-                  {props.product.images.map((item, index) => (
+                  {product.images.map((item, index) => (
                     <StyledImageListItem key={index} sx={{width: "90%"}}>
                           <ListItemIcon sx={{position: "absolute", zIndex: 1, right: -15}}>
                             <IconButton><Close sx={{ color: theme.palette.error.main}} /></IconButton>
@@ -405,7 +405,7 @@ function Row(props) {
                       <img
                         src={`${item}?w=248&fit=crop&auto=format`}
                         srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        alt={props.product.name}
+                        alt={product.name}
                         loading="lazy"
                       />
                   
@@ -447,124 +447,5 @@ function Row(props) {
         ""
       )}
     </Fragment>
-  );
-}
-
-export default function AdminProducts(props) {
-  let productNameRef = useRef();
-  let productDescriptionRef = useRef();
-  let productImageRef = useRef();
-
-  const [showCreateProduct, setShowCreateProduct] = useState(false);
-
-  function handleShowCreateProduct(){
-    setShowCreateProduct(!showCreateProduct)
-  }
-
-  function clearFormValues() {
-    productNameRef.current.value = "";
-    productDescriptionRef.current.value = "";
-    document.getElementById("create-product-image").value = "";
-  }
-
-  function onCreateProduct(e) {
-    e.preventDefault();
-
-    const productName = productNameRef.current.value;
-    const productDescription = productDescriptionRef.current.value;
-    const productImage = document.getElementById("create-product-image")
-      .files[0];
-
-    console.log("PRODUCT NAME " + productName);
-    console.log("PRODUCT DESCR " + productDescription);
-    console.log("PRODUCT IMAGE " + productImage);
-
-    const formData = new FormData();
-
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("image", productImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
-
-    createProduct(formData);
-  }
-
-  async function createProduct(formData) {
-    try {
-      const response = await axios.post(
-        ApiEndpoints.products.createProduct,
-        formData
-      );
-      //setCreateProductResponseMessage(response.data);
-      clearFormValues();
-    } catch (error) {
-      console.log("Server returns erorr during product creating: " + error);
-      //setCreateProductErrorMessage(true);
-    }
-  }
-
-  const MainCategoryTableCell = styled(TableCell)({
-    fontSize: 18,
-  });
-
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  });
-
-  const StyledPagination = styled(Pagination)({
-  })
-
-  const PaginationHolder = styled(Box)({
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  })
-
-  return (
-    <Box>
-      <TableContainer component={Box}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <MainCategoryTableCell align="center">ID</MainCategoryTableCell>
-              <MainCategoryTableCell>PRODUCT</MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                CREATOR
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                REVIEWS
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                RATING
-              </MainCategoryTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.products.map((product, index) => {
-              return <Row key={index} product={product} />;
-            })}
-          </TableBody>
-        </Table>
-        <StyledButtonBox>
-          <Button
-            onClick={handleShowCreateProduct}
-            variant="contained"
-            size="small"
-            startIcon={<AddCircle />}
-          >
-            Add new product
-          </Button>
-        </StyledButtonBox>
-      </TableContainer>
-      <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
-          <CreateProduct/>
-       </Collapse>
-        <PaginationHolder> 
-           <StyledPagination count={10} size="medium" color="secondary"  />
-        </PaginationHolder>
-      <Box>
-      </Box>
-    </Box>
   );
 }
