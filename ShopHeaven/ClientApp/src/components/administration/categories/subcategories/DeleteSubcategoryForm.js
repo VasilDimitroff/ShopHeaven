@@ -18,8 +18,11 @@ export default function DeleteSubcategoryForm(props) {
 
   const [subcategory, setSubategory] = useState(props.subcategory);
   const [response, setResponse] = useState(undefined);
-  const [deleteSubcategoryResponseMessage, setDeleteSubcategoryResponseMessage] =
-    useState("");
+  const [undoDeleteButtonClicked, setUndoDeleteButtonClicked] = useState(false);
+  const [
+    deleteSubcategoryResponseMessage,
+    setDeleteSubcategoryResponseMessage,
+  ] = useState("");
   const [deleteSubcategoryErrorMessage, setDeleteSubcategoryErrorMessage] =
     useState("");
 
@@ -50,6 +53,14 @@ export default function DeleteSubcategoryForm(props) {
         "Subcategory " + subcategory.name + " deleted!"
       );
       setResponse(response?.data);
+
+      //if the function below is run, then the subcategory row will be deleted from the monitor
+      //and the user will not see the result info
+
+      //props.subcategoryDeleted(response?.data?.subcategoryId);
+
+      console.log(response?.data);
+      setUndoDeleteButtonClicked(false);
     } catch (error) {
       setDeleteSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -86,6 +97,7 @@ export default function DeleteSubcategoryForm(props) {
       );
       setResponse(response?.data);
       console.log(response?.data);
+      setUndoDeleteButtonClicked(true);
     } catch (error) {
       setDeleteSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -121,8 +133,7 @@ export default function DeleteSubcategoryForm(props) {
             Subcategory {subcategory.name} state successfuly updated!
           </AlertTitle>
           <ul>
-            <li>1 category affected</li>
-            <li>{response?.deletedSubcategories} subcategories affected</li>
+            <li>1 subcategory affected</li>
             <li>{response?.deletedProducts} products affected</li>
             <li>{response?.deletedReviews} reviews affected</li>
             <li>{response?.deletedTags} tags affected</li>
@@ -136,14 +147,18 @@ export default function DeleteSubcategoryForm(props) {
             </li>
           </ul>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              onClick={onUndeleteSubcategory}
-            >
-              UNDO
-            </Button>
+            {!undoDeleteButtonClicked ? (
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                onClick={onUndeleteSubcategory}
+              >
+                UNDO DELETE
+              </Button>
+            ) : (
+              ""
+            )}
             <Button size="small" variant="contained" onClick={refreshPage}>
               REFRESH
             </Button>
@@ -159,7 +174,8 @@ export default function DeleteSubcategoryForm(props) {
             }}
           >
             <Typography variant="h6">
-              You are on the way to delete category {subcategory.name.toUpperCase()}!
+              You are on the way to delete category{" "}
+              {subcategory.name.toUpperCase()}!
             </Typography>
             <Typography variant="p" color="error">
               If you do that, you will delete all related products in it!
@@ -186,7 +202,9 @@ export default function DeleteSubcategoryForm(props) {
             </DeleteSubcategoryButton>
           </ButtonsHolder>
           {deleteSubcategoryResponseMessage ? (
-            <Zoom in={deleteSubcategoryResponseMessage.length > 0 ? true : false}>
+            <Zoom
+              in={deleteSubcategoryResponseMessage.length > 0 ? true : false}
+            >
               <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
                 {deleteSubcategoryResponseMessage}
               </Alert>

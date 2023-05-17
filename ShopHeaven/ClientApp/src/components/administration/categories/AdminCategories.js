@@ -33,8 +33,7 @@ export default function AdminCategories() {
     setCategories((prev) => {
       return [...prev, newCategory];
     });
-
-    //setOpenCreateCategoryModal(false);
+    console.log(newCategory);
   }
 
   useEffect(() => {

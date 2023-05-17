@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
@@ -94,6 +95,15 @@ namespace ShopHeaven.Data.Services
             }
 
             categoryToDelete.IsDeleted = delete;
+
+            if (delete == true)
+            {
+                categoryToDelete.DeletedOn = DateTime.UtcNow;
+            }
+            else
+            {
+                categoryToDelete.DeletedOn = null;
+            }
 
             var productsToDelete = await this.db.Products
                 .Where(x => x.SubCategory.MainCategory.Id == model.CategoryId && x.IsDeleted != delete)
@@ -195,12 +205,13 @@ namespace ShopHeaven.Data.Services
                 {
                     subcategory.DeletedOn = DateTime.UtcNow;
                 }
+                else
+                {
+                    subcategory.DeletedOn = null;
+                }
             }
-
-            if (delete == true)
-            {
-                SetDeletionDate(productsToDelete);
-            }
+ 
+            ConfigureDeletionInfo(productsToDelete, delete);
 
             await this.db.SaveChangesAsync();
 
@@ -358,51 +369,114 @@ namespace ShopHeaven.Data.Services
             return getCategoryResponseModel;
         }
 
-        private void SetDeletionDate(IEnumerable<Product> items)
+        private void ConfigureDeletionInfo(IEnumerable<Product> items, bool forDelete)
         {
             foreach (var product in items)
             {
                 foreach (var review in product.Reviews)
                 {
-                    review.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        review.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        review.DeletedOn = null;
+                    }
                 }
 
                 foreach (var tag in product.Tags)
                 {
-                    tag.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        tag.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        tag.DeletedOn = null;
+                    }
                 }
 
                 foreach (var cart in product.Carts)
                 {
-                    cart.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        cart.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        cart.DeletedOn = null;
+                    }
                 }
 
                 foreach (var wishlist in product.Wishlists)
                 {
-                    wishlist.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        wishlist.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        wishlist.DeletedOn = null;
+                    }
                 }
 
                 foreach (var order in product.Orders)
                 {
-                    order.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        order.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        order.DeletedOn = null;
+                    }
                 }
 
                 foreach (var label in product.Labels)
                 {
-                    label.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        label.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        label.DeletedOn = null;
+                    }
                 }
 
                 foreach (var image in product.Images)
                 {
-                    image.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        image.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        image.DeletedOn = null;
+                    }
                 }
 
                 foreach (var specification in product.Specifications)
                 {
-                    specification.DeletedOn = DateTime.UtcNow;
+                    if (forDelete == true)
+                    {
+                        specification.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        specification.DeletedOn = null;
+                    }
                 }
 
-                product.DeletedOn = DateTime.UtcNow;
+                if (forDelete == true)
+                {
+                    product.DeletedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    product.DeletedOn = null;
+                }
             }
         }
     }

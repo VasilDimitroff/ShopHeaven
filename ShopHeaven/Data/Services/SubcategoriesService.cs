@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Data.Services
@@ -67,6 +68,135 @@ namespace ShopHeaven.Data.Services
             return newSubcategoryResponseModel;
         }
 
+        public async Task<DeleteSubcategoryResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
+        {
+            var subcategoryToDelete = await this.db.SubCategories
+              .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != delete);
+
+            if (subcategoryToDelete == null)
+            {
+                throw new ArgumentException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
+            }
+
+            subcategoryToDelete.IsDeleted = delete;
+
+            if (delete)
+            {
+                subcategoryToDelete.DeletedOn = DateTime.UtcNow;
+            }
+            else
+            {
+                subcategoryToDelete.DeletedOn = null;
+            }
+
+            var productsToDelete = await this.db.Products
+                .Where(x => x.SubCategoryId == model.SubcategoryId && x.IsDeleted != delete)
+                .Include(x => x.Reviews
+                     .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Tags
+                     .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Carts
+                    .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Wishlists
+                    .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Orders
+                    .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Labels
+                    .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Images
+                    .Where(x => x.IsDeleted != delete))
+                .Include(x => x.Specifications
+                    .Where(x => x.IsDeleted != delete))
+                .ToListAsync();
+
+
+            var deletedProducts = 0;
+            var deletedReviews = 0;
+            var deletedTags = 0;
+            var deletedCarts = 0;
+            var deletedWishlists = 0;
+            var deletedOrders = 0;
+            var deletedLabels = 0;
+            var deletedImages = 0;
+            var deletedSpecifications = 0;
+
+            foreach (var product in productsToDelete)
+            {
+                deletedProducts++;
+
+                foreach (var review in product.Reviews)
+                {
+                    deletedReviews++;
+                    review.IsDeleted = delete;
+                }
+
+                foreach (var tag in product.Tags)
+                {
+                    deletedTags++;
+                    tag.IsDeleted = delete;
+                }
+
+                foreach (var cart in product.Carts)
+                {
+                    deletedCarts++;
+                    cart.IsDeleted = delete;
+                }
+
+                foreach (var wishlist in product.Wishlists)
+                {
+                    deletedWishlists++;
+                    wishlist.IsDeleted = delete;
+                }
+
+                foreach (var order in product.Orders)
+                {
+                    deletedOrders++;
+                    order.IsDeleted = delete;
+                }
+
+                foreach (var label in product.Labels)
+                {
+                    deletedLabels++;
+                    label.IsDeleted = delete;
+                }
+
+                foreach (var image in product.Images)
+                {
+                    deletedImages++;
+                    image.IsDeleted = delete;
+                }
+
+                foreach (var specification in product.Specifications)
+                {
+                    deletedSpecifications++;
+                    specification.IsDeleted = delete;
+                }
+
+                product.IsDeleted = delete;
+            }
+
+            ConfigureDeletionInfo(productsToDelete, delete);
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = new DeleteSubcategoryResponseModel()
+            {
+                SubcategoryId = subcategoryToDelete.Id,
+                Name = subcategoryToDelete.Name,
+                DeletedCarts = deletedCarts,
+                DeletedImages = deletedImages,
+                DeletedLabels = deletedLabels,
+                DeletedOrders = deletedOrders,
+                DeletedProducts = deletedProducts,
+                DeletedReviews = deletedReviews,
+                DeletedSpecifications = deletedSpecifications,
+                DeletedTags = deletedTags,
+                DeletedWishlists = deletedWishlists
+            };
+
+            return responseModel;
+        }
+
         public async Task<SubcategoriesResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model)
         {
             var searchedSubcategory = await this.db.SubCategories
@@ -125,6 +255,117 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
 
             return returnedSubcategory;
+        }
+
+        private void ConfigureDeletionInfo(IEnumerable<Product> items, bool forDelete)
+        {
+            foreach (var product in items)
+            {
+                foreach (var review in product.Reviews)
+                {
+                    if (forDelete == true)
+                    {
+                        review.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        review.DeletedOn = null;
+                    }
+                }
+
+                foreach (var tag in product.Tags)
+                {
+                    if (forDelete == true)
+                    {
+                        tag.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        tag.DeletedOn = null;
+                    }
+                }
+
+                foreach (var cart in product.Carts)
+                {
+                    if (forDelete == true)
+                    {
+                        cart.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        cart.DeletedOn = null;
+                    }
+                }
+
+                foreach (var wishlist in product.Wishlists)
+                {
+                    if (forDelete == true)
+                    {
+                        wishlist.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        wishlist.DeletedOn = null;
+                    }
+                }
+
+                foreach (var order in product.Orders)
+                {
+                    if (forDelete == true)
+                    {
+                        order.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        order.DeletedOn = null;
+                    }
+                }
+
+                foreach (var label in product.Labels)
+                {
+                    if (forDelete == true)
+                    {
+                        label.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        label.DeletedOn = null;
+                    }
+                }
+
+                foreach (var image in product.Images)
+                {
+                    if (forDelete == true)
+                    {
+                        image.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        image.DeletedOn = null;
+                    }
+                }
+
+                foreach (var specification in product.Specifications)
+                {
+                    if (forDelete == true)
+                    {
+                        specification.DeletedOn = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        specification.DeletedOn = null;
+                    }
+                }
+
+                if (forDelete == true)
+                {
+                    product.DeletedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    product.DeletedOn = null;
+                }
+            }
         }
     }
 }

@@ -136,6 +136,7 @@ export default function CategorySubcategoriesRow(props) {
           </Collapse>
           <Collapse in={openDeleteSubcategoryForm} timeout="auto" unmountOnExit>
             <DeleteSubcategoryForm
+              subcategoryDeleted={props.subcategoryDeleted}
               onCancelButtonClicked={onCancelButtonClicked}
               subcategory={subcategory}
             />

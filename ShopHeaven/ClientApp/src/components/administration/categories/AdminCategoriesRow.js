@@ -79,6 +79,10 @@ export default function AdminCategoriesRow(props) {
     setOpenSubcategoryForm((prev) => !prev);
   }
 
+  function subcategoryDeleted(id) {
+    setSubcategories(subcategories.filter(a => a.id != id))
+  }
+
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
   });
@@ -196,7 +200,7 @@ export default function AdminCategoriesRow(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <CategorySubcategories subcategories={subcategories} />
+                  <CategorySubcategories categoryDeleted={props.categoryDeleted} subcategoryDeleted={subcategoryDeleted} subcategories={subcategories} />
                 </TableBody>
               </Table>
               <StyledButtonBox>

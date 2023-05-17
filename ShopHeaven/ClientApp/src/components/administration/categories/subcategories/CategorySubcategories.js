@@ -6,7 +6,7 @@ export default function CategorySubcategories(props) {
   return (
     <Fragment>
       {props.subcategories?.map((subcategory) => (
-         <CategorySubcategoriesRow key={subcategory?.id} subcategory={subcategory} />
+         <CategorySubcategoriesRow subcategoryDeleted={props.subcategoryDeleted} key={subcategory?.id} subcategory={subcategory} />
       ))}
     </Fragment>
   );

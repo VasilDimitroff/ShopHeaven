@@ -46,13 +46,28 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
-        public async Task<ActionResult<SubcategoriesResponseModel>> Delete([FromBody] DeleteSubcategoryRequestModel model)
+        public async Task<ActionResult<DeleteSubcategoryResponseModel>> Delete([FromBody] DeleteSubcategoryRequestModel model)
         {
             try
             {
-                ;
-               // SubcategoriesResponseModel updatedSubcategory = await this.subcategoriesService.EditSubcategoryAsync(model);
-                return Ok();
+                
+                var deletedSubcategory = await this.subcategoriesService.DeleteSubcategoryAsync(model, true);
+                return Ok(deletedSubcategory);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
+        public async Task<ActionResult<DeleteSubcategoryResponseModel>> Undelete([FromBody] UndeleteSubcategoryRequestModel model)
+        {
+            try
+            {
+
+                var undeletedSubcategory = await this.subcategoriesService.DeleteSubcategoryAsync(model, false);
+                return Ok(undeletedSubcategory);
             }
             catch (Exception ex)
             {

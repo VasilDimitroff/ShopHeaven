@@ -18,6 +18,7 @@ export default function DeleteCategoryForm(props) {
 
   const [category, setCategory] = useState(props.category);
   const [response, setResponse] = useState(undefined);
+  const [undoDeleteButtonClicked, setUndoDeleteButtonClicked] = useState(false);
   const [deleteCategoryResponseMessage, setDeleteCategoryResponseMessage] =
     useState("");
   const [deleteCategoryErrorMessage, setDeleteCategoryErrorMessage] =
@@ -50,6 +51,7 @@ export default function DeleteCategoryForm(props) {
         "Category " + category.name + " deleted!"
       );
       setResponse(response?.data);
+      setUndoDeleteButtonClicked(false);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -85,6 +87,7 @@ export default function DeleteCategoryForm(props) {
         "Category " + category.name + " undeleted!"
       );
       setResponse(response?.data);
+      setUndoDeleteButtonClicked(true)
       console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
@@ -136,14 +139,18 @@ export default function DeleteCategoryForm(props) {
             </li>
           </ul>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <Button
+            {
+              !undoDeleteButtonClicked
+              ?
+              (<Button
               size="small"
               variant="contained"
               color="error"
-              onClick={onUndeleteCategory}
-            >
-              UNDO
-            </Button>
+              onClick={onUndeleteCategory}>UNDO DELETE
+              </Button>)
+              :
+              ""
+            }
             <Button size="small" variant="contained" onClick={refreshPage}>
               REFRESH
             </Button>
