@@ -28,7 +28,7 @@ export default function EditSubcategoryForm(props) {
   const [editSubcategoryResponseMessage, setEditSubcategoryResponseMessage] =
     useState("");
   const [editSubcategoryErrorMessage, setEditSubcategoryErrorMessage] =
-    useState(false);
+    useState("");
 
   function onEditSubcategory(e) {
     e.preventDefault();
@@ -149,6 +149,7 @@ export default function EditSubcategoryForm(props) {
             width="250px"
             height="150px"
             src={subcategory.image}
+            alt={subcategory.name}
           />
         </ImageHolder>
         <InputBox>

@@ -28,7 +28,7 @@ export default function EditCategoryForm(props) {
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
   const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
-    useState(false);
+    useState("");
 
   function onEditCategory(e) {
     e.preventDefault();
@@ -154,6 +154,7 @@ export default function EditCategoryForm(props) {
             width="250px"
             height="150px"
             src={category.image}
+            alt={category.name}
           />
         </ImageHolder>
         <InputBox>

@@ -86,6 +86,10 @@ export default function AdminCategoriesRow(props) {
   const CategoryNameTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
+    '&:hover': {
+      cursor: "pointer",
+      background: "#EAEAF7",
+   },
   });
 
   const StyledIconButton = styled(IconButton)({
@@ -126,7 +130,7 @@ export default function AdminCategoriesRow(props) {
 
   return (
     <Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow  sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}>
           <IconButton
             aria-label="expand row"
@@ -136,12 +140,12 @@ export default function AdminCategoriesRow(props) {
             {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <CategoryNameTableCell component="th" scope="row">
+        <CategoryNameTableCell onClick={handleShowSubcategories} component="th" scope="row">
           {category?.name}
           <CategoryInfoHolder>
             <CategoryInfoText><Chip variant="outlined" color="secondary" label={`${subcategories?.length} subcategories`} size="small"/></CategoryInfoText>
             <CategoryInfoText><Chip variant="outlined" color="primary" label={`${renderCategoryProductsCount()} products`} size="small"/></CategoryInfoText>
-            <CategoryInfoText><Chip variant="outlined" label={`Author: ${category?.createdBy}`}size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip variant="outlined" label={`By: ${category?.createdBy}`}size="small"/></CategoryInfoText>
           </CategoryInfoHolder>
         </CategoryNameTableCell>
         <TableCell align="center">

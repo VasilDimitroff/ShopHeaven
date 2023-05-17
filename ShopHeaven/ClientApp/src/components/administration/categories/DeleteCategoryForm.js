@@ -6,37 +6,45 @@ import {
   Paper,
   Alert,
   AlertTitle,
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { deleteCategory, undeleteCategory } from "../../../services/categoriesService";
-import useAuth from "../../../hooks/useAuth";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function DeleteCategoryForm(props) {
-  let { auth } = useAuth();
+  let axiosPrivate = useAxiosPrivate();
 
   const [category, setCategory] = useState(props.category);
   const [response, setResponse] = useState(undefined);
   const [deleteCategoryResponseMessage, setDeleteCategoryResponseMessage] =
     useState("");
   const [deleteCategoryErrorMessage, setDeleteCategoryErrorMessage] =
-    useState(false);
+    useState("");
 
   function refreshPage() {
     window.location.reload(false);
   }
 
   function onDeleteCategory() {
-    console.log("AUTH IS: " + auth.userId);
-    console.log("AUTH JWT: " + auth.jwtToken);
-    console.log("CAT ID: " + category.id);
-
-    deleteCurrentCategory(category.id);
+    deleteCategory(category.id);
   }
 
-  async function deleteCurrentCategory(categoryId) {
+  async function deleteCategory(categoryId) {
     try {
-      const response = await deleteCategory(categoryId, auth.jwtToken);
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.categories.deleteCategory,
+        JSON.stringify({ categoryId: categoryId }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
       setDeleteCategoryErrorMessage("");
       setDeleteCategoryResponseMessage(
         "Category " + category.name + " deleted!"
@@ -54,18 +62,24 @@ export default function DeleteCategoryForm(props) {
       console.log(error.message);
     }
   }
-  
-  function onUndeleteCategory() {
-    console.log("AUTH IS: " + auth.userId);
-    console.log("AUTH JWT: " + auth.jwtToken);
-    console.log("CAT ID: " + category.id);
 
-    undeleteCurrentCategory(category.id);
+  function onUndeleteCategory() {
+    undeleteCategory(category.id);
   }
 
-  async function undeleteCurrentCategory(categoryId) {
+  async function undeleteCategory(categoryId) {
     try {
-      const response = await undeleteCategory(categoryId, auth.jwtToken);
+      const controller = new AbortController();
+      const response = await axiosPrivate.post(
+        ApiEndpoints.categories.undeleteCategory,
+        JSON.stringify({ categoryId: categoryId }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
       setDeleteCategoryErrorMessage("");
       setDeleteCategoryResponseMessage(
         "Category " + category.name + " undeleted!"
@@ -91,16 +105,6 @@ export default function DeleteCategoryForm(props) {
     marginBottom: theme.spacing(1),
   });
 
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main,
-  });
-
   const ButtonsHolder = styled(Box)({
     display: "flex",
     width: "100%",
@@ -113,7 +117,9 @@ export default function DeleteCategoryForm(props) {
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       {response ? (
         <Alert severity="info">
-          <AlertTitle>Category {category.name} state successfuly updated!</AlertTitle>
+          <AlertTitle>
+            Category {category.name} state successfuly updated!
+          </AlertTitle>
           <ul>
             <li>1 category affected</li>
             <li>{response?.deletedSubcategories} subcategories affected</li>
@@ -129,9 +135,18 @@ export default function DeleteCategoryForm(props) {
               {response?.deletedSpecifications} product specifications affected
             </li>
           </ul>
-          <Box sx={{display: "flex", gap: 2}}>
-            <Button size="small" variant="contained" color="error" onClick={onUndeleteCategory}>UNDO</Button>
-            <Button size="small" variant="contained" onClick={refreshPage}>REFRESH</Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={onUndeleteCategory}
+            >
+              UNDO
+            </Button>
+            <Button size="small" variant="contained" onClick={refreshPage}>
+              REFRESH
+            </Button>
           </Box>
         </Alert>
       ) : (
@@ -144,7 +159,7 @@ export default function DeleteCategoryForm(props) {
             }}
           >
             <Typography variant="h6">
-              You are on the way to delete category{" "}
+              You are on the way to delete category
               {category.name.toUpperCase()}!
             </Typography>
             <Typography variant="p" color="error">
@@ -172,10 +187,24 @@ export default function DeleteCategoryForm(props) {
               CANCEL
             </DeleteCategoryButton>
           </ButtonsHolder>
-          <ResponseMessage>{deleteCategoryResponseMessage}</ResponseMessage>
-          <ErrorResponseMessage>
-            {deleteCategoryErrorMessage}
-          </ErrorResponseMessage>
+          {deleteCategoryResponseMessage ? (
+            <Zoom in={deleteCategoryResponseMessage.length > 0 ? true : false}>
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+                {deleteCategoryResponseMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+          {deleteCategoryErrorMessage ? (
+            <Zoom in={deleteCategoryErrorMessage.length > 0 ? true : false}>
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+                {deleteCategoryErrorMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
         </Fragment>
       )}
     </Paper>
