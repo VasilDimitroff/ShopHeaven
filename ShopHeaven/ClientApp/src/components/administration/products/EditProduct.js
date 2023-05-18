@@ -31,8 +31,8 @@ export default function EditProduct(props) {
   const [productName, setProductName] = useState(product.name);
   const [productBrand, setProductBrand] = useState(product.brand);
   const [productDescription, setProductDescription] = useState(product.description);
-  const [productCategory, setProductCategory] = useState(product.category);
-  const [productSubcategory, setProductSubcategory] = useState(product.subcategory);
+  const [productCategoryId, setProductCategoryId] = useState(product.category);// must be category.id
+  const [productSubcategoryId, setProductSubcategoryId] = useState(product.subcategory.id);
   const [productHasGuarantee, setProductHasGuarantee] = useState(product.hasGuarantee);
   const [productSpecifications, setProductSpecifications] = useState(product.specifications); //array[object]
   const [productCurrency, setProductCurrency] = useState(product.currency);
@@ -66,8 +66,8 @@ export default function EditProduct(props) {
   let productSpecificationValueRef = useRef();
 
   useEffect(() => { }, [productSpecifications]);
-  useEffect(() => { }, [productCategory]);
-  useEffect(() => { }, [productSubcategory]);
+  useEffect(() => {console.log("IN EFECT CATEGORY IS ", productCategoryId) }, [productCategoryId]);
+  useEffect(() => {console.log("IN EFECT SUB CATEGORY IS ", productSubcategoryId) }, [productSubcategoryId]);
 
   function handleSetProductSpecifications(e) {
     const key = productSpecificationKeyRef.current.value;
@@ -84,6 +84,11 @@ export default function EditProduct(props) {
     setTagsInput(prev => !prev);
   }
 
+  function handleSetProductTags(){
+     //!!!
+     setValuesToStates()
+  }
+
   function handleProductHasGuarantee() {
     // !!!
     setValuesToStates()
@@ -91,8 +96,8 @@ export default function EditProduct(props) {
   }
   
   function loadSubcategories() {
-    const checkedCategory = productCategoryRef.current.value;
-    console.log(checkedCategory);
+    const checkedCategoryId = productCategoryRef.current.value;
+    console.log(checkedCategoryId);
 
     //!!!
     setValuesToStates();
@@ -100,20 +105,24 @@ export default function EditProduct(props) {
     setSubcategories(
       (prev) =>
         categories.find(
-          (x) => x.name.toLowerCase() === checkedCategory.toLowerCase()
+          (x) => x.id === checkedCategoryId
         )?.subcategories
     );
   }
 
   function setValuesToStates(){
-    const images = document.getElementById('edit-product-photos-image').files;
-    let tags = productTagsRef.current.value.split(",");
+
+    let tags = productTagsRef.current.value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
     console.log(tags);
     setProductName(productNameRef.current.value);
     setProductBrand(productBrandRef.current.value);
     setProductDescription(productDescriptionRef.current.value);
-    setProductCategory(productCategoryRef.current.value);
-    setProductSubcategory(productSubcategoryRef.current.value);
+    setProductCategoryId(productCategoryRef.current.value);
+    setProductSubcategoryId(productSubcategoryRef.current.value);
     setProductHasGuarantee(productGuaranteeRef.current.checked);
     setProductCurrency(productCurrencyRef.current.value);
     setProductPrice(productPriceRef.current.value);
@@ -145,8 +154,8 @@ export default function EditProduct(props) {
     const name = productName;
     const brand = productBrand;
     const description = productDescription;
-    const category = productCategory;
-    const subcategory = productSubcategory;
+    const categoryId = productCategoryId;
+    const subcategoryId = productSubcategoryId;
     const hasGuarantee = productHasGuarantee;
     const currency = productCurrency;
     const price = productPrice;
@@ -155,12 +164,19 @@ export default function EditProduct(props) {
     const images = document.getElementById('edit-product-photos-image').files;
     const specifications = productSpecifications; //array oj objects key-value
     const tags = productTags;
+
+    const newProduct = {
+      name: productName,
+      brand: productBrand,
+      description: productDescription,
+      categoryId: categoryId
+    }
     
     console.log("NAME",name)
     console.log("BRAND",brand)
     console.log("DESCRIPTION",description)
-    console.log("CATEGORY",category)
-    console.log("SUBCATEOGRY",subcategory)
+    console.log("CATEGORY",categoryId)
+    console.log("SUBCATEOGRY", subcategoryId)
     console.log("HAS HUARANTEE",hasGuarantee)
     console.log("CURENCY",currency)
     console.log("PRICE",price)
@@ -263,6 +279,11 @@ export default function EditProduct(props) {
     backgroundColor: "rgb(255,249,249)",
   };
 
+  const SaveTagsButton = styled(Button)({
+    width: "100%",
+    marginLeft: 1,
+  })
+
   return (
     <Paper
       sx={{ padding: 2, marginTop: theme.spacing(2), border: "2px solid red" }}
@@ -302,12 +323,12 @@ export default function EditProduct(props) {
             <select
               style={StyledSelect}
               ref={productCategoryRef}
-              defaultValue={productCategory}
+              defaultValue={productCategoryId}
               name="category"
               onChange={loadSubcategories}
             > 
               {categories?.map((option) => (
-                <option key={option?.id} value={option?.name}>
+                <option key={option?.id} value={option?.id}>
                   {option?.name}
                 </option>
               ))}
@@ -324,11 +345,11 @@ export default function EditProduct(props) {
             <select
               style={StyledSelect}
               name="subcategory"
-              defaultValue={productSubcategory}
+              defaultValue={productSubcategoryId}
               ref={productSubcategoryRef}
             >
               {subcategories?.map((option) => (
-                <option key={option?.id} value={option?.name}>
+                <option key={option?.id} value={option?.id}>
                   {option?.name}
                 </option>
               ))}
@@ -340,6 +361,7 @@ export default function EditProduct(props) {
           <Box sx={{ display: "block" }}>
             <InputBox>
               <Typography variant="h6">Guarantee:</Typography>
+              {
               <StyledFormControlLabel
                 onChange={handleProductHasGuarantee}
                 sx={{
@@ -353,6 +375,7 @@ export default function EditProduct(props) {
                 }
                 label={productHasGuarantee ? "Yes" : "No"}
               />
+             }
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
@@ -494,9 +517,20 @@ export default function EditProduct(props) {
         </TagsWrapper>
         <Collapse in={tagsInput}>
           <InputBox>
+          <Typography
+              sx={{
+                display: "block",
+                fontWeight: 500,
+                marginLeft: 3,
+              }}
+            >
+              (tags separated by comma)
+            </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={9} lg={10}>
             <ProductInfoInput
               sx={{
-                marginTop: theme.spacing(0),
+                marginTop: 0,
                 marginLeft: theme.spacing(3),
               }}
               inputRef={productTagsRef}
@@ -505,16 +539,17 @@ export default function EditProduct(props) {
                 return tag;
               })}`}
             />
-            <Typography
-              sx={{
-                display: "block",
-                fontWeight: 500,
-                marginLeft: 3,
-                marginTop: 1,
-              }}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={3}
+              lg={2}
             >
-              (tags separated by comma)
-            </Typography>
+              <SaveTagsButton onClick={handleSetProductTags} variant="contained" size="small">save tags</SaveTagsButton>
+            </Grid>
+          </Grid>
           </InputBox>
         </Collapse>
         <Box>
