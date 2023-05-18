@@ -160,7 +160,7 @@ export default function EditProduct(props) {
     color: theme.palette.error.main,
   });
 
-  const TagsWrapper = styled(Box)({  
+  const TagsWrapper = styled(Box)({
     [theme.breakpoints.down("lg")]: {
       position: "relative",
     },
@@ -246,7 +246,7 @@ export default function EditProduct(props) {
 
   const SaveTagsButton = styled(Button)({
     width: "100%",
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   });
 
   const SpecificationHeader = styled(Box)({
@@ -264,12 +264,10 @@ export default function EditProduct(props) {
   const TagWord = styled(Typography)({
     display: "inline",
     fontWeight: 500,
-    marginRight: theme.spacing(1)
-  })
+    marginRight: theme.spacing(1),
+  });
 
-  const SectionHeading = styled(Typography)({
-      
-  })
+  const SectionHeading = styled(Typography)({});
 
   return (
     <Paper sx={{ padding: 2, marginTop: theme.spacing(2) }}>
@@ -302,7 +300,7 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <InputBox sx={{ marginTop: 3.5 }}>
-          <Grid container spacing={3}  sx={{ textAlign: "center"}}>
+          <Grid container spacing={3} sx={{ textAlign: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <SectionHeading variant="h6" sx={{ marginBottom: 1.5 }}>
                 CHANGE CATEGORY:
@@ -311,6 +309,7 @@ export default function EditProduct(props) {
                 style={StyledSelect}
                 ref={productCategoryRef}
                 name="category"
+                defaultValue={productCategoryId}
                 onChange={loadSubcategories}
               >
                 {categories?.map((option) => (
@@ -327,6 +326,7 @@ export default function EditProduct(props) {
               <select
                 style={StyledSelect}
                 name="subcategory"
+                defaultValue={productSubcategoryId}
                 ref={productSubcategoryRef}
               >
                 {subcategories?.map((option) => (
@@ -471,49 +471,44 @@ export default function EditProduct(props) {
             </AddSpecificationButton>
           </Box>
         </Box>
-        <Box sx={{marginLeft: theme.spacing(4)}}>
-        <TagsWrapper>
-          <TagWord>Tags:</TagWord>
-          {productTags.map((tag, index) => (
-            <StyledChip key={index} label={tag} color="warning"></StyledChip>
-          ))}
-          <IconButton
-            color="secondary"
-            onClick={handleTagsInput}
-          >
-            {tagsInput ? <RemoveCircle /> : <AddCircle />}
-          </IconButton>
-        </TagsWrapper>
-        <Collapse in={tagsInput}>
-          <InputBox>
-            <TagNote>(tags separated by comma)</TagNote>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={9} lg={10}>
-                <ProductInfoInput
-                  sx={{
-                    marginTop: 0,
-                    padding: 1
-                  }}
-                  inputRef={productTagsRef}
-                  multiline
-                  defaultValue={`${productTags.map((tag) => {
-                    return tag;
-                  })}`}
-                />
+        <Box sx={{ marginLeft: theme.spacing(4) }}>
+          <TagsWrapper>
+            <TagWord>Tags:</TagWord>
+            {productTags.map((tag, index) => (
+              <StyledChip key={index} label={tag} color="warning"></StyledChip>
+            ))}
+            <IconButton color="secondary" onClick={handleTagsInput}>
+              {tagsInput ? <RemoveCircle /> : <AddCircle />}
+            </IconButton>
+          </TagsWrapper>
+          <Collapse in={tagsInput}>
+            <InputBox>
+              <TagNote>(tags separated by comma)</TagNote>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={12} md={9} lg={10}>
+                  <ProductInfoInput
+                    sx={{
+                      marginTop: 0,
+                      padding: 1,
+                    }}
+                    inputRef={productTagsRef}
+                    multiline
+                    defaultValue={productTags.join(", ")}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={3} lg={2}>
+                  <SaveTagsButton
+                    onClick={setValuesToStates}
+                    variant="contained"
+                    size="small"
+                    color="secondary"
+                  >
+                    save tags
+                  </SaveTagsButton>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={2}>
-                <SaveTagsButton
-                  onClick={setValuesToStates}
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                >
-                  save tags
-                </SaveTagsButton>
-              </Grid>
-            </Grid>
-          </InputBox>
-        </Collapse>
+            </InputBox>
+          </Collapse>
         </Box>
         <Box>
           <SectionHeading
@@ -530,7 +525,7 @@ export default function EditProduct(props) {
                   sx={{ position: "absolute", zIndex: 1, right: -15 }}
                 >
                   <IconButton>
-                    <Close color="error"/>
+                    <Close color="error" />
                   </IconButton>
                 </ListItemIcon>
                 <img
