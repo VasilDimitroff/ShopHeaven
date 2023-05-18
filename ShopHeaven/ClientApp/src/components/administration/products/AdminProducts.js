@@ -1,31 +1,19 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, Fragment, useEffect } from "react";
 import {
   Box,
   Button,
-  Paper,
   TableRow,
   TableCell,
-  IconButton,
   Collapse,
-  Typography,
   Table,
   TableBody,
   TableHead,
   TableContainer,
-  Chip,
-  InputBase,
-  FormControlLabel,
-  Switch,
-  ImageList,
-  ImageListItem,
-  ListItemIcon,
   Pagination,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import {
-  KeyboardArrowUp,
-  KeyboardArrowDown,
   Close,
   AddCircle,
 } from "@mui/icons-material";
@@ -35,27 +23,17 @@ import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
 
 export default function AdminProducts(props) {
-  let productNameRef = useRef();
-  let productDescriptionRef = useRef();
-  let productImageRef = useRef();
-
   const [showCreateProduct, setShowCreateProduct] = useState(false);
 
-  function handleShowCreateProduct(){
-    setShowCreateProduct(!showCreateProduct)
-  }
-
-  function clearFormValues() {
-    productNameRef.current.value = "";
-    productDescriptionRef.current.value = "";
-    document.getElementById("create-product-image").value = "";
+  function handleShowCreateProduct() {
+    setShowCreateProduct(!showCreateProduct);
   }
 
   function onCreateProduct(e) {
     e.preventDefault();
 
-    const productName = productNameRef.current.value;
-    const productDescription = productDescriptionRef.current.value;
+    const productName = "productNameRef.current.value";
+    const productDescription = "productDescriptionRef.current.value";
     const productImage = document.getElementById("create-product-image")
       .files[0];
 
@@ -80,7 +58,6 @@ export default function AdminProducts(props) {
         formData
       );
       //setCreateProductResponseMessage(response.data);
-      clearFormValues();
     } catch (error) {
       console.log("Server returns erorr during product creating: " + error);
       //setCreateProductErrorMessage(true);
@@ -96,13 +73,12 @@ export default function AdminProducts(props) {
     marginBottom: theme.spacing(1),
   });
 
-  const StyledPagination = styled(Pagination)({
-  })
+  const StyledPagination = styled(Pagination)({});
 
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  })
+    marginBottom: theme.spacing(1),
+  });
 
   return (
     <Box>
@@ -110,16 +86,16 @@ export default function AdminProducts(props) {
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <TableCell />
+              <TableCell
+                sx={{
+                  width: "20px",
+                  padding: 0,
+                  paddingLeft: theme.spacing(1),
+                }}
+              />
               <MainCategoryTableCell>PRODUCT</MainCategoryTableCell>
               <MainCategoryTableCell align="center">
-                CREATOR
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                REVIEWS
-              </MainCategoryTableCell>
-              <MainCategoryTableCell align="center">
-                RATING
+                ACTIONS
               </MainCategoryTableCell>
             </TableRow>
           </TableHead>
@@ -141,13 +117,12 @@ export default function AdminProducts(props) {
         </StyledButtonBox>
       </TableContainer>
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
-          <CreateProduct/>
-       </Collapse>
-        <PaginationHolder> 
-           <StyledPagination count={10} size="medium" color="secondary"  />
-        </PaginationHolder>
-      <Box>
-      </Box>
+        <CreateProduct />
+      </Collapse>
+      <PaginationHolder>
+        <StyledPagination count={10} size="medium" color="secondary" />
+      </PaginationHolder>
+      <Box></Box>
     </Box>
   );
 }
