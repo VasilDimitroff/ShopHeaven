@@ -15,7 +15,7 @@ import {
   Collapse,
   Grid,
   Divider,
-  Container,
+  Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -52,7 +52,7 @@ export default function EditProduct(props) {
   const [productQuantity, setProductQuantity] = useState(product.quantity);
   const [productImages, setProductImages] = useState(product.images); // array[string]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
-  const [productLabels, setProductLabels] = useState(['new', 'hot']); // array[string]
+  const [productLabels, setProductLabels] = useState(["new", "hot"]); // array[string]
 
   let finalPriceInitialy =
     productPrice - productPrice * (productDiscount / 100);
@@ -93,17 +93,12 @@ export default function EditProduct(props) {
     setLabelsInput((prev) => !prev);
   }
 
-  function handleProductHasGuarantee() {
-    //3 !!!
-    setValuesToStates();
-    setProductHasGuarantee((prev) => !prev);
-  }
 
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
     console.log(checkedCategoryId);
 
-    //4 !!!
+    //3
     setValuesToStates();
 
     setSubcategories(
@@ -118,17 +113,19 @@ export default function EditProduct(props) {
     setProductDescription(productDescriptionRef.current.value);
     setProductCategoryId(productCategoryRef.current.value);
     setProductSubcategoryId(productSubcategoryRef.current.value);
-    setProductHasGuarantee(productGuaranteeRef.current.checked);
     setProductCurrency(productCurrencyRef.current.value);
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
 
+    const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
+    setProductHasGuarantee(checkedHasGuarantee);
+
     const price = productPriceRef.current.value;
     const discount = productDiscountRef.current.value;
     const totalPrice = price - price * (discount / 100);
     setFinalPrice(totalPrice);
- 
+
     const key = productSpecificationKeyRef.current.value;
     const value = productSpecificationValueRef.current.value;
 
@@ -137,28 +134,29 @@ export default function EditProduct(props) {
     }
 
     let tags = productTagsRef.current.value
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag.length > 0);
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
 
     setProductTags(tags);
 
     let labels = productLabelsRef.current.value
-        .split(",")
-        .map((label) => label.trim())
-        .filter((label) => label.length > 0);
+      .split(",")
+      .map((label) => label.trim())
+      .filter((label) => label.length > 0);
 
     setProductLabels(labels);
 
     console.log(tags);
     console.log(labels);
+    console.log("GUARANTEE", productHasGuarantee);
     console.log(productSpecifications);
   }
 
   function onEditProduct(e) {
     e.preventDefault();
 
-    //5
+    //4
     setValuesToStates();
 
     const images = document.getElementById("edit-product-photos-image").files;
@@ -177,7 +175,7 @@ export default function EditProduct(props) {
       images: images,
       specifications: productSpecifications,
       tags: productTags,
-      labels: productLabels
+      labels: productLabels,
     };
 
     console.log("WHOLE OBJECT", newProduct);
@@ -230,15 +228,6 @@ export default function EditProduct(props) {
     borderRadius: theme.shape.borderRadius,
   });
 
-  const StyledFormControlLabel = styled(FormControlLabel)({
-    color: productHasGuarantee
-      ? theme.palette.success.main
-      : theme.palette.error.main,
-    width: "100%",
-    display: "block",
-    marginLeft: "auto",
-  });
-
   const InputBox = styled(Box)({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -274,7 +263,7 @@ export default function EditProduct(props) {
     width: "100%",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   });
 
   const StyledSelect = {
@@ -283,6 +272,7 @@ export default function EditProduct(props) {
     padding: theme.spacing(1.5),
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
+    fontSize: 16,
     backgroundColor: "rgb(255,249,249)",
     marginTop: theme.spacing(1.9),
   };
@@ -433,11 +423,7 @@ export default function EditProduct(props) {
         <Box sx={{ display: "block" }}>
           <InputBox>
             <Divider>
-              <HeadingChip
-                label="PRICE"
-                variant="outlined"
-                color="secondary"
-              />
+              <HeadingChip label="PRICE" variant="outlined" color="secondary" />
             </Divider>
           </InputBox>
           <Box sx={{ display: "flex" }}>
@@ -548,24 +534,16 @@ export default function EditProduct(props) {
                   />
                 </Divider>
                 {
-                  <StyledFormControlLabel
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      margin: "auto",
-                    }}
-                    onChange={handleProductHasGuarantee}
-                    inputRef={productGuaranteeRef}
-                    control={
-                      productHasGuarantee ? (
-                        <Switch defaultChecked />
-                      ) : (
-                        <Switch />
-                      )
-                    }
-                    label={productHasGuarantee ? "Yes" : "No"}
-                  />
+                  <select
+                    style={StyledSelect}
+                    name="guarantee"
+                    defaultValue={productHasGuarantee}
+                    ref={productGuaranteeRef}
+                  >
+                    <option value={true}>Yes</option>
+                    <option value={false}>No</option>
+                    ))
+                  </select>
                 }
               </Box>
             </InputBox>
@@ -649,7 +627,11 @@ export default function EditProduct(props) {
         <TagsWrapper>
           <TagWord>Tags:</TagWord>
           {productTags.map((tag, index) => (
-            <StyledChip key={index} label={tag.toUpperCase()} color="warning"></StyledChip>
+            <StyledChip
+              key={index}
+              label={tag.toUpperCase()}
+              color="warning"
+            ></StyledChip>
           ))}
           <IconButton color="secondary" size="large" onClick={handleTagsInput}>
             {tagsInput ? (
@@ -693,9 +675,17 @@ export default function EditProduct(props) {
         <TagsWrapper>
           <TagWord>Labels:</TagWord>
           {productLabels.map((label, index) => (
-            <StyledChip key={index} label={label.toUpperCase()} color="success"></StyledChip>
+            <StyledChip
+              key={index}
+              label={label.toUpperCase()}
+              color="success"
+            ></StyledChip>
           ))}
-          <IconButton color="secondary" size="large" onClick={handleLabelsInput}>
+          <IconButton
+            color="secondary"
+            size="large"
+            onClick={handleLabelsInput}
+          >
             {labelsInput ? (
               <RemoveCircle sx={{ fontSize: 35 }} />
             ) : (
@@ -731,7 +721,6 @@ export default function EditProduct(props) {
             </Grid>
           </InputBox>
         </Collapse>
-
 
         <Divider>
           <HeadingChip
