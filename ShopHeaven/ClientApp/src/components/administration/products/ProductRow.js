@@ -63,7 +63,7 @@ export default function ProductRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <EditProduct product={product} />
+            <EditProduct product={product} categories={props.categories} />
           </Collapse>
         </TableCell>
       </TableRow>

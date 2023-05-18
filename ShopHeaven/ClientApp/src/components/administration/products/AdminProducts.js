@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useEffect } from "react";
+import { React, useState, Fragment, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -14,13 +14,52 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AdminProducts(props) {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const axiosPrivate = useAxiosPrivate();
+  
+  const effectRun = useRef(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCategories = async () => {
+      try {
+        const response = await axiosPrivate.get(
+          ApiEndpoints.categories.getCategoryNames,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log("IDAT")
+        console.log(response?.data);
+
+        setCategories(response?.data);
+      } catch (error) {
+        console.log(error);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    if (effectRun.current) {
+      getCategories();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
 
   function handleShowCreateProduct() {
     setShowCreateProduct((prev) => !prev);
@@ -50,7 +89,7 @@ export default function AdminProducts(props) {
 
   async function createProduct(formData) {
     try {
-      const response = await axios.post(
+      const response = await axiosPrivate.post(
         ApiEndpoints.products.createProduct,
         formData
       );
@@ -98,7 +137,7 @@ export default function AdminProducts(props) {
           </TableHead>
           <TableBody>
             {props.products.map((product, index) => {
-              return <ProductRow key={index} product={product} />;
+              return <ProductRow key={index} categories={categories} product={product} />;
             })}
           </TableBody>
         </Table>
@@ -125,7 +164,7 @@ export default function AdminProducts(props) {
         </StyledButtonBox>
       </TableContainer>
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
-        <CreateProduct />
+        <CreateProduct categories={categories} />
       </Collapse>
       <PaginationHolder>
         <StyledPagination count={10} size="medium" color="secondary" />

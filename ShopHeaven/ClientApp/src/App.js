@@ -50,7 +50,7 @@ export default function App() {
                       <Route path="" element={<AdminDashboard/>}/>
                       <Route path="users" element={<AdminUsers/>}/>
                       <Route path="products" element={<AdminProducts products={products}/>}/>
-                      <Route path="categories" element={<AdminCategories categories={categories}/>}/>
+                      <Route path="categories" element={<AdminCategories/>}/>
                       <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
                       <Route path="orders" element={<AdminOrders/>}/>
                       <Route path="reviews" element={<AdminReviews/>}/>

@@ -17,8 +17,8 @@ import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import axios from "../../../api/axios";
 import { ApiEndpoints } from "../../../api/endpoints";
 
-export default function CreateProduct() {
-  const [categories, setCategories] = useState();
+export default function CreateProduct(props) {
+  const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
 
   const [productAvailable, setProductAvailable] = useState(true);
@@ -47,41 +47,6 @@ export default function CreateProduct() {
   let productDiscountRef = useRef();
   let productTagsRef = useRef();
   let productSpecificationsRef = useRef();
-
-  const effectRun = useRef(false);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const getCategories = async () => {
-      try {
-        const response = await axios.get(
-          ApiEndpoints.categories.getCategoryNames,
-          {
-            signal: controller.signal,
-          }
-        );
-        console.log(response?.data);
-
-        setCategories(response?.data);
-      } catch (error) {
-        console.log(error);
-        navigate("/login", { state: { from: location }, replace: true });
-      }
-    };
-
-    if (effectRun.current) {
-      getCategories();
-    }
-
-    return () => {
-      effectRun.current = true; // update the value of effectRun to true
-      controller.abort();
-    };
-  }, []);
 
   useEffect(() => {
     console.log("productAvailable has been updated:", productAvailable);
