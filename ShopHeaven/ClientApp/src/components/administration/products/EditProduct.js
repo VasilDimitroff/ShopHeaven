@@ -13,7 +13,7 @@ import {
   ImageListItem,
   ListItemIcon,
   Collapse,
-  Grid
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -66,11 +66,14 @@ export default function EditProduct(props) {
   let productSpecificationValueRef = useRef();
 
   useEffect(() => { }, [productSpecifications]);
+  useEffect(() => { }, [productCategory]);
+  useEffect(() => { }, [productSubcategory]);
 
   function handleSetProductSpecifications(e) {
     const key = productSpecificationKeyRef.current.value;
     const value = productSpecificationValueRef.current.value;
 
+    //!!!
     setValuesToStates()
 
     setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
@@ -82,8 +85,24 @@ export default function EditProduct(props) {
   }
 
   function handleProductHasGuarantee() {
+    // !!!
     setValuesToStates()
     setProductHasGuarantee((prev) => !prev);
+  }
+  
+  function loadSubcategories() {
+    const checkedCategory = productCategoryRef.current.value;
+    console.log(checkedCategory);
+
+    //!!!
+    setValuesToStates();
+
+    setSubcategories(
+      (prev) =>
+        categories.find(
+          (x) => x.name.toLowerCase() === checkedCategory.toLowerCase()
+        )?.subcategories
+    );
   }
 
   function setValuesToStates(){
@@ -100,24 +119,14 @@ export default function EditProduct(props) {
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
-    setProductImages(images);
     setProductTags(tags)
-  }
-
-  function loadSubcategories() {
-    const checkedCategory = productCategoryRef.current.value;
-    console.log(checkedCategory);
-    setSubcategories(
-      (prev) =>
-        categories.find(
-          (x) => x.name.toLowerCase() === checkedCategory.toLowerCase()
-        )?.subcategories
-    );
   }
 
   function onEditProduct(e){
     e.preventDefault();
-
+    
+    setValuesToStates();
+    /*
     const name = productNameRef.current.value;
     const brand = productBrandRef.current.value;
     const description = productDescriptionRef.current.value;
@@ -131,8 +140,21 @@ export default function EditProduct(props) {
     const images = document.getElementById('edit-product-photos-image').files;
     const specifications = productSpecifications; //array oj objects key-value
     const tags = productTagsRef.current.value.split(",");
+    */
 
-    setValuesToStates();
+    const name = productName;
+    const brand = productBrand;
+    const description = productDescription;
+    const category = productCategory;
+    const subcategory = productSubcategory;
+    const hasGuarantee = productHasGuarantee;
+    const currency = productCurrency;
+    const price = productPrice;
+    const discount = productDiscount;
+    const quantity = productQuantity;
+    const images = document.getElementById('edit-product-photos-image').files;
+    const specifications = productSpecifications; //array oj objects key-value
+    const tags = productTags;
     
     console.log("NAME",name)
     console.log("BRAND",brand)
@@ -273,9 +295,10 @@ export default function EditProduct(props) {
             defaultValue={productDescription}
           />
         </InputBox>
-        <Box sx={{ marginTop: 3 }}>
-          <Typography variant="h6">CHANGE CATEGORY:</Typography>
-          <Box sx={{ display: "flex", gap: 5, width: "100%" }}>
+        <InputBox sx={{marginTop: 3.5}}>  
+          <Grid container spacing={3} >
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Typography variant="h6" sx={{marginBottom: 1.5}}>CHANGE CATEGORY:</Typography>
             <select
               style={StyledSelect}
               ref={productCategoryRef}
@@ -289,6 +312,15 @@ export default function EditProduct(props) {
                 </option>
               ))}
             </select>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              lg={6}
+            >
+              <Typography variant="h6" sx={{marginBottom: 1.5}}>CHANGE SUBCATEGORY:</Typography>       
             <select
               style={StyledSelect}
               name="subcategory"
@@ -301,45 +333,9 @@ export default function EditProduct(props) {
                 </option>
               ))}
             </select>
-            {/*
-              <InputBox>  
-                <InputBase
-                  inputRef={productCategoryRef}
-                  select
-                  defaultValue={productCategory}
-                  helperText="Please select main category"
-                  variant="standard"
-                >
-                  {categories?.map((option) => (
-                    <MenuItem key={option?.id} value={option?.name}>
-                      {option?.name}
-                    </MenuItem>
-                  ))}
-                </InputBase>
-              </InputBox>
-              <Button onClick={loadSubcategories} variant="contained" size="small">
-                Load Subcategories
-              </Button>
-                        
-              <InputBox>
-
-                <TextField
-                  inputRef={productSubcategoryRef}
-                  select
-                  defaultValue={productSubcategory}
-                  helperText="Please select subcategory"
-                  variant="standard"
-                >
-                  {subcategories?.map((option) => (
-                    <MenuItem key={option?.id} value={option?.name}>
-                      {option?.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </InputBox>
-                  */}
-          </Box>
-        </Box>
+            </Grid>
+          </Grid>
+          </InputBox>
         <Box sx={{ marginTop: theme.spacing(5) }}>
           <Box sx={{ display: "block" }}>
             <InputBox>
@@ -410,43 +406,6 @@ export default function EditProduct(props) {
             */}
           </Box>
         </Box>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{ marginTop: theme.spacing(6) }}
-        >
-          PRODUCT IMAGES
-        </Typography>
-        <StyledImageList cols={5}>
-          {product?.images.map((item, index) => (
-            <StyledImageListItem key={index} sx={{ width: "90%" }}>
-              <ListItemIcon
-                sx={{ position: "absolute", zIndex: 1, right: -15 }}
-              >
-                <IconButton>
-                  <Close sx={{ color: theme.palette.error.main }} />
-                </IconButton>
-              </ListItemIcon>
-              <img
-                src={`${item}?w=248&fit=crop&auto=format`}
-                srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                alt={productName}
-                loading="lazy"
-              />
-            </StyledImageListItem>
-          ))}
-        </StyledImageList>
-        <InputBox>
-          <ProductInfoInput
-            accept=".jpg, .png, .jpeg"
-            type="file"
-            variant="outlined"
-            id="edit-product-photos-image"
-            inputProps={{
-              multiple: true,
-            }}
-          />
-        </InputBox>
         <Box>
           <Typography
             variant="h6"
@@ -517,13 +476,13 @@ export default function EditProduct(props) {
               size="small"
               variant="contained"
             >
-              Add Specification
+              Save Specification
             </AddSpecificationButton>
           </Box>
         </Box>
         <TagsWrapper>
           Tags:
-          {product?.tags.map((tag, index) => (
+          {productTags.map((tag, index) => (
             <StyledChip key={index} label={tag} color="secondary"></StyledChip>
           ))}
           <IconButton
@@ -558,6 +517,45 @@ export default function EditProduct(props) {
             </Typography>
           </InputBox>
         </Collapse>
+        <Box>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ marginTop: theme.spacing(4) }}
+        >
+          PRODUCT IMAGES
+        </Typography>
+        <StyledImageList cols={5}>
+          {productImages?.map((item, index) => (
+            <StyledImageListItem key={index} sx={{ width: "90%" }}>
+              <ListItemIcon
+                sx={{ position: "absolute", zIndex: 1, right: -15 }}
+              >
+                <IconButton>
+                  <Close sx={{ color: theme.palette.error.main }} />
+                </IconButton>
+              </ListItemIcon>
+              <img
+                src={`${item}?w=248&fit=crop&auto=format`}
+                srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                alt={productName}
+                loading="lazy"
+              />
+            </StyledImageListItem>
+          ))}
+        </StyledImageList>
+        <InputBox>
+          <ProductInfoInput
+            accept=".jpg, .png, .jpeg"
+            type="file"
+            variant="outlined"
+            id="edit-product-photos-image"
+            inputProps={{
+              multiple: true,
+            }}
+          />
+        </InputBox>
+        </Box>
         <EditProductButton type="submit" size="medium" variant="contained">
           EDIT PRODUCT
         </EditProductButton>

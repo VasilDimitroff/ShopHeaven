@@ -119,7 +119,7 @@ export default function AdminProducts(props) {
   return (
     <Box>
       <TableContainer component={Box}>
-        <Table aria-label="collapsible table">
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell
@@ -131,7 +131,7 @@ export default function AdminProducts(props) {
               />
               <MainCategoryTableCell>PRODUCT</MainCategoryTableCell>
               <MainCategoryTableCell align="center">
-                ACTIONS
+                A
               </MainCategoryTableCell>
             </TableRow>
           </TableHead>
