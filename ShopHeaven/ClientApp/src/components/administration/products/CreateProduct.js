@@ -2,12 +2,8 @@ import { React, useState, Fragment, useRef, useEffect } from "react";
 import {
   Box,
   Button,
-  TableRow,
-  TableCell,
   Collapse,
   Typography,
-  Table,
-  TableContainer,
   MenuItem,
   TextField,
   InputBase,
@@ -31,7 +27,7 @@ export default function CreateProduct() {
   const [createProductResponseMessage, setCreateProductResponseMessage] =
     useState("");
   const [createProductErrorMessage, setCreateProductErrorMessage] =
-    useState(false);
+    useState("");
 
   //product creation states
   const [productCategory, setProductCategory] = useState("");
@@ -40,9 +36,17 @@ export default function CreateProduct() {
   //product creation refs
   let productNameRef = useRef();
   let productDescriptionRef = useRef();
-  let productAvailabilityRef = useRef();
+  let productBrandRef = useRef();
   let productCategoryRef = useRef();
   let productSubcategoryRef = useRef();
+  let productAvailabilityRef = useRef();
+  let productGuaranteeRef = useRef();
+  let productQuantityRef = useRef();
+  let productCurrencyRef = useRef();
+  let productPriceRef = useRef();
+  let productDiscountRef = useRef();
+  let productTagsRef = useRef();
+  let productSpecificationsRef = useRef();
 
   const effectRun = useRef(false);
 
@@ -185,6 +189,15 @@ export default function CreateProduct() {
     width: "100%",
   });
 
+  const StyledSelect = {
+    cursor: "pointer",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1.5),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    backgroundColor: "rgb(255,249,249)",
+  };
+
   return (
     <Fragment>
       <Collapse in={true} timeout="auto" unmountOnExit>
@@ -216,10 +229,46 @@ export default function CreateProduct() {
                 placeholder="Product Description"
               />
             </InputBox>
-            <Box sx={{ display: "flex", gap: 5, width: "100%", marginTop: theme.spacing(5) }}>
-            <Typography variant="h6">SELECT CATEGORY:</Typography>
+            <Typography
+              sx={{
+                marginTop: theme.spacing(5),
+                marginBottom: theme.spacing(2),
+              }}
+              variant="h6"
+            >
+              SELECT CATEGORY AND SUBCATEGORY:
+            </Typography>
+            <Box sx={{ display: "flex", gap: 5, width: "100%" }}>
+              <select
+                style={StyledSelect}
+                defaultValue={productCategory}
+                ref={productCategoryRef}
+                name="category"
+                id="category"
+                onChange={loadSubcategories}
+              >
+                {categories?.map((option) => (
+                  <option key={option?.id} value={option?.name}>
+                    {option?.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                style={StyledSelect}
+                defaultValue={productSubcategory}
+                name="subcatgory"
+                id="subcategory"
+              >
+                {subcategories?.map((option) => (
+                  <option key={option?.id} value={option?.name}>
+                    {option?.name}
+                  </option>
+                ))}
+              </select>
+              {/*
               <InputBox>  
-                <TextField
+                <InputBase
                   inputRef={productCategoryRef}
                   select
                   defaultValue={productCategory}
@@ -231,12 +280,14 @@ export default function CreateProduct() {
                       {option?.name}
                     </MenuItem>
                   ))}
-                </TextField>
+                </InputBase>
               </InputBox>
               <Button onClick={loadSubcategories} variant="contained" size="small">
                 Load Subcategories
               </Button>
+                        
               <InputBox>
+
                 <TextField
                   inputRef={productSubcategoryRef}
                   select
@@ -251,6 +302,7 @@ export default function CreateProduct() {
                   ))}
                 </TextField>
               </InputBox>
+                  */}
             </Box>
             <Box sx={{ display: "flex", marginTop: theme.spacing(5), gap: 1 }}>
               <InputBox>
