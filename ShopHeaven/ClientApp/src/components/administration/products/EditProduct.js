@@ -30,21 +30,27 @@ export default function EditProduct(props) {
 
   const [productName, setProductName] = useState(product.name);
   const [productBrand, setProductBrand] = useState(product.brand);
-  const [productDescription, setProductDescription] = useState(product.description);
-  const [productCategoryId, setProductCategoryId] = useState(product.category);// must be category.id
-  const [productSubcategoryId, setProductSubcategoryId] = useState(product.subcategory.id);
-  const [productHasGuarantee, setProductHasGuarantee] = useState(product.hasGuarantee);
-  const [productSpecifications, setProductSpecifications] = useState(product.specifications); //array[object]
+  const [productDescription, setProductDescription] = useState(
+    product.description
+  );
+  const [productCategoryId, setProductCategoryId] = useState(product.category); // must be category.id
+  const [productSubcategoryId, setProductSubcategoryId] = useState(
+    product.subcategory.id
+  );
+  const [productHasGuarantee, setProductHasGuarantee] = useState(
+    product.hasGuarantee
+  );
+  const [productSpecifications, setProductSpecifications] = useState(
+    product.specifications
+  ); //array[object]
   const [productCurrency, setProductCurrency] = useState(product.currency);
   const [productPrice, setProductPrice] = useState(product.price);
   const [productDiscount, setProductDiscount] = useState(product.discount);
   const [productQuantity, setProductQuantity] = useState(product.quantity);
   const [productImages, setProductImages] = useState(product.images); // array[string]
-  const [productTags, setProductTags] = useState(product.tags) // array[string]
+  const [productTags, setProductTags] = useState(product.tags); // array[string]
 
   const [tagsInput, setTagsInput] = useState(false);
- 
-
 
   const [editProductResponseMessage, setEditProductResponseMessage] =
     useState("");
@@ -65,59 +71,38 @@ export default function EditProduct(props) {
   let productSpecificationKeyRef = useRef();
   let productSpecificationValueRef = useRef();
 
-  useEffect(() => { }, [productSpecifications]);
-  useEffect(() => {console.log("IN EFECT CATEGORY IS ", productCategoryId) }, [productCategoryId]);
-  useEffect(() => {console.log("IN EFECT SUB CATEGORY IS ", productSubcategoryId) }, [productSubcategoryId]);
-
-  function handleSetProductSpecifications(e) {
-    const key = productSpecificationKeyRef.current.value;
-    const value = productSpecificationValueRef.current.value;
-
-    //!!!
-    setValuesToStates()
-
-    setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
-    console.log(productSpecifications);
-  }
-
   function handleTagsInput() {
-    setTagsInput(prev => !prev);
-  }
-
-  function handleSetProductTags(){
-     //!!!
-     setValuesToStates()
+    setTagsInput((prev) => !prev);
   }
 
   function handleProductHasGuarantee() {
-    // !!!
-    setValuesToStates()
+    //1 !!!
+    setValuesToStates();
     setProductHasGuarantee((prev) => !prev);
   }
-  
+
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
     console.log(checkedCategoryId);
 
-    //!!!
+    //2 !!!
     setValuesToStates();
 
     setSubcategories(
       (prev) =>
-        categories.find(
-          (x) => x.id === checkedCategoryId
-        )?.subcategories
+        categories.find((x) => x.id === checkedCategoryId)?.subcategories
     );
   }
 
-  function setValuesToStates(){
-
+  function setValuesToStates() {
     let tags = productTagsRef.current.value
-        .split(",")
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
 
-    console.log(tags);
+    const key = productSpecificationKeyRef.current.value;
+    const value = productSpecificationValueRef.current.value;
+
     setProductName(productNameRef.current.value);
     setProductBrand(productBrandRef.current.value);
     setProductDescription(productDescriptionRef.current.value);
@@ -128,63 +113,41 @@ export default function EditProduct(props) {
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
-    setProductTags(tags)
+
+    if (key.length > 0 && value.length > 0) {
+      setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
+    }
+
+    setProductTags(tags);
+
+    console.log(tags);
+    console.log(productSpecifications);
   }
 
-  function onEditProduct(e){
+  function onEditProduct(e) {
     e.preventDefault();
-    
-    setValuesToStates();
-    /*
-    const name = productNameRef.current.value;
-    const brand = productBrandRef.current.value;
-    const description = productDescriptionRef.current.value;
-    const category = productCategoryRef.current.value;
-    const subcategory = productSubcategoryRef.current.value;
-    const hasGuarantee = productGuaranteeRef.current.checked;
-    const currency = productCurrencyRef.current.value;
-    const price = productPriceRef.current.value;
-    const discount = productDiscountRef.current.value;
-    const quantity = productQuantityRef.current.value;
-    const images = document.getElementById('edit-product-photos-image').files;
-    const specifications = productSpecifications; //array oj objects key-value
-    const tags = productTagsRef.current.value.split(",");
-    */
 
-    const name = productName;
-    const brand = productBrand;
-    const description = productDescription;
-    const categoryId = productCategoryId;
-    const subcategoryId = productSubcategoryId;
-    const hasGuarantee = productHasGuarantee;
-    const currency = productCurrency;
-    const price = productPrice;
-    const discount = productDiscount;
-    const quantity = productQuantity;
-    const images = document.getElementById('edit-product-photos-image').files;
-    const specifications = productSpecifications; //array oj objects key-value
-    const tags = productTags;
+    //setValuesToStates();
+
+    const images = document.getElementById("edit-product-photos-image").files;
 
     const newProduct = {
       name: productName,
       brand: productBrand,
       description: productDescription,
-      categoryId: categoryId
-    }
-    
-    console.log("NAME",name)
-    console.log("BRAND",brand)
-    console.log("DESCRIPTION",description)
-    console.log("CATEGORY",categoryId)
-    console.log("SUBCATEOGRY", subcategoryId)
-    console.log("HAS HUARANTEE",hasGuarantee)
-    console.log("CURENCY",currency)
-    console.log("PRICE",price)
-    console.log("DISCOUNT",discount)
-    console.log("QUANTITY",quantity)
-    console.log("IMAGES",images)
-    console.log("SPECIFICATIONS",specifications)
-    console.log("TAGS",tags)
+      categoryId: productCategoryId,
+      subcategoryId: productSubcategoryId,
+      hasGuarantee: productHasGuarantee,
+      currency: productCurrency,
+      price: productPrice,
+      discount: productDiscount,
+      quantity: productQuantity,
+      images: images,
+      specifications: productSpecifications,
+      tags: productTags,
+    };
+
+    console.log("WHOLE OBJ", newProduct);
   }
 
   const ResponseMessage = styled(Typography)({
@@ -192,8 +155,7 @@ export default function EditProduct(props) {
     color: theme.palette.success.main,
   });
 
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
+  const ErrorResponseMessage = styled(ResponseMessage)({
     color: theme.palette.error.main,
   });
 
@@ -235,6 +197,9 @@ export default function EditProduct(props) {
       ? theme.palette.success.main
       : theme.palette.error.main,
     marginTop: theme.spacing(2),
+    width: "100%",
+    display: "block",
+    marginLeft: "auto",
   });
 
   const InputBox = styled(Box)({
@@ -255,6 +220,7 @@ export default function EditProduct(props) {
 
   const StyledImageListItem = styled(ImageListItem)({
     position: "relative",
+    width: "90%",
     cursor: "pointer",
     "&:hover": {
       outlineColor: theme.palette.primary.main,
@@ -282,15 +248,30 @@ export default function EditProduct(props) {
   const SaveTagsButton = styled(Button)({
     width: "100%",
     marginLeft: 1,
+  });
+
+  const SpecificationHeader = styled(Box)({
+    width: "50%",
+    textAlign: "center",
+    fontSize: 17,
+    fontWeight: 500,
+  });
+
+  const TagNote = styled(Typography)({
+    display: "block",
+    fontWeight: 500,
+    marginLeft: 3,
+  });
+
+  const SectionHeading = styled(Typography)({
+
   })
 
   return (
-    <Paper
-      sx={{ padding: 2, marginTop: theme.spacing(2), border: "2px solid red" }}
-    >
-      <Typography variant="h6" gutterBottom component="div">
+    <Paper sx={{ padding: 2, marginTop: theme.spacing(2) }}>
+      <SectionHeading variant="h6" gutterBottom>
         EDIT PRODUCT INFO
-      </Typography>
+      </SectionHeading>
       <form component="form" onSubmit={onEditProduct}>
         <InputBox>
           <ProductInfoInput
@@ -316,66 +297,57 @@ export default function EditProduct(props) {
             defaultValue={productDescription}
           />
         </InputBox>
-        <InputBox sx={{marginTop: 3.5}}>  
-          <Grid container spacing={3} >
+        <InputBox sx={{ marginTop: 3.5 }}>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-            <Typography variant="h6" sx={{marginBottom: 1.5}}>CHANGE CATEGORY:</Typography>
-            <select
-              style={StyledSelect}
-              ref={productCategoryRef}
-              defaultValue={productCategoryId}
-              name="category"
-              onChange={loadSubcategories}
-            > 
-              {categories?.map((option) => (
-                <option key={option?.id} value={option?.id}>
-                  {option?.name}
-                </option>
-              ))}
-            </select>
+              <SectionHeading variant="h6" sx={{ marginBottom: 1.5 }}>
+                CHANGE CATEGORY:
+              </SectionHeading>
+              <select
+                style={StyledSelect}
+                ref={productCategoryRef}
+                name="category"
+                onChange={loadSubcategories}
+              >
+                {categories?.map((option) => (
+                  <option key={option?.id} value={option?.id}>
+                    {option?.name}
+                  </option>
+                ))}
+              </select>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={6}
-              lg={6}
-            >
-              <Typography variant="h6" sx={{marginBottom: 1.5}}>CHANGE SUBCATEGORY:</Typography>       
-            <select
-              style={StyledSelect}
-              name="subcategory"
-              defaultValue={productSubcategoryId}
-              ref={productSubcategoryRef}
-            >
-              {subcategories?.map((option) => (
-                <option key={option?.id} value={option?.id}>
-                  {option?.name}
-                </option>
-              ))}
-            </select>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <SectionHeading variant="h6" sx={{ marginBottom: 1.5 }}>
+                CHANGE SUBCATEGORY:
+              </SectionHeading>
+              <select
+                style={StyledSelect}
+                name="subcategory"
+                ref={productSubcategoryRef}
+              >
+                {subcategories?.map((option) => (
+                  <option key={option?.id} value={option?.id}>
+                    {option?.name}
+                  </option>
+                ))}
+              </select>
             </Grid>
           </Grid>
-          </InputBox>
+        </InputBox>
         <Box sx={{ marginTop: theme.spacing(5) }}>
           <Box sx={{ display: "block" }}>
             <InputBox>
               <Typography variant="h6">Guarantee:</Typography>
               {
-              <StyledFormControlLabel
-                onChange={handleProductHasGuarantee}
-                sx={{
-                  width: "100%",
-                  display: "block",
-                  marginLeft: "auto",
-                }}
-                inputRef={productGuaranteeRef}
-                control={
-                  productHasGuarantee ? <Switch defaultChecked /> : <Switch />
-                }
-                label={productHasGuarantee ? "Yes" : "No"}
-              />
-             }
+                <StyledFormControlLabel
+                  onChange={handleProductHasGuarantee}
+                  inputRef={productGuaranteeRef}
+                  control={
+                    productHasGuarantee ? <Switch defaultChecked /> : <Switch />
+                  }
+                  label={productHasGuarantee ? "Yes" : "No"}
+                />
+              }
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
@@ -383,34 +355,43 @@ export default function EditProduct(props) {
               <Typography variant="h6">Currency:</Typography>
               <ProductInfoInput
                 inputRef={productCurrencyRef}
-                defaultValue={productCurrency}
-                placeholder={productCurrency}
+                defaultValue={productCurrency.toString()}
+                placeholder={productCurrency.toString()}
               />
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <Typography variant="h6">Price:</Typography>
               <ProductInfoInput
+                type="number"
                 inputRef={productPriceRef}
-                defaultValue={productPrice}
-                placeholder={productPrice}
+                defaultValue={productPrice.toString()}
+                placeholder={productPrice.toString()}
+                inputProps={{
+                  step: "0.01",
+                }}
               />
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              <Typography variant="h6">Discount:</Typography>
+              <Typography variant="h6">Discount (in %):</Typography>
               <ProductInfoInput
+                type="number"
                 inputRef={productDiscountRef}
-                defaultValue={`${productDiscount}%`}
-                placeholder={`${productDiscount}%`}
+                defaultValue={productDiscount.toString()}
+                placeholder={productDiscount.toString()}
+                inputProps={{
+                  step: "0.1",
+                }}
               />
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <Typography variant="h6">Quantity:</Typography>
               <ProductInfoInput
+                type="number"
                 inputRef={productQuantityRef}
-                defaultValue={productQuantity}
-                placeholder={productQuantity}
+                defaultValue={productQuantity.toString()}
+                placeholder={productQuantity.toString()}
               />
             </InputBox>
             {/*
@@ -430,36 +411,18 @@ export default function EditProduct(props) {
           </Box>
         </Box>
         <Box>
-          <Typography
+          <SectionHeading
             variant="h6"
             gutterBottom
             component="div"
             sx={{ marginTop: theme.spacing(6) }}
           >
             SPECIFICATIONS
-          </Typography>
+          </SectionHeading>
           <Box sx={{ padding: 2 }}>
             <Box sx={{ display: "flex" }}>
-              <Box
-                sx={{
-                  width: "50%",
-                  textAlign: "center",
-                  fontSize: 17,
-                  fontWeight: 500,
-                }}
-              >
-                Specification key
-              </Box>
-              <Box
-                sx={{
-                  width: "50%",
-                  textAlign: "center",
-                  fontSize: 17,
-                  fontWeight: 500,
-                }}
-              >
-                Specification value
-              </Box>
+              <SpecificationHeader>Specification key</SpecificationHeader>
+              <SpecificationHeader>Specification value</SpecificationHeader>
             </Box>
             {productSpecifications.map((spec, index) => (
               <Box key={index} sx={{ display: "flex" }}>
@@ -495,9 +458,10 @@ export default function EditProduct(props) {
               </Box>
             </Box>
             <AddSpecificationButton
-              onClick={handleSetProductSpecifications}
+              onClick={setValuesToStates}
               size="small"
               variant="contained"
+              color="secondary"
             >
               Save Specification
             </AddSpecificationButton>
@@ -517,79 +481,71 @@ export default function EditProduct(props) {
         </TagsWrapper>
         <Collapse in={tagsInput}>
           <InputBox>
-          <Typography
-              sx={{
-                display: "block",
-                fontWeight: 500,
-                marginLeft: 3,
-              }}
-            >
-              (tags separated by comma)
-            </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={9} lg={10}>
-            <ProductInfoInput
-              sx={{
-                marginTop: 0,
-                marginLeft: theme.spacing(3),
-              }}
-              inputRef={productTagsRef}
-              multiline
-              defaultValue={`${productTags.map((tag, index) => {
-                return tag;
-              })}`}
-            />
+            <TagNote>(tags separated by comma)</TagNote>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={9} lg={10}>
+                <ProductInfoInput
+                  sx={{
+                    marginTop: 0,
+                    marginLeft: theme.spacing(3),
+                  }}
+                  inputRef={productTagsRef}
+                  multiline
+                  defaultValue={`${productTags.map((tag, index) => {
+                    return tag;
+                  })}`}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={3} lg={2}>
+                <SaveTagsButton
+                  onClick={setValuesToStates}
+                  variant="contained"
+                  size="small"
+                >
+                  save tags
+                </SaveTagsButton>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={3}
-              lg={2}
-            >
-              <SaveTagsButton onClick={handleSetProductTags} variant="contained" size="small">save tags</SaveTagsButton>
-            </Grid>
-          </Grid>
           </InputBox>
         </Collapse>
         <Box>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{ marginTop: theme.spacing(4) }}
-        >
-          PRODUCT IMAGES
-        </Typography>
-        <StyledImageList cols={5}>
-          {productImages?.map((item, index) => (
-            <StyledImageListItem key={index} sx={{ width: "90%" }}>
-              <ListItemIcon
-                sx={{ position: "absolute", zIndex: 1, right: -15 }}
-              >
-                <IconButton>
-                  <Close sx={{ color: theme.palette.error.main }} />
-                </IconButton>
-              </ListItemIcon>
-              <img
-                src={`${item}?w=248&fit=crop&auto=format`}
-                srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                alt={productName}
-                loading="lazy"
-              />
-            </StyledImageListItem>
-          ))}
-        </StyledImageList>
-        <InputBox>
-          <ProductInfoInput
-            accept=".jpg, .png, .jpeg"
-            type="file"
-            variant="outlined"
-            id="edit-product-photos-image"
-            inputProps={{
-              multiple: true,
-            }}
-          />
-        </InputBox>
+          <SectionHeading
+            variant="h6"
+            gutterBottom
+            sx={{ marginTop: theme.spacing(4) }}
+          >
+            PRODUCT IMAGES
+          </SectionHeading>
+          <StyledImageList cols={5}>
+            {productImages?.map((item, index) => (
+              <StyledImageListItem key={index}>
+                <ListItemIcon
+                  sx={{ position: "absolute", zIndex: 1, right: -15 }}
+                >
+                  <IconButton>
+                    <Close sx={{ color: theme.palette.error.main }} />
+                  </IconButton>
+                </ListItemIcon>
+                <img
+                  src={`${item}?w=248&fit=crop&auto=format`}
+                  srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  alt={productName}
+                  loading="lazy"
+                />
+              </StyledImageListItem>
+            ))}
+          </StyledImageList>
+          <InputBox>
+            <ProductInfoInput
+              accept=".jpg, .png, .jpeg"
+              type="file"
+              variant="outlined"
+              id="edit-product-photos-image"
+              inputProps={{
+                multiple: true,
+              }}
+            />
+          </InputBox>
         </Box>
         <EditProductButton type="submit" size="medium" variant="contained">
           EDIT PRODUCT
