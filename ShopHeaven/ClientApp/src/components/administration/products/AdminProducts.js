@@ -13,10 +13,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import {
-  Close,
-  AddCircle,
-} from "@mui/icons-material";
+import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import axios from "axios";
 import { ApiEndpoints } from "../../../api/endpoints";
 import CreateProduct from "./CreateProduct";
@@ -26,7 +23,7 @@ export default function AdminProducts(props) {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
 
   function handleShowCreateProduct() {
-    setShowCreateProduct(!showCreateProduct);
+    setShowCreateProduct((prev) => !prev);
   }
 
   function onCreateProduct(e) {
@@ -76,7 +73,7 @@ export default function AdminProducts(props) {
   const StyledPagination = styled(Pagination)({});
 
   const PaginationHolder = styled(Box)({
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
   });
 
@@ -106,14 +103,25 @@ export default function AdminProducts(props) {
           </TableBody>
         </Table>
         <StyledButtonBox>
-          <Button
-            onClick={handleShowCreateProduct}
-            variant="contained"
-            size="small"
-            startIcon={<AddCircle />}
-          >
-            Add new product
-          </Button>
+          {showCreateProduct ? (
+            <Button
+              onClick={handleShowCreateProduct}
+              variant="contained"
+              size="small"
+              startIcon={<RemoveCircle />}
+            >
+              HIDE CREATION FORM
+            </Button>
+          ) : (
+            <Button
+              onClick={handleShowCreateProduct}
+              variant="contained"
+              size="small"
+              startIcon={<AddCircle />}
+            >
+              ADD NEW CATEGORY
+            </Button>
+          )}
         </StyledButtonBox>
       </TableContainer>
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
@@ -122,7 +130,6 @@ export default function AdminProducts(props) {
       <PaginationHolder>
         <StyledPagination count={10} size="medium" color="secondary" />
       </PaginationHolder>
-      <Box></Box>
     </Box>
   );
 }

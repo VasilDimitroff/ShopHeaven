@@ -12,12 +12,14 @@ import {
   ImageList,
   ImageListItem,
   ListItemIcon,
+  Collapse,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Close,
   AddCircle,
+  RemoveCircle
 } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
@@ -120,15 +122,14 @@ export default function EditProduct(props) {
   });
 
   const TagsInputBox = styled(InputBox)({
-    display: tagsInput ? "flex" : "none",
+    display: tagsInput ? "block" : "none",
   });
 
   const AddSpecificationButton = styled(Button)({
-    width: "30%",
+    width: "95%",
     display: "block",
     margin: "auto",
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(3),
   });
 
   const StyledImageList = styled(ImageList)({
@@ -180,27 +181,8 @@ export default function EditProduct(props) {
             defaultValue={product.description}
           />
         </InputBox>
-        <Box sx={{ display: "flex", marginTop: theme.spacing(5) }}>
-          <InputBox>
-            <Typography variant="h6">Availability:</Typography>
-            <StyledFormControlLabel
-              sx={{
-                width: "100%",
-                display: "block",
-                marginLeft: "auto",
-              }}
-              inputRef={productAvailabilityRef}
-              onChange={() => onChangeAvailability()}
-              control={
-                productAvailable === true ? (
-                  <Switch defaultChecked />
-                ) : (
-                  <Switch />
-                )
-              }
-              label={productAvailable === true ? "Yes" : "No"}
-            />
-          </InputBox>
+        <Box sx={{ marginTop: theme.spacing(5) }}>
+        <Box sx={{display: "block"}}>
           <InputBox>
             <Typography variant="h6">Guarantee:</Typography>
             <StyledFormControlLabel
@@ -214,35 +196,40 @@ export default function EditProduct(props) {
               label={"Yes"}
             />
           </InputBox>
-          <InputBox>
-            <Typography variant="h6">Quantity:</Typography>
-            <ProductInfoInput
-              inputRef={productNameRef}
-              defaultValue={product.quantity}
-            />
-          </InputBox>
-          <InputBox>
+          </Box>
+          <Box sx={{display: "flex"}}>
+          <InputBox sx={{width: "50%"}}>
             <Typography variant="h6">Currency:</Typography>
             <ProductInfoInput
               inputRef={productNameRef}
               defaultValue={product.currency}
             />
           </InputBox>
-          <InputBox>
+          <InputBox sx={{width: "50%"}}>
             <Typography variant="h6">Price:</Typography>
             <ProductInfoInput
               inputRef={productNameRef}
               defaultValue={product.price}
             />
           </InputBox>
-          <InputBox>
+          </Box>
+          <Box sx={{display: "flex"}}>
+          <InputBox sx={{width: "50%"}}>
             <Typography variant="h6">Discount:</Typography>
             <ProductInfoInput
               inputRef={productNameRef}
               defaultValue={`${product.discount}%`}
             />
           </InputBox>
-          <InputBox>
+          <InputBox sx={{width: "50%"}}>
+            <Typography variant="h6">Quantity:</Typography>
+            <ProductInfoInput
+              inputRef={productNameRef}
+              defaultValue={product.quantity}
+            />
+          </InputBox>
+          {/*
+          <InputBox sx={{width: "50%"}}>
             <Typography variant="h6" color="error">
               Final Price:
             </Typography>
@@ -254,6 +241,8 @@ export default function EditProduct(props) {
               }
             />
           </InputBox>
+            */}
+          </Box>
         </Box>
         <Typography
             variant="h6"
@@ -302,15 +291,11 @@ export default function EditProduct(props) {
           >
             SPECIFICATIONS
           </Typography>
-          <Paper sx={{border: "2px solid black"}}>
-            <Box>
-              <Box>
+          <Box sx={{padding: 2}}>
                 <Box sx={{display: "flex"}}>
                   <Box sx={{width: "50%", textAlign: "center"}}>Specification key</Box>
                   <Box sx={{width: "50%", textAlign: "center"}}>Specification value</Box>
                 </Box>
-              </Box>
-              <Box>
                 {productSpecifications.map((spec, index) => (
                   <Box
                     key={index}
@@ -328,8 +313,6 @@ export default function EditProduct(props) {
                     </Box>
                   </Box>
                 ))}
-              </Box>
-            </Box>
             <AddSpecificationButton
               onClick={() => handleSetProductSpecifications("", "")}
               size="small"
@@ -337,21 +320,23 @@ export default function EditProduct(props) {
             >
               Add Specification
             </AddSpecificationButton>
-          </Paper>
+          </Box>
         </Box>
         <TagsWrapper>
           Tags:
           {product.tags.map((tag, index) => (
             <StyledChip key={index} label={tag} color="secondary"></StyledChip>
           ))}
-          <IconButton onClick={() => handleTagsInput(!tagsInput)}>
-            <AddCircle />
-          </IconButton>
-          <TagsInputBox>
+          <IconButton sx={{color: theme.palette.primary.main}} onClick={() => handleTagsInput(!tagsInput)}>
+            { tagsInput ? <RemoveCircle/> : <AddCircle /> }
+          </IconButton>  
+        </TagsWrapper>
+        <Collapse in={tagsInput} unmountOnExit>
+        <InputBox>
             <ProductInfoInput
               sx={{
                 marginTop: theme.spacing(0),
-                marginLeft: theme.spacing(-2),
+                marginLeft: theme.spacing(3),
               }}
               inputRef={productNameRef}
               multiline
@@ -359,11 +344,11 @@ export default function EditProduct(props) {
                 return tag;
               })}`}
             />
-            <Typography sx={{ fontWeight: 500, marginLeft: theme.spacing(1) }}>
-              (Add tags separated with comma)
+            <Typography sx={{ display: "block", fontWeight: 500, marginLeft: 3, marginTop: 1 }}>
+              (tags separated by comma)
             </Typography>
-          </TagsInputBox>
-        </TagsWrapper>
+          </InputBox>
+          </Collapse>
         <EditProductButton type="submit" size="medium" variant="contained">
           EDIT PRODUCT
         </EditProductButton>

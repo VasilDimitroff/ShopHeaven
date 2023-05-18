@@ -7,6 +7,7 @@ namespace ShopHeaven.Data.Models
     public class Product : BaseModel, ICreatableModel
     {
         private double _rating;
+        private bool _isAvailable;
 
         public Product()
         {
@@ -35,7 +36,7 @@ namespace ShopHeaven.Data.Models
 
         public int Quantity { get; set; }
 
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get => SetAvailability(); private set => _isAvailable = value; }
 
         public decimal Price { get; set; }
 
@@ -76,6 +77,11 @@ namespace ShopHeaven.Data.Models
         private double CalculateRating()
         {
             return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+        }
+
+        private bool SetAvailability()
+        {
+            return this.Quantity > 0;
         }
     }
 }

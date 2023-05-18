@@ -241,12 +241,11 @@ export default function CreateProduct() {
             <Box sx={{ display: "flex", gap: 5, width: "100%" }}>
               <select
                 style={StyledSelect}
-                defaultValue={productCategory}
                 ref={productCategoryRef}
                 name="category"
-                id="category"
                 onChange={loadSubcategories}
               >
+                <option value="" selected disabled hidden>-- SELECT CATEGORY --</option>
                 {categories?.map((option) => (
                   <option key={option?.id} value={option?.name}>
                     {option?.name}
@@ -256,10 +255,10 @@ export default function CreateProduct() {
 
               <select
                 style={StyledSelect}
-                defaultValue={productSubcategory}
-                name="subcatgory"
-                id="subcategory"
+                name="subcategory"
+                ref={productSubcategoryRef}
               >
+                <option selected disabled hidden>-- SELECT SUBCATEGORY --</option>
                 {subcategories?.map((option) => (
                   <option key={option?.id} value={option?.name}>
                     {option?.name}
