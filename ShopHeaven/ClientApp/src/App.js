@@ -23,7 +23,7 @@ import { categories } from './components/categories';
 import { products } from './components/products';
 import { coupons } from './components/coupons';
 
-const Roles = {
+const roles = {
   User : "User",
   Admin: "Administrator"
 }
@@ -45,7 +45,7 @@ export default function App() {
             <Route path="register" element={<Register/>}/>
 
               {/* admin only routes */}          
-              <Route element={<RequireAuth allowedRoles={Roles.Admin} />}>
+              <Route element={<RequireAuth allowedRoles={roles.Admin} />}>
                   <Route path="admin" element={<Admin/>}>
                       <Route path="" element={<AdminDashboard/>}/>
                       <Route path="users" element={<AdminUsers/>}/>

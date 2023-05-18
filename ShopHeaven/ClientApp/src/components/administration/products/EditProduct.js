@@ -296,7 +296,7 @@ export default function EditProduct(props) {
       margin: "auto",
     },
     [theme.breakpoints.up("md")]: {
-      width: "95%",
+      width: "100%",
     },
   });
 
@@ -649,7 +649,7 @@ export default function EditProduct(props) {
         <TagsWrapper>
           <TagWord>Tags:</TagWord>
           {productTags.map((tag, index) => (
-            <StyledChip key={index} label={tag} color="warning"></StyledChip>
+            <StyledChip key={index} label={tag.toUpperCase()} color="warning"></StyledChip>
           ))}
           <IconButton color="secondary" size="large" onClick={handleTagsInput}>
             {tagsInput ? (
@@ -671,7 +671,7 @@ export default function EditProduct(props) {
                   }}
                   inputRef={productTagsRef}
                   multiline
-                  defaultValue={productTags.join(", ")}
+                  defaultValue={productTags.join(", ").toUpperCase()}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
@@ -687,17 +687,13 @@ export default function EditProduct(props) {
             </Grid>
           </InputBox>
         </Collapse>
-
-
-
-
         <Divider>
           <HeadingChip label="LABELS" variant="outlined" color="secondary" />
         </Divider>
         <TagsWrapper>
-          <TagWord>Tags:</TagWord>
+          <TagWord>Labels:</TagWord>
           {productLabels.map((label, index) => (
-            <StyledChip key={index} label={label} color="success"></StyledChip>
+            <StyledChip key={index} label={label.toUpperCase()} color="success"></StyledChip>
           ))}
           <IconButton color="secondary" size="large" onClick={handleLabelsInput}>
             {labelsInput ? (
@@ -719,7 +715,7 @@ export default function EditProduct(props) {
                   }}
                   inputRef={productLabelsRef}
                   multiline
-                  defaultValue={productLabels.join(", ")}
+                  defaultValue={productLabels.join(", ").toUpperCase()}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>

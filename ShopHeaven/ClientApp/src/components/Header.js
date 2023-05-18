@@ -33,14 +33,14 @@ import {
   AccountCircle,
   Logout,
   Menu,
+  AdminPanelSettings
 } from "@mui/icons-material";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import CategoriesHomeList from "./home/CategoriesHomeList";
-//import { Button } from "bootstrap";
 
-export default function Header(props) {
+export default function Header() {
   const { auth } = useAuth();
   const logout = useLogout();
   const navigate = useNavigate();
@@ -71,25 +71,6 @@ export default function Header(props) {
     navigate("/");
   }
 
-  const products = [
-    {
-      name: "Product 1",
-      price: "1.00",
-    },
-    {
-      name: "Product 2",
-      price: "2.00",
-    },
-    {
-      name: "Product 3",
-      price: "3.00",
-    },
-    {
-      name: "Product 4",
-      price: "4.00",
-    },
-  ];
-
   function HideAllMenusExcept(setterFuncToShowMenu) {
     let useStatesSetterNames = [
       handleShowUserMenu,
@@ -104,6 +85,10 @@ export default function Header(props) {
         useStatesSetterNames[i](false);
       }
     }
+  }
+  const styledLink = {
+      textDecoration: "none",
+      color: "#000"
   }
 
   const CustomToolbar = styled(Toolbar)({
@@ -418,6 +403,21 @@ export default function Header(props) {
                 <UserNameText component="h4">{auth.email}</UserNameText>
               </ListItem>
               <Divider />
+             {
+              auth?.roles?.includes("Administrator")
+              ? (
+                <Link style={styledLink} to="/admin">
+                  <ListItem disablePadding>
+                  <DropDownMenuListItemButton >
+                    <AdminPanelSettings  />
+                    <UserMenuListItem primary="Admin Panel" />
+                  </DropDownMenuListItemButton>
+                </ListItem>
+                <Divider />
+              </Link>
+              )
+              : <></>
+             } 
               <ListItem disablePadding>
                 <DropDownMenuListItemButton>
                   <AccountCircle />
@@ -459,7 +459,7 @@ export default function Header(props) {
 
       <Fade in={showMobileMenu} timeout={500}>
         <MobileMenuWrapper>
-          <CategoriesHomeList categories={props.categories} />
+          <CategoriesHomeList />
         </MobileMenuWrapper>
       </Fade>
     </div>
