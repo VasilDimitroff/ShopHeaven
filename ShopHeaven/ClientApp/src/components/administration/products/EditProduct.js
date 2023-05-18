@@ -52,12 +52,14 @@ export default function EditProduct(props) {
   const [productQuantity, setProductQuantity] = useState(product.quantity);
   const [productImages, setProductImages] = useState(product.images); // array[string]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
+  const [productLabels, setProductLabels] = useState(['new', 'hot']); // array[string]
 
   let finalPriceInitialy =
     productPrice - productPrice * (productDiscount / 100);
   const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
 
   const [tagsInput, setTagsInput] = useState(false);
+  const [labelsInput, setLabelsInput] = useState(false);
 
   const [editProductResponseMessage, setEditProductResponseMessage] =
     useState("");
@@ -75,15 +77,24 @@ export default function EditProduct(props) {
   let productPriceRef = useRef();
   let productDiscountRef = useRef();
   let productTagsRef = useRef();
+  let productLabelsRef = useRef();
   let productSpecificationKeyRef = useRef();
   let productSpecificationValueRef = useRef();
 
   function handleTagsInput() {
+    //1
+    setValuesToStates();
     setTagsInput((prev) => !prev);
   }
 
+  function handleLabelsInput() {
+    //2
+    setValuesToStates();
+    setLabelsInput((prev) => !prev);
+  }
+
   function handleProductHasGuarantee() {
-    //1 !!!
+    //3 !!!
     setValuesToStates();
     setProductHasGuarantee((prev) => !prev);
   }
@@ -92,7 +103,7 @@ export default function EditProduct(props) {
     const checkedCategoryId = productCategoryRef.current.value;
     console.log(checkedCategoryId);
 
-    //2 !!!
+    //4 !!!
     setValuesToStates();
 
     setSubcategories(
@@ -132,13 +143,22 @@ export default function EditProduct(props) {
 
     setProductTags(tags);
 
+    let labels = productLabelsRef.current.value
+        .split(",")
+        .map((label) => label.trim())
+        .filter((label) => label.length > 0);
+
+    setProductLabels(labels);
+
     console.log(tags);
+    console.log(labels);
     console.log(productSpecifications);
   }
 
   function onEditProduct(e) {
     e.preventDefault();
 
+    //5
     setValuesToStates();
 
     const images = document.getElementById("edit-product-photos-image").files;
@@ -157,9 +177,10 @@ export default function EditProduct(props) {
       images: images,
       specifications: productSpecifications,
       tags: productTags,
+      labels: productLabels
     };
 
-    console.log("WHOLE OBJ", newProduct);
+    console.log("WHOLE OBJECT", newProduct);
   }
 
   const MainWrapper = styled(Paper)({
@@ -666,6 +687,56 @@ export default function EditProduct(props) {
             </Grid>
           </InputBox>
         </Collapse>
+
+
+
+
+        <Divider>
+          <HeadingChip label="LABELS" variant="outlined" color="secondary" />
+        </Divider>
+        <TagsWrapper>
+          <TagWord>Tags:</TagWord>
+          {productLabels.map((label, index) => (
+            <StyledChip key={index} label={label} color="success"></StyledChip>
+          ))}
+          <IconButton color="secondary" size="large" onClick={handleLabelsInput}>
+            {labelsInput ? (
+              <RemoveCircle sx={{ fontSize: 35 }} />
+            ) : (
+              <AddCircle sx={{ fontSize: 35 }} />
+            )}
+          </IconButton>
+        </TagsWrapper>
+        <Collapse in={labelsInput}>
+          <InputBox>
+            <TagNote>(labels separated by comma)</TagNote>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={9} lg={10}>
+                <ProductInfoInput
+                  sx={{
+                    marginTop: 0,
+                    padding: 1,
+                  }}
+                  inputRef={productLabelsRef}
+                  multiline
+                  defaultValue={productLabels.join(", ")}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={3} lg={2}>
+                <SaveTagsButton
+                  onClick={setValuesToStates}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                >
+                  save labels
+                </SaveTagsButton>
+              </Grid>
+            </Grid>
+          </InputBox>
+        </Collapse>
+
+
         <Divider>
           <HeadingChip
             label="PRODUCT IMAGES"
