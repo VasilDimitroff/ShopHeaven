@@ -18,7 +18,7 @@ import axios from "../../../api/axios";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function CreateProduct() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState();
   const [subcategories, setSubcategories] = useState([]);
 
   const [productAvailable, setProductAvailable] = useState(true);
