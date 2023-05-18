@@ -93,7 +93,6 @@ export default function EditProduct(props) {
     setLabelsInput((prev) => !prev);
   }
 
-
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
     console.log(checkedCategoryId);
@@ -372,7 +371,6 @@ export default function EditProduct(props) {
             defaultValue={productDescription}
           />
         </InputBox>
-
         <InputBox>
           <Grid container spacing={3} sx={{ textAlign: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -479,7 +477,6 @@ export default function EditProduct(props) {
                 }}
               />
             </InputBox>
-
             <InputBox sx={{ width: "50%" }}>
               <Divider>
                 <SubheadingChip
@@ -499,33 +496,31 @@ export default function EditProduct(props) {
           >
             CALCULATE FINAL PRICE
           </CalculatePriceButton>
-          <Box sx={{ display: "flex" }}>
-            <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="QUANTITY"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <ProductInfoInput
-                type="number"
-                inputRef={productQuantityRef}
-                defaultValue={productQuantity.toString()}
-                placeholder={productQuantity.toString()}
+          <InputBox>
+            <Divider>
+              <HeadingChip
+                label="QUANTITY & GUARANTEE"
+                variant="outlined"
+                color="secondary"
               />
-            </InputBox>
-            <InputBox sx={{ width: "50%" }}>
-              <Box
-                sx={{
-                  width: "50%",
-                  display: "block",
-                  margin: "auto",
-                  [theme.breakpoints.down("sm")]: {
-                    width: "100%",
-                  },
-                }}
-              >
+            </Divider>
+            <Grid container spacing={3} sx={{ textAlign: "center" }}>
+              <Grid item xs={6} sm={6} md={6} lg={6}>
+                <Divider>
+                  <SubheadingChip
+                    label="QUANTITY"
+                    variant="outlined"
+                    color="primary"
+                  />
+                </Divider>
+                <ProductInfoInput
+                  type="number"
+                  inputRef={productQuantityRef}
+                  defaultValue={productQuantity.toString()}
+                  placeholder={productQuantity.toString()}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6} md={6} lg={6}>
                 <Divider>
                   <SubheadingChip
                     label="HAS GUARANTEE"
@@ -533,21 +528,18 @@ export default function EditProduct(props) {
                     color="primary"
                   />
                 </Divider>
-                {
-                  <select
-                    style={StyledSelect}
-                    name="guarantee"
-                    defaultValue={productHasGuarantee}
-                    ref={productGuaranteeRef}
-                  >
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
-                    ))
-                  </select>
-                }
-              </Box>
-            </InputBox>
-          </Box>
+                <select
+                  style={StyledSelect}
+                  name="guarantee"
+                  defaultValue={productHasGuarantee}
+                  ref={productGuaranteeRef}
+                >
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </select>
+              </Grid>
+            </Grid>
+          </InputBox>
         </Box>
         <Box>
           <Divider>
@@ -562,7 +554,7 @@ export default function EditProduct(props) {
               <Box sx={{ width: "50%" }}>
                 <Divider variant="middle">
                   <SubheadingChip
-                    label="Specification key"
+                    label="SPECIFICATION KEY"
                     variant="outlined"
                     color="primary"
                   />
@@ -571,7 +563,7 @@ export default function EditProduct(props) {
               <Box sx={{ width: "50%" }}>
                 <Divider variant="middle">
                   <SubheadingChip
-                    label="Specification value"
+                    label="SPECIFICATION VALUE"
                     variant="outlined"
                     color="primary"
                   />
@@ -643,7 +635,13 @@ export default function EditProduct(props) {
         </TagsWrapper>
         <Collapse in={tagsInput}>
           <InputBox>
-            <TagNote>(tags separated by comma)</TagNote>
+            <Divider textAlign="left" sx={{ marginBottom: theme.spacing(1) }}>
+              <SubheadingChip
+                label="TAGS SEPARATED BY COMMA"
+                variant="outlined"
+                color="primary"
+              />
+            </Divider>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
@@ -695,7 +693,13 @@ export default function EditProduct(props) {
         </TagsWrapper>
         <Collapse in={labelsInput}>
           <InputBox>
-            <TagNote>(labels separated by comma)</TagNote>
+            <Divider textAlign="left" sx={{ marginBottom: theme.spacing(1) }}>
+              <SubheadingChip
+                label="LABELS SEPARATED BY COMMA"
+                variant="outlined"
+                color="primary"
+              />
+            </Divider>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
