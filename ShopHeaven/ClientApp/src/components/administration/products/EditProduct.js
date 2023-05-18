@@ -15,6 +15,7 @@ import {
   Collapse,
   Grid,
   Divider,
+  Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -51,6 +52,10 @@ export default function EditProduct(props) {
   const [productQuantity, setProductQuantity] = useState(product.quantity);
   const [productImages, setProductImages] = useState(product.images); // array[string]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
+
+  let finalPriceInitialy =
+    productPrice - productPrice * (productDiscount / 100);
+  const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
 
   const [tagsInput, setTagsInput] = useState(false);
 
@@ -115,6 +120,11 @@ export default function EditProduct(props) {
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
+
+    const price = productPriceRef.current.value;
+    const discount = productDiscountRef.current.value;
+    const totalPrice = price - price * (discount / 100);
+    setFinalPrice(totalPrice);
 
     if (key.length > 0 && value.length > 0) {
       setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
@@ -214,10 +224,13 @@ export default function EditProduct(props) {
   });
 
   const AddSpecificationButton = styled(Button)({
-    width: "95%",
+    width: "50%",
     display: "block",
     margin: "auto",
     marginTop: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      width: "95%",
+    },
   });
 
   const StyledImageList = styled(ImageList)({
@@ -249,12 +262,20 @@ export default function EditProduct(props) {
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
     backgroundColor: "rgb(255,249,249)",
-    marginTop: theme.spacing(1.9)
+    marginTop: theme.spacing(1.9),
   };
 
   const SaveTagsButton = styled(Button)({
-    width: "100%",
+    width: "95%",
     padding: theme.spacing(1),
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      display: "block",
+      margin: "auto",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "95%",
+    },
   });
 
   const TagNote = styled(Typography)({
@@ -284,6 +305,17 @@ export default function EditProduct(props) {
     marginTop: theme.spacing(2),
   });
 
+  const CalculatePriceButton = styled(Button)({
+    width: "50%",
+    display: "block",
+    margin: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down("sm")]: {
+      width: "95%",
+    },
+  });
+
   return (
     <MainWrapper>
       <Divider>
@@ -291,13 +323,9 @@ export default function EditProduct(props) {
       </Divider>
       <form component="form" onSubmit={onEditProduct}>
         <InputBox>
-        <Divider>
-                <SubheadingChip
-                  label="NAME"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
+          <Divider>
+            <SubheadingChip label="NAME" variant="outlined" color="primary" />
+          </Divider>
           <ProductInfoInput
             sx={{ fontSize: 24 }}
             inputRef={productNameRef}
@@ -306,12 +334,8 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <Divider>
-                <SubheadingChip
-                  label="BRAND"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
+          <SubheadingChip label="BRAND" variant="outlined" color="primary" />
+        </Divider>
         <InputBox>
           <ProductInfoInput
             inputRef={productBrandRef}
@@ -320,13 +344,13 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <InputBox>
-        <Divider>
-                <SubheadingChip
-                  label="DESCRIPTION"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
+          <Divider>
+            <SubheadingChip
+              label="DESCRIPTION"
+              variant="outlined"
+              color="primary"
+            />
+          </Divider>
           <ProductInfoInput
             multiline
             minRows={4}
@@ -361,7 +385,7 @@ export default function EditProduct(props) {
               </select>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-            <Divider>
+              <Divider>
                 <SubheadingChip
                   label="CHANGE SUBCATEGORY"
                   variant="outlined"
@@ -392,40 +416,6 @@ export default function EditProduct(props) {
                 color="secondary"
               />
             </Divider>
-            <Box
-              sx={{
-                width: "50%",
-                display: "block",
-                margin: "auto",
-                [theme.breakpoints.down("md")]: {
-                  width: "100%",
-                },
-              }}
-            >
-              <Divider>
-                <SubheadingChip
-                  label="HAS GUARANTEE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              {
-                <StyledFormControlLabel
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    margin: "auto",
-                  }}
-                  onChange={handleProductHasGuarantee}
-                  inputRef={productGuaranteeRef}
-                  control={
-                    productHasGuarantee ? <Switch defaultChecked /> : <Switch />
-                  }
-                  label={productHasGuarantee ? "Yes" : "No"}
-                />
-              }
-            </Box>
           </InputBox>
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
@@ -480,6 +470,27 @@ export default function EditProduct(props) {
                 }}
               />
             </InputBox>
+
+            <InputBox sx={{ width: "50%" }}>
+              <Divider>
+                <SubheadingChip
+                  label="FINAL PRICE"
+                  variant="outlined"
+                  color="primary"
+                />
+              </Divider>
+              <ProductInfoInput disabled defaultValue={finalPrice} />
+            </InputBox>
+          </Box>
+          <CalculatePriceButton
+            onClick={setValuesToStates}
+            size="small"
+            variant="contained"
+            color="secondary"
+          >
+            CALCULATE FINAL PRICE
+          </CalculatePriceButton>
+          <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <Divider>
                 <SubheadingChip
@@ -495,20 +506,46 @@ export default function EditProduct(props) {
                 placeholder={productQuantity.toString()}
               />
             </InputBox>
-            {/*
-          <InputBox sx={{width: "50%"}}>
-            <Typography variant="h6" color="error">
-              Final Price:
-            </Typography>
-            <ProductInfoInput
-              disabled
-              inputRef={productNameRef}
-              defaultValue={
-                product?.price - product?.price * (product?.discount / 100)
-              }
-            />
-          </InputBox>
-            */}
+            <InputBox sx={{ width: "50%" }}>
+              <Box
+                sx={{
+                  width: "50%",
+                  display: "block",
+                  margin: "auto",
+                  [theme.breakpoints.down("sm")]: {
+                    width: "100%",
+                  },
+                }}
+              >
+                <Divider>
+                  <SubheadingChip
+                    label="HAS GUARANTEE"
+                    variant="outlined"
+                    color="primary"
+                  />
+                </Divider>
+                {
+                  <StyledFormControlLabel
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      margin: "auto",
+                    }}
+                    onChange={handleProductHasGuarantee}
+                    inputRef={productGuaranteeRef}
+                    control={
+                      productHasGuarantee ? (
+                        <Switch defaultChecked />
+                      ) : (
+                        <Switch />
+                      )
+                    }
+                    label={productHasGuarantee ? "Yes" : "No"}
+                  />
+                }
+              </Box>
+            </InputBox>
           </Box>
         </Box>
         <Box>
@@ -544,12 +581,12 @@ export default function EditProduct(props) {
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput defaultValue={spec.key} />
+                    <ProductInfoInput readOnly defaultValue={spec.key} />
                   </InputBox>
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput defaultValue={spec.value} />
+                    <ProductInfoInput readOnly defaultValue={spec.value} />
                   </InputBox>
                 </Box>
               </Box>
@@ -592,7 +629,11 @@ export default function EditProduct(props) {
             <StyledChip key={index} label={tag} color="warning"></StyledChip>
           ))}
           <IconButton color="secondary" size="large" onClick={handleTagsInput}>
-            {tagsInput ? <RemoveCircle sx={{fontSize: 35}}/> : <AddCircle  sx={{fontSize: 35}}/>}
+            {tagsInput ? (
+              <RemoveCircle sx={{ fontSize: 35 }} />
+            ) : (
+              <AddCircle sx={{ fontSize: 35 }} />
+            )}
           </IconButton>
         </TagsWrapper>
         <Collapse in={tagsInput}>
@@ -660,7 +701,16 @@ export default function EditProduct(props) {
             }}
           />
         </InputBox>
-        <Typography sx={{fontWeight: 500, textAlign: "center", marginTop: theme.spacing(3)}} variant="h5">IF YOU ARE READY:</Typography>
+        <Typography
+          sx={{
+            fontWeight: 500,
+            textAlign: "center",
+            marginTop: theme.spacing(3),
+          }}
+          variant="h5"
+        >
+          IF YOU ARE READY:
+        </Typography>
         <EditProductButton type="submit" size="big" variant="contained">
           EDIT PRODUCT
         </EditProductButton>
