@@ -102,14 +102,6 @@ export default function EditProduct(props) {
   }
 
   function setValuesToStates() {
-    let tags = productTagsRef.current.value
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
-
-    const key = productSpecificationKeyRef.current.value;
-    const value = productSpecificationValueRef.current.value;
-
     setProductName(productNameRef.current.value);
     setProductBrand(productBrandRef.current.value);
     setProductDescription(productDescriptionRef.current.value);
@@ -125,10 +117,18 @@ export default function EditProduct(props) {
     const discount = productDiscountRef.current.value;
     const totalPrice = price - price * (discount / 100);
     setFinalPrice(totalPrice);
+ 
+    const key = productSpecificationKeyRef.current.value;
+    const value = productSpecificationValueRef.current.value;
 
     if (key.length > 0 && value.length > 0) {
       setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
     }
+
+    let tags = productTagsRef.current.value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
 
     setProductTags(tags);
 
@@ -139,7 +139,7 @@ export default function EditProduct(props) {
   function onEditProduct(e) {
     e.preventDefault();
 
-    //setValuesToStates();
+    setValuesToStates();
 
     const images = document.getElementById("edit-product-photos-image").files;
 
@@ -253,6 +253,7 @@ export default function EditProduct(props) {
     width: "100%",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
+    padding: theme.spacing(2)
   });
 
   const StyledSelect = {
@@ -290,12 +291,13 @@ export default function EditProduct(props) {
   });
 
   const HeadingChip = styled(Chip)({
-    fontSize: 18,
+    fontSize: 21,
+    padding: theme.spacing(2),
     fontWeight: 500,
     marginTop: theme.spacing(5),
     marginBottom: theme.spacing(5),
-    //color: theme.palette.white.main,
-    //backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.white.main,
+    backgroundColor: theme.palette.secondary.main,
   });
 
   const SubheadingChip = styled(Chip)({
@@ -411,7 +413,7 @@ export default function EditProduct(props) {
           <InputBox>
             <Divider>
               <HeadingChip
-                label="GUARANTEE, PRICE AND QUANTITY"
+                label="PRICE"
                 variant="outlined"
                 color="secondary"
               />
@@ -486,7 +488,7 @@ export default function EditProduct(props) {
             onClick={setValuesToStates}
             size="small"
             variant="contained"
-            color="secondary"
+            color="primary"
           >
             CALCULATE FINAL PRICE
           </CalculatePriceButton>
@@ -614,7 +616,7 @@ export default function EditProduct(props) {
               onClick={setValuesToStates}
               size="small"
               variant="contained"
-              color="secondary"
+              color="primary"
             >
               Save Specification
             </AddSpecificationButton>
@@ -656,7 +658,7 @@ export default function EditProduct(props) {
                   onClick={setValuesToStates}
                   variant="contained"
                   size="small"
-                  color="secondary"
+                  color="primary"
                 >
                   save tags
                 </SaveTagsButton>
