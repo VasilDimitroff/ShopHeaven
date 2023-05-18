@@ -22,6 +22,9 @@ import {
   Delete,
   AddCircle,
   RemoveCircle,
+  Person,
+  ShoppingBag,
+  Category
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
@@ -102,7 +105,7 @@ export default function AdminCategoriesRow(props) {
   });
 
   const CategoryInfoText = styled(Box)({
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
       marginTop: theme.spacing(0.4)
@@ -147,9 +150,9 @@ export default function AdminCategoriesRow(props) {
         <CategoryNameTableCell onClick={handleShowSubcategories} component="th" scope="row">
           {category?.name}
           <CategoryInfoHolder>
-            <CategoryInfoText><Chip variant="outlined" color="secondary" label={`${subcategories?.length} subcategories`} size="small"/></CategoryInfoText>
-            <CategoryInfoText><Chip variant="outlined" color="primary" label={`${renderCategoryProductsCount()} products`} size="small"/></CategoryInfoText>
-            <CategoryInfoText><Chip variant="outlined" label={`By: ${category?.createdBy}`}size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<Category />} variant="outlined" color="warning" label={`${subcategories?.length} subcategories`} size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<ShoppingBag />} variant="outlined" color="primary" label={`${renderCategoryProductsCount()} products`} size="small"/></CategoryInfoText>
+            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<Person/>} variant="outlined" label={`By: ${category?.createdBy}`}size="small"/></CategoryInfoText>
           </CategoryInfoHolder>
         </CategoryNameTableCell>
         <TableCell align="center">

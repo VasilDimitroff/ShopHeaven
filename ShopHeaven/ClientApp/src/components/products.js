@@ -170,7 +170,7 @@ export const products = [
     quantity: 41,
     brand: "Mesko Petrich",
     hasGuarantee: false,
-    tags: ["leberkeze", "meat", "german", "chalga"],
+    tags: ["leberkeze", "meat", "german", "chalga", "kurvi", "smelo", "debamamati", "slipknot", "bogove", "ubivam", "ta", "chuk", "smazvam ta", "napravo"],
     specifications: [
       {
         id: "1",

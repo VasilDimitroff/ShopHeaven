@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, Fragment, useRef } from "react";
 import {
   Box,
   Button,
@@ -28,6 +28,7 @@ export default function EditProduct(props) {
   const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
 
+  //form states
   const [productName, setProductName] = useState(product.name);
   const [productBrand, setProductBrand] = useState(product.brand);
   const [productDescription, setProductDescription] = useState(
@@ -159,12 +160,7 @@ export default function EditProduct(props) {
     color: theme.palette.error.main,
   });
 
-  const TagsWrapper = styled(Box)({
-    display: "flex",
-    justifyContent: "flex-start",
-    gap: 8,
-    fontWeight: 500,
-    alignItems: "center",
+  const TagsWrapper = styled(Box)({  
     [theme.breakpoints.down("lg")]: {
       position: "relative",
     },
@@ -175,10 +171,13 @@ export default function EditProduct(props) {
   const StyledChip = styled(Chip)({
     cursor: "pointer",
     textAlign: "left",
+    marginRight: theme.spacing(0.5),
     borderRadius: theme.shape.borderRadius,
+    /*
     "&:hover": {
       backgroundColor: theme.palette.primary.main,
     },
+    */
   });
 
   const ProductInfoInput = styled(InputBase)({
@@ -247,7 +246,7 @@ export default function EditProduct(props) {
 
   const SaveTagsButton = styled(Button)({
     width: "100%",
-    marginLeft: 1,
+    padding: theme.spacing(1)
   });
 
   const SpecificationHeader = styled(Box)({
@@ -260,11 +259,16 @@ export default function EditProduct(props) {
   const TagNote = styled(Typography)({
     display: "block",
     fontWeight: 500,
-    marginLeft: 3,
   });
 
-  const SectionHeading = styled(Typography)({
+  const TagWord = styled(Typography)({
+    display: "inline",
+    fontWeight: 500,
+    marginRight: theme.spacing(1)
+  })
 
+  const SectionHeading = styled(Typography)({
+      
   })
 
   return (
@@ -298,7 +302,7 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <InputBox sx={{ marginTop: 3.5 }}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3}  sx={{ textAlign: "center"}}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <SectionHeading variant="h6" sx={{ marginBottom: 1.5 }}>
                 CHANGE CATEGORY:
@@ -467,13 +471,14 @@ export default function EditProduct(props) {
             </AddSpecificationButton>
           </Box>
         </Box>
+        <Box sx={{marginLeft: theme.spacing(4)}}>
         <TagsWrapper>
-          Tags:
+          <TagWord>Tags:</TagWord>
           {productTags.map((tag, index) => (
-            <StyledChip key={index} label={tag} color="secondary"></StyledChip>
+            <StyledChip key={index} label={tag} color="warning"></StyledChip>
           ))}
           <IconButton
-            sx={{ color: theme.palette.primary.main }}
+            color="secondary"
             onClick={handleTagsInput}
           >
             {tagsInput ? <RemoveCircle /> : <AddCircle />}
@@ -487,11 +492,11 @@ export default function EditProduct(props) {
                 <ProductInfoInput
                   sx={{
                     marginTop: 0,
-                    marginLeft: theme.spacing(3),
+                    padding: 1
                   }}
                   inputRef={productTagsRef}
                   multiline
-                  defaultValue={`${productTags.map((tag, index) => {
+                  defaultValue={`${productTags.map((tag) => {
                     return tag;
                   })}`}
                 />
@@ -501,6 +506,7 @@ export default function EditProduct(props) {
                   onClick={setValuesToStates}
                   variant="contained"
                   size="small"
+                  color="secondary"
                 >
                   save tags
                 </SaveTagsButton>
@@ -508,6 +514,7 @@ export default function EditProduct(props) {
             </Grid>
           </InputBox>
         </Collapse>
+        </Box>
         <Box>
           <SectionHeading
             variant="h6"
@@ -523,7 +530,7 @@ export default function EditProduct(props) {
                   sx={{ position: "absolute", zIndex: 1, right: -15 }}
                 >
                   <IconButton>
-                    <Close sx={{ color: theme.palette.error.main }} />
+                    <Close color="error"/>
                   </IconButton>
                 </ListItemIcon>
                 <img

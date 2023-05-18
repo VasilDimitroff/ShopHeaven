@@ -9,7 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Person, ShoppingBag } from "@mui/icons-material";
 import EditSubcategoryForm from "./EditSubcategoryForm";
 import { theme } from "../../../../theme";
 import DeleteSubcategoryForm from "./DeleteSubcategoryForm";
@@ -94,6 +94,8 @@ export default function CategorySubcategoriesRow(props) {
           <CategoryInfoHolder>
             <SubcategoryInfoText>
               <Chip
+                sx={{padding: 0.5}}
+                icon={<ShoppingBag />}
                 color="primary"
                 variant="outlined"
                 label={`${subcategory?.productsCount} products`}
@@ -102,6 +104,8 @@ export default function CategorySubcategoriesRow(props) {
             </SubcategoryInfoText>
             <SubcategoryInfoText>
               <Chip
+                sx={{padding: 0.5}}
+                icon={<Person />}
                 variant="outlined"
                 label={`By: ${subcategory?.createdBy}`}
                 size="small"
