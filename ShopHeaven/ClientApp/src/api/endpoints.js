@@ -10,6 +10,9 @@ export const ApiEndpoints = {
     users: {
         getAll: "api/users/getall"
     },
+    currencies: {
+        getAll: "api/currencies/getall"    
+    },
     categories: {
         createCategory: "api/categories/create",
         editCategory: "api/categories/edit",

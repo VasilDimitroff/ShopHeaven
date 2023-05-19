@@ -23,9 +23,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function AdminProducts(props) {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   
-  const effectRun = useRef(false);
+  const categoriesEffectRun = useRef(false);
+  const currenciesEffectRun = useRef(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,12 +52,42 @@ export default function AdminProducts(props) {
       }
     };
 
-    if (effectRun.current) {
+    if (categoriesEffectRun.current) {
       getCategories();
     }
 
     return () => {
-      effectRun.current = true; // update the value of effectRun to true
+      categoriesEffectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCurrencies = async () => {
+      try {
+        const response = await axiosPrivate.get(
+          ApiEndpoints.currencies.getAll,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response?.data);
+        setCurrencies(response?.data);
+      } catch (error) {
+        console.log(error);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    if (currenciesEffectRun.current) {
+      getCurrencies();
+    }
+
+    return () => {
+      currenciesEffectRun.current = true; // update the value of effectRun to true
       controller.abort();
     };
   }, []);
@@ -162,7 +194,7 @@ export default function AdminProducts(props) {
         </StyledButtonBox>
       </TableContainer>
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
-        <CreateProduct categories={categories} />
+        <CreateProduct categories={categories} currencies={currencies} />
       </Collapse>
       <PaginationHolder>
         <StyledPagination count={10} size="medium" color="secondary" />

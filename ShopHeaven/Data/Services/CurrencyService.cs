@@ -22,6 +22,7 @@ namespace ShopHeaven.Data.Services
                     Code = x.Code,
                     Name = x.Name
                 })
+                .OrderBy(x => x.Code)
                 .ToListAsync();
 
             return currencies;

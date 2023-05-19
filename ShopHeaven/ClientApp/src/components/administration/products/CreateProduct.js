@@ -28,9 +28,10 @@ export default function CreateProduct(props) {
 
  const [product, setProduct] = useState();
 
- //dropdown
+ //dropdowns
  const [categories, setCategories] = useState(props.categories);
  const [subcategories, setSubcategories] = useState([]);
+ const [currencies, setCurrencies] = useState(props.currencies);
 
  //form states
  const [productName, setProductName] = useState('');
