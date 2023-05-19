@@ -392,6 +392,7 @@ export default function Header() {
       ) : (
         <Slide in={showUserMenu} direction="down">
           <UserMenu
+            unmountonexit="true"
             onMouseLeave={() =>
               showUserMenu === true
                 ? handleShowUserMenu(false)
