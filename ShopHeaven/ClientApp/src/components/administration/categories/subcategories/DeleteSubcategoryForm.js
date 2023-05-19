@@ -61,7 +61,7 @@ export default function DeleteSubcategoryForm(props) {
       //if the function below is run, then the subcategory row will be deleted from the monitor
       //and the user will not see the result info
 
-      //props.subcategoryDeleted(response?.data?.subcategoryId);
+      props.subcategoryDeleted();
 
       console.log(response?.data);
     } catch (error) {
@@ -103,6 +103,7 @@ export default function DeleteSubcategoryForm(props) {
       setUndeleteResponse(response?.data);
       setUndoDeleteButtonClicked(true);
 
+      props.subcategoryUndeleted(response?.data?.name);
       console.log(response?.data);
     } catch (error) {
       setDeleteSubcategoryResponseMessage("");

@@ -11,7 +11,7 @@ import {
   TableBody,
   TableHead,
   Paper,
-  Chip
+  Chip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -24,11 +24,11 @@ import {
   RemoveCircle,
   Person,
   ShoppingBag,
-  Category
+  Category,
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
-import CategorySubcategories from "./subcategories/CategorySubcategories";
+import CategorySubcategoriesRow from "./subcategories/CategorySubcategoriesRow";
 import DeleteCategoryForm from "./DeleteCategoryForm";
 
 export default function AdminCategoriesRow(props) {
@@ -49,6 +49,24 @@ export default function AdminCategoriesRow(props) {
     });
   }
 
+  function categoryDeleted() {
+    setCategory(prev => {
+      return {
+        ...prev,
+        name: `CATEGORY IS DELETED`
+      }
+    });
+  }
+
+  function categoryUndeleted(categoryName) {
+    setCategory(prev => {
+      return {
+        ...prev,
+        name: categoryName
+      }
+    });
+  } 
+
   function subcategoriesUpdated(newSubcategory) {
     setSubcategories((prev) => {
       return [...prev, newSubcategory];
@@ -57,7 +75,7 @@ export default function AdminCategoriesRow(props) {
   }
 
   function onCancelButtonClicked() {
-    setShowDeleteForm(prev => !prev);
+    setShowDeleteForm((prev) => !prev);
   }
 
   function handleShowEditForm() {
@@ -69,7 +87,7 @@ export default function AdminCategoriesRow(props) {
   function handleShowDeleteForm() {
     setShowSubcategories(false);
     setOpenEditForm(false);
-    setShowDeleteForm(prev => !prev);
+    setShowDeleteForm((prev) => !prev);
   }
 
   function handleShowSubcategories() {
@@ -82,10 +100,6 @@ export default function AdminCategoriesRow(props) {
     setOpenSubcategoryForm((prev) => !prev);
   }
 
-  function subcategoryDeleted(id) {
-    setSubcategories(subcategories.filter(a => a.id != id))
-  }
-
   const StyledButtonBox = styled(Box)({
     marginTop: theme.spacing(2),
   });
@@ -93,10 +107,10 @@ export default function AdminCategoriesRow(props) {
   const CategoryNameTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
-    '&:hover': {
+    "&:hover": {
       cursor: "pointer",
       background: "#EAEAF7",
-   },
+    },
   });
 
   const StyledIconButton = styled(IconButton)({
@@ -108,9 +122,9 @@ export default function AdminCategoriesRow(props) {
     fontSize: 11,
     fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
-      marginTop: theme.spacing(0.4)
+      marginTop: theme.spacing(0.4),
     },
-  })
+  });
 
   const CategoryInfoHolder = styled(Box)({
     marginTop: theme.spacing(1),
@@ -127,9 +141,9 @@ export default function AdminCategoriesRow(props) {
       marginLeft: theme.spacing(2),
     },
     [theme.breakpoints.down("sm")]: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(2),
     },
-  })
+  });
 
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
@@ -138,7 +152,9 @@ export default function AdminCategoriesRow(props) {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell sx={{width: "20px", padding: 0, paddingLeft: theme.spacing(1)}}>
+        <TableCell
+          sx={{ width: "20px", padding: 0, paddingLeft: theme.spacing(1) }}
+        >
           <IconButton
             aria-label="expand row"
             size="small"
@@ -147,16 +163,50 @@ export default function AdminCategoriesRow(props) {
             {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <CategoryNameTableCell onClick={handleShowSubcategories} component="th" scope="row">
+        <CategoryNameTableCell
+          onClick={handleShowSubcategories}
+          component="th"
+          scope="row"
+        >
           {category?.name}
           <CategoryInfoHolder>
-            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<Category />} variant="outlined" color="warning" label={`${subcategories?.length} subcategories`} size="small"/></CategoryInfoText>
-            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<ShoppingBag />} variant="outlined" color="primary" label={`${renderCategoryProductsCount()} products`} size="small"/></CategoryInfoText>
-            <CategoryInfoText><Chip sx={{padding: 0.5}} icon={<Person/>} variant="outlined" label={`By: ${category?.createdBy}`}size="small"/></CategoryInfoText>
+            <CategoryInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<Category />}
+                variant="outlined"
+                color="warning"
+                label={`${subcategories?.length} subcategories`}
+                size="small"
+              />
+            </CategoryInfoText>
+            <CategoryInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<ShoppingBag />}
+                variant="outlined"
+                color="primary"
+                label={`${renderCategoryProductsCount()} products`}
+                size="small"
+              />
+            </CategoryInfoText>
+            <CategoryInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<Person />}
+                variant="outlined"
+                label={`By: ${category?.createdBy}`}
+                size="small"
+              />
+            </CategoryInfoText>
           </CategoryInfoHolder>
         </CategoryNameTableCell>
         <TableCell align="center">
-          <StyledIconButton onClick={() => handleShowEditForm()} sx={{borderColor: theme.palette.warning.main}} size="small">
+          <StyledIconButton
+            onClick={() => handleShowEditForm()}
+            sx={{ borderColor: theme.palette.warning.main }}
+            size="small"
+          >
             <Edit sx={{ color: theme.palette.warning.main }} />
           </StyledIconButton>
           <DeleteIconButton onClick={() => handleShowDeleteForm()} size="small">
@@ -165,10 +215,15 @@ export default function AdminCategoriesRow(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}> 
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={showDeleteForm} timeout="auto" unmountOnExit>
             <Box>
-              <DeleteCategoryForm onCancelButtonClicked={onCancelButtonClicked} category={category}/>
+              <DeleteCategoryForm
+                categoryDeleted={categoryDeleted}
+                categoryUndeleted={categoryUndeleted}
+                onCancelButtonClicked={onCancelButtonClicked}
+                category={category}
+              />
             </Box>
           </Collapse>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
@@ -203,7 +258,12 @@ export default function AdminCategoriesRow(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <CategorySubcategories categoryDeleted={props.categoryDeleted} subcategoryDeleted={subcategoryDeleted} subcategories={subcategories} />
+                  {subcategories?.map((subcategory) => (
+                    <CategorySubcategoriesRow
+                      key={subcategory?.id}
+                      subcategory={subcategory}
+                    />
+                  ))}
                 </TableBody>
               </Table>
               <StyledButtonBox>

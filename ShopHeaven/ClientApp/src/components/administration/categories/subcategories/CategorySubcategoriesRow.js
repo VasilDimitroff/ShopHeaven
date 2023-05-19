@@ -20,6 +20,24 @@ export default function CategorySubcategoriesRow(props) {
   const [openDeleteSubcategoryForm, setOpenDeleteSubcategoryForm] =
     useState(false);
 
+  function subcategoryDeleted() {
+    setSubcategory(prev => {
+      return {
+        ...prev,
+        name: `SUBCATEGORY IS DELETED`
+      }
+    });
+  }
+
+  function subcategoryUndeleted(subcategoryName) {
+    setSubcategory(prev => {
+      return {
+        ...prev,
+        name: subcategoryName
+      }
+    });
+  } 
+
   function subcategoryUpdated(newCategory) {
     setSubcategory(newCategory);
   }
@@ -140,7 +158,8 @@ export default function CategorySubcategoriesRow(props) {
           </Collapse>
           <Collapse in={openDeleteSubcategoryForm} timeout="auto" unmountOnExit>
             <DeleteSubcategoryForm
-              subcategoryDeleted={props.subcategoryDeleted}
+              subcategoryDeleted={subcategoryDeleted}
+              subcategoryUndeleted={subcategoryUndeleted}
               onCancelButtonClicked={onCancelButtonClicked}
               subcategory={subcategory}
             />

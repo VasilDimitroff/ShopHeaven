@@ -54,6 +54,7 @@ export default function DeleteCategoryForm(props) {
       setUndeleteResponse(undefined);
       setDeleteResponse(response?.data);
       setUndoDeleteButtonClicked(false);
+      props.categoryDeleted();
       console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");
@@ -92,6 +93,8 @@ export default function DeleteCategoryForm(props) {
       setDeleteResponse(undefined);
       setUndeleteResponse(response?.data);
       setUndoDeleteButtonClicked(true);
+
+      props.categoryUndeleted(response?.data?.name);
       console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");

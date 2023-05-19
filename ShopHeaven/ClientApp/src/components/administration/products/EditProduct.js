@@ -89,8 +89,6 @@ export default function EditProduct(props) {
     productQuantityError: "",
     productGuaranteeError: "",
     productTagsError: "",
-    successResponseMessage: "",
-    errorResponseMessage: "",
   });
 
   const [editProductResponseMessage, setEditProductResponseMessage] =
