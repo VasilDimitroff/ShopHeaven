@@ -130,7 +130,6 @@ export default function AdminProducts(props) {
               />
               <MainCategoryTableCell>PRODUCT</MainCategoryTableCell>
               <MainCategoryTableCell align="center">
-                A
               </MainCategoryTableCell>
             </TableRow>
           </TableHead>

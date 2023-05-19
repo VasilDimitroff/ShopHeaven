@@ -7,6 +7,7 @@ import {
   Typography,
   Box,
   IconButton,
+  Grid
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit, Person, ShoppingBag } from "@mui/icons-material";
@@ -129,20 +130,26 @@ export default function CategorySubcategoriesRow(props) {
           }
         </TableCell>
         <TableCell align="center">
-          <StyledIconButton
-            onClick={handleOpenEditSubcategoryForm}
-            sx={{ borderColor: theme.palette.warning.main }}
-            size="small"
-          >
-            <Edit sx={{ color: theme.palette.warning.main }} />
-          </StyledIconButton>
-          <StyledIconButton
-            onClick={handleOpenDeleteSubcategoryForm}
-            sx={{ borderColor: theme.palette.error.main }}
-            size="small"
-          >
-            <Delete sx={{ color: theme.palette.error.main }} />
-          </StyledIconButton>
+        <Grid container spacing={0}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <StyledIconButton
+                onClick={handleOpenEditSubcategoryForm}
+                color="warning"
+                size="small"
+              >
+                <Edit />
+              </StyledIconButton>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <StyledIconButton
+                onClick={handleOpenDeleteSubcategoryForm}
+                color="error"
+                size="small"
+              >
+                <Delete />
+              </StyledIconButton>
+            </Grid>
+          </Grid>
         </TableCell>
       </StyledTableRow>
       <TableRow>

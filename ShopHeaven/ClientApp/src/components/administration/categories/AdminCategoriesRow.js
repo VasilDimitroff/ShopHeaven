@@ -12,6 +12,7 @@ import {
   TableHead,
   Paper,
   Chip,
+  Grid
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -51,12 +52,12 @@ export default function AdminCategoriesRow(props) {
   }
 
   function categoryDeleted() {
-    setIsDeleted(true)
+    setIsDeleted(true);
   }
 
   function categoryUndeleted() {
-    setIsDeleted(false)
-  } 
+    setIsDeleted(false);
+  }
 
   function subcategoriesUpdated(newSubcategory) {
     setSubcategories((prev) => {
@@ -126,16 +127,6 @@ export default function AdminCategoriesRow(props) {
     },
   });
 
-  const DeleteIconButton = styled(StyledIconButton)({
-    borderColor: theme.palette.error.main,
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(2),
-    },
-    [theme.breakpoints.down("sm")]: {
-      marginTop: theme.spacing(2),
-    },
-  });
-
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }
@@ -159,56 +150,64 @@ export default function AdminCategoriesRow(props) {
           component="th"
           scope="row"
         >
-        {!isDeleted ? category?.name : "CATEGORY DELETED"}
-        {
-          !isDeleted
-          ? (
+          {!isDeleted ? category?.name : "CATEGORY DELETED"}
+          {!isDeleted ? (
             <CategoryInfoHolder>
-            <CategoryInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Category />}
-                variant="outlined"
-                color="warning"
-                label={`${subcategories?.length} subcategories`}
-                size="small"
-              />
-            </CategoryInfoText>
-            <CategoryInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<ShoppingBag />}
-                variant="outlined"
-                color="primary"
-                label={`${renderCategoryProductsCount()} products`}
-                size="small"
-              />
-            </CategoryInfoText>
-            <CategoryInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Person />}
-                variant="outlined"
-                label={`By: ${category?.createdBy}`}
-                size="small"
-              />
-            </CategoryInfoText>
-          </CategoryInfoHolder>  
-          )
-          : <></>
-        }
+              <CategoryInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<Category />}
+                  variant="outlined"
+                  color="warning"
+                  label={`${subcategories?.length} subcategories`}
+                  size="small"
+                />
+              </CategoryInfoText>
+              <CategoryInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<ShoppingBag />}
+                  variant="outlined"
+                  color="primary"
+                  label={`${renderCategoryProductsCount()} products`}
+                  size="small"
+                />
+              </CategoryInfoText>
+              <CategoryInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<Person />}
+                  variant="outlined"
+                  label={`By: ${category?.createdBy}`}
+                  size="small"
+                />
+              </CategoryInfoText>
+            </CategoryInfoHolder>
+          ) : (
+            <></>
+          )}
         </CategoryNameTableCell>
         <TableCell align="center">
-          <StyledIconButton
-            onClick={() => handleShowEditForm()}
-            sx={{ borderColor: theme.palette.warning.main }}
-            size="small"
-          >
-            <Edit sx={{ color: theme.palette.warning.main }} />
-          </StyledIconButton>
-          <DeleteIconButton onClick={() => handleShowDeleteForm()} size="small">
-            <Delete sx={{ color: theme.palette.error.main }} />
-          </DeleteIconButton>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <StyledIconButton
+                onClick={() => handleShowEditForm()}
+                color="warning"
+                size="small"
+              >
+                <Edit />
+              </StyledIconButton>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <StyledIconButton
+                onClick={handleShowDeleteForm}
+                color="error"
+                size="small"
+              >
+                <Delete />
+              </StyledIconButton>
+            </Grid>
+          </Grid>
         </TableCell>
       </TableRow>
       <TableRow>
