@@ -49,6 +49,8 @@ namespace ShopHeaven.Data
 
         public DbSet<Label> Labels { get; set; }
 
+        public DbSet<Currency> Currencies { get; set; }
+
         public DbSet<ProductLabel> ProductsLabels { get; set; }
 
         public DbSet<ProductLabel> ProductsImages { get; set; }
