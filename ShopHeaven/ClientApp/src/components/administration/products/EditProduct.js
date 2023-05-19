@@ -14,6 +14,7 @@ import {
   Grid,
   Divider,
   Alert,
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -90,7 +91,7 @@ export default function EditProduct(props) {
     productGuaranteeError: "",
     productTagsError: "",
   });
-
+  
   const [editProductResponseMessage, setEditProductResponseMessage] =
     useState("");
   const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
@@ -412,15 +413,6 @@ export default function EditProduct(props) {
     marginTop: theme.spacing(2),
   });
 
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(ResponseMessage)({
-    color: theme.palette.error.main,
-  });
-
   const TagsWrapper = styled(Box)({
     [theme.breakpoints.down("lg")]: {
       position: "relative",
@@ -546,6 +538,11 @@ export default function EditProduct(props) {
     },
   });
 
+  const ErrorAlert = styled(Alert)({
+    fontWeight: 500,
+    color: theme.palette.error.main,
+  });
+
   return (
     <MainWrapper>
       <Divider>
@@ -563,7 +560,9 @@ export default function EditProduct(props) {
             defaultValue={productName}
           />
           {messages.productNameError ? (
-            <Alert severity="error">{messages.productNameError}</Alert>
+            <ErrorAlert severity="error">
+              {messages.productNameError}
+            </ErrorAlert>
           ) : (
             <></>
           )}
@@ -594,7 +593,9 @@ export default function EditProduct(props) {
             defaultValue={productDescription}
           />
           {messages.productDescriptionError ? (
-            <Alert severity="error">{messages.productDescriptionError}</Alert>
+            <ErrorAlert severity="error">
+              {messages.productDescriptionError}
+            </ErrorAlert>
           ) : (
             <></>
           )}
@@ -623,7 +624,9 @@ export default function EditProduct(props) {
                 ))}
               </select>
               {messages.productCategoryError ? (
-                <Alert severity="error">{messages.productCategoryError}</Alert>
+                <ErrorAlert severity="error">
+                  {messages.productCategoryError}
+                </ErrorAlert>
               ) : (
                 <></>
               )}
@@ -649,9 +652,9 @@ export default function EditProduct(props) {
                 ))}
               </select>
               {messages.productSubcategoryError ? (
-                <Alert severity="error">
+                <ErrorAlert severity="error">
                   {messages.productSubcategoryError}
-                </Alert>
+                </ErrorAlert>
               ) : (
                 <></>
               )}
@@ -679,7 +682,9 @@ export default function EditProduct(props) {
                 placeholder={productCurrency.toString()}
               />
               {messages.productCurrencyError ? (
-                <Alert severity="error">{messages.productCurrencyError}</Alert>
+                <ErrorAlert severity="error">
+                  {messages.productCurrencyError}
+                </ErrorAlert>
               ) : (
                 <></>
               )}
@@ -703,7 +708,9 @@ export default function EditProduct(props) {
                 }}
               />
               {messages.productPriceError ? (
-                <Alert severity="error">{messages.productPriceError}</Alert>
+                <ErrorAlert severity="error">
+                  {messages.productPriceError}
+                </ErrorAlert>
               ) : (
                 <></>
               )}
@@ -729,7 +736,9 @@ export default function EditProduct(props) {
                 }}
               />
               {messages.productDiscountError ? (
-                <Alert severity="error">{messages.productDiscountError}</Alert>
+                <ErrorAlert severity="error">
+                  {messages.productDiscountError}
+                </ErrorAlert>
               ) : (
                 <></>
               )}
@@ -780,9 +789,9 @@ export default function EditProduct(props) {
                   }}
                 />
                 {messages.productQuantityError ? (
-                  <Alert severity="error">
+                  <ErrorAlert severity="error">
                     {messages.productQuantityError}
-                  </Alert>
+                  </ErrorAlert>
                 ) : (
                   <></>
                 )}
@@ -805,9 +814,9 @@ export default function EditProduct(props) {
                   <option value={false}>No</option>
                 </select>
                 {messages.productGuaranteeError ? (
-                  <Alert severity="error">
+                  <ErrorAlert severity="error">
                     {messages.productGuaranteeError}
-                  </Alert>
+                  </ErrorAlert>
                 ) : (
                   <></>
                 )}
@@ -908,7 +917,7 @@ export default function EditProduct(props) {
           </IconButton>
         </TagsWrapper>
         {messages.productTagsError ? (
-          <Alert severity="error">{messages.productTagsError}</Alert>
+          <ErrorAlert severity="error">{messages.productTagsError}</ErrorAlert>
         ) : (
           <></>
         )}
@@ -1057,8 +1066,24 @@ export default function EditProduct(props) {
         </EditProductButton>
       </form>
       <Box>
-        <ResponseMessage>{editProductResponseMessage}</ResponseMessage>
-        <ErrorResponseMessage>{editProductErrorMessage}</ErrorResponseMessage>
+        {editProductResponseMessage ? (
+          <Zoom in={editProductResponseMessage.length > 0 ? true : false}>
+            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              {editProductResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {editProductErrorMessage ? (
+          <Zoom in={editProductErrorMessage.length > 0 ? true : false}>
+            <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              {editProductErrorMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
       </Box>
     </MainWrapper>
   );
