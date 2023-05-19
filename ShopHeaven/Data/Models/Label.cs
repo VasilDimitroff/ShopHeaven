@@ -14,8 +14,6 @@ namespace ShopHeaven.Data.Models
         [Required(ErrorMessage="Content property cannot be empty")]
         public string Content { get; set; }
 
-        public LabelType Type { get; set; }
-
         public ICollection<ProductLabel> Products { get; set; } //products which contains this label
     }
 }
