@@ -14,7 +14,7 @@ const useAxiosPrivate = () => {
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = `Bearer ${auth?.jwtToken}`;
                 }
-                console.log("IN REQUEST JWT IS: " + auth?.jwtToken);
+
                 return config;
             }, (error) => Promise.reject(error)
         );

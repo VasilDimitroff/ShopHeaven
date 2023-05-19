@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef } from "react";
+import { React, useState, Fragment, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,15 +7,13 @@ import {
   Typography,
   Chip,
   InputBase,
-  FormControlLabel,
-  Switch,
   ImageList,
   ImageListItem,
   ListItemIcon,
   Collapse,
   Grid,
   Divider,
-  Checkbox,
+  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -24,9 +22,12 @@ import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function EditProduct(props) {
+  // api requests
   const axiosPrivateForm = useAxiosPrivateForm();
 
   const [product, setProduct] = useState(props.product);
+
+  //dropdown
   const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
 
@@ -53,17 +54,12 @@ export default function EditProduct(props) {
   const [productImages, setProductImages] = useState(product.images); // array[string]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
   const [productLabels, setProductLabels] = useState(["new", "hot"]); // array[string]
-
   let finalPriceInitialy =
     productPrice - productPrice * (productDiscount / 100);
   const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
 
   const [tagsInput, setTagsInput] = useState(false);
   const [labelsInput, setLabelsInput] = useState(false);
-
-  const [editProductResponseMessage, setEditProductResponseMessage] =
-    useState("");
-  const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
 
   //product editing refs
   let productNameRef = useRef();
@@ -80,6 +76,28 @@ export default function EditProduct(props) {
   let productLabelsRef = useRef();
   let productSpecificationKeyRef = useRef();
   let productSpecificationValueRef = useRef();
+
+  //errors
+  const [messages, setMessages] = useState({
+    productNameError: "",
+    productDescriptionError: "",
+    productCategoryError: "",
+    productSubcategoryError: "",
+    productCurrencyError: "",
+    productPriceError: "",
+    productDiscountError: "",
+    productQuantityError: "",
+    productGuaranteeError: "",
+    productTagsError: "",
+    successResponseMessage: "",
+    errorResponseMessage: "",
+  });
+
+  const [editProductResponseMessage, setEditProductResponseMessage] =
+    useState("");
+  const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
+
+  useEffect(() => {}, [messages]);
 
   function handleTagsInput() {
     //1
@@ -177,7 +195,216 @@ export default function EditProduct(props) {
       labels: productLabels,
     };
 
+    let isFormValid = validateForm();
+
+    if (!isFormValid) {
+      return;
+    }
+
     console.log("WHOLE OBJECT", newProduct);
+  }
+
+  function validateForm() {
+    let isValid = true;
+
+    if (productNameRef.current.value.length < 2) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productNameError: "Product name must contain at least 2 characters",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productNameError: "",
+        };
+      });
+    }
+
+    if (productDescriptionRef.current.value.length < 5) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDescriptionError:
+            "Product description must contain at least 5 characters",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDescriptionError: "",
+        };
+      });
+    }
+
+    if (!productCategoryRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCategoryError: "Please select a valid category",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCategoryError: "",
+        };
+      });
+    }
+
+    if (!productSubcategoryRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productSubcategoryError: "Please select a valid subcategory",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productSubcategoryError: "",
+        };
+      });
+    }
+
+    if (!productCurrencyRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCurrencyError: "Please select a valid currency",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCurrencyError: "",
+        };
+      });
+    }
+
+    if (!productPriceRef.current.value || productPriceRef.current.value < 0) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productPriceError: "The price must be bigger or equal to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productPriceError: "",
+        };
+      });
+    }
+
+    if (
+      !productDiscountRef.current.value ||
+      productDiscountRef.current.value < 0
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDiscountError: "The discount must be bigger or equals to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDiscountError: "",
+        };
+      });
+    }
+
+    if (
+      !productQuantityRef.current.value ||
+      productQuantityRef.current.value < 0
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productQuantityError: "Quantity must be bigger or equals to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productQuantityError: "",
+        };
+      });
+    }
+
+    if (
+      !productGuaranteeRef.current.value ||
+      (productGuaranteeRef.current.value != "true" &&
+        productGuaranteeRef.current.value != "false")
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productGuaranteeError: "Please select if the product has a guarantee",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productGuaranteeError: "",
+        };
+      });
+    }
+
+    let tags = productTagsRef.current.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    if (tags.length < 1) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productTagsError: "Product must contain at least 1 tag",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productTagsError: "",
+        };
+      });
+    }
+
+    console.log(messages);
+    return isValid;
   }
 
   const MainWrapper = styled(Paper)({
@@ -289,11 +516,6 @@ export default function EditProduct(props) {
     },
   });
 
-  const TagNote = styled(Typography)({
-    display: "block",
-    fontWeight: 500,
-  });
-
   const TagWord = styled(Typography)({
     display: "inline",
     fontWeight: 500,
@@ -312,8 +534,6 @@ export default function EditProduct(props) {
 
   const SubheadingChip = styled(Chip)({
     fontSize: 12,
-    //color: theme.palette.white.main,
-    //backgroundColor: theme.palette.primary.main,
     marginTop: theme.spacing(2),
   });
 
@@ -344,6 +564,11 @@ export default function EditProduct(props) {
             placeholder={productName}
             defaultValue={productName}
           />
+          {messages.productNameError ? (
+            <Alert severity="error">{messages.productNameError}</Alert>
+          ) : (
+            <></>
+          )}
         </InputBox>
         <Divider>
           <SubheadingChip label="BRAND" variant="outlined" color="primary" />
@@ -370,6 +595,11 @@ export default function EditProduct(props) {
             placeholder={productDescription}
             defaultValue={productDescription}
           />
+          {messages.productDescriptionError ? (
+            <Alert severity="error">{messages.productDescriptionError}</Alert>
+          ) : (
+            <></>
+          )}
         </InputBox>
         <InputBox>
           <Grid container spacing={3} sx={{ textAlign: "center" }}>
@@ -394,6 +624,11 @@ export default function EditProduct(props) {
                   </option>
                 ))}
               </select>
+              {messages.productCategoryError ? (
+                <Alert severity="error">{messages.productCategoryError}</Alert>
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <Divider>
@@ -415,6 +650,13 @@ export default function EditProduct(props) {
                   </option>
                 ))}
               </select>
+              {messages.productSubcategoryError ? (
+                <Alert severity="error">
+                  {messages.productSubcategoryError}
+                </Alert>
+              ) : (
+                <></>
+              )}
             </Grid>
           </Grid>
         </InputBox>
@@ -438,6 +680,11 @@ export default function EditProduct(props) {
                 defaultValue={productCurrency.toString()}
                 placeholder={productCurrency.toString()}
               />
+              {messages.productCurrencyError ? (
+                <Alert severity="error">{messages.productCurrencyError}</Alert>
+              ) : (
+                <></>
+              )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <Divider>
@@ -454,8 +701,14 @@ export default function EditProduct(props) {
                 placeholder={productPrice.toString()}
                 inputProps={{
                   step: "0.01",
+                  min: "0.00",
                 }}
               />
+              {messages.productPriceError ? (
+                <Alert severity="error">{messages.productPriceError}</Alert>
+              ) : (
+                <></>
+              )}
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
@@ -474,8 +727,14 @@ export default function EditProduct(props) {
                 placeholder={productDiscount.toString()}
                 inputProps={{
                   step: "0.1",
+                  min: "0.00",
                 }}
               />
+              {messages.productDiscountError ? (
+                <Alert severity="error">{messages.productDiscountError}</Alert>
+              ) : (
+                <></>
+              )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <Divider>
@@ -485,7 +744,7 @@ export default function EditProduct(props) {
                   color="primary"
                 />
               </Divider>
-              <ProductInfoInput disabled defaultValue={finalPrice} />
+              <ProductInfoInput disabled defaultValue={finalPrice.toFixed(2)} />
             </InputBox>
           </Box>
           <CalculatePriceButton
@@ -518,7 +777,17 @@ export default function EditProduct(props) {
                   inputRef={productQuantityRef}
                   defaultValue={productQuantity.toString()}
                   placeholder={productQuantity.toString()}
+                  inputProps={{
+                    min: "0",
+                  }}
                 />
+                {messages.productQuantityError ? (
+                  <Alert severity="error">
+                    {messages.productQuantityError}
+                  </Alert>
+                ) : (
+                  <></>
+                )}
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
                 <Divider>
@@ -537,6 +806,13 @@ export default function EditProduct(props) {
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>
                 </select>
+                {messages.productGuaranteeError ? (
+                  <Alert severity="error">
+                    {messages.productGuaranteeError}
+                  </Alert>
+                ) : (
+                  <></>
+                )}
               </Grid>
             </Grid>
           </InputBox>
@@ -633,6 +909,11 @@ export default function EditProduct(props) {
             )}
           </IconButton>
         </TagsWrapper>
+        {messages.productTagsError ? (
+          <Alert severity="error">{messages.productTagsError}</Alert>
+        ) : (
+          <></>
+        )}
         <Collapse in={tagsInput}>
           <InputBox>
             <Divider textAlign="left" sx={{ marginBottom: theme.spacing(1) }}>

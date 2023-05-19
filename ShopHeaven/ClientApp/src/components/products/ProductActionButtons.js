@@ -34,7 +34,7 @@ export default function ProductActionButtons(props) {
   let [productsQuantity, setProductsQuantity] = useState(1);
 
   useEffect(() => {
-    console.log("productsQuantity has been updated:", productsQuantity);
+
   }, [productsQuantity]);
 
   function handleSetProductsQuantity(value) {
@@ -52,8 +52,6 @@ export default function ProductActionButtons(props) {
       setProductsQuantity((prev) => (prev += value));
       handleCloseError();
     }
-
-    console.log("productsQuantity IS: " + productsQuantity);
   }
 
   function handleShowError() {

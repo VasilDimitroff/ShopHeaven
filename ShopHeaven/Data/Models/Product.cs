@@ -23,12 +23,13 @@ namespace ShopHeaven.Data.Models
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
         [MaxLength(200)]
+        [MinLength(2)]
         public string Name { get; set; }
 
+        [MinLength(5)]
         [Required(ErrorMessage = "Product description must contain at least 5 characters")]
         public string Description { get; set; }
 
-        [MinLength(1)]
         [MaxLength(100)]
         public string Brand { get; set; }
 

@@ -41,7 +41,6 @@ export default function AdminProducts(props) {
             signal: controller.signal,
           }
         );
-        console.log("IDAT")
         console.log(response?.data);
 
         setCategories(response?.data);

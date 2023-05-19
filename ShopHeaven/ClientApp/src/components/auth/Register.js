@@ -20,6 +20,17 @@ import {
   register,
 } from "../../services/authService";
 
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: "Register",
+    uri: "/register",
+  },
+];
+
 export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -104,17 +115,6 @@ export default function Register() {
     setValidPassword(true);
     setValidConfirmPassword(true);
   }
-
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Register",
-      uri: "/register",
-    },
-  ];
 
   const ProductInfoInput = styled(TextField)({
     background: "rgb(255,249,249)",
