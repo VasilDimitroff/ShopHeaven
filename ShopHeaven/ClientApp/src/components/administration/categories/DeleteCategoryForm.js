@@ -94,7 +94,7 @@ export default function DeleteCategoryForm(props) {
       setUndeleteResponse(response?.data);
       setUndoDeleteButtonClicked(true);
 
-      props.categoryUndeleted(response?.data?.name);
+      props.categoryUndeleted();
       console.log(response?.data);
     } catch (error) {
       setDeleteCategoryResponseMessage("");

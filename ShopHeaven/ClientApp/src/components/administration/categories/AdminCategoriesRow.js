@@ -33,6 +33,7 @@ import DeleteCategoryForm from "./DeleteCategoryForm";
 
 export default function AdminCategoriesRow(props) {
   const [category, setCategory] = useState(props.category);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [subcategories, setSubcategories] = useState(props.subcategories);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showSubcategories, setShowSubcategories] = useState(false);
@@ -50,21 +51,11 @@ export default function AdminCategoriesRow(props) {
   }
 
   function categoryDeleted() {
-    setCategory(prev => {
-      return {
-        ...prev,
-        name: `CATEGORY IS DELETED`
-      }
-    });
+    setIsDeleted(true)
   }
 
-  function categoryUndeleted(categoryName) {
-    setCategory(prev => {
-      return {
-        ...prev,
-        name: categoryName
-      }
-    });
+  function categoryUndeleted() {
+    setIsDeleted(false)
   } 
 
   function subcategoriesUpdated(newSubcategory) {
@@ -168,8 +159,11 @@ export default function AdminCategoriesRow(props) {
           component="th"
           scope="row"
         >
-          {category?.name}
-          <CategoryInfoHolder>
+        {!isDeleted ? category?.name : "CATEGORY DELETED"}
+        {
+          !isDeleted
+          ? (
+            <CategoryInfoHolder>
             <CategoryInfoText>
               <Chip
                 sx={{ padding: 0.5 }}
@@ -199,7 +193,10 @@ export default function AdminCategoriesRow(props) {
                 size="small"
               />
             </CategoryInfoText>
-          </CategoryInfoHolder>
+          </CategoryInfoHolder>  
+          )
+          : <></>
+        }
         </CategoryNameTableCell>
         <TableCell align="center">
           <StyledIconButton

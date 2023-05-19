@@ -103,7 +103,7 @@ export default function DeleteSubcategoryForm(props) {
       setUndeleteResponse(response?.data);
       setUndoDeleteButtonClicked(true);
 
-      props.subcategoryUndeleted(response?.data?.name);
+      props.subcategoryUndeleted();
       console.log(response?.data);
     } catch (error) {
       setDeleteSubcategoryResponseMessage("");

@@ -16,26 +16,17 @@ import DeleteSubcategoryForm from "./DeleteSubcategoryForm";
 
 export default function CategorySubcategoriesRow(props) {
   const [subcategory, setSubcategory] = useState(props.subcategory);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [openEditSubcategoryForm, setOpenEditSubcategoryForm] = useState(false);
   const [openDeleteSubcategoryForm, setOpenDeleteSubcategoryForm] =
     useState(false);
 
   function subcategoryDeleted() {
-    setSubcategory(prev => {
-      return {
-        ...prev,
-        name: `SUBCATEGORY IS DELETED`
-      }
-    });
+    setIsDeleted(true);
   }
 
-  function subcategoryUndeleted(subcategoryName) {
-    setSubcategory(prev => {
-      return {
-        ...prev,
-        name: subcategoryName
-      }
-    });
+  function subcategoryUndeleted() {
+    setIsDeleted(false);
   } 
 
   function subcategoryUpdated(newCategory) {
@@ -107,29 +98,35 @@ export default function CategorySubcategoriesRow(props) {
           scope="row"
         >
           <Typography sx={{ fontSize: 17, fontWeight: 500 }}>
-            {subcategory?.name}
+           {!isDeleted ? subcategory?.name : "SUBCATEGORY DELETED"}
           </Typography>
-          <CategoryInfoHolder>
-            <SubcategoryInfoText>
-              <Chip
-                sx={{padding: 0.5}}
-                icon={<ShoppingBag />}
-                color="primary"
-                variant="outlined"
-                label={`${subcategory?.productsCount} products`}
-                size="small"
-              />
-            </SubcategoryInfoText>
-            <SubcategoryInfoText>
-              <Chip
-                sx={{padding: 0.5}}
-                icon={<Person />}
-                variant="outlined"
-                label={`By: ${subcategory?.createdBy}`}
-                size="small"
-              />
-            </SubcategoryInfoText>
-          </CategoryInfoHolder>
+          {
+            !isDeleted
+            ? (
+              <CategoryInfoHolder>
+              <SubcategoryInfoText>
+                <Chip
+                  sx={{padding: 0.5}}
+                  icon={<ShoppingBag />}
+                  color="primary"
+                  variant="outlined"
+                  label={`${subcategory?.productsCount} products`}
+                  size="small"
+                />
+              </SubcategoryInfoText>
+              <SubcategoryInfoText>
+                <Chip
+                  sx={{padding: 0.5}}
+                  icon={<Person />}
+                  variant="outlined"
+                  label={`By: ${subcategory?.createdBy}`}
+                  size="small"
+                />
+              </SubcategoryInfoText>
+            </CategoryInfoHolder>
+            )
+            : <></>
+          }
         </TableCell>
         <TableCell align="center">
           <StyledIconButton
