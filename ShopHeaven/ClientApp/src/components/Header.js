@@ -457,7 +457,7 @@ export default function Header() {
         </Slide>
       )}
 
-      <Fade in={showMobileMenu} timeout={500}>
+      <Fade in={showMobileMenu} timeout={500} unmountOnExit>
         <MobileMenuWrapper>
           <CategoriesHomeList />
         </MobileMenuWrapper>

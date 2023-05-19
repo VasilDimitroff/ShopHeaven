@@ -158,7 +158,7 @@ export default function AdminProducts(props) {
               size="small"
               startIcon={<AddCircle />}
             >
-              ADD NEW CATEGORY
+              ADD NEW PRODUCT
             </Button>
           )}
         </StyledButtonBox>
