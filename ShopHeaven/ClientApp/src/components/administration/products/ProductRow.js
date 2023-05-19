@@ -119,7 +119,7 @@ export default function ProductRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-            <EditProduct product={product} categories={props.categories} />
+            <EditProduct currencies={props.currencies} product={product} categories={props.categories} />
           </Collapse>
         </TableCell>
       </TableRow>

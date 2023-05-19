@@ -6,7 +6,11 @@ export const products = [
     description: "The best laptop you ever seen",
     createdBy: "vasil",
     reviewsCount: 4,
-    currency: "$",
+    currency: { 
+      id: "1",
+      code: "USD",
+      name: "US Dollar"
+    },
     rating: 2.3,
     price: 20.50,
     discount: 10,
@@ -59,7 +63,11 @@ export const products = [
     description: "The best car you ever seen",
     createdBy: "brejnev",
     reviewsCount: 244,
-    currency: "$",
+    currency: { 
+      id: "2",
+      code: "EUR",
+      name: "Euro"
+    },
     rating: 3.6,
     price: 1220.00,
     discount: 0,
@@ -111,7 +119,11 @@ export const products = [
     description: "The best CD you ever seen",
     createdBy: "mitko",
     reviewsCount: 65,
-    currency: "BGN",
+    currency: { 
+      id: "3",
+      code: "BGN",
+      name: "Bulgarian lev"
+    },
     rating: 4.1,
     price: 10.00,
     discount: 8,
@@ -163,7 +175,11 @@ export const products = [
     description: "The best leberkeze you ever taste",
     createdBy: "pecata",
     reviewsCount: 22,
-    currency: "BGN",
+    currency: { 
+      id: "4",
+      code: "BGN",
+      name: "lev"
+    },
     rating: 4.5,
     price: 23.50,
     discount: 2,
@@ -215,7 +231,11 @@ export const products = [
     description: "The best coffee you ever taste",
     createdBy: "nasri",
     reviewsCount: 3,
-    currency: "BGN",
+    currency: { 
+      id: "5",
+      code: "USD",
+      name: "US Dollar"
+    },
     rating: 2.0,
     price: 13.50,
     discount: 5,

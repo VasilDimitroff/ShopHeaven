@@ -167,7 +167,7 @@ export default function AdminProducts(props) {
           </TableHead>
           <TableBody>
             {props.products.map((product, index) => {
-              return <ProductRow key={index} categories={categories} product={product} />;
+              return <ProductRow key={index} categories={categories} currencies={currencies} product={product} />;
             })}
           </TableBody>
         </Table>

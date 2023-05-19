@@ -28,9 +28,10 @@ export default function EditProduct(props) {
 
   const [product, setProduct] = useState(props.product);
 
-  //dropdown
+  //dropdowns
   const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
+  const [currencies, setCurrencies] = useState(props.currencies);
 
   //form states
   const [productName, setProductName] = useState(product.name);
@@ -48,7 +49,9 @@ export default function EditProduct(props) {
   const [productSpecifications, setProductSpecifications] = useState(
     product.specifications
   ); //array[object]
-  const [productCurrency, setProductCurrency] = useState(product.currency);
+  const [productCurrencyId, setProductCurrencyId] = useState(
+    product.currency.id
+  );
   const [productPrice, setProductPrice] = useState(product.price);
   const [productDiscount, setProductDiscount] = useState(product.discount);
   const [productQuantity, setProductQuantity] = useState(product.quantity);
@@ -59,8 +62,8 @@ export default function EditProduct(props) {
     productPrice - productPrice * (productDiscount / 100);
   const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
 
-  const [tagsInput, setTagsInput] = useState(false);
-  const [labelsInput, setLabelsInput] = useState(false);
+  const [tagsInput, setTagsInput] = useState(true);
+  const [labelsInput, setLabelsInput] = useState(true);
 
   //product editing refs
   let productNameRef = useRef();
@@ -91,7 +94,7 @@ export default function EditProduct(props) {
     productGuaranteeError: "",
     productTagsError: "",
   });
-  
+
   const [editProductResponseMessage, setEditProductResponseMessage] =
     useState("");
   const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
@@ -113,14 +116,12 @@ export default function EditProduct(props) {
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
     console.log(checkedCategoryId);
-
+    const subcats = categories.find(
+      (x) => x.id === checkedCategoryId
+    )?.subcategories;
+    setSubcategories(subcats);
     //3
     setValuesToStates();
-
-    setSubcategories(
-      (prev) =>
-        categories.find((x) => x.id === checkedCategoryId)?.subcategories
-    );
   }
 
   function setValuesToStates() {
@@ -129,7 +130,7 @@ export default function EditProduct(props) {
     setProductDescription(productDescriptionRef.current.value);
     setProductCategoryId(productCategoryRef.current.value);
     setProductSubcategoryId(productSubcategoryRef.current.value);
-    setProductCurrency(productCurrencyRef.current.value);
+    setProductCurrencyId(productCurrencyRef.current.value);
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
@@ -177,6 +178,12 @@ export default function EditProduct(props) {
 
     const images = document.getElementById("edit-product-photos-image").files;
 
+    let isFormValid = validateForm();
+
+    if (!isFormValid) {
+      return;
+    }
+
     const newProduct = {
       name: productName,
       brand: productBrand,
@@ -184,7 +191,7 @@ export default function EditProduct(props) {
       categoryId: productCategoryId,
       subcategoryId: productSubcategoryId,
       hasGuarantee: productHasGuarantee,
-      currency: productCurrency,
+      currency: productCurrencyId,
       price: productPrice,
       discount: productDiscount,
       quantity: productQuantity,
@@ -193,12 +200,6 @@ export default function EditProduct(props) {
       tags: productTags,
       labels: productLabels,
     };
-
-    let isFormValid = validateForm();
-
-    if (!isFormValid) {
-      return;
-    }
 
     console.log("WHOLE OBJECT", newProduct);
   }
@@ -484,13 +485,14 @@ export default function EditProduct(props) {
 
   const StyledSelect = {
     cursor: "pointer",
+    width: "100%",
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(1),
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
-    fontSize: 16,
+    fontSize: 14,
     backgroundColor: "rgb(255,249,249)",
-    marginTop: theme.spacing(1.9),
+    marginTop: theme.spacing(1),
   };
 
   const SaveTagsButton = styled(Button)({
@@ -525,6 +527,7 @@ export default function EditProduct(props) {
   const SubheadingChip = styled(Chip)({
     fontSize: 12,
     marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1)
   });
 
   const CalculatePriceButton = styled(Button)({
@@ -644,9 +647,10 @@ export default function EditProduct(props) {
                 name="subcategory"
                 defaultValue={productSubcategoryId}
                 ref={productSubcategoryRef}
+                onChange={setValuesToStates}
               >
                 {subcategories?.map((option) => (
-                  <option key={option?.id} value={option?.id}>
+                  <option key={option?.id} value={option.id}>
                     {option?.name}
                   </option>
                 ))}
@@ -661,61 +665,70 @@ export default function EditProduct(props) {
             </Grid>
           </Grid>
         </InputBox>
-        <Box sx={{ display: "block" }}>
+        <Box>
+          <Divider>
+            <HeadingChip label="PRICE" variant="outlined" color="secondary" />
+          </Divider>
           <InputBox>
-            <Divider>
-              <HeadingChip label="PRICE" variant="outlined" color="secondary" />
-            </Divider>
+            <Grid container spacing={3} sx={{ textAlign: "center" }}>
+              <Grid item xs={6} sm={6} md={6} lg={6}>
+                <Divider>
+                  <SubheadingChip
+                    label="CURRENCY"
+                    variant="outlined"
+                    color="primary"
+                  />
+                </Divider>
+                <select
+                  style={StyledSelect}
+                  ref={productCurrencyRef}
+                  name="currency"
+                  defaultValue={productCurrencyId}
+                  onChange={setValuesToStates}
+                >
+                  {currencies?.map((option) => (
+                    <option key={option?.id} value={option?.id}>
+                      {`${option?.code}(${option?.name})`}
+                    </option>
+                  ))}
+                </select>
+                {messages?.productCurrencyError ? (
+                  <ErrorAlert severity="error">
+                    {messages.productCurrencyError}
+                  </ErrorAlert>
+                ) : (
+                  <></>
+                )}
+              </Grid>
+              <Grid item xs={6} sm={6} md={6} lg={6}>
+                <Divider>
+                  <SubheadingChip
+                    label="PRICE"
+                    variant="outlined"
+                    color="primary"
+                  />
+                </Divider>
+                <ProductInfoInput
+                  type="number"
+                  inputRef={productPriceRef}
+                  defaultValue={productPrice.toString()}
+                  placeholder={productPrice.toString()}
+                  inputProps={{
+                    step: "0.01",
+                    min: "0.00",
+                  }}
+                />
+                {messages.productPriceError ? (
+                  <ErrorAlert severity="error">
+                    {messages.productPriceError}
+                  </ErrorAlert>
+                ) : (
+                  <></>
+                )}
+              </Grid>
+            </Grid>
           </InputBox>
-          <Box sx={{ display: "flex" }}>
-            <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="CURRENCY"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <ProductInfoInput
-                inputRef={productCurrencyRef}
-                defaultValue={productCurrency.toString()}
-                placeholder={productCurrency.toString()}
-              />
-              {messages.productCurrencyError ? (
-                <ErrorAlert severity="error">
-                  {messages.productCurrencyError}
-                </ErrorAlert>
-              ) : (
-                <></>
-              )}
-            </InputBox>
-            <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="PRICE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <ProductInfoInput
-                type="number"
-                inputRef={productPriceRef}
-                defaultValue={productPrice.toString()}
-                placeholder={productPrice.toString()}
-                inputProps={{
-                  step: "0.01",
-                  min: "0.00",
-                }}
-              />
-              {messages.productPriceError ? (
-                <ErrorAlert severity="error">
-                  {messages.productPriceError}
-                </ErrorAlert>
-              ) : (
-                <></>
-              )}
-            </InputBox>
-          </Box>
+
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <Divider>
@@ -809,6 +822,7 @@ export default function EditProduct(props) {
                   name="guarantee"
                   defaultValue={productHasGuarantee}
                   ref={productGuaranteeRef}
+                  onChange={setValuesToStates}
                 >
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>

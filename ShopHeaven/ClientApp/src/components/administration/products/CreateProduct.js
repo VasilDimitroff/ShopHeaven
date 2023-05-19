@@ -49,18 +49,18 @@ export default function CreateProduct(props) {
  const [productSpecifications, setProductSpecifications] = useState(
    []
  ); //array[object]
- const [productCurrency, setProductCurrency] = useState('');
+ const [productCurrencyId, setProductCurrencyId] = useState('');
  const [productPrice, setProductPrice] = useState('');
  const [productDiscount, setProductDiscount] = useState('');
  const [productQuantity, setProductQuantity] = useState('');
- const [productImages, setProductImages] = useState([]); // array[string]
+ const [productImages, setProductImages] = useState([]); // array[{}]
  const [productTags, setProductTags] = useState([]); // array[string]
  const [productLabels, setProductLabels] = useState([]); // array[string]
 
  const [finalPrice, setFinalPrice] = useState(0);
 
- const [tagsInput, setTagsInput] = useState(false);
- const [labelsInput, setLabelsInput] = useState(false);
+ const [tagsInput, setTagsInput] = useState(true);
+ const [labelsInput, setLabelsInput] = useState(true);
 
  //product creation refs
  let productNameRef = useRef();
@@ -90,6 +90,7 @@ export default function CreateProduct(props) {
    productQuantityError: "",
    productGuaranteeError: "",
    productTagsError: "",
+   productImagesError: ""
  });
  
  const [createProductResponseMessage, setCreateProductResponseMessage] =
@@ -129,10 +130,14 @@ export default function CreateProduct(props) {
    setProductDescription(productDescriptionRef.current.value);
    setProductCategoryId(productCategoryRef.current.value);
    setProductSubcategoryId(productSubcategoryRef.current.value);
-   setProductCurrency(productCurrencyRef.current.value);
+   setProductCurrencyId(productCurrencyRef.current.value);
    setProductPrice(productPriceRef.current.value);
    setProductDiscount(productDiscountRef.current.value);
    setProductQuantity(productQuantityRef.current.value);
+
+   const images = document.getElementById('create-product-photos-image').files;
+   setProductImages(images)
+   console.log(images)
 
    const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
    setProductHasGuarantee(checkedHasGuarantee);
@@ -184,7 +189,7 @@ export default function CreateProduct(props) {
      categoryId: productCategoryId,
      subcategoryId: productSubcategoryId,
      hasGuarantee: productHasGuarantee,
-     currency: productCurrency,
+     currency: productCurrencyId,
      price: productPrice,
      discount: productDiscount,
      quantity: productQuantity,
@@ -402,6 +407,25 @@ export default function CreateProduct(props) {
      });
    }
 
+   const images =document.getElementById('create-product-photos-image').files
+   if (!images || images.length < 1 ) {
+    setMessages((prev) => {
+      return {
+        ...prev,
+        productImagesError: "Product must contain at least 1 image",
+      };
+    });
+
+    isValid = false;
+  } else {
+    setMessages((prev) => {
+      return {
+        ...prev,
+        productImagesError: "",
+      };
+    });
+  }
+
    console.log(messages);
    return isValid;
  }
@@ -467,14 +491,15 @@ export default function CreateProduct(props) {
  });
 
  const StyledSelect = {
-   cursor: "pointer",
-   borderRadius: theme.shape.borderRadius,
-   padding: theme.spacing(1.5),
-   border: "1px solid #C6BFBE",
-   textTransform: "uppercase",
-   fontSize: 16,
-   backgroundColor: "rgb(255,249,249)",
-   marginTop: theme.spacing(1.9),
+    cursor: "pointer",
+    width: "100%",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    fontSize: 14,
+    backgroundColor: "rgb(255,249,249)",
+    marginTop: theme.spacing(1),
  };
 
  const SaveTagsButton = styled(Button)({
@@ -509,6 +534,7 @@ export default function CreateProduct(props) {
  const SubheadingChip = styled(Chip)({
    fontSize: 12,
    marginTop: theme.spacing(2),
+   marginBottom: theme.spacing(1)
  });
 
  const CalculatePriceButton = styled(Button)({
@@ -540,7 +566,7 @@ export default function CreateProduct(props) {
           <ProductInfoInput
             sx={{ fontSize: 24 }}
             inputRef={productNameRef}
-            placeholder={productName}
+            placeholder="Example: Smartphone Samsung Galaxy A53"
             defaultValue={productName}
           />
           {messages.productNameError ? (
@@ -557,7 +583,7 @@ export default function CreateProduct(props) {
         <InputBox>
           <ProductInfoInput
             inputRef={productBrandRef}
-            placeholder={productBrand}
+            placeholder="Example: Samsung"
             defaultValue={productBrand}
           />
         </InputBox>
@@ -573,7 +599,7 @@ export default function CreateProduct(props) {
             multiline
             minRows={4}
             inputRef={productDescriptionRef}
-            placeholder={productDescription}
+            placeholder="Example: This smartphone is one of the best cellphones in the industry"
             defaultValue={productDescription}
           />
           {messages.productDescriptionError ? (
@@ -628,6 +654,7 @@ export default function CreateProduct(props) {
                 name="subcategory"
                 defaultValue={productSubcategoryId}
                 ref={productSubcategoryRef}
+                onChange={setValuesToStates}
               >
                 {subcategories?.map((option) => (
                   <option key={option?.id} value={option?.id}>
@@ -660,11 +687,20 @@ export default function CreateProduct(props) {
                   color="primary"
                 />
               </Divider>
-              <ProductInfoInput
-                inputRef={productCurrencyRef}
-                defaultValue={productCurrency.toString()}
-                placeholder={productCurrency.toString()}
-              />
+              
+              <select
+                style={StyledSelect}
+                ref={productCurrencyRef}
+                name="currency"
+                defaultValue={productCurrencyId} 
+                onChange={setValuesToStates}
+              >
+                {currencies?.map((option) => (
+                  <option key={option?.id} value={option?.id}>
+                    {`${option?.code}(${option?.name})`}
+                  </option>
+                ))}
+              </select>
               {messages.productCurrencyError ? (
                 <ErrorAlert severity="error">
                   {messages.productCurrencyError}
@@ -685,7 +721,7 @@ export default function CreateProduct(props) {
                 type="number"
                 inputRef={productPriceRef}
                 defaultValue={productPrice.toString()}
-                placeholder={productPrice.toString()}
+                placeholder={'0.00'}
                 inputProps={{
                   step: "0.01",
                   min: "0.00",
@@ -713,7 +749,7 @@ export default function CreateProduct(props) {
                 type="number"
                 inputRef={productDiscountRef}
                 defaultValue={productDiscount.toString()}
-                placeholder={productDiscount.toString()}
+                placeholder={'0.00'}
                 inputProps={{
                   step: "0.1",
                   min: "0.00",
@@ -767,7 +803,7 @@ export default function CreateProduct(props) {
                   type="number"
                   inputRef={productQuantityRef}
                   defaultValue={productQuantity.toString()}
-                  placeholder={productQuantity.toString()}
+                  placeholder='0'
                   inputProps={{
                     min: "0",
                   }}
@@ -793,6 +829,7 @@ export default function CreateProduct(props) {
                   name="guarantee"
                   defaultValue={productHasGuarantee}
                   ref={productGuaranteeRef}
+                  onChange={setValuesToStates}
                 >
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>
@@ -856,7 +893,7 @@ export default function CreateProduct(props) {
                 <InputBox>
                   <ProductInfoInput
                     inputRef={productSpecificationKeyRef}
-                    placeholder="Add specification key"
+                    placeholder="Example: Color"
                   />
                 </InputBox>
               </Box>
@@ -865,7 +902,7 @@ export default function CreateProduct(props) {
                   <ProductInfoInput
                     inputRef={productSpecificationValueRef}
                     id="spec-value"
-                    placeholder="Add specification Value"
+                    placeholder="Example: Black"
                   />
                 </InputBox>
               </Box>
@@ -923,6 +960,7 @@ export default function CreateProduct(props) {
                   }}
                   inputRef={productTagsRef}
                   multiline
+                  placeholder="phone, samsung, 4G"
                   defaultValue={productTags.join(", ").toUpperCase()}
                 />
               </Grid>
@@ -981,6 +1019,7 @@ export default function CreateProduct(props) {
                   }}
                   inputRef={productLabelsRef}
                   multiline
+                  placeholder="new, popular"
                   defaultValue={productLabels.join(", ").toUpperCase()}
                 />
               </Grid>
@@ -1015,6 +1054,11 @@ export default function CreateProduct(props) {
               multiple: true,
             }}
           />
+          {messages.productImagesError ? (
+          <ErrorAlert severity="error">{messages.productImagesError}</ErrorAlert>
+        ) : (
+          <></>
+        )}
         </InputBox>
         <Typography
           sx={{
