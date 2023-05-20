@@ -6,7 +6,7 @@ namespace ShopHeaven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService usersService;
