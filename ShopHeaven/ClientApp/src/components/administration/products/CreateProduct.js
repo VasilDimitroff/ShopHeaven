@@ -23,474 +23,467 @@ import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function CreateProduct(props) {
- // api requests
- const axiosPrivateForm = useAxiosPrivateForm();
+  // api requests
+  const axiosPrivateForm = useAxiosPrivateForm();
 
- const [product, setProduct] = useState();
+  const [product, setProduct] = useState();
 
- //dropdowns
- const [categories, setCategories] = useState(props.categories);
- const [subcategories, setSubcategories] = useState([]);
- const [currencies, setCurrencies] = useState(props.currencies);
+  //dropdowns
+  const [categories, setCategories] = useState(props.categories);
+  const [subcategories, setSubcategories] = useState([]);
+  const [currencies, setCurrencies] = useState(props.currencies);
 
- //form states
- const [productName, setProductName] = useState('');
- const [productBrand, setProductBrand] = useState('');
- const [productDescription, setProductDescription] = useState(
-   ''
- );
- const [productCategoryId, setProductCategoryId] = useState(''); // must be category.id
- const [productSubcategoryId, setProductSubcategoryId] = useState(
-   ''
- );
- const [productHasGuarantee, setProductHasGuarantee] = useState(
-   ''
- );
- const [productSpecifications, setProductSpecifications] = useState(
-   []
- ); //array[object]
- const [productCurrencyId, setProductCurrencyId] = useState('');
- const [productPrice, setProductPrice] = useState('');
- const [productDiscount, setProductDiscount] = useState('');
- const [productQuantity, setProductQuantity] = useState('');
- const [productImages, setProductImages] = useState([]); // array[{}]
- const [productTags, setProductTags] = useState([]); // array[string]
- const [productLabels, setProductLabels] = useState([]); // array[string]
+  //form states
+  const [productName, setProductName] = useState("");
+  const [productBrand, setProductBrand] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [productCategoryId, setProductCategoryId] = useState(""); // must be category.id
+  const [productSubcategoryId, setProductSubcategoryId] = useState("");
+  const [productHasGuarantee, setProductHasGuarantee] = useState("");
+  const [productSpecifications, setProductSpecifications] = useState([]); //array[object]
+  const [productCurrencyId, setProductCurrencyId] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [productDiscount, setProductDiscount] = useState("");
+  const [productQuantity, setProductQuantity] = useState("");
+  const [productImages, setProductImages] = useState([]); // array[{}]
+  const [productTags, setProductTags] = useState([]); // array[string]
+  const [productLabels, setProductLabels] = useState([]); // array[string]
 
- const [finalPrice, setFinalPrice] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
- const [tagsInput, setTagsInput] = useState(true);
- const [labelsInput, setLabelsInput] = useState(true);
+  const [tagsInput, setTagsInput] = useState(true);
+  const [labelsInput, setLabelsInput] = useState(true);
 
- //product creation refs
- let productNameRef = useRef();
- let productDescriptionRef = useRef();
- let productBrandRef = useRef();
- let productCategoryRef = useRef();
- let productSubcategoryRef = useRef();
- let productGuaranteeRef = useRef();
- let productQuantityRef = useRef();
- let productCurrencyRef = useRef();
- let productPriceRef = useRef();
- let productDiscountRef = useRef();
- let productTagsRef = useRef();
- let productLabelsRef = useRef();
- let productSpecificationKeyRef = useRef();
- let productSpecificationValueRef = useRef();
+  //product creation refs
+  let productNameRef = useRef();
+  let productDescriptionRef = useRef();
+  let productBrandRef = useRef();
+  let productCategoryRef = useRef();
+  let productSubcategoryRef = useRef();
+  let productGuaranteeRef = useRef();
+  let productQuantityRef = useRef();
+  let productCurrencyRef = useRef();
+  let productPriceRef = useRef();
+  let productDiscountRef = useRef();
+  let productTagsRef = useRef();
+  let productLabelsRef = useRef();
+  let productSpecificationKeyRef = useRef();
+  let productSpecificationValueRef = useRef();
 
- //errors
- const [messages, setMessages] = useState({
-   productNameError: "",
-   productDescriptionError: "",
-   productCategoryError: "",
-   productSubcategoryError: "",
-   productCurrencyError: "",
-   productPriceError: "",
-   productDiscountError: "",
-   productQuantityError: "",
-   productGuaranteeError: "",
-   productTagsError: "",
-   productImagesError: ""
- });
- 
- const [createProductResponseMessage, setCreateProductResponseMessage] =
-   useState("");
- const [createProductErrorMessage, setCreateProductErrorMessage] = useState("");
+  //errors
+  const [messages, setMessages] = useState({
+    productNameError: "",
+    productDescriptionError: "",
+    productCategoryError: "",
+    productSubcategoryError: "",
+    productCurrencyError: "",
+    productPriceError: "",
+    productDiscountError: "",
+    productQuantityError: "",
+    productGuaranteeError: "",
+    productTagsError: "",
+    productImagesError: "",
+  });
 
- useEffect(() => {}, [messages]);
+  const [createProductResponseMessage, setCreateProductResponseMessage] =
+    useState("");
+  const [createProductErrorMessage, setCreateProductErrorMessage] =
+    useState("");
 
- function handleTagsInput() {
-   //1
-   setValuesToStates();
-   setTagsInput((prev) => !prev);
- }
+  useEffect(() => {}, [messages]);
 
- function handleLabelsInput() {
-   //2
-   setValuesToStates();
-   setLabelsInput((prev) => !prev);
- }
-
- function loadSubcategories() {
-   const checkedCategoryId = productCategoryRef.current.value;
-   console.log(checkedCategoryId);
-
-   //3
-   setValuesToStates();
-
-   setSubcategories(
-     (prev) =>
-       categories.find((x) => x.id === checkedCategoryId)?.subcategories
-   );
- }
-
- function setValuesToStates() {
-   setProductName(productNameRef.current.value);
-   setProductBrand(productBrandRef.current.value);
-   setProductDescription(productDescriptionRef.current.value);
-   setProductCategoryId(productCategoryRef.current.value);
-   setProductSubcategoryId(productSubcategoryRef.current.value);
-   setProductCurrencyId(productCurrencyRef.current.value);
-   setProductPrice(productPriceRef.current.value);
-   setProductDiscount(productDiscountRef.current.value);
-   setProductQuantity(productQuantityRef.current.value);
-
-   const images = document.getElementById('create-product-photos-image').files;
-   setProductImages(images)
-   console.log(images)
-
-   const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
-   setProductHasGuarantee(checkedHasGuarantee);
-
-   const price = productPriceRef.current.value;
-   const discount = productDiscountRef.current.value;
-   const totalPrice = price - price * (discount / 100);
-   setFinalPrice(totalPrice);
-
-   const key = productSpecificationKeyRef.current.value;
-   const value = productSpecificationValueRef.current.value;
-
-   if (key.length > 0 && value.length > 0) {
-     setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
-   }
-
-   let tags = productTagsRef.current.value
-     .split(",")
-     .map((tag) => tag.trim())
-     .filter((tag) => tag.length > 0);
-
-   setProductTags(tags);
-
-   let labels = productLabelsRef.current.value
-     .split(",")
-     .map((label) => label.trim())
-     .filter((label) => label.length > 0);
-
-   setProductLabels(labels);
-
-   console.log(tags);
-   console.log(labels);
-   console.log("GUARANTEE", productHasGuarantee);
-   console.log(productSpecifications);
- }
-
- function onCreateProduct(e) {
-   e.preventDefault();
-
-   //4
-   setValuesToStates();
-
-   const images = document.getElementById("create-product-photos-image").files;
-
-   const newProduct = {
-     name: productName,
-     brand: productBrand,
-     description: productDescription,
-     categoryId: productCategoryId,
-     subcategoryId: productSubcategoryId,
-     hasGuarantee: productHasGuarantee,
-     currency: productCurrencyId,
-     price: productPrice,
-     discount: productDiscount,
-     quantity: productQuantity,
-     images: images,
-     specifications: productSpecifications,
-     tags: productTags,
-     labels: productLabels,
-   };
-
-   let isFormValid = validateForm();
-
-   if (!isFormValid) {
-     return;
-   }
-
-   console.log("WHOLE OBJECT", newProduct);
- }
-
- function validateForm() {
-   let isValid = true;
-
-   if (productNameRef.current.value.length < 2) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productNameError: "Product name must contain at least 2 characters",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productNameError: "",
-       };
-     });
-   }
-
-   if (productDescriptionRef.current.value.length < 5) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productDescriptionError:
-           "Product description must contain at least 5 characters",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productDescriptionError: "",
-       };
-     });
-   }
-
-   if (!productCategoryRef.current.value) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productCategoryError: "Please select a valid category",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productCategoryError: "",
-       };
-     });
-   }
-
-   if (!productSubcategoryRef.current.value) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productSubcategoryError: "Please select a valid subcategory",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productSubcategoryError: "",
-       };
-     });
-   }
-
-   if (!productCurrencyRef.current.value) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productCurrencyError: "Please select a valid currency",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productCurrencyError: "",
-       };
-     });
-   }
-
-   if (!productPriceRef.current.value || productPriceRef.current.value < 0) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productPriceError: "The price must be bigger or equal to 0",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productPriceError: "",
-       };
-     });
-   }
-
-   if (
-     !productDiscountRef.current.value ||
-     productDiscountRef.current.value < 0
-   ) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productDiscountError: "The discount must be bigger or equals to 0",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productDiscountError: "",
-       };
-     });
-   }
-
-   if (
-     !productQuantityRef.current.value ||
-     productQuantityRef.current.value < 0
-   ) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productQuantityError: "Quantity must be bigger or equals to 0",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productQuantityError: "",
-       };
-     });
-   }
-
-   if (
-     !productGuaranteeRef.current.value ||
-     (productGuaranteeRef.current.value != "true" &&
-       productGuaranteeRef.current.value != "false")
-   ) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productGuaranteeError: "Please select if the product has a guarantee",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productGuaranteeError: "",
-       };
-     });
-   }
-
-   let tags = productTagsRef.current.value
-     .split(",")
-     .map((tag) => tag.trim())
-     .filter((tag) => tag.length > 0);
-
-   if (tags.length < 1) {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productTagsError: "Product must contain at least 1 tag",
-       };
-     });
-
-     isValid = false;
-   } else {
-     setMessages((prev) => {
-       return {
-         ...prev,
-         productTagsError: "",
-       };
-     });
-   }
-
-   const images =document.getElementById('create-product-photos-image').files
-   if (!images || images.length < 1 ) {
-    setMessages((prev) => {
-      return {
-        ...prev,
-        productImagesError: "Product must contain at least 1 image",
-      };
-    });
-
-    isValid = false;
-  } else {
-    setMessages((prev) => {
-      return {
-        ...prev,
-        productImagesError: "",
-      };
-    });
+  function handleTagsInput() {
+    //1
+    setValuesToStates();
+    setTagsInput((prev) => !prev);
   }
 
-   console.log(messages);
-   return isValid;
- }
+  function handleLabelsInput() {
+    //2
+    setValuesToStates();
+    setLabelsInput((prev) => !prev);
+  }
 
- const MainWrapper = styled(Paper)({
-   paddingLeft: theme.spacing(2),
-   paddingRight: theme.spacing(2),
-   paddingBottom: theme.spacing(2),
-   marginTop: theme.spacing(2),
- });
+  function loadSubcategories() {
+    const checkedCategoryId = productCategoryRef.current.value;
+    console.log(checkedCategoryId);
 
- const TagsWrapper = styled(Box)({
-   [theme.breakpoints.down("lg")]: {
-     position: "relative",
-   },
-   marginBottom: theme.spacing(2),
- });
+    //3
+    setValuesToStates();
 
- const StyledChip = styled(Chip)({
-   cursor: "pointer",
-   textAlign: "left",
-   marginRight: theme.spacing(0.5),
-   borderRadius: theme.shape.borderRadius,
-   /*
+    setSubcategories(
+      (prev) =>
+        categories.find((x) => x.id === checkedCategoryId)?.subcategories
+    );
+  }
+
+  function setValuesToStates() {
+    setProductName(productNameRef.current.value);
+    setProductBrand(productBrandRef.current.value);
+    setProductDescription(productDescriptionRef.current.value);
+    setProductCategoryId(productCategoryRef.current.value);
+    setProductSubcategoryId(productSubcategoryRef.current.value);
+    setProductCurrencyId(productCurrencyRef.current.value);
+    setProductPrice(productPriceRef.current.value);
+    setProductDiscount(productDiscountRef.current.value);
+    setProductQuantity(productQuantityRef.current.value);
+
+    const images = document.getElementById("create-product-photos-image").files;
+    setProductImages(images);
+    console.log(images);
+
+    const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
+    setProductHasGuarantee(checkedHasGuarantee);
+
+    const price = productPriceRef.current.value;
+    const discount = productDiscountRef.current.value;
+    const totalPrice = price - price * (discount / 100);
+    setFinalPrice(totalPrice);
+
+    const key = productSpecificationKeyRef.current.value;
+    const value = productSpecificationValueRef.current.value;
+
+    if (key.length > 0 && value.length > 0) {
+      setProductSpecifications((prev) => [...prev, { key: key, value: value }]);
+    }
+
+    let tags = productTagsRef.current.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    setProductTags(tags);
+
+    let labels = productLabelsRef.current.value
+      .split(",")
+      .map((label) => label.trim())
+      .filter((label) => label.length > 0);
+
+    setProductLabels(labels);
+
+    console.log(tags);
+    console.log(labels);
+    console.log("GUARANTEE", productHasGuarantee);
+    console.log(productSpecifications);
+  }
+
+  function onCreateProduct(e) {
+    e.preventDefault();
+
+    //4
+    setValuesToStates();
+
+    const images = document.getElementById("create-product-photos-image").files;
+
+    const newProduct = {
+      name: productName,
+      brand: productBrand,
+      description: productDescription,
+      categoryId: productCategoryId,
+      subcategoryId: productSubcategoryId,
+      hasGuarantee: productHasGuarantee,
+      currency: productCurrencyId,
+      price: productPrice,
+      discount: productDiscount,
+      quantity: productQuantity,
+      images: images,
+      specifications: productSpecifications,
+      tags: productTags,
+      labels: productLabels,
+    };
+
+    let isFormValid = validateForm();
+
+    if (!isFormValid) {
+      return;
+    }
+
+    console.log("WHOLE OBJECT", newProduct);
+  }
+
+  function validateForm() {
+    let isValid = true;
+
+    if (productNameRef.current.value.length < 2) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productNameError: "Product name must contain at least 2 characters",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productNameError: "",
+        };
+      });
+    }
+
+    if (productDescriptionRef.current.value.length < 5) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDescriptionError:
+            "Product description must contain at least 5 characters",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDescriptionError: "",
+        };
+      });
+    }
+
+    if (!productCategoryRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCategoryError: "Please select a valid category",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCategoryError: "",
+        };
+      });
+    }
+
+    if (!productSubcategoryRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productSubcategoryError: "Please select a valid subcategory",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productSubcategoryError: "",
+        };
+      });
+    }
+
+    if (!productCurrencyRef.current.value) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCurrencyError: "Please select a valid currency",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productCurrencyError: "",
+        };
+      });
+    }
+
+    if (!productPriceRef.current.value || productPriceRef.current.value < 0) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productPriceError: "The price must be bigger or equal to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productPriceError: "",
+        };
+      });
+    }
+
+    if (
+      !productDiscountRef.current.value ||
+      productDiscountRef.current.value < 0
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDiscountError: "The discount must be bigger or equals to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productDiscountError: "",
+        };
+      });
+    }
+
+    if (
+      !productQuantityRef.current.value ||
+      productQuantityRef.current.value < 0
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productQuantityError: "Quantity must be bigger or equals to 0",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productQuantityError: "",
+        };
+      });
+    }
+
+    if (
+      !productGuaranteeRef.current.value ||
+      (productGuaranteeRef.current.value != "true" &&
+        productGuaranteeRef.current.value != "false")
+    ) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productGuaranteeError: "Please select if the product has a guarantee",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productGuaranteeError: "",
+        };
+      });
+    }
+
+    let tags = productTagsRef.current.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    if (tags.length < 1) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productTagsError: "Product must contain at least 1 tag",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productTagsError: "",
+        };
+      });
+    }
+
+    const images = document.getElementById("create-product-photos-image").files;
+    if (!images || images.length < 1) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productImagesError: "Product must contain at least 1 image",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productImagesError: "",
+        };
+      });
+    }
+
+    console.log(messages);
+    return isValid;
+  }
+
+  const MainWrapper = styled(Paper)({
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  });
+
+  const TagsWrapper = styled(Box)({
+    [theme.breakpoints.down("lg")]: {
+      position: "relative",
+    },
+    marginBottom: theme.spacing(2),
+  });
+
+  const StyledChip = styled(Chip)({
+    cursor: "pointer",
+    textAlign: "left",
+    marginRight: theme.spacing(0.5),
+    borderRadius: theme.shape.borderRadius,
+    /*
    "&:hover": {
      backgroundColor: theme.palette.primary.main,
    },
    */
- });
+  });
 
- const ProductInfoInput = styled(InputBase)({
-   background: "rgb(255,249,249)",
-   width: "100%",
-   marginTop: theme.spacing(1),
-   marginBottom: theme.spacing(1),
-   paddingTop: theme.spacing(0.3),
-   paddingBottom: theme.spacing(0.3),
-   paddingLeft: theme.spacing(1),
-   paddingRight: theme.spacing(1),
-   borderRadius: theme.shape.borderRadius,
- });
+  const ProductInfoInput = styled(InputBase)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    paddingTop: theme.spacing(0.3),
+    paddingBottom: theme.spacing(0.3),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+  });
 
- const InputBox = styled(Box)({
-   marginLeft: theme.spacing(2),
-   marginRight: theme.spacing(2),
- });
+  const InputBox = styled(Box)({
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  });
 
- const AddSpecificationButton = styled(Button)({
-   width: "50%",
-   display: "block",
-   margin: "auto",
-   marginTop: theme.spacing(2),
-   [theme.breakpoints.down("sm")]: {
-     width: "95%",
-   },
- });
+  const AddSpecificationButton = styled(Button)({
+    width: "50%",
+    display: "block",
+    margin: "auto",
+    marginTop: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      width: "95%",
+    },
+  });
 
- const CreateProductButton = styled(Button)({
-   width: "100%",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(1),
-   padding: theme.spacing(2),
- });
+  const CreateProductButton = styled(Button)({
+    width: "100%",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+    padding: theme.spacing(2),
+  });
 
- const StyledSelect = {
+  const StyledSelect = {
     cursor: "pointer",
     width: "100%",
     borderRadius: theme.shape.borderRadius,
@@ -500,61 +493,61 @@ export default function CreateProduct(props) {
     fontSize: 14,
     backgroundColor: "rgb(255,249,249)",
     marginTop: theme.spacing(1),
- };
+  };
 
- const SaveTagsButton = styled(Button)({
-   width: "95%",
-   padding: theme.spacing(1),
-   [theme.breakpoints.up("sm")]: {
-     width: "50%",
-     display: "block",
-     margin: "auto",
-   },
-   [theme.breakpoints.up("md")]: {
-     width: "100%",
-   },
- });
+  const SaveTagsButton = styled(Button)({
+    width: "95%",
+    padding: theme.spacing(1),
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      display: "block",
+      margin: "auto",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "100%",
+    },
+  });
 
- const TagWord = styled(Typography)({
-   display: "inline",
-   fontWeight: 500,
-   marginRight: theme.spacing(1),
- });
+  const TagWord = styled(Typography)({
+    display: "inline",
+    fontWeight: 500,
+    marginRight: theme.spacing(1),
+  });
 
- const HeadingChip = styled(Chip)({
-   fontSize: 21,
-   padding: theme.spacing(2),
-   fontWeight: 500,
-   marginTop: theme.spacing(5),
-   marginBottom: theme.spacing(5),
-   color: theme.palette.white.main,
-   backgroundColor: theme.palette.secondary.main,
- });
+  const HeadingChip = styled(Chip)({
+    fontSize: 21,
+    padding: theme.spacing(2),
+    fontWeight: 500,
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+    color: theme.palette.white.main,
+    backgroundColor: theme.palette.secondary.main,
+  });
 
- const SubheadingChip = styled(Chip)({
-   fontSize: 12,
-   marginTop: theme.spacing(2),
-   marginBottom: theme.spacing(1)
- });
+  const SubheadingChip = styled(Chip)({
+    fontSize: 12,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  });
 
- const CalculatePriceButton = styled(Button)({
-   width: "50%",
-   display: "block",
-   margin: "auto",
-   marginTop: theme.spacing(3),
-   marginBottom: theme.spacing(4),
-   [theme.breakpoints.down("sm")]: {
-     width: "95%",
-   },
- });
+  const CalculatePriceButton = styled(Button)({
+    width: "50%",
+    display: "block",
+    margin: "auto",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down("sm")]: {
+      width: "95%",
+    },
+  });
 
- const ErrorAlert = styled(Alert)({
-   fontWeight: 500,
-   color: theme.palette.error.main,
- });
+  const ErrorAlert = styled(Alert)({
+    fontWeight: 500,
+    color: theme.palette.error.main,
+  });
 
   return (
-      <MainWrapper>
+    <MainWrapper>
       <Divider>
         <HeadingChip label="MAIN INFO" variant="outlined" color="secondary" />
       </Divider>
@@ -687,12 +680,12 @@ export default function CreateProduct(props) {
                   color="primary"
                 />
               </Divider>
-              
+
               <select
                 style={StyledSelect}
                 ref={productCurrencyRef}
                 name="currency"
-                defaultValue={productCurrencyId} 
+                defaultValue={productCurrencyId}
                 onChange={setValuesToStates}
               >
                 {currencies?.map((option) => (
@@ -721,7 +714,7 @@ export default function CreateProduct(props) {
                 type="number"
                 inputRef={productPriceRef}
                 defaultValue={productPrice.toString()}
-                placeholder={'0.00'}
+                placeholder={"0.00"}
                 inputProps={{
                   step: "0.01",
                   min: "0.00",
@@ -749,7 +742,7 @@ export default function CreateProduct(props) {
                 type="number"
                 inputRef={productDiscountRef}
                 defaultValue={productDiscount.toString()}
-                placeholder={'0.00'}
+                placeholder={"0.00"}
                 inputProps={{
                   step: "0.1",
                   min: "0.00",
@@ -803,7 +796,7 @@ export default function CreateProduct(props) {
                   type="number"
                   inputRef={productQuantityRef}
                   defaultValue={productQuantity.toString()}
-                  placeholder='0'
+                  placeholder="0"
                   inputProps={{
                     min: "0",
                   }}
@@ -1055,10 +1048,12 @@ export default function CreateProduct(props) {
             }}
           />
           {messages.productImagesError ? (
-          <ErrorAlert severity="error">{messages.productImagesError}</ErrorAlert>
-        ) : (
-          <></>
-        )}
+            <ErrorAlert severity="error">
+              {messages.productImagesError}
+            </ErrorAlert>
+          ) : (
+            <></>
+          )}
         </InputBox>
         <Typography
           sx={{
