@@ -16,7 +16,7 @@ namespace ShopHeaven.Data.Services
             this.configuration = configuration;
         }
 
-        public async Task<List<string>> UploadImageAsync(List<IFormFile> files, string userId)
+        public async Task<List<string>> UploadImageAsync(IEnumerable<IFormFile> files, string userId)
         {
             //TODO: Validate file
             var containerName = configuration.GetSection("Storage:ContainerName").Value;

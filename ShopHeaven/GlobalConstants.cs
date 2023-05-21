@@ -28,6 +28,8 @@
 
         public const string CategoryWithThisIdDoesntExist = "Category with given Id doesn't exists!";
 
+        public const string CurrencyWithThisIdDoesntExist = "Currency with given Id doesn't exists!";
+
         public const string SubcategoryWithThisIdDoesntExist = "Subcategory with given Id doesn't exists!";
 
         public const string CategoryNameCannotBeEmpty = "Category Name cannot be empty!";
@@ -41,5 +43,17 @@
         public const string RefreshTokenCookieName = "refreshToken";
 
         public const string SuccessfullLogout = "You are successfully logout!";
+
+        public const string ProductNameNotEnoughLength = "Product Name is too short! It must contain at least 2 symbols";
+       
+        public const string ProductDescriptionNotEnoughLength = "Product Description is too short! It must contain at least 2 symbols";
+        
+        public const string ProductPriceCannotBeNegativeNumber = "Product Price cannot be negative number";
+        
+        public const string ProductDiscountCannotBeNegativeNumber = "Product Discount cannot be negative number";
+        
+        public const string ProductQuantityCannotBeNegativeNumber = "Product Quantity cannot be negative number";
+
+        public const string ProductMustContainAtLeast1Tag = "Product Must Contain At Least 1 Tag";
     }
 }

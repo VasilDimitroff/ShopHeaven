@@ -11,9 +11,13 @@ namespace ShopHeaven.Controllers
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
         public async Task<ActionResult> Create([FromForm] CreateProductRequestModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                ;
                 return Ok();
             }
             catch (Exception ex)

@@ -79,6 +79,7 @@ builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
+builder.Services.AddTransient<IProductsService, ProductsService>();
 
 builder.Services.AddHttpContextAccessor();
 

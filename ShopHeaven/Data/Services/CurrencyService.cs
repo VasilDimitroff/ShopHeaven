@@ -16,6 +16,7 @@ namespace ShopHeaven.Data.Services
         public async Task<List<CurrencyResponseModel>> GetCurrenciesAsync()
         {
             var currencies = await this.db.Currencies
+                .Where(x => x.IsDeleted != true)
                 .Select(x => new CurrencyResponseModel
                 {
                     Id = x.Id,
