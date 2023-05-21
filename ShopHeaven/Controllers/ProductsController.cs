@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Responses.Products;
 
 namespace ShopHeaven.Controllers
 {
@@ -17,14 +18,14 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
-        public async Task<ActionResult> Create([FromForm] CreateProductRequestModel model)
+        public async Task<ActionResult<CreateProductResponseModel>> Create([FromForm] CreateProductRequestModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                await this.productsService.CreateProductAsync(model);
-                return Ok();
+                var createdProduct = await this.productsService.CreateProductAsync(model);
+                return Ok(createdProduct);
             }
             catch (Exception ex)
             {

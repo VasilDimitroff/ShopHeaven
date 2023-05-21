@@ -2,7 +2,9 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Products;
+using ShopHeaven.Models.Responses.Specifications;
 
 namespace ShopHeaven.Data.Services
 {
@@ -27,6 +29,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var subcategory = await this.db.SubCategories
+                .Include(x => x.MainCategory)
                 .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != true);
 
             if (subcategory == null)
@@ -117,7 +120,42 @@ namespace ShopHeaven.Data.Services
             await this.db.Products.AddAsync(newProduct);
             await this.db.SaveChangesAsync();
 
-            return null;
+            var createdProduct = new CreateProductResponseModel()
+            {
+                Id = newProduct.Id,
+                Brand = newProduct.Brand,
+                Name = newProduct.Name,
+                Description = newProduct.Description,
+                CategoryId = subcategory.MainCategory.Id,
+                CategoryName = subcategory.MainCategory.Name,
+                SubcategoryId = subcategory.Id,
+                SubcategoryName = subcategory.Name,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = currency.Id,
+                    Name = currency.Name,
+                    Code = currency.Code,
+                },
+                Price = newProduct.Price,
+                Discount = newProduct.Discount,
+                Quantity = newProduct.Quantity,
+                isAvailable = newProduct.IsAvailable,
+                Rating = newProduct.Rating,
+                HasGuarantee = newProduct.HasGuarantee,
+                ReviewsCount = newProduct.Reviews.Count(),
+                CreatedBy = user.Id,
+                Images = images.Select(x => x.Url).ToList(),
+                Labels = labels.Select(x => x.Content).ToList(),
+                Tags = tags.Select(x => x.Name).ToList(),
+                Specifications = specifications.Select(x => new SpecificationResponseModel
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = x.Value
+                }).ToList(),
+            };
+
+            return createdProduct;
         }
 
         private async Task<IEnumerable<Image>> CreateImagesAsync(IEnumerable<IFormFile> images, string userId)
@@ -167,7 +205,7 @@ namespace ShopHeaven.Data.Services
             foreach (var tag in tags)
             {
                 Tag searchedTag = await this.db.Tags
-                    .FirstOrDefaultAsync(x => x.Name == tag.Trim().ToUpper() && x.IsDeleted != true);
+                    .FirstOrDefaultAsync(x => x.Name.Trim().ToUpper() == tag.Trim().ToUpper() && x.IsDeleted != true);
 
                 if (searchedTag == null)
                 {
@@ -212,7 +250,7 @@ namespace ShopHeaven.Data.Services
             foreach (var label in labels)
             {
                 Label searchedLabel = await this.db.Labels
-                    .FirstOrDefaultAsync(x => x.Content == label.Trim().ToUpper() && x.IsDeleted != true);
+                    .FirstOrDefaultAsync(x => x.Content.Trim().ToUpper() == label.Trim().ToUpper() && x.IsDeleted != true);
 
                 if (searchedLabel == null)
                 {
