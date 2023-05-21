@@ -53,7 +53,20 @@ namespace ShopHeaven.Data.Models
 
         public Currency Currency { get; set; }
 
-        public double Rating  { get => CalculateRating();  private set => _rating = value; }
+        public double Rating
+        {
+            get
+            {
+                if (Reviews != null && Reviews.Any())
+                {
+                    return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+                }
+
+                return _rating;
+            }
+
+            set { _rating = value; }
+        }
 
         [Required]
         public string CreatedById { get; set; }
@@ -82,7 +95,7 @@ namespace ShopHeaven.Data.Models
         //calculate the rating of the product
         private double CalculateRating()
         {
-            if (this.Reviews.Count > 0)
+            if (this.Reviews.Any())
             {
                 return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
             }
