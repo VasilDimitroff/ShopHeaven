@@ -74,19 +74,21 @@ namespace ShopHeaven.Data.Services
 
             var newProduct = new Product();
 
-            //get tags from database, if there is not some tag, create it and save changes
-            var tags = await GetTagsAsync(model.Tags, user.Id);
+            //get tags from database, or create it without saving DB
+            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            var tags = await GetTagsAsync(filteredTags, user.Id);
 
             //create mapping objects for every tag
             await CreateProductTagsAsync(tags, newProduct.Id);
 
-            // get labels from database, if there is not some label, create it and save changes
+            // get labels from database, or create it without saving DB
+            var filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
             var labels = await GetLabelsAsync(model.Labels);
 
             //create mapping objects for every label
             await CreateProductLabelAsync(labels, newProduct.Id);
 
-            //create new records for every image and save changes
+            //create new records for every image
             var images = await CreateImagesAsync(model.Images, user.Id);
 
             //create productImage record for every image
@@ -136,7 +138,6 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.Images.AddRangeAsync(newImages);
-            await this.db.SaveChangesAsync();
 
             return newImages;
         }
@@ -177,7 +178,6 @@ namespace ShopHeaven.Data.Services
                     };
 
                     await this.db.Tags.AddAsync(searchedTag);
-                    await this.db.SaveChangesAsync();
                 }
 
                 allTags.Add(searchedTag);
@@ -222,7 +222,6 @@ namespace ShopHeaven.Data.Services
                     };
 
                     await this.db.Labels.AddAsync(searchedLabel);
-                    await this.db.SaveChangesAsync();
                 }
 
                 allLabels.Add(searchedLabel);

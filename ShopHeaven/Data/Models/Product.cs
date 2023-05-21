@@ -36,7 +36,8 @@ namespace ShopHeaven.Data.Models
 
         public int Quantity { get; set; }
 
-        public bool IsAvailable { get => SetAvailability(); private set => _isAvailable = value; }
+        [NotMapped]
+        public bool IsAvailable => this.Quantity > 0;
 
         public decimal Price { get; set; }
 
@@ -81,12 +82,14 @@ namespace ShopHeaven.Data.Models
         //calculate the rating of the product
         private double CalculateRating()
         {
-            return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
-        }
-
-        private bool SetAvailability()
-        {
-            return this.Quantity > 0;
+            if (this.Reviews.Count > 0)
+            {
+                return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

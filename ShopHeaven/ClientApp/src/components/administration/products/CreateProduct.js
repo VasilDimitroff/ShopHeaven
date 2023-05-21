@@ -218,7 +218,6 @@ export default function CreateProduct(props) {
     formData.append("price", newProduct.price);
     formData.append("discount", newProduct.discount);
     formData.append("quantity", newProduct.quantity);
-    formData.append("images", newProduct.images[0]);
 
     newProduct.images.forEach((file) => {
      formData.append(`images`, file);
@@ -229,12 +228,17 @@ export default function CreateProduct(props) {
         formData.append(`specifications[${index}].${key}`, spec[key]);
       });
     });
-    
-    formData.append("tags", newProduct.tags);
-    formData.append("labels", newProduct.labels);
+
+    newProduct.tags.forEach((tag, index) => {
+      formData.append(`tags[${index}]`, tag);
+    });
+
+    newProduct.labels.forEach((label, index) => {
+      formData.append(`labels[${index}]`, label);
+    });
+
     formData.append("createdBy", auth.userId);
 
-    console.log("WHOLE OBJECT", newProduct);
     console.log("FORM", newProduct);
 
     createProduct(formData);
