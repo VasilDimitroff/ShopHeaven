@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, Fragment } from "react";
 import {
   TableRow,
   TableCell,
@@ -20,13 +20,25 @@ import {
   Delete,
 } from "@mui/icons-material";
 import EditProduct from "./EditProduct";
+import DeleteProduct from "./DeleteProduct";
 
 export default function ProductRow(props) {
   const [product, setProduct] = useState(props.product);
   const [openEditForm, setOpenEditForm] = useState(false);
+  const [openDeleteForm, setOpenDeleteForm] = useState(false);
 
   function handleSetOpenEditForm() {
+    setOpenDeleteForm(false);
     setOpenEditForm((prev) => !prev);
+  }
+
+  function handleSetOpenDeleteForm() {
+    setOpenEditForm(false);
+    setOpenDeleteForm((prev) => !prev);
+  }
+
+  function onCancelButtonClicked() {
+    setOpenDeleteForm((prev) => !prev);
   }
 
   const ProductNameTableCell = styled(TableCell)({
@@ -121,7 +133,7 @@ export default function ProductRow(props) {
               </StyledIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton color="error" size="small">
+              <StyledIconButton onClick={handleSetOpenDeleteForm} color="error" size="small">
                 <Delete />
               </StyledIconButton>
             </Grid>
@@ -135,6 +147,12 @@ export default function ProductRow(props) {
               currencies={props.currencies}
               product={product}
               categories={props.categories}
+            />
+          </Collapse>
+          <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
+            <DeleteProduct
+              product={product}
+              onCancelButtonClicked={onCancelButtonClicked}
             />
           </Collapse>
         </TableCell>
