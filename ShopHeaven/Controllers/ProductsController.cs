@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Products;
 
 namespace ShopHeaven.Controllers
@@ -23,7 +24,7 @@ namespace ShopHeaven.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
-            {
+            {  
                 var createdProduct = await this.productsService.CreateProductAsync(model);
                 return Ok(createdProduct);
             }

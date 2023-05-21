@@ -22,6 +22,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AdminProducts(props) {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
+  const [products, setProducts] = useState(props.products)
   const [categories, setCategories] = useState([]);
   const [currencies, setCurrencies] = useState([]);
   const axiosPrivate = useAxiosPrivate();
@@ -96,40 +97,10 @@ export default function AdminProducts(props) {
     setShowCreateProduct((prev) => !prev);
   }
 
-  function onCreateProduct(e) {
-    e.preventDefault();
-
-    const productName = "productNameRef.current.value";
-    const productDescription = "productDescriptionRef.current.value";
-    const productImage = document.getElementById("create-product-image")
-      .files[0];
-
-    console.log("PRODUCT NAME " + productName);
-    console.log("PRODUCT DESCR " + productDescription);
-    console.log("PRODUCT IMAGE " + productImage);
-
-    const formData = new FormData();
-
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("image", productImage);
-    formData.append("createdBy", "6d011520-f43e-468e-bf45-466ab65d9ca6");
-
-    createProduct(formData);
+  function productListChanged(newProduct){
+      setProducts(prev => [...prev, newProduct ]);
   }
 
-  async function createProduct(formData) {
-    try {
-      const response = await axiosPrivate.post(
-        ApiEndpoints.products.createProduct,
-        formData
-      );
-      //setCreateProductResponseMessage(response.data);
-    } catch (error) {
-      console.log("Server returns erorr during product creating: " + error);
-      //setCreateProductErrorMessage(true);
-    }
-  }
 
   const MainCategoryTableCell = styled(TableCell)({
     fontSize: 18,
@@ -166,7 +137,7 @@ export default function AdminProducts(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.products.map((product, index) => {
+            {products?.map((product, index) => {
               return <ProductRow key={index} categories={categories} currencies={currencies} product={product} />;
             })}
           </TableBody>
@@ -194,7 +165,7 @@ export default function AdminProducts(props) {
         </StyledButtonBox>
       </TableContainer>
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
-        <CreateProduct categories={categories} currencies={currencies} />
+        <CreateProduct productListChanged={productListChanged} categories={categories} currencies={currencies} />
       </Collapse>
       <PaginationHolder>
         <StyledPagination count={10} size="medium" color="secondary" />

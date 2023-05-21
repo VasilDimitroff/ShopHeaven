@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Specifications;
@@ -70,22 +71,32 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductQuantityCannotBeNegativeNumber);
             }
 
-            if (model.Tags.Count < 1)
+            if (model.Tags == null || model.Tags.Count < 1)
             {
                 throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
             }
 
+            model.Specifications = model.Specifications ?? new List<CreateSpecificationRequestModel>();
+            model.Labels = model.Labels ?? new List<string>();
+
+
             var newProduct = new Product();
 
             //get tags from database, or create it without saving DB
-            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();   
             var tags = await GetTagsAsync(filteredTags, user.Id);
 
             //create mapping objects for every tag
             await CreateProductTagsAsync(tags, newProduct.Id);
 
             // get labels from database, or create it without saving DB
-            var filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            var filteredLabels = new List<string>();
+
+            if (model.Labels.Count > 0)
+            {
+                filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            }
+
             var labels = await GetLabelsAsync(model.Labels);
 
             //create mapping objects for every label
@@ -143,7 +154,7 @@ namespace ShopHeaven.Data.Services
                 Rating = newProduct.Rating,
                 HasGuarantee = newProduct.HasGuarantee,
                 ReviewsCount = newProduct.Reviews.Count(),
-                CreatedBy = user.Id,
+                CreatedBy = user.Email,
                 Images = images.Select(x => x.Url).ToList(),
                 Labels = labels.Select(x => x.Content).ToList(),
                 Tags = tags.Select(x => x.Name).ToList(),
@@ -158,8 +169,10 @@ namespace ShopHeaven.Data.Services
             return createdProduct;
         }
 
-        private async Task<IEnumerable<Image>> CreateImagesAsync(IEnumerable<IFormFile> images, string userId)
+        private async Task<ICollection<Image>> CreateImagesAsync(ICollection<IFormFile> images, string userId)
         {
+            if (images.Count < 1) return null;
+
             var productImagesUrls = await this.storageService.UploadImageAsync(images, userId);
 
             var newImages = new List<Image>();
@@ -180,8 +193,10 @@ namespace ShopHeaven.Data.Services
             return newImages;
         }
 
-        private async Task CreateProductImagesAsync(IEnumerable<Image> images, string productId)
+        private async Task CreateProductImagesAsync(ICollection<Image> images, string productId)
         {
+            if (images.Count < 1) return;
+
             var productImages = new List<ProductImage>();
 
             foreach (var image in images)
@@ -198,7 +213,7 @@ namespace ShopHeaven.Data.Services
             await this.db.ProductsImages.AddRangeAsync(productImages);
         }
 
-        private async Task<ICollection<Tag>>GetTagsAsync(IEnumerable<string> tags, string userId)
+        private async Task<ICollection<Tag>>GetTagsAsync(ICollection<string> tags, string userId)
         {
             var allTags = new List<Tag>();
 
@@ -225,7 +240,7 @@ namespace ShopHeaven.Data.Services
             return allTags;
         }
 
-        private async Task CreateProductTagsAsync(IEnumerable<Tag> tags, string productId)
+        private async Task CreateProductTagsAsync(ICollection<Tag> tags, string productId)
         {
             var productTags = new List<ProductTag>();
 
@@ -243,8 +258,10 @@ namespace ShopHeaven.Data.Services
             await this.db.ProductsTags.AddRangeAsync(productTags);
         }
 
-        private async Task<ICollection<Label>> GetLabelsAsync(IEnumerable<string> labels)
+        private async Task<ICollection<Label>> GetLabelsAsync(ICollection<string> labels)
         {
+            if (labels.Count < 1) return new List<Label>();
+
             var allLabels = new List<Label>();
 
             foreach (var label in labels)
@@ -271,6 +288,8 @@ namespace ShopHeaven.Data.Services
 
         private async Task CreateProductLabelAsync(ICollection<Label> labels, string productId)
         {
+            if (labels.Count < 1) return;
+
             var productLabels = new List<ProductLabel>();
 
             foreach (var label in labels)

@@ -261,7 +261,7 @@ export default function CreateProduct(props) {
       setCreateProductResponseMessage(
         `Product ${formData.get("name")} successfully created`
       );
-      //props.categoriesListChanged(response?.data);
+      props.productListChanged(response?.data);
     } catch (error) {
       setCreateProductResponseMessage("");
 

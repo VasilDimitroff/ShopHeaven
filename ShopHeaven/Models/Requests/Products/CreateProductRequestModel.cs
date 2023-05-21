@@ -9,13 +9,13 @@ namespace ShopHeaven.Models.Requests.Products
         [MinLength(2)]
         public string Name { get; set; }
 
-        public string Brand { get; set; }
+        public string? Brand { get; set; }
 
         [MinLength(5)]
         [Required(ErrorMessage = "Product description must contain at least 5 characters")]
         public string Description { get; set; }
 
-        public string CategoryId { get; set; }
+        public string? CategoryId { get; set; }
 
         [Required]
         public string SubcategoryId { get; set; }
@@ -44,8 +44,8 @@ namespace ShopHeaven.Models.Requests.Products
         [Required]
         public ICollection<string> Tags { get; set; }
 
-        public ICollection<string> Labels { get; set; }
+        public ICollection<string>? Labels { get; set; }
 
-        public ICollection<CreateSpecificationRequestModel> Specifications { get; set; }
+        public ICollection<CreateSpecificationRequestModel>? Specifications { get; set; }
     }
 }
