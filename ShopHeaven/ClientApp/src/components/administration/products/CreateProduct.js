@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,9 +7,6 @@ import {
   Typography,
   Chip,
   InputBase,
-  ImageList,
-  ImageListItem,
-  ListItemIcon,
   Collapse,
   Grid,
   Divider,
@@ -20,12 +17,17 @@ import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
+import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function CreateProduct(props) {
   // api requests
   const axiosPrivateForm = useAxiosPrivateForm();
 
+  //auth
+  const { auth } = useAuth();
+
+  //initial declaration of product
   const [product, setProduct] = useState();
 
   //dropdowns
@@ -173,32 +175,97 @@ export default function CreateProduct(props) {
     //4
     setValuesToStates();
 
-    const images = document.getElementById("create-product-photos-image").files;
-
-    const newProduct = {
-      name: productName,
-      brand: productBrand,
-      description: productDescription,
-      categoryId: productCategoryId,
-      subcategoryId: productSubcategoryId,
-      hasGuarantee: productHasGuarantee,
-      currency: productCurrencyId,
-      price: productPrice,
-      discount: productDiscount,
-      quantity: productQuantity,
-      images: images,
-      specifications: productSpecifications,
-      tags: productTags,
-      labels: productLabels,
-    };
-
     let isFormValid = validateForm();
 
     if (!isFormValid) {
       return;
     }
 
+    const images = document.getElementById("create-product-photos-image").files;
+    const imagesAsArray = [...images];
+
+    const newProduct = {
+      name: productNameRef.current.value,
+      brand: productBrandRef.current.value,
+      description: productDescriptionRef.current.value,
+      categoryId: productCategoryRef.current.value,
+      subcategoryId: productSubcategoryRef.current.value,
+      hasGuarantee: productGuaranteeRef.current.value,
+      currencyId: productCurrencyRef.current.value,
+      price: productPriceRef.current.value,
+      discount: productDiscountRef.current.value,
+      quantity: productQuantityRef.current.value,
+      images: imagesAsArray,
+      specifications: productSpecifications,
+      tags: productTagsRef.current.value
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0),
+      labels: productLabelsRef.current.value
+            .split(",")
+            .map((label) => label.trim())
+            .filter((label) => label.length > 0)
+    };
+
+    const formData = new FormData();
+
+    formData.append("name", newProduct.name);
+    formData.append("brand", newProduct.brand);
+    formData.append("description", newProduct.description);
+    formData.append("categoryId", newProduct.categoryId);
+    formData.append("subcategoryId", newProduct.subcategoryId);
+    formData.append("hasGuarantee", newProduct.hasGuarantee);
+    formData.append("currencyId", newProduct.currencyId);
+    formData.append("price", newProduct.price);
+    formData.append("discount", newProduct.discount);
+    formData.append("quantity", newProduct.quantity);
+    formData.append("images", newProduct.images[0]);
+
+    newProduct.images.forEach((file) => {
+     formData.append(`images`, file);
+    });
+    
+    formData.append("specifications", newProduct.specifications);
+    formData.append("tags", newProduct.tags);
+    formData.append("labels", newProduct.labels);
+    formData.append("createdBy", auth.userId);
+
     console.log("WHOLE OBJECT", newProduct);
+    console.log("FORM", newProduct);
+
+    createProduct(formData);
+  }
+
+  async function createProduct(formData) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.products.createProduct,
+        formData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+      setCreateProductErrorMessage("");
+      setCreateProductResponseMessage(
+        `Product ${formData.get("name")} successfully created`
+      );
+      //props.categoriesListChanged(response?.data);
+    } catch (error) {
+      setCreateProductResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCreateProductErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setCreateProductErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    }
   }
 
   function validateForm() {
@@ -377,16 +444,11 @@ export default function CreateProduct(props) {
       });
     }
 
-    let tags = productTagsRef.current.value
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
-
-    if (tags.length < 1) {
+    if (productTagsRef.current.value.trim().length < 1) {
       setMessages((prev) => {
         return {
           ...prev,
-          productTagsError: "Product must contain at least 1 tag",
+          productTagsError: "Product must contain at least 1 tag! (Be sure you saved the tags)",
         };
       });
 
@@ -686,7 +748,6 @@ export default function CreateProduct(props) {
                 ref={productCurrencyRef}
                 name="currency"
                 defaultValue={productCurrencyId}
-                onChange={setValuesToStates}
               >
                 {currencies?.map((option) => (
                   <option key={option?.id} value={option?.id}>
@@ -1028,8 +1089,7 @@ export default function CreateProduct(props) {
               </Grid>
             </Grid>
           </InputBox>
-        </Collapse>
-
+        </Collapse>         
         <Divider>
           <HeadingChip
             label="PRODUCT IMAGES"

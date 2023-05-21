@@ -22,7 +22,6 @@ namespace ShopHeaven.Data.Models
         }
 
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
-        [MaxLength(200)]
         [MinLength(2)]
         public string Name { get; set; }
 

@@ -61,10 +61,16 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.AllowSynchronousIO = true;
+});
 
 builder.Services.AddTransient<ICategoriesService, CategoriesService>();
 builder.Services.AddTransient<ISubcategoriesService, SubcategoriesService>();

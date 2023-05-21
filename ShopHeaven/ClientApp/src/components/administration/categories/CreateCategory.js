@@ -73,7 +73,7 @@ export default function CreateCategory(props) {
       );
 
       controller.abort();
-
+      setCreateCategoryErrorMessage("");
       setCreateCategoryResponseMessage(
         `Category ${formData.get("name")} successfully created`
       );
