@@ -66,7 +66,7 @@ namespace ShopHeaven.Data.Services
             {
                 throw new ArgumentException(GlobalConstants.ProductQuantityCannotBeNegativeNumber);
             }
-            
+
             if (model.Tags.Count < 1)
             {
                 throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
@@ -74,36 +74,89 @@ namespace ShopHeaven.Data.Services
 
             var newProduct = new Product();
 
-
-            //get tags from database, if there is not some tag, create it
+            //get tags from database, if there is not some tag, create it and save changes
             var tags = await GetTagsAsync(model.Tags, user.Id);
 
             //create mapping objects for every tag
             await CreateProductTagsAsync(tags, newProduct.Id);
 
-            // get labels from database, if there is not some label, create it
+            // get labels from database, if there is not some label, create it and save changes
             var labels = await GetLabelsAsync(model.Labels);
 
             //create mapping objects for every label
             await CreateProductLabelAsync(labels, newProduct.Id);
 
-            var productImagesUrls = await this.storageService.UploadImageAsync(model.Images, model.CreatedBy);
+            //create new records for every image and save changes
+            var images = await CreateImagesAsync(model.Images, user.Id);
 
-            var images = new List<Image>();
+            //create productImage record for every image
+            await CreateProductImagesAsync(images, newProduct.Id);
+
+            var specifications = model.Specifications.Select(x => new Specification
+            {
+                ProductId = newProduct.Id,
+                Key = x.Key,
+                Value = x.Value,
+            })
+                .ToList();
+
+            newProduct.CreatedById = user.Id;
+            newProduct.Name = model.Name;
+            newProduct.Description = model.Description;
+            newProduct.Brand = model.Brand.Trim();
+            newProduct.Currency = currency;
+            newProduct.SubCategoryId = subcategory.Id;
+            newProduct.Discount = model.Discount;
+            newProduct.Price = model.Price;
+            newProduct.HasGuarantee = model.HasGuarantee;
+            newProduct.Quantity = model.Quantity;
+            newProduct.Specifications = specifications;
+
+            await this.db.Products.AddAsync(newProduct);
+            await this.db.SaveChangesAsync();
+
+            return null;
+        }
+
+        private async Task<IEnumerable<Image>> CreateImagesAsync(IEnumerable<IFormFile> images, string userId)
+        {
+            var productImagesUrls = await this.storageService.UploadImageAsync(images, userId);
+
+            var newImages = new List<Image>();
+
             foreach (var imageUrl in productImagesUrls)
             {
                 Image productImage = new Image()
                 {
-                    CreatedById = user.Id,
+                    CreatedById = userId,
                     Url = imageUrl,
                 };
 
-                images.Add(productImage);
+                newImages.Add(productImage);
             }
 
-            await this.db.Images.AddRangeAsync(images);
+            await this.db.Images.AddRangeAsync(newImages);
+            await this.db.SaveChangesAsync();
 
-            return null;
+            return newImages;
+        }
+
+        private async Task CreateProductImagesAsync(IEnumerable<Image> images, string productId)
+        {
+            var productImages = new List<ProductImage>();
+
+            foreach (var image in images)
+            {
+                var productImage = new ProductImage()
+                {
+                    ProductId = productId,
+                    ImageId = image.Id
+                };
+
+                productImages.Add(productImage);
+            }
+
+            await this.db.ProductsImages.AddRangeAsync(productImages);
         }
 
         private async Task<ICollection<Tag>>GetTagsAsync(IEnumerable<string> tags, string userId)

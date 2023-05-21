@@ -53,7 +53,7 @@ namespace ShopHeaven.Data
 
         public DbSet<ProductLabel> ProductsLabels { get; set; }
 
-        public DbSet<ProductLabel> ProductsImages { get; set; }
+        public DbSet<ProductImage> ProductsImages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

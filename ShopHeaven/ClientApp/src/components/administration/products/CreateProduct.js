@@ -165,7 +165,6 @@ export default function CreateProduct(props) {
 
     console.log(tags);
     console.log(labels);
-    console.log("GUARANTEE", productHasGuarantee);
     console.log(productSpecifications);
   }
 
@@ -225,7 +224,12 @@ export default function CreateProduct(props) {
      formData.append(`images`, file);
     });
     
-    formData.append("specifications", newProduct.specifications);
+    newProduct.specifications.forEach((spec, index) => {
+      Object.keys(spec).forEach(key => {
+        formData.append(`specifications[${index}].${key}`, spec[key]);
+      });
+    });
+    
     formData.append("tags", newProduct.tags);
     formData.append("labels", newProduct.labels);
     formData.append("createdBy", auth.userId);
