@@ -14,7 +14,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
+import { AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
@@ -26,9 +26,6 @@ export default function CreateProduct(props) {
 
   //auth
   const { auth } = useAuth();
-
-  //initial declaration of product
-  const [product, setProduct] = useState();
 
   //dropdowns
   const [categories, setCategories] = useState(props.categories);
@@ -197,13 +194,13 @@ export default function CreateProduct(props) {
       images: imagesAsArray,
       specifications: productSpecifications,
       tags: productTagsRef.current.value
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag.length > 0),
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0),
       labels: productLabelsRef.current.value
-            .split(",")
-            .map((label) => label.trim())
-            .filter((label) => label.length > 0)
+        .split(",")
+        .map((label) => label.trim())
+        .filter((label) => label.length > 0),
     };
 
     const formData = new FormData();
@@ -220,11 +217,11 @@ export default function CreateProduct(props) {
     formData.append("quantity", newProduct.quantity);
 
     newProduct.images.forEach((file) => {
-     formData.append(`images`, file);
+      formData.append(`images`, file);
     });
-    
+
     newProduct.specifications.forEach((spec, index) => {
-      Object.keys(spec).forEach(key => {
+      Object.keys(spec).forEach((key) => {
         formData.append(`specifications[${index}].${key}`, spec[key]);
       });
     });
@@ -456,7 +453,8 @@ export default function CreateProduct(props) {
       setMessages((prev) => {
         return {
           ...prev,
-          productTagsError: "Product must contain at least 1 tag! (Be sure you saved the tags)",
+          productTagsError:
+            "Product must contain at least 1 tag! (Be sure you saved the tags)",
         };
       });
 
@@ -1097,7 +1095,7 @@ export default function CreateProduct(props) {
               </Grid>
             </Grid>
           </InputBox>
-        </Collapse>         
+        </Collapse>
         <Divider>
           <HeadingChip
             label="PRODUCT IMAGES"

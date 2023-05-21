@@ -12,7 +12,7 @@ import {
   TableHead,
   Paper,
   Chip,
-  Grid
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -133,7 +133,15 @@ export default function AdminCategoriesRow(props) {
 
   return (
     <Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow
+        sx={{
+          "&:hover": {
+            cursor: "pointer",
+            background: "#EAEAF7",
+          },
+          "& > *": { borderBottom: "unset" },
+        }}
+      >
         <TableCell
           sx={{ width: "20px", padding: 0, paddingLeft: theme.spacing(1) }}
         >

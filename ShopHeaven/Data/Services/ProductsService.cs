@@ -76,9 +76,15 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
             }
 
-            model.Specifications = model.Specifications ?? new List<CreateSpecificationRequestModel>();
-            model.Labels = model.Labels ?? new List<string>();
+            if (model.Specifications == null)
+            {
+                model.Specifications = new List<CreateSpecificationRequestModel>();
+            }
 
+            if (model.Labels == null)
+            {
+                model.Labels = new List<string>();
+            }
 
             var newProduct = new Product();
 

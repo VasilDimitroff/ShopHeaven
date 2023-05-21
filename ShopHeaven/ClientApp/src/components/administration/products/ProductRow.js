@@ -6,7 +6,7 @@ import {
   Collapse,
   Chip,
   Box,
-  Grid
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -58,13 +58,24 @@ export default function ProductRow(props) {
 
   return (
     <Fragment>
-      <TableRow>
+      <TableRow
+        sx={{
+          "&:hover": {
+            cursor: "pointer",
+            background: "#EAEAF7",
+          },
+        }}
+      >
         <TableCell sx={{ width: "20px", padding: 0, paddingLeft: 1 }}>
-          <IconButton size="small" onClick={() => handleSetOpenEditForm()}>
+          <IconButton size="small" onClick={handleSetOpenEditForm}>
             {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <ProductNameTableCell component="th" scope="row">
+        <ProductNameTableCell
+          onClick={handleSetOpenEditForm}
+          component="th"
+          scope="row"
+        >
           {product?.name}
           <ProductInfoHolder>
             <ProductInfoText>
@@ -102,6 +113,7 @@ export default function ProductRow(props) {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <StyledIconButton
+                onClick={handleSetOpenEditForm}
                 color="warning"
                 size="small"
               >
@@ -119,7 +131,11 @@ export default function ProductRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-            <EditProduct currencies={props.currencies} product={product} categories={props.categories} />
+            <EditProduct
+              currencies={props.currencies}
+              product={product}
+              categories={props.categories}
+            />
           </Collapse>
         </TableCell>
       </TableRow>
