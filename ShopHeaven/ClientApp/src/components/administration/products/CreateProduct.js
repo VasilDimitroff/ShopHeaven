@@ -525,7 +525,7 @@ export default function CreateProduct(props) {
       }
   
       console.log("CREATION ERRORS",final);
-     
+      setCreateProductResponseMessage("");
       setCreateProductErrorMessage(final);
     }
    

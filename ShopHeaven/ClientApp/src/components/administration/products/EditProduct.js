@@ -546,7 +546,8 @@ export default function EditProduct(props) {
       }
 
       console.log("EDITING ERRORS", final);
-
+      
+      setEditProductResponseMessage("");
       setEditProductErrorMessage(final);
     }
 
