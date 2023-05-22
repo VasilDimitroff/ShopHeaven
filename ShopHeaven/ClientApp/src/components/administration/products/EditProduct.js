@@ -39,7 +39,9 @@ export default function EditProduct(props) {
   const [productDescription, setProductDescription] = useState(
     product.description
   );
-  const [productCategoryId, setProductCategoryId] = useState(product.categoryId); // must be category.id
+  const [productCategoryId, setProductCategoryId] = useState(
+    product.categoryId
+  ); // must be category.id
   const [productSubcategoryId, setProductSubcategoryId] = useState(
     product.subcategoryid
   );
@@ -101,6 +103,11 @@ export default function EditProduct(props) {
   const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
 
   useEffect(() => {}, [messages]);
+
+  useEffect(() => {
+    loadSubcategories()
+    setProductSubcategoryId(product.subcategoryId)
+  }, []);
 
   function handleTagsInput() {
     //1
@@ -528,7 +535,7 @@ export default function EditProduct(props) {
   const SubheadingChip = styled(Chip)({
     fontSize: 12,
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   });
 
   const CalculatePriceButton = styled(Button)({
@@ -590,8 +597,8 @@ export default function EditProduct(props) {
             />
           </Divider>
           <ProductInfoInput
-            multiline
-            minRows={4}
+            multiline={true}
+            rows={10}
             inputRef={productDescriptionRef}
             placeholder={productDescription}
             defaultValue={productDescription}
@@ -1036,25 +1043,39 @@ export default function EditProduct(props) {
             color="secondary"
           />
         </Divider>
-        <StyledImageList cols={5}>
+        <Grid container spacing={2} sx={{ marginBottom: theme.spacing(3) }}>
           {productImages?.map((item, index) => (
-            <StyledImageListItem key={index}>
-              <ListItemIcon
-                sx={{ position: "absolute", zIndex: 1, right: -15 }}
-              >
-                <IconButton>
-                  <Close color="error" />
-                </IconButton>
-              </ListItemIcon>
+            <Grid
+              key={index}
+              item
+              xs={6}
+              sm={4}
+              md={3}
+              lg={3}
+              sx={{
+                position: "relative",
+                cursor: "pointer",
+                "&:hover": {
+                  outlineColor: theme.palette.primary.main,
+                  outlineStyle: "solid",
+                  outlineWidth: "2px",
+                  boxShadow: theme.palette.dropdown.boxShadow.main,
+                },
+              }}
+            >
+              <IconButton sx={{ position: "absolute", right: 5, top: -0.5 }}>
+                <Close color="error" />
+              </IconButton>
               <img
-                src={`${item}?w=248&fit=crop&auto=format`}
-                srcSet={`${item}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                src={`${item}`}
+                width={150}
+                height={140}
                 alt={productName}
                 loading="lazy"
               />
-            </StyledImageListItem>
+            </Grid>
           ))}
-        </StyledImageList>
+        </Grid>
         <InputBox>
           <ProductInfoInput
             accept=".jpg, .png, .jpeg, .webp"
