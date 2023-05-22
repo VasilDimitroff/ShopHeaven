@@ -8,5 +8,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<CreateProductResponseModel> CreateProductAsync(CreateProductRequestModel model);
 
         Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync();
+
+        Task<ICollection<CreateProductResponseModel>> GetAllAsync();
     }
 }

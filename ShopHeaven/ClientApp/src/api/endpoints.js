@@ -29,8 +29,9 @@ export const ApiEndpoints = {
         undeleteSubcategory: "api/subcategories/undelete"
     },
     products: {
-        createProduct: apiUrl + "api/products/create",
+        createProduct: "api/products/create",
         editProduct: apiUrl + "api/products/edit",
+        getAllWithCreationInfo: "api/products/getallwithcreationinfo",
         getProduct: apiUrl + "api/products/get"
     }
 }

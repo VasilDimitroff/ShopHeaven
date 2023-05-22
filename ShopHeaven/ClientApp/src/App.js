@@ -19,8 +19,6 @@ import RequireAuth from './components/auth/RequireAuth';
 import PersistLogin from './components/auth/PersistLogin';
 import Unauthorized from './components/auth/Unauthorized';
 import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
-import { categories } from './components/categories';
-import { products } from './components/products';
 import { coupons } from './components/coupons';
 
 const roles = {
@@ -39,7 +37,7 @@ export default function App() {
             <Route path="" element={<Home/>}/>
             <Route path="categories/:categoryId" element={<Categories/>}/>
             <Route path="categories/:categoryId/subcategories/:subcategoryId" element={<Categories/>}/>
-            <Route path="categories/:categoryId/subcategories/:subcategoryId/products" element={<SubcategoryProducts/>}/>
+            <Route path="categories/subcategories/:subcategoryId/products" element={<SubcategoryProducts/>}/>
             <Route path="products/:productId" element={<Product/>}/>
             <Route path="login" element={<Login/>}/>
             <Route path="register" element={<Register/>}/>
@@ -49,7 +47,7 @@ export default function App() {
                   <Route path="admin" element={<Admin/>}>
                       <Route path="" element={<AdminDashboard/>}/>
                       <Route path="users" element={<AdminUsers/>}/>
-                      <Route path="products" element={<AdminProducts products={products}/>}/>
+                      <Route path="products" element={<AdminProducts />}/>
                       <Route path="categories" element={<AdminCategories/>}/>
                       <Route path="coupons" element={<AdminCoupons coupons={coupons}/>}/>
                       <Route path="orders" element={<AdminOrders/>}/>
@@ -65,37 +63,3 @@ export default function App() {
    </div>
   );
 };
-
-
-/*
-     {AppRoutes.map((route, index) => {
-            const { element, requireAuth, ...rest } = route;
-            return <Route categories={categories} products={products} key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
-          }) }
-
-
-
-
-import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
-import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
-import { Layout } from './components/Layout';
-import './custom.css';
-
-export default class App extends Component {
-  static displayName = App.name;
-
-  render() {
-    return (
-      <Layout>
-        <Routes>
-          {AppRoutes.map((route, index) => {
-            const { element, requireAuth, ...rest } = route;
-            return <Route key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
-          })}
-        </Routes>
-      </Layout>
-    );
-  }
-} */

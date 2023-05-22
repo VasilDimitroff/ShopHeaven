@@ -39,9 +39,9 @@ export default function EditProduct(props) {
   const [productDescription, setProductDescription] = useState(
     product.description
   );
-  const [productCategoryId, setProductCategoryId] = useState(product.category); // must be category.id
+  const [productCategoryId, setProductCategoryId] = useState(product.categoryId); // must be category.id
   const [productSubcategoryId, setProductSubcategoryId] = useState(
-    product.subcategory.id
+    product.subcategoryid
   );
   const [productHasGuarantee, setProductHasGuarantee] = useState(
     product.hasGuarantee
@@ -49,6 +49,7 @@ export default function EditProduct(props) {
   const [productSpecifications, setProductSpecifications] = useState(
     product.specifications
   ); //array[object]
+
   const [productCurrencyId, setProductCurrencyId] = useState(
     product.currency.id
   );

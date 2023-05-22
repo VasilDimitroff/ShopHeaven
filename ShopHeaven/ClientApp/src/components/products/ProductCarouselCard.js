@@ -123,7 +123,7 @@ function ProductCarouselCard(props) {
           </RatingWrapper>
 
           <PriceAndActionsWrapper>
-            <PriceText variant="h5">{props.product.currency} {props.product.price}</PriceText>
+            <PriceText variant="h5">{props.product.currency.code} {props.product.price}</PriceText>
             <ActionsWrapper>
               <IconButton
                 size="large"

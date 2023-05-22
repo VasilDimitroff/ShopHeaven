@@ -168,17 +168,31 @@ namespace ShopHeaven.Data.Services
                 isAvailable = newProduct.IsAvailable,
                 Rating = newProduct.Rating,
                 HasGuarantee = newProduct.HasGuarantee,
-                ReviewsCount = newProduct.Reviews.Count(),
+                ReviewsCount = newProduct.Reviews
+                    .Where(x => x.IsDeleted !=true)
+                    .Count(),
                 CreatedBy = user.Email,
-                Images = images.Select(x => x.Url).ToList(),
-                Labels = labels.Select(x => x.Content).ToList(),
-                Tags = tags.Select(x => x.Name).ToList(),
-                Specifications = specifications.Select(x => new SpecificationResponseModel
-                {
-                    Id = x.Id,
-                    Key = x.Key,
-                    Value = x.Value
-                }).ToList(),
+                Images = images
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Url)
+                    .ToList(),
+                Labels = labels
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Content)
+                    .ToList(),
+                Tags = tags
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Name)
+                    .ToList(),
+                Specifications = specifications
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => new SpecificationResponseModel
+                    {
+                        Id = x.Id,
+                        Key = x.Key,
+                        Value = x.Value
+                    })
+                    .ToList(),
             };
 
             return createdProduct;
@@ -342,11 +356,6 @@ namespace ShopHeaven.Data.Services
         public async Task<ICollection<CreateProductResponseModel>> GetAllAsync()
         {
             var products = await this.db.Products
-            // .Include(p => p.SubCategory)
-            // .ThenInclude(s => s.MainCategory)
-            // .Include(p => p.Currency)
-            // .Include(p => p.CreatedBy)
-            // .Include(p => p.Reviews)
             .Where(p => p.IsDeleted != true)
             .Select(p => new CreateProductResponseModel
             {
@@ -371,16 +380,30 @@ namespace ShopHeaven.Data.Services
                 HasGuarantee = p.HasGuarantee,
                 isAvailable = p.IsAvailable,
                 Rating = p.Rating,
-                ReviewsCount = p.Reviews.Count(),
-                Images = p.Images.Select(x => x.Image.Url).ToList(),
-                Tags = p.Tags.Select(x => x.Tag.Name).ToList(),
-                Labels = p.Labels.Select(x => x.Label.Content).ToList(),
-                Specifications = p.Specifications.Select(x => new SpecificationResponseModel
-                {
-                    Id = x.Id,
-                    Key = x.Key,
-                    Value = x.Value,
-                }).ToList(),
+                ReviewsCount = p.Reviews
+                    .Where(x => x.IsDeleted != true)
+                    .Count(),
+                Images = p.Images
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Image.Url)
+                    .ToList(),
+                Tags = p.Tags
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Tag.Name)
+                    .ToList(),
+                Labels = p.Labels
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Label.Content)
+                    .ToList(),
+                Specifications = p.Specifications
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => new SpecificationResponseModel
+                        {
+                            Id = x.Id,
+                            Key = x.Key,
+                            Value = x.Value,
+                        })
+                    .ToList(),
             })
             .ToListAsync();
 

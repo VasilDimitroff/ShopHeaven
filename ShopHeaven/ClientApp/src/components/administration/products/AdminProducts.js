@@ -22,17 +22,16 @@ import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function AdminProducts(props) {
+export default function AdminProducts() {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
 
-  const [products, setProducts] = useState(props.products);
+  const [products, setProducts] = useState();
   const [categories, setCategories] = useState([]);
   const [currencies, setCurrencies] = useState([]);
 
   const axiosPrivate = useAxiosPrivate();
 
-  const categoriesEffectRun = useRef(false);
-  const currenciesEffectRun = useRef(false);
+  const effectRun = useRef(false);
 
   const searchInputRef = useRef();
 
@@ -42,58 +41,31 @@ export default function AdminProducts(props) {
   useEffect(() => {
     const controller = new AbortController();
 
-    const getCategories = async () => {
+    const getProducts = async () => {
       try {
         const response = await axiosPrivate.get(
-          ApiEndpoints.categories.getCategoryNames,
+          ApiEndpoints.products.getAllWithCreationInfo,
           {
             signal: controller.signal,
           }
         );
         console.log(response?.data);
 
-        setCategories(response?.data);
+        setCategories(response?.data?.categories);
+        setProducts(response?.data?.products);
+        setCurrencies(response?.data?.currencies);
       } catch (error) {
         console.log(error);
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
-    if (categoriesEffectRun.current) {
-      getCategories();
+    if (effectRun.current) {
+      getProducts();
     }
 
     return () => {
-      categoriesEffectRun.current = true; // update the value of effectRun to true
-      controller.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const getCurrencies = async () => {
-      try {
-        const response = await axiosPrivate.get(
-          ApiEndpoints.currencies.getAll,
-          {
-            signal: controller.signal,
-          }
-        );
-        console.log(response?.data);
-        setCurrencies(response?.data);
-      } catch (error) {
-        console.log(error);
-        navigate("/login", { state: { from: location }, replace: true });
-      }
-    };
-
-    if (currenciesEffectRun.current) {
-      getCurrencies();
-    }
-
-    return () => {
-      currenciesEffectRun.current = true; // update the value of effectRun to true
+      effectRun.current = true; // update the value of effectRun to true
       controller.abort();
     };
   }, []);
