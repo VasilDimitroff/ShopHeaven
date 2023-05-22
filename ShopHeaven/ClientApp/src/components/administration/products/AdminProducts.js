@@ -12,6 +12,7 @@ import {
   Pagination,
   InputBase,
   IconButton,
+  Grid,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -34,6 +35,7 @@ export default function AdminProducts() {
   const effectRun = useRef(false);
 
   const searchInputRef = useRef();
+  const categorySearchRef = useRef();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,10 +72,6 @@ export default function AdminProducts() {
     };
   }, []);
 
-  function handleSetSearchValue() {
-    const value = searchInputRef.current.value;
-  }
-
   function clearSearchValue() {
     searchInputRef.current.value = "";
   }
@@ -102,49 +100,90 @@ export default function AdminProducts() {
     marginBottom: theme.spacing(1),
   });
 
-  const CustomSearchField = styled("div")({
-    display: "flex",
-    alignItems: "center",
-    marginRight: theme.spacing(0.5),
-    marginLeft: theme.spacing(0.5),
-    backgroundColor: alpha(theme.palette.common.white, 1),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.7),
-    },
-    borderRadius: theme.shape.borderRadius,
-    width: "100%",
+  const SearchInput = styled("input")({
     position: "relative",
-    padding: theme.spacing(0.3),
+    width: "100%",
+    border: "1px solid #C6BFBE",
+    backgroundColor: "rgb(255,249,249)",
+    padding: theme.spacing(0.65),
+    paddingLeft: theme.spacing(5),
+    borderRadius: theme.shape.borderRadius,
   });
 
-  const CancelIconButton = styled(IconButton)({
-    paddingRight: theme.spacing(1),
+  const StyledSelect = {
+    cursor: "pointer",
+    width: "100%",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    fontSize: 14,
+    backgroundColor: "rgb(255,249,249)",
+  };
+
+  const CancelButton = styled(Cancel)({
     position: "absolute",
-    right: 0,
-    fontSize: "30px",
+    right: 5,
+    top: 22,
+    "&:hover": {
+      color: theme.palette.primary.main,
+      cursor: "pointer",
+    },
   });
+
+  const StyledSearchIcon = styled(Search)({
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    fontSize: "40px",
+    position: "absolute",
+    zIndex: 1,
+  });
+
+  function onSearchProduct(e){
+    e.preventDefault();
+
+    const searchValue = searchInputRef.current.value;
+    const categoryId = categorySearchRef.current.value;
+
+    if (!searchValue.trim() || !categoryId.trim()) {
+      return;
+    }
+
+    var filtered = products.filter((x) => x.name.toLowerCase().includes(searchValue.toLowerCase()));
+    setProducts(filtered);
+
+    console.log(searchValue, categoryId);
+  }
 
   return (
     <Box>
-      
-      <CustomSearchField>
-        <Search
-          sx={{
-            paddingLeft: theme.spacing(1),
-            paddingRight: theme.spacing(1),
-            fontSize: "40px",
-          }}
-        />
-        <InputBase
-          sx={{ width: "100%" }}
-          onChange={handleSetSearchValue}
-          inputRef={searchInputRef}
-          placeholder="Search product..."
-        />
-        <CancelIconButton onClick={clearSearchValue}>
-          <Cancel />
-        </CancelIconButton>
-      </CustomSearchField>
+      <form onSubmit={onSearchProduct}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12} md={7} lg={7} sx={{ position: "relative" }}>
+            <StyledSearchIcon />
+            <SearchInput ref={searchInputRef} placeholder="Search product..." />
+            <CancelButton onClick={clearSearchValue} />
+        </Grid>
+        <Grid item xs={8} sm={8} md={3} lg={3}>
+          <select
+            style={StyledSelect}
+            ref={categorySearchRef}
+            name="category"
+          >
+            {categories?.map((cat) => (
+              <option key={cat?.id} value={cat?.id}>
+                {cat?.name}
+              </option>
+            ))}
+          </select>
+        </Grid>
+        <Grid item xs={4} sm={4} md={2} lg={2}>
+       <Button variant="contained" type="submit" color="primary">
+         SEARCH
+       </Button>
+        </Grid>
+      </Grid>
+      </form>
       <TableContainer component={Box}>
         <Table>
           <TableHead>
