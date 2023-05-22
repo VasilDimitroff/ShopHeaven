@@ -146,7 +146,7 @@ export default function CreateSubcategory(props) {
                 </InputAdornment>
               ),
             }}
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="standard"
             id="subcategory-image"

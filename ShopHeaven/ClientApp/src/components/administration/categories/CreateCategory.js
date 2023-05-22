@@ -139,7 +139,7 @@ export default function CreateCategory(props) {
                 </InputAdornment>
               ),
             }}
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="standard"
             id="category-image"

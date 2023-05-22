@@ -256,7 +256,7 @@ export default function CreateProduct(props) {
       controller.abort();
       setCreateProductErrorMessage("");
       setCreateProductResponseMessage(
-        `Product ${formData.get("name")} successfully created`
+        `${formData.get("name")} successfully created`
       );
       props.productListChanged(response?.data);
     } catch (error) {
@@ -1105,7 +1105,7 @@ export default function CreateProduct(props) {
         </Divider>
         <InputBox>
           <ProductInfoInput
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="outlined"
             id="create-product-photos-image"

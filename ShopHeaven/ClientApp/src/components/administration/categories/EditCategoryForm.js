@@ -166,7 +166,7 @@ export default function EditCategoryForm(props) {
                 </InputAdornment>
               ),
             }}
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="standard"
             id="edit-category-image"

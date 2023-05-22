@@ -1056,7 +1056,7 @@ export default function EditProduct(props) {
         </StyledImageList>
         <InputBox>
           <ProductInfoInput
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="outlined"
             id="edit-product-photos-image"
