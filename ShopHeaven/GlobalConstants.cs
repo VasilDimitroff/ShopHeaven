@@ -8,6 +8,14 @@
 
         public const string UserRoleName = "User";
 
+        public static IReadOnlyList<string> AllowedImageFileExtensions = new List<string>
+        {
+            ".jpeg",
+            ".jpg",
+            ".png",
+            ".webp"
+        };
+
         public const string UserWithThisUsernameAlreadyExist = "User with this username already exist!";
 
         public const string PasswordsDoesntMatch = "Password and Confirm Password doesn't match!";
@@ -57,5 +65,12 @@
         public const string ProductMustContainAtLeast1Tag = "Product must contain at least 1 tag";
 
         public const string ProductWithThisIdDoesNotExist = "Product with this Id does not exist!";
+
+        public const string ImageWithGivenUrlDoesntExist = "Image with given Url does not exist!";
+
+        public const string ImageIsNotAttachedToThisProduct = "Image is not attached to this product!";
+
+        public const string FileTypeNotAllowed 
+            = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";
     }
 }

@@ -548,6 +548,7 @@ namespace ShopHeaven.Data.Services
                 .ToList();
 
             product.CreatedById = user.Id;
+            product.ModifiedOn = DateTime.UtcNow;
             product.Name = model.Name;
             product.Description = model.Description;
             product.Brand = model.Brand != null ? model.Brand.Trim() : "";

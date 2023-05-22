@@ -41,8 +41,8 @@ export default function ProductRow(props) {
     setOpenDeleteForm((prev) => !prev);
   }
 
-  function updateProduct(product) {
-    setProduct(product);
+  function updateProduct(updatedProduct) {
+    setProduct({...product, images: product.images.push(...updatedProduct.images)});
   }
 
   const ProductNameTableCell = styled(TableCell)({

@@ -7,8 +7,6 @@ import {
   Typography,
   Chip,
   InputBase,
-  ImageList,
-  ImageListItem,
   Collapse,
   Grid,
   Divider,
@@ -19,12 +17,14 @@ import { styled } from "@mui/material/styles";
 import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAuth from "../../../hooks/useAuth";
 
 export default function EditProduct(props) {
   // api requests
   const axiosPrivateForm = useAxiosPrivateForm();
+  const axiosPrivate = useAxiosPrivate();
 
   //auth
   const { auth } = useAuth();
@@ -104,6 +104,13 @@ export default function EditProduct(props) {
   const [editProductResponseMessage, setEditProductResponseMessage] =
     useState("");
   const [editProductErrorMessage, setEditProductErrorMessage] = useState("");
+
+  const [
+    deleteProductImageResponseMessage,
+    setDeleteProductImageResponseMessage,
+  ] = useState("");
+  const [deleteProductImageErrorMessage, setDeleteProductImageErrorMessage] =
+    useState("");
 
   useEffect(() => {}, [messages]);
 
@@ -254,7 +261,7 @@ export default function EditProduct(props) {
     formData.append("createdBy", auth.userId);
 
     console.log("FORM", newProduct);
-    console.log("IMAGE URLS", productImages)
+    console.log("IMAGE URLS", productImages);
     editProduct(formData);
   }
 
@@ -275,7 +282,7 @@ export default function EditProduct(props) {
       setEditProductResponseMessage(
         `${formData.get("name")} successfully updated`
       );
-      console.log("TUKA RESPONSA",response?.data)
+ 
       props.updateProduct(response?.data);
     } catch (error) {
       setEditProductResponseMessage("");
@@ -288,6 +295,47 @@ export default function EditProduct(props) {
         setEditProductErrorMessage(error?.response?.data);
       }
       console.log(error?.message);
+    }
+  }
+
+  function onDeleteImage(imageUrl) {
+    deleteImage(imageUrl, product.id);
+  }
+
+  function handleDeleteImage(imageUrl) {
+    const updatedImages = productImages.filter((url) => url !== imageUrl);
+    setProductImages(updatedImages);
+  }
+
+  async function deleteImage(imageUrl, productId) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.images.deleteProductImage,
+        JSON.stringify({ productId: productId, imageUrl: imageUrl }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      handleDeleteImage(imageUrl);
+
+      setDeleteProductImageErrorMessage("");
+      setDeleteProductImageResponseMessage("Image successfully deleted!");
+    } catch (error) {
+      setDeleteProductImageResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setDeleteProductImageErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setDeleteProductImageErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
     }
   }
 
@@ -518,7 +566,7 @@ export default function EditProduct(props) {
     const images = document.getElementById("edit-product-photos-image").files;
     console.log("IMAGE LENGTH NA VAJNOTO MQSTO", productImages);
 
-    if (productImages.length < 1 && (!images || images.length < 1)) {
+    if (productImages.length < 1 && !images) {
       let msg = "Product must contain at least 1 image";
       errors.push(msg);
       setMessages((prev) => {
@@ -546,7 +594,7 @@ export default function EditProduct(props) {
       }
 
       console.log("EDITING ERRORS", final);
-      
+
       setEditProductResponseMessage("");
       setEditProductErrorMessage(final);
     }
@@ -604,22 +652,6 @@ export default function EditProduct(props) {
     marginTop: theme.spacing(2),
     [theme.breakpoints.down("sm")]: {
       width: "95%",
-    },
-  });
-
-  const StyledImageList = styled(ImageList)({
-    padding: theme.spacing(0.5),
-  });
-
-  const StyledImageListItem = styled(ImageListItem)({
-    position: "relative",
-    width: "90%",
-    cursor: "pointer",
-    "&:hover": {
-      outlineColor: theme.palette.primary.main,
-      outlineStyle: "solid",
-      outlineWidth: "3px",
-      boxShadow: theme.palette.dropdown.boxShadow.main,
     },
   });
 
@@ -1185,6 +1217,7 @@ export default function EditProduct(props) {
           {productImages?.map((item, index) => (
             <Grid
               key={index}
+              id=""
               item
               xs={6}
               sm={4}
@@ -1201,7 +1234,10 @@ export default function EditProduct(props) {
                 },
               }}
             >
-              <IconButton sx={{ position: "absolute", right: 5, top: -0.5 }}>
+              <IconButton
+                onClick={() => onDeleteImage(item)}
+                sx={{ position: "absolute", right: 5, top: -0.5 }}
+              >
                 <Close color="error" />
               </IconButton>
               <img

@@ -33,6 +33,9 @@ export const ApiEndpoints = {
         editProduct: "api/products/edit",
         getAllWithCreationInfo: "api/products/getallwithcreationinfo",
         getProduct: apiUrl + "api/products/get"
+    },
+    images: {
+        deleteProductImage: "api/images/delete"
     }
 }
 

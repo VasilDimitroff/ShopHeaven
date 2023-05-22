@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +9,6 @@ using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services;
 using ShopHeaven.Data.Services.Contracts;
 using Swashbuckle.AspNetCore.Filters;
-using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,6 +78,7 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<IProductsService, ProductsService>();
+builder.Services.AddTransient<IImagesService, ImagesService>();
 
 builder.Services.AddHttpContextAccessor();
 

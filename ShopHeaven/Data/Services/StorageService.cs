@@ -46,7 +46,15 @@ namespace ShopHeaven.Data.Services
 
         private string GetFileName(string fileName, string userId)
         {
+            string extension = Path.GetExtension(fileName);
+
+            if (!GlobalConstants.AllowedImageFileExtensions.Contains(extension))
+            {
+                throw new ArgumentException(GlobalConstants.FileTypeNotAllowed);
+            }
+
             string randomNumber = new Random().Next(100, int.MaxValue).ToString();
+            string secondRandomNumber = new Random().Next(100, int.MaxValue).ToString();
             string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
 
             if (fileNameWithoutExt.Length > 15)
@@ -54,10 +62,10 @@ namespace ShopHeaven.Data.Services
                 fileNameWithoutExt = fileNameWithoutExt.Substring(0, 15);
             }
 
-            string extension = Path.GetExtension(fileName);
             string basePath = $"{GlobalConstants.SystemName}/{userId}/";
 
-            string fullPathName = basePath + fileNameWithoutExt + "_" + randomNumber + extension;
+            string fullPathName =
+                basePath + fileNameWithoutExt + "_" + randomNumber + "_" + secondRandomNumber + extension;
 
             return fullPathName;
         }
