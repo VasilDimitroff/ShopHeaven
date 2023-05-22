@@ -41,6 +41,10 @@ export default function ProductRow(props) {
     setOpenDeleteForm((prev) => !prev);
   }
 
+  function updateProduct(product) {
+    setProduct(product);
+  }
+
   const ProductNameTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
@@ -147,6 +151,7 @@ export default function ProductRow(props) {
               currencies={props.currencies}
               product={product}
               categories={props.categories}
+              updateProduct={updateProduct}
             />
           </Collapse>
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>

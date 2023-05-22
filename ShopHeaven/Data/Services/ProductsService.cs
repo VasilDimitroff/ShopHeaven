@@ -28,7 +28,7 @@ namespace ShopHeaven.Data.Services
             this.categoriesService = categoriesService;
             this.currencyService = currencyService;
         }
-        public async Task<CreateProductResponseModel> CreateProductAsync(CreateProductRequestModel model)
+        public async Task<AdminProductResponseModel> CreateProductAsync(CreateProductRequestModel model)
         {
             var user = await this.db.Users
                 .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
@@ -146,7 +146,7 @@ namespace ShopHeaven.Data.Services
             await this.db.Products.AddAsync(newProduct);
             await this.db.SaveChangesAsync();
 
-            var createdProduct = new CreateProductResponseModel()
+            var createdProduct = new AdminProductResponseModel()
             {
                 Id = newProduct.Id,
                 Brand = newProduct.Brand,
@@ -337,7 +337,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync()
         {
-            List<CreateProductResponseModel> products = await this.GetAllAsync() as List<CreateProductResponseModel>;
+            List<AdminProductResponseModel> products = await this.GetAllAsync() as List<AdminProductResponseModel>;
 
             List<CategoryNamesResponseModel> categories =  await this.categoriesService.GetAllCategoryNamesAsync();
 
@@ -353,11 +353,11 @@ namespace ShopHeaven.Data.Services
             return model;
         }
 
-        public async Task<ICollection<CreateProductResponseModel>> GetAllAsync()
+        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync()
         {
             var products = await this.db.Products
             .Where(p => p.IsDeleted != true)
-            .Select(p => new CreateProductResponseModel
+            .Select(p => new AdminProductResponseModel
             {
                 Id = p.Id,
                 Name = p.Name,

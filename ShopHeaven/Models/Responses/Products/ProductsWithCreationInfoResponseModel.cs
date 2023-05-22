@@ -5,7 +5,7 @@ namespace ShopHeaven.Models.Responses.Products
 {
     public class ProductsWithCreationInfoResponseModel
     {
-        public ICollection<CreateProductResponseModel> Products { get; set; }
+        public ICollection<AdminProductResponseModel> Products { get; set; }
 
         public ICollection<CategoryNamesResponseModel> Categories { get; set; }
 

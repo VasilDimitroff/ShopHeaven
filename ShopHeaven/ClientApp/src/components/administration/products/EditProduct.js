@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,7 +9,6 @@ import {
   InputBase,
   ImageList,
   ImageListItem,
-  ListItemIcon,
   Collapse,
   Grid,
   Divider,
@@ -21,10 +20,14 @@ import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import { ApiEndpoints } from "../../../api/endpoints";
+import useAuth from "../../../hooks/useAuth";
 
 export default function EditProduct(props) {
   // api requests
   const axiosPrivateForm = useAxiosPrivateForm();
+
+  //auth
+  const { auth } = useAuth();
 
   const [product, setProduct] = useState(props.product);
 
@@ -41,7 +44,7 @@ export default function EditProduct(props) {
   );
   const [productCategoryId, setProductCategoryId] = useState(
     product.categoryId
-  ); // must be category.id
+  );
   const [productSubcategoryId, setProductSubcategoryId] = useState(
     product.subcategoryid
   );
@@ -105,8 +108,8 @@ export default function EditProduct(props) {
   useEffect(() => {}, [messages]);
 
   useEffect(() => {
-    loadSubcategories()
-    setProductSubcategoryId(product.subcategoryId)
+    loadSubcategories();
+    setProductSubcategoryId(product.subcategoryId);
   }, []);
 
   function handleTagsInput() {
@@ -184,42 +187,120 @@ export default function EditProduct(props) {
     //4
     setValuesToStates();
 
-    const images = document.getElementById("edit-product-photos-image").files;
-
     let isFormValid = validateForm();
 
     if (!isFormValid) {
       return;
     }
 
+    const images = document.getElementById("edit-product-photos-image").files;
+    const imagesAsArray = [...images];
+
     const newProduct = {
-      name: productName,
-      brand: productBrand,
-      description: productDescription,
-      categoryId: productCategoryId,
-      subcategoryId: productSubcategoryId,
-      hasGuarantee: productHasGuarantee,
-      currency: productCurrencyId,
-      price: productPrice,
-      discount: productDiscount,
-      quantity: productQuantity,
-      images: images,
+      name: productNameRef.current.value,
+      brand: productBrandRef.current.value,
+      description: productDescriptionRef.current.value,
+      categoryId: productCategoryRef.current.value,
+      subcategoryId: productSubcategoryRef.current.value,
+      hasGuarantee: productGuaranteeRef.current.value,
+      currencyId: productCurrencyRef.current.value,
+      price: productPriceRef.current.value,
+      discount: productDiscountRef.current.value,
+      quantity: productQuantityRef.current.value,
+      images: imagesAsArray,
       specifications: productSpecifications,
-      tags: productTags,
-      labels: productLabels,
+      tags: productTagsRef.current.value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0),
+      labels: productLabelsRef.current.value
+        .split(",")
+        .map((label) => label.trim())
+        .filter((label) => label.length > 0),
     };
 
-    console.log("WHOLE OBJECT", newProduct);
+    const formData = new FormData();
+
+    formData.append("name", newProduct.name);
+    formData.append("brand", newProduct.brand);
+    formData.append("description", newProduct.description);
+    formData.append("categoryId", newProduct.categoryId);
+    formData.append("subcategoryId", newProduct.subcategoryId);
+    formData.append("hasGuarantee", newProduct.hasGuarantee);
+    formData.append("currencyId", newProduct.currencyId);
+    formData.append("price", newProduct.price);
+    formData.append("discount", newProduct.discount);
+    formData.append("quantity", newProduct.quantity);
+
+    newProduct.images.forEach((file) => {
+      formData.append(`images`, file);
+    });
+
+    newProduct.specifications.forEach((spec, index) => {
+      Object.keys(spec).forEach((key) => {
+        formData.append(`specifications[${index}].${key}`, spec[key]);
+      });
+    });
+
+    newProduct.tags.forEach((tag, index) => {
+      formData.append(`tags[${index}]`, tag);
+    });
+
+    newProduct.labels.forEach((label, index) => {
+      formData.append(`labels[${index}]`, label);
+    });
+
+    formData.append("createdBy", auth.userId);
+
+    console.log("FORM", newProduct);
+    console.log("IMAGE URLS", productImages)
+    editProduct(formData);
+  }
+
+  async function editProduct(formData) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.products.editProduct,
+        formData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+      setEditProductErrorMessage("");
+      setEditProductResponseMessage(
+        `${formData.get("name")} successfully updated`
+      );
+      props.updateProduct(response?.data);
+    } catch (error) {
+      setEditProductResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setEditProductErrorMessage(
+          "You have no permissions to perform the operation"
+        );
+      } else {
+        setEditProductErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    }
   }
 
   function validateForm() {
     let isValid = true;
+    let errors = [];
 
     if (productNameRef.current.value.length < 2) {
+      let msg = "Product name must contain at least 2 characters";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productNameError: "Product name must contain at least 2 characters",
+          productNameError: msg,
         };
       });
 
@@ -234,11 +315,13 @@ export default function EditProduct(props) {
     }
 
     if (productDescriptionRef.current.value.length < 5) {
+      let msg = "Product description must contain at least 5 characters";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productDescriptionError:
-            "Product description must contain at least 5 characters",
+          productDescriptionError: msg,
         };
       });
 
@@ -253,10 +336,13 @@ export default function EditProduct(props) {
     }
 
     if (!productCategoryRef.current.value) {
+      let msg = "Please select a valid category";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productCategoryError: "Please select a valid category",
+          productCategoryError: msg,
         };
       });
 
@@ -271,10 +357,13 @@ export default function EditProduct(props) {
     }
 
     if (!productSubcategoryRef.current.value) {
+      let msg = "Please select a valid subcategory";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productSubcategoryError: "Please select a valid subcategory",
+          productSubcategoryError: msg,
         };
       });
 
@@ -289,10 +378,13 @@ export default function EditProduct(props) {
     }
 
     if (!productCurrencyRef.current.value) {
+      let msg = "Please select a valid currency";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productCurrencyError: "Please select a valid currency",
+          productCurrencyError: msg,
         };
       });
 
@@ -307,10 +399,13 @@ export default function EditProduct(props) {
     }
 
     if (!productPriceRef.current.value || productPriceRef.current.value < 0) {
+      let msg = "The price must be bigger or equal to 0";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productPriceError: "The price must be bigger or equal to 0",
+          productPriceError: msg,
         };
       });
 
@@ -328,10 +423,13 @@ export default function EditProduct(props) {
       !productDiscountRef.current.value ||
       productDiscountRef.current.value < 0
     ) {
+      let msg = "The discount must be bigger or equals to 0";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productDiscountError: "The discount must be bigger or equals to 0",
+          productDiscountError: msg,
         };
       });
 
@@ -349,10 +447,12 @@ export default function EditProduct(props) {
       !productQuantityRef.current.value ||
       productQuantityRef.current.value < 0
     ) {
+      let msg = "Quantity must be bigger or equals to 0";
+      errors.push(msg);
       setMessages((prev) => {
         return {
           ...prev,
-          productQuantityError: "Quantity must be bigger or equals to 0",
+          productQuantityError: msg,
         };
       });
 
@@ -371,10 +471,13 @@ export default function EditProduct(props) {
       (productGuaranteeRef.current.value != "true" &&
         productGuaranteeRef.current.value != "false")
     ) {
+      let msg = "Please select if the product has a guarantee";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productGuaranteeError: "Please select if the product has a guarantee",
+          productGuaranteeError: msg,
         };
       });
 
@@ -388,16 +491,15 @@ export default function EditProduct(props) {
       });
     }
 
-    let tags = productTagsRef.current.value
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+    if (productTagsRef.current.value.trim().length < 1) {
+      let msg =
+        "Product must contain at least 1 tag! (Be sure you saved the tags)";
+      errors.push(msg);
 
-    if (tags.length < 1) {
       setMessages((prev) => {
         return {
           ...prev,
-          productTagsError: "Product must contain at least 1 tag",
+          productTagsError: msg,
         };
       });
 
@@ -411,7 +513,41 @@ export default function EditProduct(props) {
       });
     }
 
-    console.log(messages);
+    const images = document.getElementById("edit-product-photos-image").files;
+    console.log("IMAGE LENGTH NA VAJNOTO MQSTO", productImages);
+
+    if (productImages.length < 1 && (!images || images.length < 1)) {
+      let msg = "Product must contain at least 1 image";
+      errors.push(msg);
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productImagesError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          productImagesError: "",
+        };
+      });
+    }
+
+    if (!isValid) {
+      let final =
+        "The next validation errors occurs. Please resolve them and try again: \r\n";
+      for (let i = 0; i < errors.length; i++) {
+        final += ` (${i + 1}). ${errors[i]} \r\n`;
+      }
+
+      console.log("EDITING ERRORS", final);
+
+      setEditProductErrorMessage(final);
+    }
+
     return isValid;
   }
 
@@ -692,7 +828,6 @@ export default function EditProduct(props) {
                   ref={productCurrencyRef}
                   name="currency"
                   defaultValue={productCurrencyId}
-                  onChange={setValuesToStates}
                 >
                   {currencies?.map((option) => (
                     <option key={option?.id} value={option?.id}>
@@ -1113,9 +1248,9 @@ export default function EditProduct(props) {
         )}
         {editProductErrorMessage ? (
           <Zoom in={editProductErrorMessage.length > 0 ? true : false}>
-            <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
               {editProductErrorMessage}
-            </Alert>
+            </ErrorAlert>
           </Zoom>
         ) : (
           ""

@@ -4,7 +4,7 @@ using ShopHeaven.Models.Responses.Specifications;
 
 namespace ShopHeaven.Models.Responses.Products
 {
-    public class CreateProductResponseModel
+    public class AdminProductResponseModel
     {
         public string Id { get; set; }
 

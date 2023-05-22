@@ -30,7 +30,7 @@ export const ApiEndpoints = {
     },
     products: {
         createProduct: "api/products/create",
-        editProduct: apiUrl + "api/products/edit",
+        editProduct: "api/products/edit",
         getAllWithCreationInfo: "api/products/getallwithcreationinfo",
         getProduct: apiUrl + "api/products/get"
     }

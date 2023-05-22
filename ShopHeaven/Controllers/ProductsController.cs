@@ -19,15 +19,30 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
-        public async Task<ActionResult<CreateProductResponseModel>> Create([FromForm] CreateProductRequestModel model)
+        public async Task<ActionResult<AdminProductResponseModel>> Create([FromForm] CreateProductRequestModel model)
         {
-            ;
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {  
                 var createdProduct = await this.productsService.CreateProductAsync(model);
                 return Ok(createdProduct);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
+        public async Task<ActionResult<AdminProductResponseModel>> Edit([FromForm] EditProductRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                //var createdProduct = await this.productsService.CreateProductAsync(model);
+                return Ok();
             }
             catch (Exception ex)
             {
