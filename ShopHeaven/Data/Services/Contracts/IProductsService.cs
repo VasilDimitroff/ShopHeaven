@@ -6,5 +6,7 @@ namespace ShopHeaven.Data.Services.Contracts
     public interface IProductsService
     {
         Task<CreateProductResponseModel> CreateProductAsync(CreateProductRequestModel model);
+
+        Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync();
     }
 }

@@ -33,5 +33,19 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAllWithCreationInfo))]
+        public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo()
+        {
+            try
+            {
+                var productsWithCategoriesAndCurrencies = await this.productsService.GetAllWithCreationInfoAsync();
+                return Ok(productsWithCategoriesAndCurrencies);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

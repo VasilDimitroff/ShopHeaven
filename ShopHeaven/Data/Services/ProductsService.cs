@@ -3,6 +3,7 @@ using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
+using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Specifications;
@@ -13,11 +14,19 @@ namespace ShopHeaven.Data.Services
     {
         private readonly ShopDbContext db;
         private readonly IStorageService storageService;
+        private readonly ICategoriesService categoriesService;
+        private readonly ICurrencyService currencyService;
 
-        public ProductsService(ShopDbContext db, IStorageService storageService)
+        public ProductsService(
+            ShopDbContext db,
+            IStorageService storageService,
+            ICategoriesService categoriesService,
+            ICurrencyService currencyService)
         {
             this.db = db;
             this.storageService = storageService;
+            this.categoriesService = categoriesService;
+            this.currencyService = currencyService;
         }
         public async Task<CreateProductResponseModel> CreateProductAsync(CreateProductRequestModel model)
         {
@@ -89,7 +98,7 @@ namespace ShopHeaven.Data.Services
             var newProduct = new Product();
 
             //get tags from database, or create it without saving DB
-            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();   
+            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
             var tags = await GetTagsAsync(filteredTags, user.Id);
 
             //create mapping objects for every tag
@@ -219,7 +228,7 @@ namespace ShopHeaven.Data.Services
             await this.db.ProductsImages.AddRangeAsync(productImages);
         }
 
-        private async Task<ICollection<Tag>>GetTagsAsync(ICollection<string> tags, string userId)
+        private async Task<ICollection<Tag>> GetTagsAsync(ICollection<string> tags, string userId)
         {
             var allTags = new List<Tag>();
 
@@ -310,6 +319,73 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.ProductsLabels.AddRangeAsync(productLabels);
+        }
+
+        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync()
+        {
+            List<CreateProductResponseModel> products = await this.GetAllAsync() as List<CreateProductResponseModel>;
+
+            List<CategoryNamesResponseModel> categories =  await this.categoriesService.GetAllCategoryNamesAsync();
+
+            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
+
+            var model = new ProductsWithCreationInfoResponseModel
+            {
+                Products = products,
+                Categories = categories,
+                Currencies = currencies
+            };
+
+            return model;
+        }
+
+        public async Task<ICollection<CreateProductResponseModel>> GetAllAsync()
+        {
+            var products = await this.db.Products
+            // .Include(p => p.SubCategory)
+            // .ThenInclude(s => s.MainCategory)
+            // .Include(p => p.Currency)
+            // .Include(p => p.CreatedBy)
+            // .Include(p => p.Reviews)
+            .Where(p => p.IsDeleted != true)
+            .Select(p => new CreateProductResponseModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Brand = p.Brand,
+                Description = p.Description,
+                CategoryId = p.SubCategory.MainCategory.Id,
+                CategoryName = p.SubCategory.MainCategory.Name,
+                SubcategoryId = p.SubCategoryId,
+                SubcategoryName = p.SubCategory.Name,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = p.Currency.Id,
+                    Name = p.Currency.Name,
+                    Code = p.Currency.Code,
+                },
+                CreatedBy = p.CreatedBy.Email,
+                Price = p.Price,
+                Discount = p.Discount,
+                Quantity = p.Quantity,
+                HasGuarantee = p.HasGuarantee,
+                isAvailable = p.IsAvailable,
+                Rating = p.Rating,
+                ReviewsCount = p.Reviews.Count(),
+                Images = p.Images.Select(x => x.Image.Url).ToList(),
+                Tags = p.Tags.Select(x => x.Tag.Name).ToList(),
+                Labels = p.Labels.Select(x => x.Label.Content).ToList(),
+                Specifications = p.Specifications.Select(x => new SpecificationResponseModel
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = x.Value,
+                }).ToList(),
+            })
+            .ToListAsync();
+
+
+            return products;
         }
     }
 }
