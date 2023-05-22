@@ -5,6 +5,9 @@ namespace ShopHeaven.Models.Requests.Products
 {
     public class EditProductRequestModel
     {
+        [Required(ErrorMessage = "Product Id didn't exist in the request")]
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "Product name must contain at least 2 characters")]
         [MinLength(2)]
         public string Name { get; set; }

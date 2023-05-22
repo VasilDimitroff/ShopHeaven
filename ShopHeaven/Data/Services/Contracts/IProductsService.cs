@@ -10,5 +10,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync();
 
         Task<ICollection<AdminProductResponseModel>> GetAllAsync();
+
+        Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model);
     }
 }

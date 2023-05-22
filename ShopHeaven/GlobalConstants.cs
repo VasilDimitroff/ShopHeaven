@@ -54,6 +54,8 @@
         
         public const string ProductQuantityCannotBeNegativeNumber = "Product Quantity cannot be negative number";
 
-        public const string ProductMustContainAtLeast1Tag = "Product Must Contain At Least 1 Tag";
+        public const string ProductMustContainAtLeast1Tag = "Product must contain at least 1 tag";
+
+        public const string ProductWithThisIdDoesNotExist = "Product with this Id does not exist!";
     }
 }

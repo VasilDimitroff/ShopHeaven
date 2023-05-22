@@ -221,6 +221,7 @@ export default function EditProduct(props) {
 
     const formData = new FormData();
 
+    formData.append("id", product.id);
     formData.append("name", newProduct.name);
     formData.append("brand", newProduct.brand);
     formData.append("description", newProduct.description);
@@ -274,6 +275,7 @@ export default function EditProduct(props) {
       setEditProductResponseMessage(
         `${formData.get("name")} successfully updated`
       );
+      console.log("TUKA RESPONSA",response?.data)
       props.updateProduct(response?.data);
     } catch (error) {
       setEditProductResponseMessage("");

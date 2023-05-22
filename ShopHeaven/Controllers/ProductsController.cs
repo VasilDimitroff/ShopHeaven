@@ -41,8 +41,8 @@ namespace ShopHeaven.Controllers
 
             try
             {
-                //var createdProduct = await this.productsService.CreateProductAsync(model);
-                return Ok();
+                var updatedProduct = await this.productsService.EditProductAsync(model);
+                return Ok(updatedProduct);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
@@ -123,7 +124,7 @@ namespace ShopHeaven.Data.Services
             //create productImage record for every image
             await CreateProductImagesAsync(images, newProduct.Id);
 
-            var specifications = model.Specifications.Select(x => new Specification
+            List<Specification> specifications = model.Specifications.Select(x => new Specification
             {
                 ProductId = newProduct.Id,
                 Key = x.Key,
@@ -200,7 +201,7 @@ namespace ShopHeaven.Data.Services
 
         private async Task<ICollection<Image>> CreateImagesAsync(ICollection<IFormFile> images, string userId)
         {
-            if (images.Count < 1) return null;
+            if (images.Count < 1) return new List<Image>();
 
             var productImagesUrls = await this.storageService.UploadImageAsync(images, userId);
 
@@ -230,13 +231,19 @@ namespace ShopHeaven.Data.Services
 
             foreach (var image in images)
             {
-                var productImage = new ProductImage()
+                var productImage = await this.db.ProductsImages
+                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.ImageId == image.Id && x.IsDeleted != true);
+                
+                if (productImage == null)
                 {
-                    ProductId = productId,
-                    ImageId = image.Id
-                };
+                    productImage = new ProductImage()
+                    {
+                        ProductId = productId,
+                        ImageId = image.Id
+                    };
 
-                productImages.Add(productImage);
+                    productImages.Add(productImage);
+                }
             }
 
             await this.db.ProductsImages.AddRangeAsync(productImages);
@@ -275,13 +282,19 @@ namespace ShopHeaven.Data.Services
 
             foreach (var tag in tags)
             {
-                var productTag = new ProductTag()
+                var productTag = await this.db.ProductsTags
+                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.TagId == tag.Id && x.IsDeleted != true);
+               
+                if (productTag == null)
                 {
-                    ProductId = productId,
-                    TagId = tag.Id
-                };
+                    productTag = new ProductTag()
+                    {
+                        ProductId = productId,
+                        TagId = tag.Id
+                    };
 
-                productTags.Add(productTag);
+                    productTags.Add(productTag);
+                }
             }
 
             await this.db.ProductsTags.AddRangeAsync(productTags);
@@ -323,13 +336,19 @@ namespace ShopHeaven.Data.Services
 
             foreach (var label in labels)
             {
-                var productLabel = new ProductLabel()
+                var productLabel = await this.db.ProductsLabels
+                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.LabelId == label.Id && x.IsDeleted != true);
+                
+                if (productLabel == null)
                 {
-                    ProductId = productId,
-                    LabelId = label.Id
-                };
+                    productLabel = new ProductLabel()
+                    {
+                        ProductId = productId,
+                        LabelId = label.Id
+                    };
 
-                productLabels.Add(productLabel);
+                    productLabels.Add(productLabel);
+                }
             }
 
             await this.db.ProductsLabels.AddRangeAsync(productLabels);
@@ -409,6 +428,189 @@ namespace ShopHeaven.Data.Services
 
 
             return products;
+        }
+
+        public async Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model)
+        {
+
+            var product = await this.db.Products
+                .Include(x => x.Specifications
+                    .Where(s => s.IsDeleted != true))
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+           
+            if (product == null)
+            {
+                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
+            }
+
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new NullReferenceException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var subcategory = await this.db.SubCategories
+                .Include(x => x.MainCategory)
+                .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != true);
+
+            if (subcategory == null)
+            {
+                throw new NullReferenceException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
+            }
+
+            var currency = await this.db.Currencies.
+                FirstOrDefaultAsync(x => x.Id == model.CurrencyId && x.IsDeleted != true);
+
+            if (currency == null)
+            {
+                throw new NullReferenceException(GlobalConstants.CurrencyWithThisIdDoesntExist);
+            }
+
+            if (model.Name.Trim().Length < 2)
+            {
+                throw new ArgumentException(GlobalConstants.ProductNameNotEnoughLength);
+            }
+
+            if (model.Description.Trim().Length < 5)
+            {
+                throw new ArgumentException(GlobalConstants.ProductDescriptionNotEnoughLength);
+            }
+
+            if (model.Price < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductPriceCannotBeNegativeNumber);
+            }
+
+            if (model.Discount < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductDiscountCannotBeNegativeNumber);
+            }
+
+            if (model.Quantity < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductQuantityCannotBeNegativeNumber);
+            }
+
+            if (model.Tags == null || model.Tags.Count < 1)
+            {
+                throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
+            }
+
+            if (model.Specifications == null)
+            {
+                model.Specifications = new List<EditSpecificationRequestModel>();
+            }
+
+            if (model.Labels == null)
+            {
+                model.Labels = new List<string>();
+            }
+
+            if (model.Images == null)
+            {
+                model.Images = new List<IFormFile>();
+            }
+
+            //get tags from database, or create it without saving DB
+            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            var tags = await GetTagsAsync(filteredTags, user.Id);
+
+            //create mapping objects for every tag
+            await CreateProductTagsAsync(tags, product.Id);
+
+            // get labels from database, or create it without saving DB
+            var filteredLabels = new List<string>();
+
+            if (model.Labels.Count > 0)
+            {
+                filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            }
+
+            var labels = await GetLabelsAsync(model.Labels);
+
+            //create mapping objects for every label
+            await CreateProductLabelAsync(labels, product.Id);
+
+            //create new records for every image
+            var images = await CreateImagesAsync(model.Images, user.Id);
+
+            //create productImage record for every image
+            await CreateProductImagesAsync(images, product.Id);
+
+            List<Specification> specifications = model.Specifications.Select(x => new Specification
+            {
+                ProductId = product.Id,
+                Key = x.Key,
+                Value = x.Value,
+            })
+                .ToList();
+
+            product.CreatedById = user.Id;
+            product.Name = model.Name;
+            product.Description = model.Description;
+            product.Brand = model.Brand != null ? model.Brand.Trim() : "";
+            product.Currency = currency;
+            product.SubCategoryId = subcategory.Id;
+            product.Discount = model.Discount;
+            product.Price = model.Price;
+            product.HasGuarantee = model.HasGuarantee;
+            product.Quantity = model.Quantity;
+            product.Specifications = specifications;
+
+            await this.db.SaveChangesAsync();
+
+            var updatedProduct = new AdminProductResponseModel()
+            {
+                Id = product.Id,
+                Brand = product.Brand,
+                Name = product.Name,
+                Description = product.Description,
+                CategoryId = subcategory.MainCategory.Id,
+                CategoryName = subcategory.MainCategory.Name,
+                SubcategoryId = subcategory.Id,
+                SubcategoryName = subcategory.Name,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = currency.Id,
+                    Name = currency.Name,
+                    Code = currency.Code,
+                },
+                Price = product.Price,
+                Discount = product.Discount,
+                Quantity = product.Quantity,
+                isAvailable = product.IsAvailable,
+                Rating = product.Rating,
+                HasGuarantee = product.HasGuarantee,
+                ReviewsCount = product.Reviews
+                    .Where(x => x.IsDeleted != true)
+                    .Count(),
+                CreatedBy = user.Email,
+                Images = images
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Url)
+                    .ToList(),
+                Labels = labels
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Content)
+                    .ToList(),
+                Tags = tags
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Name)
+                    .ToList(),
+                Specifications = specifications
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => new SpecificationResponseModel
+                    {
+                        Id = x.Id,
+                        Key = x.Key,
+                        Value = x.Value
+                    })
+                    .ToList(),
+            };
+
+            return updatedProduct;
         }
     }
 }
