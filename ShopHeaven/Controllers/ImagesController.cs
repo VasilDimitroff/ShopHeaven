@@ -22,6 +22,8 @@ namespace ShopHeaven.Controllers
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
         public async Task<IActionResult> Delete([FromBody]DeleteProductImageRequestModel model)
         {
+            if(!ModelState.IsValid) { return BadRequest(ModelState); }
+
             try
             {
                 await this.imagesService.DeleteProductImageAsync(model);
