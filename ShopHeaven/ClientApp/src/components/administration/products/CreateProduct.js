@@ -19,6 +19,7 @@ import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { error } from "jquery";
 
 export default function CreateProduct(props) {
   // api requests
@@ -275,12 +276,16 @@ export default function CreateProduct(props) {
 
   function validateForm() {
     let isValid = true;
+    let errors = [];
 
     if (productNameRef.current.value.length < 2) {
+      let msg = "Product name must contain at least 2 characters"
+      errors.push(msg)
+
       setMessages((prev) => {
         return {
           ...prev,
-          productNameError: "Product name must contain at least 2 characters",
+          productNameError: msg,
         };
       });
 
@@ -295,11 +300,13 @@ export default function CreateProduct(props) {
     }
 
     if (productDescriptionRef.current.value.length < 5) {
+      let msg = "Product description must contain at least 5 characters"
+      errors.push(msg)
+
       setMessages((prev) => {
         return {
           ...prev,
-          productDescriptionError:
-            "Product description must contain at least 5 characters",
+          productDescriptionError: msg,
         };
       });
 
@@ -314,10 +321,13 @@ export default function CreateProduct(props) {
     }
 
     if (!productCategoryRef.current.value) {
+      let msg = "Please select a valid category"
+      errors.push(msg)
+
       setMessages((prev) => {
         return {
           ...prev,
-          productCategoryError: "Please select a valid category",
+          productCategoryError: msg,
         };
       });
 
@@ -332,10 +342,13 @@ export default function CreateProduct(props) {
     }
 
     if (!productSubcategoryRef.current.value) {
+      let msg = "Please select a valid subcategory";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productSubcategoryError: "Please select a valid subcategory",
+          productSubcategoryError: msg,
         };
       });
 
@@ -350,10 +363,13 @@ export default function CreateProduct(props) {
     }
 
     if (!productCurrencyRef.current.value) {
+      let msg = "Please select a valid currency";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productCurrencyError: "Please select a valid currency",
+          productCurrencyError: msg,
         };
       });
 
@@ -368,10 +384,13 @@ export default function CreateProduct(props) {
     }
 
     if (!productPriceRef.current.value || productPriceRef.current.value < 0) {
+      let msg = "The price must be bigger or equal to 0";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productPriceError: "The price must be bigger or equal to 0",
+          productPriceError: msg,
         };
       });
 
@@ -389,10 +408,13 @@ export default function CreateProduct(props) {
       !productDiscountRef.current.value ||
       productDiscountRef.current.value < 0
     ) {
+      let msg = "The discount must be bigger or equals to 0";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productDiscountError: "The discount must be bigger or equals to 0",
+          productDiscountError: msg,
         };
       });
 
@@ -410,10 +432,12 @@ export default function CreateProduct(props) {
       !productQuantityRef.current.value ||
       productQuantityRef.current.value < 0
     ) {
+      let msg = "Quantity must be bigger or equals to 0";
+      errors.push(msg);
       setMessages((prev) => {
         return {
           ...prev,
-          productQuantityError: "Quantity must be bigger or equals to 0",
+          productQuantityError: msg,
         };
       });
 
@@ -432,10 +456,13 @@ export default function CreateProduct(props) {
       (productGuaranteeRef.current.value != "true" &&
         productGuaranteeRef.current.value != "false")
     ) {
+      let msg = "Please select if the product has a guarantee";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productGuaranteeError: "Please select if the product has a guarantee",
+          productGuaranteeError: msg,
         };
       });
 
@@ -450,11 +477,13 @@ export default function CreateProduct(props) {
     }
 
     if (productTagsRef.current.value.trim().length < 1) {
+      let msg = "Product must contain at least 1 tag! (Be sure you saved the tags)";
+      errors.push(msg);
+
       setMessages((prev) => {
         return {
           ...prev,
-          productTagsError:
-            "Product must contain at least 1 tag! (Be sure you saved the tags)",
+          productTagsError: msg,
         };
       });
 
@@ -470,10 +499,12 @@ export default function CreateProduct(props) {
 
     const images = document.getElementById("create-product-photos-image").files;
     if (!images || images.length < 1) {
+      let msg = "Product must contain at least 1 image";
+      errors.push(msg);
       setMessages((prev) => {
         return {
           ...prev,
-          productImagesError: "Product must contain at least 1 image",
+          productImagesError: msg,
         };
       });
 
@@ -487,7 +518,17 @@ export default function CreateProduct(props) {
       });
     }
 
-    console.log(messages);
+    if(!isValid) {
+      let final = 'The next validation errors occurs. Please resolve them and try again: \r\n';
+      for (let i = 0; i < errors.length; i++) {
+         final += ` (${i + 1}). ${errors[i]} \r\n`;
+      }
+  
+      console.log("CREATION ERRORS",final);
+     
+      setCreateProductErrorMessage(final);
+    }
+   
     return isValid;
   }
 

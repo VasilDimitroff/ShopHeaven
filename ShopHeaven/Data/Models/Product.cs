@@ -30,7 +30,7 @@ namespace ShopHeaven.Data.Models
         public string Description { get; set; }
 
         [MaxLength(100)]
-        public string Brand { get; set; }
+        public string? Brand { get; set; }
 
         public bool HasGuarantee { get; set; }
 

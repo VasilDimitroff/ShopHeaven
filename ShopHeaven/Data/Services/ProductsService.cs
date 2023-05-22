@@ -134,7 +134,7 @@ namespace ShopHeaven.Data.Services
             newProduct.CreatedById = user.Id;
             newProduct.Name = model.Name;
             newProduct.Description = model.Description;
-            newProduct.Brand = model.Brand.Trim();
+            newProduct.Brand = model.Brand != null ? model.Brand.Trim() : "";
             newProduct.Currency = currency;
             newProduct.SubCategoryId = subcategory.Id;
             newProduct.Discount = model.Discount;

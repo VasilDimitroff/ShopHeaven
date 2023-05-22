@@ -32,6 +32,16 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.CategoryWithThisIdDoesntExist);
             }
 
+            if (model.Image == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.CategoryImageCannotBeEmpty);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                throw new ArgumentException(GlobalConstants.CategoryNameCannotBeEmpty);
+            }
+
             var imageUrls = await this.storageService.UploadImageAsync(new List<IFormFile> { model.Image }, model.CreatedBy);
             string subcategoryImageUrl = imageUrls[0];
 
@@ -45,7 +55,7 @@ namespace ShopHeaven.Data.Services
             {
                 Image = subcategoryImage,
                 Name = model.Name.Trim(),
-                Description = model.Description.Trim(),
+                Description = model.Description != null ? model.Description.Trim() : "",
                 MainCategoryId = model.CategoryId,
                 CreatedById = model.CreatedBy,
             };
@@ -261,7 +271,7 @@ namespace ShopHeaven.Data.Services
             }
 
             searchedSubcategory.Name = model.Name;
-            searchedSubcategory.Description = model.Description;
+            searchedSubcategory.Description = model.Description != null ? model.Description.Trim() : "";
             searchedSubcategory.CreatedBy = user;
             searchedSubcategory.ModifiedOn = DateTime.UtcNow;
 

@@ -59,7 +59,7 @@ namespace ShopHeaven.Data.Services
             MainCategory newCategory = new MainCategory
             {
                 Name = model.Name.Trim(),
-                Description = model.Description.Trim(),
+                Description = model.Description != null ? model.Description.Trim() : "",
                 CreatedById = model.CreatedBy,
                 IsDeleted = false,
                 Image = categoryImage,
@@ -300,7 +300,7 @@ namespace ShopHeaven.Data.Services
             }
 
             searchedCategory.Name = model.Name;
-            searchedCategory.Description = model.Description;
+            searchedCategory.Description = model.Description != null ? model.Description.Trim() : "";
             searchedCategory.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
