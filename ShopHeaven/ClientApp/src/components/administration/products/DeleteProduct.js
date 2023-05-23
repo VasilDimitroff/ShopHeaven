@@ -39,7 +39,7 @@ export default function DeleteProduct(props) {
 
       const response = await axiosPrivate.post(
         ApiEndpoints.products.deleteProduct,
-        JSON.stringify({ productId: productId }),
+        JSON.stringify({ id: productId }),
         {
           signal: controller.signal,
         }

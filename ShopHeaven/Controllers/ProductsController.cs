@@ -65,14 +65,14 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
-        public async Task<ActionResult<AdminProductResponseModel>> Delete([FromBody] DeleteProductRequestModel model)
+        public async Task<ActionResult<DeleteProductResponseModel>> Delete([FromBody] DeleteProductRequestModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                //var updatedProduct = await this.productsService.EditProductAsync(model);
-                return Ok();
+                var deletedProduct = await this.productsService.DeleteProductAsync(model, true) as DeleteProductResponseModel;
+                return Ok(deletedProduct);
             }
             catch (Exception ex)
             {

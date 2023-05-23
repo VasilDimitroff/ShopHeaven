@@ -651,7 +651,6 @@ namespace ShopHeaven.Data.Services
             var deletedImages = 0;
             var deletedSpecifications = 0;
 
-
             foreach (var review in productToDelete.Reviews)
             {
                 deletedReviews++;
