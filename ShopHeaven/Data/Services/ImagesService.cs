@@ -38,8 +38,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentNullException(GlobalConstants.ImageIsNotAttachedToThisProduct);
             }
 
-            productImage.IsDeleted = true;
-            productImage.DeletedOn = DateTime.UtcNow;
+            this.db.ProductsImages.Remove(productImage);
 
             await this.db.SaveChangesAsync();
         }

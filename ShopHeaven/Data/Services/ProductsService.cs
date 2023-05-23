@@ -495,49 +495,49 @@ namespace ShopHeaven.Data.Services
             var deletedImages = 0;
             var deletedSpecifications = 0;
 
-            foreach (var review in productToDelete.Reviews)
+            foreach (var review in productToDelete.Reviews.Where(x => x.IsDeleted != delete))
             {
                 deletedReviews++;
                 review.IsDeleted = delete;
             }
 
-            foreach (var tag in productToDelete.Tags)
+            foreach (var tag in productToDelete.Tags.Where(x => x.IsDeleted != delete))
             {
                 deletedTags++;
                 tag.IsDeleted = delete;
             }
 
-            foreach (var cart in productToDelete.Carts)
+            foreach (var cart in productToDelete.Carts.Where(x => x.IsDeleted != delete))
             {
                 deletedCarts++;
                 cart.IsDeleted = delete;
             }
 
-            foreach (var wishlist in productToDelete.Wishlists)
+            foreach (var wishlist in productToDelete.Wishlists.Where(x => x.IsDeleted != delete))
             {
                 deletedWishlists++;
                 wishlist.IsDeleted = delete;
             }
 
-            foreach (var order in productToDelete.Orders)
+            foreach (var order in productToDelete.Orders.Where(x => x.IsDeleted != delete))
             {
                 deletedOrders++;
                 order.IsDeleted = delete;
             }
 
-            foreach (var label in productToDelete.Labels)
+            foreach (var label in productToDelete.Labels.Where(x => x.IsDeleted != delete))
             {
                 deletedLabels++;
                 label.IsDeleted = delete;
             }
 
-            foreach (var image in productToDelete.Images)
+            foreach (var image in productToDelete.Images.Where(x => x.IsDeleted != delete))
             {
                 deletedImages++;
                 image.IsDeleted = delete;
             }
 
-            foreach (var specification in productToDelete.Specifications)
+            foreach (var specification in productToDelete.Specifications.Where(x => x.IsDeleted != delete))
             {
                 deletedSpecifications++;
                 specification.IsDeleted = delete;
@@ -599,7 +599,7 @@ namespace ShopHeaven.Data.Services
 
         private void ConfigureDeletionInfo(Product product, bool forDelete)
         {
-            foreach (var review in product.Reviews)
+            foreach (var review in product.Reviews.Where(x => x.IsDeleted == forDelete))
             {
                 if (forDelete == true)
                 {
@@ -611,7 +611,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var tag in product.Tags)
+            foreach (var tag in product.Tags.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -623,7 +623,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var cart in product.Carts)
+            foreach (var cart in product.Carts.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -635,7 +635,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var wishlist in product.Wishlists)
+            foreach (var wishlist in product.Wishlists.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -647,7 +647,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var order in product.Orders)
+            foreach (var order in product.Orders.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -659,7 +659,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var label in product.Labels)
+            foreach (var label in product.Labels.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -671,7 +671,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var image in product.Images)
+            foreach (var image in product.Images.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
@@ -683,7 +683,7 @@ namespace ShopHeaven.Data.Services
                 }
             }
 
-            foreach (var specification in product.Specifications)
+            foreach (var specification in product.Specifications.Where(x => x.IsDeleted != forDelete))
             {
                 if (forDelete == true)
                 {
