@@ -12,7 +12,7 @@ import AdminCategories from './components/administration/categories/AdminCategor
 import AdminProducts from './components/administration/products/AdminProducts';
 import AdminOrders from './components/administration/AdminOrders';
 import AdminDashboard from './components/administration/AdminDashboard';
-import AdminUsers from './components/administration/AdminUsers';
+import AdminUsers from './components/administration/users/AdminUsers';
 import AdminCoupons from './components/administration/AdminCoupons';
 import AdminReviews from './components/administration/AdminReviews';
 import RequireAuth from './components/auth/RequireAuth';
