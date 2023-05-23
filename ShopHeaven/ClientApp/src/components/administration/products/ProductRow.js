@@ -42,7 +42,9 @@ export default function ProductRow(props) {
   }
 
   function updateProduct(updatedProduct) {
-    setProduct({...product, images: product.images.push(...updatedProduct.images)});
+    console.log("NEW UPDATED PRODUCT", updatedProduct)
+    setProduct(updatedProduct);
+    console.log("IMAGES AFTER SET ", product.images)
   }
 
   const ProductNameTableCell = styled(TableCell)({

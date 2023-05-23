@@ -199,6 +199,268 @@ namespace ShopHeaven.Data.Services
             return createdProduct;
         }
 
+        public async Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model)
+        {
+
+            var product = await this.db.Products
+                .Include(x => x.Specifications
+                    .Where(s => s.IsDeleted != true))
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (product == null)
+            {
+                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
+            }
+
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new NullReferenceException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var subcategory = await this.db.SubCategories
+                .Include(x => x.MainCategory)
+                .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != true);
+
+            if (subcategory == null)
+            {
+                throw new NullReferenceException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
+            }
+
+            var currency = await this.db.Currencies.
+                FirstOrDefaultAsync(x => x.Id == model.CurrencyId && x.IsDeleted != true);
+
+            if (currency == null)
+            {
+                throw new NullReferenceException(GlobalConstants.CurrencyWithThisIdDoesntExist);
+            }
+
+            if (model.Name.Trim().Length < 2)
+            {
+                throw new ArgumentException(GlobalConstants.ProductNameNotEnoughLength);
+            }
+
+            if (model.Description.Trim().Length < 5)
+            {
+                throw new ArgumentException(GlobalConstants.ProductDescriptionNotEnoughLength);
+            }
+
+            if (model.Price < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductPriceCannotBeNegativeNumber);
+            }
+
+            if (model.Discount < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductDiscountCannotBeNegativeNumber);
+            }
+
+            if (model.Quantity < 0)
+            {
+                throw new ArgumentException(GlobalConstants.ProductQuantityCannotBeNegativeNumber);
+            }
+
+            if (model.Tags == null || model.Tags.Count < 1)
+            {
+                throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
+            }
+
+            if (model.Specifications == null)
+            {
+                model.Specifications = new List<EditSpecificationRequestModel>();
+            }
+
+            if (model.Labels == null)
+            {
+                model.Labels = new List<string>();
+            }
+
+            if (model.Images == null)
+            {
+                model.Images = new List<IFormFile>();
+            }
+
+            //get tags from database, or create it without saving DB
+            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            var tags = await GetTagsAsync(filteredTags, user.Id);
+
+            //create mapping objects for every tag
+            await CreateProductTagsAsync(tags, product.Id);
+
+            // get labels from database, or create it without saving DB
+            var filteredLabels = new List<string>();
+
+            if (model.Labels.Count > 0)
+            {
+                filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            }
+
+            var labels = await GetLabelsAsync(model.Labels);
+
+            //create mapping objects for every label
+            await CreateProductLabelAsync(labels, product.Id);
+
+            //create new records for every image
+            var images = await CreateImagesAsync(model.Images, user.Id);
+
+            //create productImage record for every image
+            await CreateProductImagesAsync(images, product.Id);
+
+            List<Specification> specifications = model.Specifications.Select(x => new Specification
+            {
+                ProductId = product.Id,
+                Key = x.Key,
+                Value = x.Value,
+            })
+                .ToList();
+
+            product.CreatedById = user.Id;
+            product.ModifiedOn = DateTime.UtcNow;
+            product.Name = model.Name;
+            product.Description = model.Description;
+            product.Brand = model.Brand != null ? model.Brand.Trim() : "";
+            product.Currency = currency;
+            product.SubCategoryId = subcategory.Id;
+            product.Discount = model.Discount;
+            product.Price = model.Price;
+            product.HasGuarantee = model.HasGuarantee;
+            product.Quantity = model.Quantity;
+            product.Specifications = specifications;
+
+            await this.db.SaveChangesAsync();
+
+            var allProductImages = await this.db.ProductsImages
+                .Where(x => x.ProductId == product.Id && x.IsDeleted != true)
+                .Select(x => x.Image.Url)
+                .ToListAsync();
+
+            var updatedProduct = new AdminProductResponseModel()
+            {
+                Id = product.Id,
+                Brand = product.Brand,
+                Name = product.Name,
+                Description = product.Description,
+                CategoryId = subcategory.MainCategory.Id,
+                CategoryName = subcategory.MainCategory.Name,
+                SubcategoryId = subcategory.Id,
+                SubcategoryName = subcategory.Name,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = currency.Id,
+                    Name = currency.Name,
+                    Code = currency.Code,
+                },
+                Price = product.Price,
+                Discount = product.Discount,
+                Quantity = product.Quantity,
+                isAvailable = product.IsAvailable,
+                Rating = product.Rating,
+                HasGuarantee = product.HasGuarantee,
+                ReviewsCount = product.Reviews
+                    .Where(x => x.IsDeleted != true)
+                    .Count(),
+                CreatedBy = user.Email,
+                Images = allProductImages,
+                Labels = labels
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Content)
+                    .ToList(),
+                Tags = tags
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Name)
+                    .ToList(),
+                Specifications = specifications
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => new SpecificationResponseModel
+                    {
+                        Id = x.Id,
+                        Key = x.Key,
+                        Value = x.Value
+                    })
+                    .ToList(),
+            };
+
+            return updatedProduct;
+        }
+
+        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync()
+        {
+            List<AdminProductResponseModel> products = await this.GetAllAsync() as List<AdminProductResponseModel>;
+
+            List<CategoryNamesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
+
+            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
+
+            var model = new ProductsWithCreationInfoResponseModel
+            {
+                Products = products,
+                Categories = categories,
+                Currencies = currencies
+            };
+
+            return model;
+        }
+
+        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync()
+        {
+            var products = await this.db.Products
+            .Where(p => p.IsDeleted != true)
+            .Select(p => new AdminProductResponseModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Brand = p.Brand,
+                Description = p.Description,
+                CategoryId = p.SubCategory.MainCategory.Id,
+                CategoryName = p.SubCategory.MainCategory.Name,
+                SubcategoryId = p.SubCategoryId,
+                SubcategoryName = p.SubCategory.Name,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = p.Currency.Id,
+                    Name = p.Currency.Name,
+                    Code = p.Currency.Code,
+                },
+                CreatedBy = p.CreatedBy.Email,
+                Price = p.Price,
+                Discount = p.Discount,
+                Quantity = p.Quantity,
+                HasGuarantee = p.HasGuarantee,
+                isAvailable = p.IsAvailable,
+                Rating = p.Rating,
+                ReviewsCount = p.Reviews
+                    .Where(x => x.IsDeleted != true)
+                    .Count(),
+                Images = p.Images
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Image.Url)
+                    .ToList(),
+                Tags = p.Tags
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Tag.Name)
+                    .ToList(),
+                Labels = p.Labels
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => x.Label.Content)
+                    .ToList(),
+                Specifications = p.Specifications
+                    .Where(x => x.IsDeleted != true)
+                    .Select(x => new SpecificationResponseModel
+                    {
+                        Id = x.Id,
+                        Key = x.Key,
+                        Value = x.Value,
+                    })
+                    .ToList(),
+            })
+            .ToListAsync();
+
+
+            return products;
+        }
+
         private async Task<ICollection<Image>> CreateImagesAsync(ICollection<IFormFile> images, string userId)
         {
             if (images.Count < 1) return new List<Image>();
@@ -352,266 +614,6 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.ProductsLabels.AddRangeAsync(productLabels);
-        }
-
-        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync()
-        {
-            List<AdminProductResponseModel> products = await this.GetAllAsync() as List<AdminProductResponseModel>;
-
-            List<CategoryNamesResponseModel> categories =  await this.categoriesService.GetAllCategoryNamesAsync();
-
-            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
-
-            var model = new ProductsWithCreationInfoResponseModel
-            {
-                Products = products,
-                Categories = categories,
-                Currencies = currencies
-            };
-
-            return model;
-        }
-
-        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync()
-        {
-            var products = await this.db.Products
-            .Where(p => p.IsDeleted != true)
-            .Select(p => new AdminProductResponseModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Brand = p.Brand,
-                Description = p.Description,
-                CategoryId = p.SubCategory.MainCategory.Id,
-                CategoryName = p.SubCategory.MainCategory.Name,
-                SubcategoryId = p.SubCategoryId,
-                SubcategoryName = p.SubCategory.Name,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = p.Currency.Id,
-                    Name = p.Currency.Name,
-                    Code = p.Currency.Code,
-                },
-                CreatedBy = p.CreatedBy.Email,
-                Price = p.Price,
-                Discount = p.Discount,
-                Quantity = p.Quantity,
-                HasGuarantee = p.HasGuarantee,
-                isAvailable = p.IsAvailable,
-                Rating = p.Rating,
-                ReviewsCount = p.Reviews
-                    .Where(x => x.IsDeleted != true)
-                    .Count(),
-                Images = p.Images
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Image.Url)
-                    .ToList(),
-                Tags = p.Tags
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Tag.Name)
-                    .ToList(),
-                Labels = p.Labels
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Label.Content)
-                    .ToList(),
-                Specifications = p.Specifications
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => new SpecificationResponseModel
-                        {
-                            Id = x.Id,
-                            Key = x.Key,
-                            Value = x.Value,
-                        })
-                    .ToList(),
-            })
-            .ToListAsync();
-
-
-            return products;
-        }
-
-        public async Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model)
-        {
-
-            var product = await this.db.Products
-                .Include(x => x.Specifications
-                    .Where(s => s.IsDeleted != true))
-                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
-           
-            if (product == null)
-            {
-                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
-            }
-
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new NullReferenceException(GlobalConstants.UserDoesNotExist);
-            }
-
-            var subcategory = await this.db.SubCategories
-                .Include(x => x.MainCategory)
-                .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != true);
-
-            if (subcategory == null)
-            {
-                throw new NullReferenceException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
-            }
-
-            var currency = await this.db.Currencies.
-                FirstOrDefaultAsync(x => x.Id == model.CurrencyId && x.IsDeleted != true);
-
-            if (currency == null)
-            {
-                throw new NullReferenceException(GlobalConstants.CurrencyWithThisIdDoesntExist);
-            }
-
-            if (model.Name.Trim().Length < 2)
-            {
-                throw new ArgumentException(GlobalConstants.ProductNameNotEnoughLength);
-            }
-
-            if (model.Description.Trim().Length < 5)
-            {
-                throw new ArgumentException(GlobalConstants.ProductDescriptionNotEnoughLength);
-            }
-
-            if (model.Price < 0)
-            {
-                throw new ArgumentException(GlobalConstants.ProductPriceCannotBeNegativeNumber);
-            }
-
-            if (model.Discount < 0)
-            {
-                throw new ArgumentException(GlobalConstants.ProductDiscountCannotBeNegativeNumber);
-            }
-
-            if (model.Quantity < 0)
-            {
-                throw new ArgumentException(GlobalConstants.ProductQuantityCannotBeNegativeNumber);
-            }
-
-            if (model.Tags == null || model.Tags.Count < 1)
-            {
-                throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Tag);
-            }
-
-            if (model.Specifications == null)
-            {
-                model.Specifications = new List<EditSpecificationRequestModel>();
-            }
-
-            if (model.Labels == null)
-            {
-                model.Labels = new List<string>();
-            }
-
-            if (model.Images == null)
-            {
-                model.Images = new List<IFormFile>();
-            }
-
-            //get tags from database, or create it without saving DB
-            var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-            var tags = await GetTagsAsync(filteredTags, user.Id);
-
-            //create mapping objects for every tag
-            await CreateProductTagsAsync(tags, product.Id);
-
-            // get labels from database, or create it without saving DB
-            var filteredLabels = new List<string>();
-
-            if (model.Labels.Count > 0)
-            {
-                filteredLabels = model.Labels.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-            }
-
-            var labels = await GetLabelsAsync(model.Labels);
-
-            //create mapping objects for every label
-            await CreateProductLabelAsync(labels, product.Id);
-
-            //create new records for every image
-            var images = await CreateImagesAsync(model.Images, user.Id);
-
-            //create productImage record for every image
-            await CreateProductImagesAsync(images, product.Id);
-
-            List<Specification> specifications = model.Specifications.Select(x => new Specification
-            {
-                ProductId = product.Id,
-                Key = x.Key,
-                Value = x.Value,
-            })
-                .ToList();
-
-            product.CreatedById = user.Id;
-            product.ModifiedOn = DateTime.UtcNow;
-            product.Name = model.Name;
-            product.Description = model.Description;
-            product.Brand = model.Brand != null ? model.Brand.Trim() : "";
-            product.Currency = currency;
-            product.SubCategoryId = subcategory.Id;
-            product.Discount = model.Discount;
-            product.Price = model.Price;
-            product.HasGuarantee = model.HasGuarantee;
-            product.Quantity = model.Quantity;
-            product.Specifications = specifications;
-
-            await this.db.SaveChangesAsync();
-
-            var updatedProduct = new AdminProductResponseModel()
-            {
-                Id = product.Id,
-                Brand = product.Brand,
-                Name = product.Name,
-                Description = product.Description,
-                CategoryId = subcategory.MainCategory.Id,
-                CategoryName = subcategory.MainCategory.Name,
-                SubcategoryId = subcategory.Id,
-                SubcategoryName = subcategory.Name,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = currency.Id,
-                    Name = currency.Name,
-                    Code = currency.Code,
-                },
-                Price = product.Price,
-                Discount = product.Discount,
-                Quantity = product.Quantity,
-                isAvailable = product.IsAvailable,
-                Rating = product.Rating,
-                HasGuarantee = product.HasGuarantee,
-                ReviewsCount = product.Reviews
-                    .Where(x => x.IsDeleted != true)
-                    .Count(),
-                CreatedBy = user.Email,
-                Images = images
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Url)
-                    .ToList(),
-                Labels = labels
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Content)
-                    .ToList(),
-                Tags = tags
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Name)
-                    .ToList(),
-                Specifications = specifications
-                    .Where(x => x.IsDeleted != true)
-                    .Select(x => new SpecificationResponseModel
-                    {
-                        Id = x.Id,
-                        Key = x.Key,
-                        Value = x.Value
-                    })
-                    .ToList(),
-            };
-
-            return updatedProduct;
         }
     }
 }

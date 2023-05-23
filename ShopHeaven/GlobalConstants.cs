@@ -70,6 +70,8 @@
 
         public const string ImageIsNotAttachedToThisProduct = "Image is not attached to this product!";
 
+        public const string ProductMustContainAtLeast1Image = "Product must contain at least 1 image";
+
         public const string FileTypeNotAllowed 
             = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";
     }

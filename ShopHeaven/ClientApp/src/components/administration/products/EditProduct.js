@@ -113,6 +113,7 @@ export default function EditProduct(props) {
     useState("");
 
   useEffect(() => {}, [messages]);
+  useEffect(() => {}, [productImages]);
 
   useEffect(() => {
     loadSubcategories();
@@ -265,6 +266,10 @@ export default function EditProduct(props) {
     editProduct(formData);
   }
 
+  function handleUpdateProduct(product){
+    setProductImages(product.images);
+  }
+
   async function editProduct(formData) {
     try {
       const controller = new AbortController();
@@ -278,11 +283,16 @@ export default function EditProduct(props) {
       );
 
       controller.abort();
+
+      setDeleteProductImageErrorMessage("");
+      setDeleteProductImageResponseMessage("");
       setEditProductErrorMessage("");
       setEditProductResponseMessage(
         `${formData.get("name")} successfully updated`
       );
- 
+      
+      handleUpdateProduct(response?.data);
+
       props.updateProduct(response?.data);
     } catch (error) {
       setEditProductResponseMessage("");
@@ -299,6 +309,15 @@ export default function EditProduct(props) {
   }
 
   function onDeleteImage(imageUrl) {
+
+    if (productImages.length < 2) {
+      setDeleteProductImageResponseMessage("");
+      setDeleteProductImageErrorMessage("Product must contain at least 1 image");
+      return;
+    } else {
+      setDeleteProductImageErrorMessage("");
+    }
+    
     deleteImage(imageUrl, product.id);
   }
 
@@ -1250,6 +1269,26 @@ export default function EditProduct(props) {
             </Grid>
           ))}
         </Grid>
+        <Box>
+        {deleteProductImageResponseMessage ? (
+          <Zoom in={deleteProductImageResponseMessage.length > 0 ? true : false}>
+            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              {deleteProductImageResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {deleteProductImageErrorMessage ? (
+          <Zoom in={deleteProductImageErrorMessage.length > 0 ? true : false}>
+            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              {deleteProductImageErrorMessage}
+            </ErrorAlert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+      </Box>
         <InputBox>
           <ProductInfoInput
             accept=".jpg, .png, .jpeg, .webp"

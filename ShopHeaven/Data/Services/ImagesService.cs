@@ -16,6 +16,16 @@ namespace ShopHeaven.Data.Services
 
         public async Task DeleteProductImageAsync(DeleteProductImageRequestModel model)
         {
+            var productImages = await this.db.Products
+                .Where(x => x.IsDeleted != true)
+                .Include(x => x.Images.Where(x => x.IsDeleted != true))
+                .ToListAsync();
+
+            if (productImages.Count < 2)
+            {
+                throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Image);
+            }
+
             ProductImage productImage = await this.db.ProductsImages
                 .FirstOrDefaultAsync(x => x.ProductId == model.ProductId && x.Image.Url == model.ImageUrl && x.IsDeleted != true);
 
