@@ -42,7 +42,11 @@ const PersistLogin = () => {
         <Fragment>
           <Backdrop
             open={true}
-            sx={{backgroundColor:theme.palette.primary.main, color: theme.palette.white.main, zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.white.main,
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}
           >
             <CircularProgress color="inherit" />
           </Backdrop>

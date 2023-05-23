@@ -12,5 +12,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<ICollection<AdminProductResponseModel>> GetAllAsync();
 
         Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model);
+
+        Task<DeleteProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete);
     }
 }

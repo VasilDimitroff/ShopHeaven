@@ -38,7 +38,7 @@ export default function DeleteProduct(props) {
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.categories.deleteProduct,
+        ApiEndpoints.products.deleteProduct,
         JSON.stringify({ productId: productId }),
         {
           signal: controller.signal,
@@ -63,21 +63,26 @@ export default function DeleteProduct(props) {
           "You have no permissions to perform the operation"
         );
       } else {
-        setDeleteProductErrorMessage("Error!");
+        setDeleteProductErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
-  }
+  } 
 
   function onUndeleteProduct() {
     undeleteProduct(product.id);
   }
 
+  const ErrorAlert = styled(Alert)({
+    fontWeight: 500,
+    color: theme.palette.error.main,
+  });
+
   async function undeleteProduct(productId) {
     try {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
-        ApiEndpoints.categories.undeleteProduct,
+        ApiEndpoints.products.undeleteProduct,
         JSON.stringify({ productId: productId }),
         {
           signal: controller.signal,
@@ -133,10 +138,6 @@ export default function DeleteProduct(props) {
             </AlertTitle>
             <ul>
               <li>1 product deleted</li>
-              <li>
-                {deleteResponse?.deletedSubcategories} subcategories deleted
-              </li>
-              <li>{deleteResponse?.deletedProducts} products deleted</li>
               <li>{deleteResponse?.deletedReviews} reviews deleted</li>
               <li>{deleteResponse?.deletedTags} tags deleted</li>
               <li>{deleteResponse?.deletedCarts} cart products deleted</li>
@@ -178,10 +179,6 @@ export default function DeleteProduct(props) {
             </AlertTitle>
             <ul>
               <li>1 product revealed</li>
-              <li>
-                {undeleteResponse?.revealedSubcategories} subcategories revealed
-              </li>
-              <li>{undeleteResponse?.revealedProducts} products revealed</li>
               <li>{undeleteResponse?.revealedReviews} reviews revealed</li>
               <li>{undeleteResponse?.revealedTags} tags revealed</li>
               <li>{undeleteResponse?.revealedCarts} cart products revealed</li>
@@ -252,9 +249,9 @@ export default function DeleteProduct(props) {
           )}
           {deleteProductErrorMessage ? (
             <Zoom in={deleteProductErrorMessage.length > 0 ? true : false}>
-              <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
                 {deleteProductErrorMessage}
-              </Alert>
+              </ErrorAlert>
             </Zoom>
           ) : (
             ""

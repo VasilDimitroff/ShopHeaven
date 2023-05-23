@@ -13,7 +13,6 @@ namespace ShopHeaven.Data.Models
         {
             Reviews = new HashSet<Review>();
             Images = new HashSet<ProductImage>();
-            Reviews = new HashSet<Review>();
             Tags = new HashSet<ProductTag>();
             Carts = new HashSet<ProductCart>();
             Wishlists = new HashSet<ProductWishlist>();
@@ -57,9 +56,9 @@ namespace ShopHeaven.Data.Models
         {
             get
             {
-                if (Reviews != null && Reviews.Any())
+                if (Reviews != null && Reviews.Where(x => x.IsDeleted != true).Any())
                 {
-                    return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
+                    return Math.Round(this.Reviews.Where(x => x.IsDeleted != true).Average(r => r.RatingValue), 2);
                 }
 
                 return _rating;
@@ -90,19 +89,5 @@ namespace ShopHeaven.Data.Models
         public ICollection<ProductImage> Images { get; set; } // the product has these images
 
         public ICollection<Specification> Specifications { get; set; } // the product has these specifications
-
-
-        //calculate the rating of the product
-        private double CalculateRating()
-        {
-            if (this.Reviews.Any())
-            {
-                return Math.Round(this.Reviews.Average(r => r.RatingValue), 2);
-            }
-            else
-            {
-                return 0;
-            }
-        }
     }
 }

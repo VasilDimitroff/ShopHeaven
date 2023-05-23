@@ -1,4 +1,4 @@
-import { React, useState, Fragment, useEffect, useRef } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -10,11 +10,9 @@ import {
   TableHead,
   TableContainer,
   Pagination,
-  InputBase,
-  IconButton,
   Grid,
 } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -45,12 +43,13 @@ export default function AdminProducts() {
 
     const getProducts = async () => {
       try {
-        const response = await axiosPrivate.get(
+          const response = await axiosPrivate.get(
           ApiEndpoints.products.getAllWithCreationInfo,
           {
             signal: controller.signal,
           }
         );
+
         console.log(response?.data);
 
         setCategories(response?.data?.categories);
@@ -164,7 +163,7 @@ export default function AdminProducts() {
             <SearchInput ref={searchInputRef} placeholder="Search product..." />
             <CancelButton onClick={clearSearchValue} />
         </Grid>
-        <Grid item xs={8} sm={8} md={3} lg={3}>
+        <Grid item xs={8} sm={8} md={3} lg={4}>
           <select
             style={StyledSelect}
             ref={categorySearchRef}
@@ -177,8 +176,8 @@ export default function AdminProducts() {
             ))}
           </select>
         </Grid>
-        <Grid item xs={4} sm={4} md={2} lg={2}>
-       <Button variant="contained" type="submit" color="primary">
+        <Grid item xs={4} sm={4} md={2} lg={1}>
+       <Button sx={{width: "100%", fontSize: 13}} variant="contained" type="submit" color="primary">
          SEARCH
        </Button>
         </Grid>

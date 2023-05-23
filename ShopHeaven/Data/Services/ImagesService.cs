@@ -16,12 +16,16 @@ namespace ShopHeaven.Data.Services
 
         public async Task DeleteProductImageAsync(DeleteProductImageRequestModel model)
         {
-            var productImages = await this.db.Products
-                .Where(x => x.IsDeleted != true)
+            var product = await this.db.Products
                 .Include(x => x.Images.Where(x => x.IsDeleted != true))
-                .ToListAsync();
+                .FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
 
-            if (productImages.Count < 2)
+            if (product == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.ProductWithThisIdDoesNotExist);
+            }
+
+            if (product.Images.Count < 2)
             {
                 throw new ArgumentException(GlobalConstants.ProductMustContainAtLeast1Image);
             }
