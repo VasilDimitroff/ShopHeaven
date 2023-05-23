@@ -16,6 +16,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { AddCircle, RemoveCircle } from "@mui/icons-material";
+import Loader from "../../common/Loader";
 import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
 
@@ -26,6 +27,8 @@ export default function AdminCategories() {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const effectRun = useRef(false);
 
@@ -41,6 +44,7 @@ export default function AdminCategories() {
 
     const getCategories = async () => {
       try {
+        setIsLoading(true);
         const response = await axiosPrivate.get(
           ApiEndpoints.categories.getAll,
           {
@@ -50,6 +54,7 @@ export default function AdminCategories() {
         console.log(response.data);
 
         setCategories(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
         navigate("/login", { state: { from: location }, replace: true });
@@ -82,6 +87,7 @@ export default function AdminCategories() {
 
   return (
     <Box>
+      {isLoading ? <Box sx={{padding: theme.spacing(3)}}><Loader/></Box> : <></>}
       <TableContainer>
         <Table>
           <TableHead>

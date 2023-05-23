@@ -11,6 +11,7 @@ import {
   TableContainer,
   Pagination,
   Grid,
+  Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -20,9 +21,11 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
 import { useNavigate, useLocation } from "react-router-dom";
+import Loader from "../../common/Loader";
 
 export default function AdminProducts() {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [products, setProducts] = useState();
   const [categories, setCategories] = useState([]);
@@ -43,6 +46,7 @@ export default function AdminProducts() {
 
     const getProducts = async () => {
       try {
+          setIsLoading(true);
           const response = await axiosPrivate.get(
           ApiEndpoints.products.getAllWithCreationInfo,
           {
@@ -55,6 +59,9 @@ export default function AdminProducts() {
         setCategories(response?.data?.categories);
         setProducts(response?.data?.products);
         setCurrencies(response?.data?.currencies);
+
+        setIsLoading(false);
+
       } catch (error) {
         console.log(error);
         navigate("/login", { state: { from: location }, replace: true });
@@ -183,6 +190,7 @@ export default function AdminProducts() {
         </Grid>
       </Grid>
       </form>
+      {isLoading ? <Box sx={{padding: theme.spacing(3)}}><Loader/></Box> : <></>}
       <TableContainer component={Box}>
         <Table>
           <TableHead>

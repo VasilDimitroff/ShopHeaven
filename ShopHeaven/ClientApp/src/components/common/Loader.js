@@ -1,20 +1,23 @@
-import { React, Fragment } from "react";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { React } from "react";
+import { CircularProgress, Typography, Box } from "@mui/material";
 import { theme } from "../../theme";
 
 export default function Loader() {
   return (
-    <Fragment>
-      <Backdrop
-        open={true}
+    <Box>
+      <CircularProgress
+        sx={{ display: "block", width: "100%", margin: "auto" }}
+      />
+      <Typography
         sx={{
-          backgroundColor: theme.palette.primary.main,
-          color: theme.palette.white.main,
-          zIndex: (theme) => theme.zIndex.drawer + 1,
+          display: "block",
+          textAlign: "center",
+          marginTop: theme.spacing(2),
         }}
+        variant="p"
       >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </Fragment>
+        Data is loading, please wait...
+      </Typography>
+    </Box>
   );
 }
