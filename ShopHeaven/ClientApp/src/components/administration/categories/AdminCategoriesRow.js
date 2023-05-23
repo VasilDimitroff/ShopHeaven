@@ -71,6 +71,9 @@ export default function AdminCategoriesRow(props) {
   }
 
   function handleShowEditForm() {
+    if(isDeleted) {
+      return;
+    }
     setShowSubcategories(false);
     setShowDeleteForm(false);
     setOpenEditForm((prev) => !prev);
@@ -83,6 +86,9 @@ export default function AdminCategoriesRow(props) {
   }
 
   function handleShowSubcategories() {
+    if(isDeleted) {
+      return;
+    }
     setOpenEditForm(false);
     setShowDeleteForm(false);
     setShowSubcategories((prev) => !prev);

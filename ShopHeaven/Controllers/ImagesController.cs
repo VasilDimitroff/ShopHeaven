@@ -34,6 +34,5 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

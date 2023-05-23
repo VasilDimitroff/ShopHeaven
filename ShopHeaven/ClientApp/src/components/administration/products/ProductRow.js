@@ -24,10 +24,14 @@ import DeleteProduct from "./DeleteProduct";
 
 export default function ProductRow(props) {
   const [product, setProduct] = useState(props.product);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
 
   function handleSetOpenEditForm() {
+    if(isDeleted){
+      return;
+    }
     setOpenDeleteForm(false);
     setOpenEditForm((prev) => !prev);
   }
@@ -42,9 +46,16 @@ export default function ProductRow(props) {
   }
 
   function updateProduct(updatedProduct) {
-    console.log("NEW UPDATED PRODUCT", updatedProduct)
+    console.log("UPDATED PRODUCT", updatedProduct);
     setProduct(updatedProduct);
-    console.log("IMAGES AFTER SET ", product.images)
+  }
+
+  function productDeleted() {
+    setIsDeleted(true);
+  }
+
+  function productUndeleted() {
+    setIsDeleted(false);
   }
 
   const ProductNameTableCell = styled(TableCell)({
@@ -94,38 +105,42 @@ export default function ProductRow(props) {
           component="th"
           scope="row"
         >
-          {product?.name}
-          <ProductInfoHolder>
-            <ProductInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Star />}
-                variant="outlined"
-                color="warning"
-                label={`Rating: ${product?.rating}`}
-                size="small"
-              />
-            </ProductInfoText>
-            <ProductInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<RateReview />}
-                variant="outlined"
-                color="primary"
-                label={`${product?.reviewsCount} reviews`}
-                size="small"
-              />
-            </ProductInfoText>
-            <ProductInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Person />}
-                variant="outlined"
-                label={`By: ${product?.createdBy}`}
-                size="small"
-              />
-            </ProductInfoText>
-          </ProductInfoHolder>
+          {!isDeleted ? product?.name : "PRODUCT DELETED"}
+          {!isDeleted ? (
+            <ProductInfoHolder>
+              <ProductInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<Star />}
+                  variant="outlined"
+                  color="warning"
+                  label={`Rating: ${product?.rating}`}
+                  size="small"
+                />
+              </ProductInfoText>
+              <ProductInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<RateReview />}
+                  variant="outlined"
+                  color="primary"
+                  label={`${product?.reviewsCount} reviews`}
+                  size="small"
+                />
+              </ProductInfoText>
+              <ProductInfoText>
+                <Chip
+                  sx={{ padding: 0.5 }}
+                  icon={<Person />}
+                  variant="outlined"
+                  label={`By: ${product?.createdBy}`}
+                  size="small"
+                />
+              </ProductInfoText>
+            </ProductInfoHolder>
+          ) : (
+            <></>
+          )}
         </ProductNameTableCell>
         <TableCell align="center">
           <Grid container spacing={2}>
@@ -139,7 +154,11 @@ export default function ProductRow(props) {
               </StyledIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton onClick={handleSetOpenDeleteForm} color="error" size="small">
+              <StyledIconButton
+                onClick={handleSetOpenDeleteForm}
+                color="error"
+                size="small"
+              >
                 <Delete />
               </StyledIconButton>
             </Grid>
@@ -159,6 +178,8 @@ export default function ProductRow(props) {
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
             <DeleteProduct
               product={product}
+              productDeleted={productDeleted}
+              productUndeleted={productUndeleted}
               onCancelButtonClicked={onCancelButtonClicked}
             />
           </Collapse>

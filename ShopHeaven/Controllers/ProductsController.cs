@@ -79,5 +79,22 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
+        public async Task<ActionResult<DeleteProductResponseModel>> Undelete([FromBody] UndeleteProductRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var undeletedProduct =
+                    await this.productsService.DeleteProductAsync(model, false) as UndeleteProductResponseModel;
+                return Ok(undeletedProduct);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

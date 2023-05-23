@@ -201,7 +201,6 @@ namespace ShopHeaven.Data.Services
 
         public async Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model)
         {
-
             var product = await this.db.Products
                 .Include(x => x.Specifications
                     .Where(s => s.IsDeleted != true))

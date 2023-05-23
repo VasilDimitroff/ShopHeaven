@@ -39,6 +39,9 @@ export default function CategorySubcategoriesRow(props) {
   }
 
   function handleOpenEditSubcategoryForm() {
+    if(isDeleted) {
+      return;
+    }
     setOpenDeleteSubcategoryForm(false);
     setOpenEditSubcategoryForm((prev) => !prev);
   }

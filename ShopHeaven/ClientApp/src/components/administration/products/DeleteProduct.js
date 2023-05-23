@@ -24,6 +24,7 @@ export default function DeleteProduct(props) {
     useState("");
   const [deleteProductErrorMessage, setDeleteProductErrorMessage] =
     useState("");
+  const [isDeleted, setIsDeleted] = useState(false);
 
   function refreshPage() {
     window.location.reload(false);
@@ -54,7 +55,9 @@ export default function DeleteProduct(props) {
       setUndeleteResponse(undefined);
       setDeleteResponse(response?.data);
       setUndoDeleteButtonClicked(false);
-      //props.categoryDeleted();
+      
+      setIsDeleted(true);
+      props.productDeleted();
       console.log(response?.data);
     } catch (error) {
       setDeleteProductResponseMessage("");
@@ -83,7 +86,7 @@ export default function DeleteProduct(props) {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
         ApiEndpoints.products.undeleteProduct,
-        JSON.stringify({ productId: productId }),
+        JSON.stringify({ id: productId }),
         {
           signal: controller.signal,
         }
@@ -99,7 +102,8 @@ export default function DeleteProduct(props) {
       setUndeleteResponse(response?.data);
       setUndoDeleteButtonClicked(true);
 
-      //props.categoryUndeleted();
+      setIsDeleted(false);
+      props.productUndeleted();
       console.log(response?.data);
     } catch (error) {
       setDeleteProductResponseMessage("");
@@ -225,6 +229,7 @@ export default function DeleteProduct(props) {
               size="large"
               variant="outlined"
               color="error"
+              disabled={isDeleted ? true : false}
             >
               DELETE PRODUCT
             </DeleteProductButton>
