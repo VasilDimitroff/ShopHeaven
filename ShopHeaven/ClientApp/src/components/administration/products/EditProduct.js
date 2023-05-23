@@ -63,7 +63,7 @@ export default function EditProduct(props) {
   const [productQuantity, setProductQuantity] = useState(product.quantity);
   const [productImages, setProductImages] = useState(product.images); // array[string]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
-  const [productLabels, setProductLabels] = useState(["new", "hot"]); // array[string]
+  const [productLabels, setProductLabels] = useState(product.labels); // array[string]
   let finalPriceInitialy =
     productPrice - productPrice * (productDiscount / 100);
   const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
@@ -134,7 +134,7 @@ export default function EditProduct(props) {
 
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
-    console.log(checkedCategoryId);
+
     const subcats = categories.find(
       (x) => x.id === checkedCategoryId
     )?.subcategories;
@@ -182,11 +182,6 @@ export default function EditProduct(props) {
       .filter((label) => label.length > 0);
 
     setProductLabels(labels);
-
-    console.log(tags);
-    console.log(labels);
-    console.log("GUARANTEE", productHasGuarantee);
-    console.log(productSpecifications);
   }
 
   function onEditProduct(e) {
@@ -583,7 +578,6 @@ export default function EditProduct(props) {
     }
 
     const images = document.getElementById("edit-product-photos-image").files;
-    console.log("IMAGE LENGTH NA VAJNOTO MQSTO", productImages);
 
     if (productImages.length < 1 && !images) {
       let msg = "Product must contain at least 1 image";

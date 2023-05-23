@@ -160,10 +160,6 @@ export default function CreateProduct(props) {
       .filter((label) => label.length > 0);
 
     setProductLabels(labels);
-
-    console.log(tags);
-    console.log(labels);
-    console.log(productSpecifications);
   }
 
   function onCreateProduct(e) {

@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
@@ -286,7 +285,7 @@ namespace ShopHeaven.Data.Services
             var tags = await GetTagsAsync(filteredTags, user.Id);
 
             //create mapping objects for every tag
-            await CreateProductTagsAsync(tags, product.Id);
+            var productTags = await CreateProductTagsAsync(tags, product.Id);
 
             // get labels from database, or create it without saving DB
             var filteredLabels = new List<string>();
@@ -299,7 +298,7 @@ namespace ShopHeaven.Data.Services
             var labels = await GetLabelsAsync(model.Labels);
 
             //create mapping objects for every label
-            await CreateProductLabelAsync(labels, product.Id);
+            var productLabels = await CreateProductLabelAsync(labels, product.Id);
 
             //create new records for every image
             var images = await CreateImagesAsync(model.Images, user.Id);
@@ -406,6 +405,7 @@ namespace ShopHeaven.Data.Services
         {
             var products = await this.db.Products
             .Where(p => p.IsDeleted != true)
+            .OrderByDescending(p => p.CreatedOn)
             .Select(p => new AdminProductResponseModel
             {
                 Id = p.Id,
@@ -458,161 +458,6 @@ namespace ShopHeaven.Data.Services
 
 
             return products;
-        }
-
-        private async Task<ICollection<Image>> CreateImagesAsync(ICollection<IFormFile> images, string userId)
-        {
-            if (images.Count < 1) return new List<Image>();
-
-            var productImagesUrls = await this.storageService.UploadImageAsync(images, userId);
-
-            var newImages = new List<Image>();
-
-            foreach (var imageUrl in productImagesUrls)
-            {
-                Image productImage = new Image()
-                {
-                    CreatedById = userId,
-                    Url = imageUrl,
-                };
-
-                newImages.Add(productImage);
-            }
-
-            await this.db.Images.AddRangeAsync(newImages);
-
-            return newImages;
-        }
-
-        private async Task CreateProductImagesAsync(ICollection<Image> images, string productId)
-        {
-            if (images.Count < 1) return;
-
-            var productImages = new List<ProductImage>();
-
-            foreach (var image in images)
-            {
-                var productImage = await this.db.ProductsImages
-                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.ImageId == image.Id && x.IsDeleted != true);
-
-                if (productImage == null)
-                {
-                    productImage = new ProductImage()
-                    {
-                        ProductId = productId,
-                        ImageId = image.Id
-                    };
-
-                    productImages.Add(productImage);
-                }
-            }
-
-            await this.db.ProductsImages.AddRangeAsync(productImages);
-        }
-
-        private async Task<ICollection<Tag>> GetTagsAsync(ICollection<string> tags, string userId)
-        {
-            var allTags = new List<Tag>();
-
-            foreach (var tag in tags)
-            {
-                Tag searchedTag = await this.db.Tags
-                    .FirstOrDefaultAsync(x => x.Name.Trim().ToUpper() == tag.Trim().ToUpper() && x.IsDeleted != true);
-
-                if (searchedTag == null)
-                {
-                    searchedTag = new Tag()
-                    {
-                        Name = tag.Trim().ToUpper(),
-                        CreatedById = userId
-                    };
-
-                    await this.db.Tags.AddAsync(searchedTag);
-                }
-
-                allTags.Add(searchedTag);
-            }
-
-
-            return allTags;
-        }
-
-        private async Task CreateProductTagsAsync(ICollection<Tag> tags, string productId)
-        {
-            var productTags = new List<ProductTag>();
-
-            foreach (var tag in tags)
-            {
-                var productTag = await this.db.ProductsTags
-                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.TagId == tag.Id && x.IsDeleted != true);
-
-                if (productTag == null)
-                {
-                    productTag = new ProductTag()
-                    {
-                        ProductId = productId,
-                        TagId = tag.Id
-                    };
-
-                    productTags.Add(productTag);
-                }
-            }
-
-            await this.db.ProductsTags.AddRangeAsync(productTags);
-        }
-
-        private async Task<ICollection<Label>> GetLabelsAsync(ICollection<string> labels)
-        {
-            if (labels.Count < 1) return new List<Label>();
-
-            var allLabels = new List<Label>();
-
-            foreach (var label in labels)
-            {
-                Label searchedLabel = await this.db.Labels
-                    .FirstOrDefaultAsync(x => x.Content.Trim().ToUpper() == label.Trim().ToUpper() && x.IsDeleted != true);
-
-                if (searchedLabel == null)
-                {
-                    searchedLabel = new Label()
-                    {
-                        Content = label.Trim().ToUpper()
-                    };
-
-                    await this.db.Labels.AddAsync(searchedLabel);
-                }
-
-                allLabels.Add(searchedLabel);
-            }
-
-
-            return allLabels;
-        }
-
-        private async Task CreateProductLabelAsync(ICollection<Label> labels, string productId)
-        {
-            if (labels.Count < 1) return;
-
-            var productLabels = new List<ProductLabel>();
-
-            foreach (var label in labels)
-            {
-                var productLabel = await this.db.ProductsLabels
-                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.LabelId == label.Id && x.IsDeleted != true);
-
-                if (productLabel == null)
-                {
-                    productLabel = new ProductLabel()
-                    {
-                        ProductId = productId,
-                        LabelId = label.Id
-                    };
-
-                    productLabels.Add(productLabel);
-                }
-            }
-
-            await this.db.ProductsLabels.AddRangeAsync(productLabels);
         }
 
         public async Task<DeleteProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete)
@@ -858,6 +703,177 @@ namespace ShopHeaven.Data.Services
             {
                 product.DeletedOn = null;
             }
+        }
+
+        private async Task<ICollection<Image>> CreateImagesAsync(ICollection<IFormFile> images, string userId)
+        {
+            if (images.Count < 1) return new List<Image>();
+
+            var productImagesUrls = await this.storageService.UploadImageAsync(images, userId);
+
+            var newImages = new List<Image>();
+
+            foreach (var imageUrl in productImagesUrls)
+            {
+                Image productImage = new Image()
+                {
+                    CreatedById = userId,
+                    Url = imageUrl,
+                };
+
+                newImages.Add(productImage);
+            }
+
+            await this.db.Images.AddRangeAsync(newImages);
+
+            return newImages;
+        }
+
+        private async Task CreateProductImagesAsync(ICollection<Image> images, string productId)
+        {
+            if (images.Count < 1) return;
+
+            var productImages = new List<ProductImage>();
+
+            foreach (var image in images)
+            {
+                var productImage = await this.db.ProductsImages
+                    .FirstOrDefaultAsync(x => x.ProductId == productId && x.ImageId == image.Id && x.IsDeleted != true);
+
+                if (productImage == null)
+                {
+                    productImage = new ProductImage()
+                    {
+                        ProductId = productId,
+                        ImageId = image.Id
+                    };
+
+                    productImages.Add(productImage);
+                }
+            }
+
+            await this.db.ProductsImages.AddRangeAsync(productImages);
+        }
+
+        private async Task<ICollection<Tag>> GetTagsAsync(ICollection<string> tags, string userId)
+        {
+            var allTags = new List<Tag>();
+
+            foreach (var tag in tags)
+            {
+                Tag searchedTag = await this.db.Tags
+                    .FirstOrDefaultAsync(x => x.Name.Trim().ToUpper() == tag.Trim().ToUpper() && x.IsDeleted != true);
+
+                if (searchedTag == null)
+                {
+                    searchedTag = new Tag()
+                    {
+                        Name = tag.Trim().ToUpper(),
+                        CreatedById = userId
+                    };
+
+                    await this.db.Tags.AddAsync(searchedTag);
+                }
+
+                allTags.Add(searchedTag);
+            }
+
+
+            return allTags;
+        }
+
+        private async Task<ICollection<ProductTag>> CreateProductTagsAsync(ICollection<Tag> tags, string productId)
+        {
+            var productTags = new List<ProductTag>();
+
+            var allCurrentTagsToThisProduct = await this.db.ProductsTags
+                .Where(x => x.ProductId == productId && x.IsDeleted != true)
+                .ToListAsync();
+
+            if (allCurrentTagsToThisProduct.Count > 0)
+            {
+                foreach (var currentTag in allCurrentTagsToThisProduct)
+                {
+                    this.db.ProductsTags.Remove(currentTag);
+                    await this.db.SaveChangesAsync();
+                }
+            }
+
+            foreach (var tag in tags)
+            {
+                var productTag = new ProductTag()
+                {
+                    ProductId = productId,
+                    TagId = tag.Id
+                };
+
+                productTags.Add(productTag);
+            }
+
+            await this.db.ProductsTags.AddRangeAsync(productTags);
+
+            return productTags;
+        }
+
+        private async Task<ICollection<Label>> GetLabelsAsync(ICollection<string> labels)
+        {
+            if (labels.Count < 1) return new List<Label>();
+
+            var allLabels = new List<Label>();
+
+            foreach (var label in labels)
+            {
+                Label searchedLabel = await this.db.Labels
+                    .FirstOrDefaultAsync(x => x.Content.Trim().ToUpper() == label.Trim().ToUpper() && x.IsDeleted != true);
+
+                if (searchedLabel == null)
+                {
+                    searchedLabel = new Label()
+                    {
+                        Content = label.Trim().ToUpper()
+                    };
+
+                    await this.db.Labels.AddAsync(searchedLabel);
+                }
+
+                allLabels.Add(searchedLabel);
+            }
+
+
+            return allLabels;
+        }
+
+        private async Task<ICollection<ProductLabel>> CreateProductLabelAsync(ICollection<Label> labels, string productId)
+        {
+            var productLabels = new List<ProductLabel>();
+
+            var allCurrentLabelsToThisProduct = await this.db.ProductsLabels
+               .Where(x => x.ProductId == productId && x.IsDeleted != true)
+               .ToListAsync();
+
+            if (allCurrentLabelsToThisProduct.Count > 0)
+            {
+                foreach (var currentLabel in allCurrentLabelsToThisProduct)
+                {
+                    this.db.ProductsLabels.Remove(currentLabel);
+                    await this.db.SaveChangesAsync();
+                }
+            }
+
+            foreach (var label in labels)
+            {
+                var productLabel = new ProductLabel()
+                {
+                    ProductId = productId,
+                    LabelId = label.Id
+                };
+
+                productLabels.Add(productLabel);
+            }
+
+            await this.db.ProductsLabels.AddRangeAsync(productLabels);
+
+            return productLabels;
         }
     }
 }
