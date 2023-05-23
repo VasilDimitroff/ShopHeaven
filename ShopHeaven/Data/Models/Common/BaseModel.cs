@@ -9,6 +9,7 @@ namespace ShopHeaven.Data.Models.Common
             Id = Guid.NewGuid().ToString();
             CreatedOn = DateTime.UtcNow;
             IsDeleted = false;
+            ModifiedOn = DateTime.UtcNow;
         }
 
         [Key]

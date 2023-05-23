@@ -173,7 +173,7 @@ export default function AdminUsers() {
         </Grid>
       </form>
       {isLoading ? (
-        <Box sx={{ padding: theme.spacing(3) }}>
+        <Box sx={{ padding: theme.spacing(3), border: "1px solid black" }}>
           <Loader />
         </Box>
       ) : (
@@ -191,7 +191,8 @@ export default function AdminUsers() {
                 }}
               />
               <UserTableCell></UserTableCell>
-              <UserTableCell align="center"></UserTableCell>
+              <UserTableCell align="center">Roles</UserTableCell>
+              <UserTableCell align="center">Act</UserTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

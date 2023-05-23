@@ -6,7 +6,7 @@ import {
   Collapse,
   Chip,
   Box,
-  Grid,
+  Grid, Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -150,6 +150,18 @@ export default function AdminUserRow(props) {
             <></>
           )}
         </UserNameTableCell>
+        <TableCell align="center">
+        <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+            ROLQTA TUK
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <Button variant="contained" color="primary" size="small">
+                APPLY ROLE
+              </Button>
+            </Grid>
+          </Grid>
+        </TableCell>
         <TableCell align="center">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
