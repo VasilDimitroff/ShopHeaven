@@ -142,7 +142,7 @@ export default function AdminUserRow(props) {
                   sx={{ padding: 0.5 }}
                   icon={<Person />}
                   variant="outlined"
-                  label={`Roles: ${user?.roles?.join(", ")}`}
+                  label={`Roles: ${user?.roles?.map(x => x.name )}`}
                   size="small"
                 />
               </UserInfoText>
