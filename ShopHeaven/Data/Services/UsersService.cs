@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
+using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
 using System.Security.Claims;
 
@@ -87,25 +88,39 @@ namespace ShopHeaven.Data.Services
             return userRoles;
         }
 
-        public async Task<IList<BasicUserResponseModel>> GetAllAsync()
+        public async Task<IList<UserWithRolesResponseModel>> GetAllAsync()
         {
-            var users = await db.Users
-            .Where(x => x.IsDeleted != true)
-            .Select(x => new BasicUserResponseModel
-            {
-                Id = x.Id,
-                Email = x.Email,
-                Username = x.UserName,
-                CreatedOn = x.CreatedOn.ToString(),
-            })
-            .ToListAsync();
-            //get roles with names and Ids
-            foreach (var user in users)
-            {
-                user.Roles = await GetUserRolesAsync(user.Id);
-            }
+            var usersWithRoles = await db.Users
+                  .Join(
+                      db.UserRoles,
+                      user => user.Id,
+                      userRole => userRole.UserId,
+                      (user, userRole) => new { User = user, UserRole = userRole })
+                  .Join(
+                      db.Roles,
+                      ur => ur.UserRole.RoleId,
+                      role => role.Id,
+                      (ur, role) => new { User = ur.User, Role = role })
+                  .GroupBy(
+                      ur => new { ur.User.Id, ur.User.Email, ur.User.UserName, ur.User.CreatedOn },
+                      ur => ur.Role)
+                  .Select(
+                      g => new UserWithRolesResponseModel
+                      {
+                          Id = g.Key.Id,
+                          Username = g.Key.UserName,
+                          Email = g.Key.Email,
+                          CreatedOn = g.Key.CreatedOn.ToString(),
+                          Roles = g.Select(x => new UserRoleResponseModel
+                          {
+                              Name = x.Name,
+                              RoleId = x.Id
+                          })
+                          .ToList()
+                      })
+                  .ToListAsync();
 
-            return users;
+            return usersWithRoles;
         }
 
         public BasicUserResponseModel GetUserInfoFromJwt()
