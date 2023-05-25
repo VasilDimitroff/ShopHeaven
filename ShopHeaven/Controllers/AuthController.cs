@@ -82,7 +82,7 @@ namespace ShopHeaven.Controllers
                     return Unauthorized(GlobalConstants.PasswordNotValid);
                 }
 
-                IList<string> userRoles = await this.usersService.GetUserRolesAsync(user.Id);
+                IList<string> userRoles = await this.usersService.GetRolesNamesAsync(user.Id);
 
                 string jwtToken = await this.jwtService.CreateJwtTokenAsync(user.Id, userRoles);
 
@@ -129,7 +129,7 @@ namespace ShopHeaven.Controllers
                     return Unauthorized("Token expired.");
                 }
 
-                var roles = await this.usersService.GetUserRolesAsync(userModel.Id);
+                var roles = await this.usersService.GetRolesNamesAsync(userModel.Id);
 
                 string token = await this.jwtService.CreateJwtTokenAsync(userModel.Id, roles);
 
