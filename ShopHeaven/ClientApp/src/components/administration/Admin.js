@@ -116,7 +116,7 @@ export default function Admin() {
   }));
 
   const MainWrapper = styled(Box)({
-    width: "80%",
+    width: "95%",
     margin: "auto",
     [theme.breakpoints.down("md")]: {
       width: "95%",
@@ -164,7 +164,9 @@ export default function Admin() {
 
   return (
     <MainWrapper>
-      <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
+      <Box sx={{marginBottom: theme.spacing(2)}} >
+        <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
+      </Box>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={12} md={12} lg={2}>

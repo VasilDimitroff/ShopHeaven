@@ -1,4 +1,4 @@
-import { React, Fragment, useState, useEffect, useRef } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -172,13 +172,6 @@ export default function AdminUsers() {
           </Grid>
         </Grid>
       </form>
-      {isLoading ? (
-        <Box sx={{ padding: theme.spacing(3), border: "1px solid black" }}>
-          <Loader />
-        </Box>
-      ) : (
-        <></>
-      )}
       <TableContainer component={Box}>
         <Table>
           <TableHead>
@@ -191,8 +184,7 @@ export default function AdminUsers() {
                 }}
               />
               <UserTableCell></UserTableCell>
-              <UserTableCell align="center">Roles</UserTableCell>
-              <UserTableCell align="center">Act</UserTableCell>
+              <UserTableCell align="center"></UserTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -204,6 +196,13 @@ export default function AdminUsers() {
           </TableBody>
         </Table>
       </TableContainer>
+      {isLoading ? (
+        <Box sx={{ padding: theme.spacing(3)}}>
+          <Loader />
+        </Box>
+      ) : (
+        <></>
+      )}
       <PaginationHolder>
         <StyledPagination count={10} size="medium" color="secondary" />
       </PaginationHolder>

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import EditUser from "./EditUser";
 import DeleteUser from "./DeleteUser";
 import {
   KeyboardArrowUp,
@@ -151,18 +152,6 @@ export default function AdminUserRow(props) {
           )}
         </UserNameTableCell>
         <TableCell align="center">
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-            ROLQTA TUK
-            </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-              <Button variant="contained" color="primary" size="small">
-                APPLY ROLE
-              </Button>
-            </Grid>
-          </Grid>
-        </TableCell>
-        <TableCell align="center">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <StyledIconButton
@@ -188,7 +177,8 @@ export default function AdminUserRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-            EDIT USER
+            {/* pass roles and user */}
+            <EditUser user={user}/>
           </Collapse>
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
             <DeleteUser user={user} onCancelButtonClicked={onCancelButtonClicked} userDeleted={userDeleted} userUndeleted={userUndeleted}/>

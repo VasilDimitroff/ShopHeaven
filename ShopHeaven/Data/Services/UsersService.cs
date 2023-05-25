@@ -58,6 +58,19 @@ namespace ShopHeaven.Data.Services
             {
                 throw new ArgumentException(GlobalConstants.UserNotCreated);
             }
+
+            //add user by default in user role
+            var appUserRole = await this.db.Roles.FirstOrDefaultAsync(x => x.Name == GlobalConstants.UserRoleName);
+
+            var userRole = new IdentityUserRole<string>()
+            {
+                RoleId = appUserRole.Id,
+                UserId = user.Id
+            };
+
+            await this.db.UserRoles.AddAsync(userRole);
+
+            await this.db.SaveChangesAsync();
         }
 
         public async Task<IList<string>> GetUserRolesAsync(string userId)
@@ -76,7 +89,6 @@ namespace ShopHeaven.Data.Services
 
         public async Task<IList<BasicUserResponseModel>> GetAllAsync()
         {
-
             var users = await db.Users
             .Where(x => x.IsDeleted != true)
             .Select(x => new BasicUserResponseModel
@@ -87,6 +99,11 @@ namespace ShopHeaven.Data.Services
                 CreatedOn = x.CreatedOn.ToString(),
             })
             .ToListAsync();
+            //get roles with names and Ids
+            foreach (var user in users)
+            {
+                user.Roles = await GetUserRolesAsync(user.Id);
+            }
 
             return users;
         }
