@@ -1,5 +1,4 @@
-﻿using ShopHeaven.Models.Responses.Roles;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ShopHeaven.Models.Responses.Users
 {
@@ -17,5 +16,6 @@ namespace ShopHeaven.Models.Responses.Users
         public string CreatedOn { get; set; }
 
         public IList<string> Roles { get; set; }
+
     }
 }

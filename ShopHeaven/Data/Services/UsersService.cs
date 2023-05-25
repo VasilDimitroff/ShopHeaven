@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Users;
-using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
-using System.Data;
 using System.Security.Claims;
 
 namespace ShopHeaven.Data.Services
@@ -75,7 +73,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<IList<string>> GetRolesNamesAsync(string userId)
+        public async Task<IList<string>> GetUserRolesAsync(string userId)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
 
@@ -89,43 +87,22 @@ namespace ShopHeaven.Data.Services
             return userRoles;
         }
 
-        public async Task<ICollection<UserWithRolesResponseModel>> GetAllAsync()
+        public async Task<IList<BasicUserResponseModel>> GetAllAsync()
         {
             var users = await db.Users
             .Where(x => x.IsDeleted != true)
-            .Select(x => new UserWithRolesResponseModel
+            .Select(x => new BasicUserResponseModel
             {
                 Id = x.Id,
                 Email = x.Email,
                 Username = x.UserName,
                 CreatedOn = x.CreatedOn.ToString(),
-                Roles = x.Roles.Select(x => new UserRoleResponseModel
-                {
-                    Id = x.RoleId,
-                })
-                .ToList()
             })
             .ToListAsync();
-
-
+            //get roles with names and Ids
             foreach (var user in users)
             {
-                var userRolesModel = new List<UserRoleResponseModel>();
-
-                foreach (var role in user.Roles)
-                {
-                    var roleObj = await this.db.Roles
-                        .Select(x => new UserRoleResponseModel
-                        {
-                            Id = x.Id,
-                            Name = x.Name
-                        })
-                        .FirstOrDefaultAsync(x => x.Id == role.Id);
-
-                    userRolesModel.Add(roleObj);
-                }
-
-                user.Roles = userRolesModel;
+                user.Roles = await GetUserRolesAsync(user.Id);
             }
 
             return users;
@@ -182,7 +159,7 @@ namespace ShopHeaven.Data.Services
                 return null;
             }
 
-            var userRoles = await GetRolesNamesAsync(user.Id);
+            var userRoles = await GetUserRolesAsync(user.Id);
 
             var userModel = new BasicUserResponseModel
             {

@@ -91,7 +91,7 @@ namespace ShopHeaven.Data.Services
                 throw new UnauthorizedAccessException(GlobalConstants.UserNotFound);
             }
 
-            var roles = await this.usersService.GetRolesNamesAsync(user.Id);
+            var roles = await this.usersService.GetUserRolesAsync(user.Id);
 
             var userModel = new UserAuthorizationModel
             {
