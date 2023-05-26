@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Roles;
+using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 
 namespace ShopHeaven.Controllers
@@ -26,6 +27,21 @@ namespace ShopHeaven.Controllers
                 var users = await this.usersService.GetAllAsync();
 
                 return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Route(nameof(Edit)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<ActionResult> Edit(EditUserRequestModel model)
+        {
+            try
+            {
+                var user = await this.usersService.EditUserAsync(model);
+
+                return Ok(user);
             }
             catch (Exception ex)
             {

@@ -104,7 +104,7 @@ namespace ShopHeaven.Data.Services
             })
                 .ToListAsync();
 
-            List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfo();
+            List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync();
 
             var usersAndRoles = new GetUsersAndRolesResponseModel
             {
@@ -216,16 +216,16 @@ namespace ShopHeaven.Data.Services
 
             await this.db.SaveChangesAsync();
 
-            var userModel = await GetUserWithRoles(model.UserId);
+            var userModel = await GetUserWithRolesAsync(model.UserId);
 
             return userModel;
 
         }
 
-        private async Task<UserWithRolesResponseModel> GetUserWithRoles(string userId)
+        private async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
         {
             var user = await this.db.Users
-                .Where(u => u.Id == userId)
+                .Where(u => u.Id == userId && u.IsDeleted != true)
                 .Select(u => new UserWithRolesResponseModel
                 {
                     Id = u.Id,
@@ -246,9 +246,10 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
-        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfo()
+        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync()
         {
             return await db.Users
+                  .Where(u => u.IsDeleted != true)
                   .Join(
                       db.UserRoles,
                       user => user.Id,
@@ -314,10 +315,36 @@ namespace ShopHeaven.Data.Services
 
             await this.db.SaveChangesAsync();
 
-            var userModel = await GetUserWithRoles(model.UserId);
+            var userModel = await GetUserWithRolesAsync(model.UserId);
 
             return userModel;
 
+        }
+
+        public async Task<UserWithRolesResponseModel> EditUserAsync(EditUserRequestModel model)
+        {
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Username) 
+                || model.Username.Trim().Length < GlobalConstants.UsernameLength)
+            {
+                throw new ArgumentException(GlobalConstants.UsernameLengthNotEnough);
+            }
+
+            user.Email = model.Email.Trim();
+            user.UserName = model.Username.Trim();
+
+            await this.db.SaveChangesAsync();
+
+            var userModel = await GetUserWithRolesAsync(user.Id);
+
+            return userModel;
         }
     }
 }

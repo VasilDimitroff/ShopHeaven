@@ -18,6 +18,7 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import {
   applicationUserRole,
   noPermissionsForOperationMessage,
+  usernameRequiredLength
 } from "../../../constants";
 
 export default function EditUser(props) {
@@ -35,10 +36,10 @@ export default function EditUser(props) {
   );
 
   //product editing refs
-  let userNameRef = useRef();
-  let userEmailRef = useRef();
-  let addToRoleRef = useRef();
-  let removeFromRoleRef = useRef();
+  const userNameRef = useRef();
+  const userEmailRef = useRef();
+  const addToRoleRef = useRef();
+  const removeFromRoleRef = useRef();
 
   //errors
   const [messages, setMessages] = useState({
@@ -204,7 +205,6 @@ export default function EditUser(props) {
   function onEditUser(e) {
     e.preventDefault();
 
-    //4
     setValuesToStates();
 
     let isFormValid = validateForm();
@@ -214,9 +214,12 @@ export default function EditUser(props) {
     }
 
     const editedUser = {
+      id: user.id,
       username: userNameRef.current.value.trim(),
       email: userEmailRef.current.value.trim(),
     };
+
+    console.log("DATA ", editedUser)
 
     editUser(editedUser);
   }
@@ -236,9 +239,9 @@ export default function EditUser(props) {
       controller.abort();
 
       setEditUserErrorMessage("");
-      setEditUserResponseMessage(`${user.Email} successfully updated`);
+      setEditUserResponseMessage(`${user.email} successfully updated`);
 
-      //props.updateProduct(response?.data);
+      props.updateUser(response?.data);
     } catch (error) {
       setEditUserResponseMessage("");
 
@@ -255,8 +258,9 @@ export default function EditUser(props) {
     let isValid = true;
     let errors = [];
 
-    if (userNameRef.current.value.length < 2) {
-      let msg = "Username must contain at least 2 characters";
+    if (userNameRef.current.value.length < usernameRequiredLength) {
+
+      let msg = `Username must contain at least ${usernameRequiredLength} characters`;
       errors.push(msg);
 
       setMessages((prev) => {
@@ -387,7 +391,7 @@ export default function EditUser(props) {
   return (
     <MainWrapper>
       <Divider>
-        <HeadingChip label="EDIT USER" variant="outlined" color="secondary" />
+        <HeadingChip label="MAIN INFO" variant="outlined" color="secondary" />
       </Divider>
       <form component="form" onSubmit={onEditUser}>
         <InputBox>
@@ -399,8 +403,8 @@ export default function EditUser(props) {
             placeholder={user.email}
             defaultValue={user.email}
           />
-          {messages.userNameError ? (
-            <ErrorAlert severity="error">{messages.userNameError}</ErrorAlert>
+          {messages.userEmailError ? (
+            <ErrorAlert severity="error">{messages.userEmailError}</ErrorAlert>
           ) : (
             <></>
           )}
@@ -515,7 +519,7 @@ export default function EditUser(props) {
             <select
               style={StyledSelect}
               name="userRole"
-              defaultValue={"productSubcategoryId"}
+              defaultValue={undefined}
               ref={removeFromRoleRef}
             >
               {userRoles?.map((role) => (

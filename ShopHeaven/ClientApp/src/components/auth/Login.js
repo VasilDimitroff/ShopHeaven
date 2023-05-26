@@ -1,4 +1,4 @@
-import { React, Fragment, useRef, useEffect, useState,} from "react";
+import { React, Fragment, useRef, useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -8,9 +8,8 @@ import {
   Container,
   Button,
   Typography,
-  Alert
+  Alert,
 } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { passwordRequiredLength } from "../../constants";
@@ -190,65 +189,65 @@ export default function Login() {
     width: "100%",
     color: theme.palette.error.main,
   });
-  
+
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-          <Fragment>
-            <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
-            <Container>
-              <form onSubmit={handleSubmit}>
-                <LoginInfoInput
-                  inputRef={emailRef}
-                  autoComplete="off"
-                  defaultValue={email}
-                  id="email"
-                  label="Email"
-                  type="text"
-                  variant="filled"
-                />
-                {!validEmail && email ? (
-                   <ErrorMessageHolder>
-                      <ErrorAlert severity="error">Invalid Email!</ErrorAlert>
-                   </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <LoginInfoInput
-                  inputRef={passwordRef}
-                  defaultValue={pwd}
-                  id="password"
-                  label="Password"
-                  type="password"
-                  variant="filled"
-                />
-                {!validPassword && pwd ? (
-                  <ErrorMessageHolder>
-                    <ErrorAlert severity="error">
+        <Fragment>
+          <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
+          <Container>
+            <form onSubmit={handleSubmit}>
+              <LoginInfoInput
+                inputRef={emailRef}
+                autoComplete="off"
+                defaultValue={email}
+                id="email"
+                label="Email"
+                type="text"
+                variant="filled"
+              />
+              {!validEmail && email ? (
+                <ErrorMessageHolder>
+                  <ErrorAlert severity="error">Invalid Email!</ErrorAlert>
+                </ErrorMessageHolder>
+              ) : (
+                ""
+              )}
+              <LoginInfoInput
+                inputRef={passwordRef}
+                defaultValue={pwd}
+                id="password"
+                label="Password"
+                type="password"
+                variant="filled"
+              />
+              {!validPassword && pwd ? (
+                <ErrorMessageHolder>
+                  <ErrorAlert severity="error">
                     Invalid Password! Password must contain at least{" "}
                     {passwordRequiredLength} characters!
                   </ErrorAlert>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <LoginButton type="submit" variant="contained" size="large">
-                  LOG IN
-                </LoginButton>
-              </form>
-              {
-              errMsg ?
-              (<ErrorMessageHolder>
+                </ErrorMessageHolder>
+              ) : (
+                ""
+              )}
+              <LoginButton type="submit" variant="contained" size="large">
+                LOG IN
+              </LoginButton>
+            </form>
+            {errMsg ? (
+              <ErrorMessageHolder>
                 <ErrorAlert severity="error">{errMsg}</ErrorAlert>
-              </ErrorMessageHolder>)
-              : <></>
-            }
-              <LinkHolder>
-                <Link to="/register">You haven't account? Create one!</Link>
-              </LinkHolder>
-            </Container>
-          </Fragment>
+              </ErrorMessageHolder>
+            ) : (
+              <></>
+            )}
+            <LinkHolder>
+              <Link to="/register">You haven't account? Create one!</Link>
+            </LinkHolder>
+          </Container>
+        </Fragment>
       </FormWrapper>
       <Box sx={{ mt: theme.spacing(3) }}>
         <FullWidthBanner

@@ -10,6 +10,8 @@
 
         public static int PasswordLength => 8;
 
+        public static int UsernameLength => 2;
+
         public static IReadOnlyList<string> AllowedImageFileExtensions = new List<string>
         {
             ".jpeg",
@@ -24,6 +26,8 @@
 
         public const string PasswordNotValid = "Password is not valid!";
 
+        public static string UsernameLengthNotEnough = $"Username cannot be empty. Required length is at least {UsernameLength} characters.";
+       
         public static string PasswordLengthNotEnough = $"Password length must be at least {PasswordLength} characters long.";
 
         public const string UserDoesNotExist = "User with given Id doesn't exists!";

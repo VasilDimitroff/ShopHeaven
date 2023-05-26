@@ -9,7 +9,6 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { passwordRequiredLength } from "../../constants";
@@ -234,13 +233,13 @@ export default function Register() {
                 REGISTER
               </RegisterButton>
             </form>
-            {
-              errMsg ?
-              (<ErrorMessageHolder>
+            {errMsg ? (
+              <ErrorMessageHolder>
                 <ErrorAlert severity="error">{errMsg}</ErrorAlert>
-              </ErrorMessageHolder>)
-              : <></>
-            }
+              </ErrorMessageHolder>
+            ) : (
+              <></>
+            )}
             <LinkHolder>
               <Link to="/login">Already have a profile? Log in!</Link>
             </LinkHolder>
