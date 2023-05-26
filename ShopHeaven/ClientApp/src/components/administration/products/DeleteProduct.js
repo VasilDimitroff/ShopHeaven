@@ -9,6 +9,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Delete, Cancel, Undo, Refresh } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -161,6 +162,7 @@ export default function DeleteProduct(props) {
             <Box sx={{ display: "flex", gap: 2 }}>
               {!undoDeleteButtonClicked ? (
                 <Button
+                  startIcon={<Undo />}
                   size="small"
                   variant="contained"
                   color="error"
@@ -171,7 +173,7 @@ export default function DeleteProduct(props) {
               ) : (
                 ""
               )}
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -200,7 +202,7 @@ export default function DeleteProduct(props) {
               </li>
             </ul>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -224,6 +226,7 @@ export default function DeleteProduct(props) {
           </Box>
           <ButtonsHolder>
             <DeleteProductButton
+              startIcon={<Delete />}
               onClick={onDeleteProduct}
               type="submit"
               size="large"
@@ -234,6 +237,7 @@ export default function DeleteProduct(props) {
               DELETE PRODUCT
             </DeleteProductButton>
             <DeleteProductButton
+              startIcon={<Cancel />}
               onClick={props.onCancelButtonClicked}
               type="submit"
               size="large"

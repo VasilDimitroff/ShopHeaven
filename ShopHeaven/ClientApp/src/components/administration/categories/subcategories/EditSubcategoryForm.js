@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../../hooks/useAuth";
@@ -189,7 +189,7 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton type="submit" size="large" variant="contained">
+          <CreateCategoryButton startIcon={<Edit />} type="submit" size="large" variant="contained">
             Edit subcategory
           </CreateCategoryButton>
         </InputBox>

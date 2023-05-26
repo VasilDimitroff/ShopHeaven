@@ -14,7 +14,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
+import { Close, AddCircle, RemoveCircle, Edit } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -1304,7 +1304,7 @@ export default function EditProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <EditProductButton type="submit" size="big" variant="contained">
+        <EditProductButton startIcon={<Edit />} type="submit" size="big" variant="contained">
           EDIT PRODUCT
         </EditProductButton>
       </form>

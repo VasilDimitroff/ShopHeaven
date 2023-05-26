@@ -5,10 +5,10 @@ import {
   Typography,
   Paper,
   Alert,
-  AlertTitle,
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { RestoreFromTrash, Cancel } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -91,6 +91,7 @@ export default function UndeleteUser(props) {
       <ButtonsHolder>
         <UndeleteUserButton
           onClick={onUndeleteUser}
+          startIcon={<RestoreFromTrash />}
           type="submit"
           size="large"
           variant="contained"
@@ -100,6 +101,7 @@ export default function UndeleteUser(props) {
           UNDELETE USER
         </UndeleteUserButton>
         <UndeleteUserButton
+          startIcon={<Cancel />}
           onClick={props.onUndeleteCancelButtonClicked}
           type="submit"
           size="large"

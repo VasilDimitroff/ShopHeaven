@@ -11,7 +11,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { AccountCircle, AddCircle, RemoveCircle } from "@mui/icons-material";
+import { Edit , AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -421,7 +421,7 @@ export default function EditUser(props) {
             <></>
           )}
         </InputBox>
-        <EditUserButton type="submit" size="big" variant="contained">
+        <EditUserButton startIcon={<Edit />} type="submit" size="big" variant="contained">
           EDIT USER
         </EditUserButton>
       </form>
@@ -487,6 +487,7 @@ export default function EditUser(props) {
               onClick={onAddUserToRole}
               variant="contained"
               size="small"
+              startIcon={<AddCircle />}
             >
               ADD TO ROLE
             </RoleButton>
@@ -529,6 +530,7 @@ export default function EditUser(props) {
               onClick={onRemoveUserFromRole}
               variant="contained"
               size="small"
+              startIcon={<RemoveCircle />}
             >
               REMOVE FROM ROLE
             </RoleButton>

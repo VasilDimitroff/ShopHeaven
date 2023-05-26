@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
@@ -157,7 +157,7 @@ export default function CreateCategory(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton type="submit" size="large" variant="contained">
+          <CreateCategoryButton startIcon={<AddCircle />} type="submit" size="large" variant="contained">
             Create category
           </CreateCategoryButton>
         </InputBox>

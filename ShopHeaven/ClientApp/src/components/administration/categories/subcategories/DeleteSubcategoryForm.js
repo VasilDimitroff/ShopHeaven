@@ -9,6 +9,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Delete, Cancel, Undo, Refresh } from "@mui/icons-material";
 import { theme } from "../../../../theme";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
@@ -160,6 +161,7 @@ export default function DeleteSubcategoryForm(props) {
             <Box sx={{ display: "flex", gap: 2 }}>
               {!undoDeleteButtonClicked ? (
                 <Button
+                  startIcon={<Undo />}
                   size="small"
                   variant="contained"
                   color="error"
@@ -170,7 +172,7 @@ export default function DeleteSubcategoryForm(props) {
               ) : (
                 ""
               )}
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -196,7 +198,7 @@ export default function DeleteSubcategoryForm(props) {
               </li>
             </ul>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -226,6 +228,7 @@ export default function DeleteSubcategoryForm(props) {
               size="large"
               variant="outlined"
               color="error"
+              startIcon={<Delete />}
             >
               DELETE CATEGORY
             </DeleteSubcategoryButton>
@@ -235,6 +238,7 @@ export default function DeleteSubcategoryForm(props) {
               size="large"
               variant="contained"
               color="error"
+              startIcon={<Cancel />}
             >
               CANCEL
             </DeleteSubcategoryButton>

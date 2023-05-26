@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { PhotoCamera } from "@mui/icons-material";
+import { AddCircle, PhotoCamera } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
@@ -168,6 +168,7 @@ export default function CreateSubcategory(props) {
             type="submit"
             size="large"
             variant="contained"
+            startIcon={<AddCircle />}
           >
             Create subcategory
           </CreateSubCategoryButton>

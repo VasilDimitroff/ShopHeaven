@@ -9,6 +9,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Delete, Cancel, Refresh, Undo } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -156,6 +157,7 @@ export default function DeleteCategoryForm(props) {
             <Box sx={{ display: "flex", gap: 2 }}>
               {!undoDeleteButtonClicked ? (
                 <Button
+                  startIcon={<Undo />}
                   size="small"
                   variant="contained"
                   color="error"
@@ -166,7 +168,7 @@ export default function DeleteCategoryForm(props) {
               ) : (
                 ""
               )}
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -199,7 +201,7 @@ export default function DeleteCategoryForm(props) {
               </li>
             </ul>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <Button size="small" variant="contained" onClick={refreshPage}>
+              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
                 REFRESH
               </Button>
             </Box>
@@ -230,6 +232,7 @@ export default function DeleteCategoryForm(props) {
               size="large"
               variant="outlined"
               color="error"
+              startIcon={<Delete />}
             >
               DELETE CATEGORY
             </DeleteCategoryButton>
@@ -239,6 +242,7 @@ export default function DeleteCategoryForm(props) {
               size="large"
               variant="contained"
               color="error"
+              startIcon={<Cancel />}
             >
               CANCEL
             </DeleteCategoryButton>

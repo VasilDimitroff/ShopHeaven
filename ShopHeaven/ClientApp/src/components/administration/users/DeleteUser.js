@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { Delete, Cancel } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { noPermissionsForOperationMessage } from "../../../constants";
@@ -105,6 +106,7 @@ export default function DeleteUser(props) {
           </Box>
           <ButtonsHolder>
             <DeleteUserButton
+              startIcon={<Delete />}
               onClick={onDeleteUser}
               type="submit"
               size="large"
@@ -115,6 +117,7 @@ export default function DeleteUser(props) {
               DELETE USER
             </DeleteUserButton>
             <DeleteUserButton
+              startIcon={<Cancel />}
               onClick={props.onCancelButtonClicked}
               type="submit"
               size="large"
