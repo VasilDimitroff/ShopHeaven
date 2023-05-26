@@ -50,7 +50,6 @@ export default function UndeleteUser(props) {
 
       setIsUndeleted(true);
       props.updateUser(response?.data);
-      console.log(response?.data);
     } catch (error) {
       setUndeleteUserResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {

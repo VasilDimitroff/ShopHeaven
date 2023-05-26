@@ -54,7 +54,6 @@ export default function DeleteUser(props) {
       
       setIsDeleted(true);
       props.updateUser(response?.data);
-      console.log(response?.data);
     } catch (error) {
       setDeleteUserResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {

@@ -120,7 +120,6 @@ export default function EditUser(props) {
           (r) => r.name
         )}`
       );
-      console.log("ADDDU SER", response?.data)
       props.updateUser(response?.data);
     } catch (error) {
       setRemoveUserFromRoleResponseMessage("");
@@ -185,7 +184,7 @@ export default function EditUser(props) {
           (r) => r.name
         )}`
       );
-          console.log("ADDDU SER", response?.data)
+
      props.updateUser(response?.data);
     } catch (error) {
       setAddUserToRoleResponse("");
@@ -218,8 +217,6 @@ export default function EditUser(props) {
       username: userNameRef.current.value.trim(),
       email: userEmailRef.current.value.trim(),
     };
-
-    console.log("DATA ", editedUser)
 
     editUser(editedUser);
   }

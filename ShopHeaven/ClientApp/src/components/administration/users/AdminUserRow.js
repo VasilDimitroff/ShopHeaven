@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
   Typography,
+  Snackbar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -21,7 +22,7 @@ import {
   AccountCircle,
   Edit,
   Delete,
-  RestoreFromTrash
+  RestoreFromTrash,
 } from "@mui/icons-material";
 import UndeleteUser from "./UndeleteUser";
 
@@ -32,8 +33,11 @@ export default function AdminUserRow(props) {
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
   const [openUndeleteForm, setOpenUndeleteForm] = useState(false);
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   function handleSetOpenEditForm() {
     if (user?.isDeleted) {
+      setOpenSnackbar((prev) => !prev);
       return;
     }
     setOpenDeleteForm(false);
@@ -50,7 +54,7 @@ export default function AdminUserRow(props) {
   function handleSetOpenUndeleteForm() {
     setOpenEditForm(false);
     setOpenDeleteForm(false);
-    setOpenUndeleteForm(prev => !prev);
+    setOpenUndeleteForm((prev) => !prev);
   }
 
   function onCancelButtonClicked() {
@@ -62,8 +66,11 @@ export default function AdminUserRow(props) {
   }
 
   function updateUser(updatedUser) {
-    console.log("UPDATE", updatedUser)
     setUser(updatedUser);
+  }
+
+  function handleSnackbarClose() {
+    setOpenSnackbar((prev) => !prev);
   }
 
   function formatDate(date) {
@@ -124,43 +131,59 @@ export default function AdminUserRow(props) {
         >
           {user?.isDeleted ? (
             <>
-            {user?.email}
-            <Typography color="error" sx={{display: "inline", fontWeight: 500}}>
-          {" "}(User Deleted)
-            </Typography>
-            </>) : user?.email
-            }
-            <UserInfoHolder>
-              <UserInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<AccountCircle />}
-                  variant="outlined"
-                  color="warning"
-                  label={`Username: ${user?.username}`}
-                  size="small"
-                />
-              </UserInfoText>
-              <UserInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Event />}
-                  variant="outlined"
-                  color="primary"
-                  label={`Created on: ${formatDate(user?.createdOn)}`}
-                  size="small"
-                />
-              </UserInfoText>
-              <UserInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Group />}
-                  variant="outlined"
-                  label={`Roles: ${user?.roles?.map((x) => x.name)}`}
-                  size="small"
-                />
-              </UserInfoText>
-            </UserInfoHolder>
+              {user?.email}
+              <Typography
+                color="error"
+                sx={{ display: "inline", fontWeight: 500 }}
+              >
+                {" "}
+                (User Deleted)
+              </Typography>
+            </>
+          ) : (
+            user?.email
+          )}
+          <UserInfoHolder>
+            <UserInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<AccountCircle />}
+                variant="outlined"
+                color="warning"
+                label={`Username: ${user?.username}`}
+                size="small"
+              />
+            </UserInfoText>
+            <UserInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<Event />}
+                variant="outlined"
+                color="primary"
+                label={`Created on: ${formatDate(user?.createdOn)}`}
+                size="small"
+              />
+            </UserInfoText>
+            <UserInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<Group />}
+                variant="outlined"
+                label={`Roles: ${user?.roles?.map((x) => x.name)}`}
+                size="small"
+              />
+            </UserInfoText>
+            <UserInfoText>
+              <Chip
+                sx={{ padding: 0.5 }}
+                icon={<Delete />}
+                variant="outlined"
+                color={user?.isDeleted ? "error" : "success"}
+                label={`Deleted: ${user?.isDeleted ? "Yes" : "No"}`}
+                size="small"
+              />
+            </UserInfoText>
+          </UserInfoHolder>
         </UserNameTableCell>
         <TableCell align="center">
           <Grid container spacing={2}>
@@ -174,25 +197,23 @@ export default function AdminUserRow(props) {
               </StyledIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              {
-                !user?.isDeleted
-                ?
-                (              <StyledIconButton
+              {!user?.isDeleted ? (
+                <StyledIconButton
                   onClick={handleSetOpenDeleteForm}
                   color="error"
                   size="small"
                 >
                   <Delete />
-                </StyledIconButton>)
-                :                 (<StyledIconButton
+                </StyledIconButton>
+              ) : (
+                <StyledIconButton
                   onClick={handleSetOpenUndeleteForm}
                   color="success"
                   size="small"
                 >
                   <RestoreFromTrash />
-                </StyledIconButton>)
-              }
-
+                </StyledIconButton>
+              )}
             </Grid>
           </Grid>
         </TableCell>
@@ -217,8 +238,16 @@ export default function AdminUserRow(props) {
             <UndeleteUser
               onUndeleteCancelButtonClicked={onUndeleteCancelButtonClicked}
               updateUser={updateUser}
-              user={user}/>
+              user={user}
+            />
           </Collapse>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={6000}
+            message={`${user.email} is deleted! To edit the user, first you should undelete it!`}
+            severity="error"
+            onClose={handleSnackbarClose}
+          />
         </TableCell>
       </TableRow>
     </Fragment>
