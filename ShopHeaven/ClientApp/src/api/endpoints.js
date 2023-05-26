@@ -8,7 +8,9 @@ export const ApiEndpoints = {
         refreshToken: "api/auth/refreshToken"
     },
     users: {
-        getAll: "api/users/getall"
+        getAll: "api/users/getall",
+        addUserToRole: "api/users/addToRole",
+        removeUserFromRole: "api/users/removeFromRole"
     },
     currencies: {
         getAll: "api/currencies/getall"    

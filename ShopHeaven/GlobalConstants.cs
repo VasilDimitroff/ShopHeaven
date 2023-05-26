@@ -72,6 +72,14 @@
 
         public const string ProductMustContainAtLeast1Image = "Product must contain at least 1 image";
 
+        public const string UserIsAlreadyInThisRole = "User is already in this role!";
+
+        public const string UserIsNotInTheSelectedRole = "User is not in the role you selected!";
+
+        public const string CannotRemoveUserFromUserRole = $"Cannot remove user from {UserRoleName} role";
+
+        public const string RoleWithThisIdDoesNotExist = "Role with this Id does not exist!";
+
         public const string FileTypeNotAllowed 
             = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";
     }

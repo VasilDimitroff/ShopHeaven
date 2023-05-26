@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
+using System.Data;
 using System.Security.Claims;
 
 namespace ShopHeaven.Data.Services
@@ -74,7 +76,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<IList<string>> GetUserRolesAsync(string userId)
+        public async Task<IList<string>> GetUserRolesNamesAsync(string userId)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
 
@@ -88,39 +90,24 @@ namespace ShopHeaven.Data.Services
             return userRoles;
         }
 
-        public async Task<IList<UserWithRolesResponseModel>> GetAllAsync()
+        public async Task<GetUsersAndRolesResponseModel> GetAllAsync()
         {
-            var usersWithRoles = await db.Users
-                  .Join(
-                      db.UserRoles,
-                      user => user.Id,
-                      userRole => userRole.UserId,
-                      (user, userRole) => new { User = user, UserRole = userRole })
-                  .Join(
-                      db.Roles,
-                      ur => ur.UserRole.RoleId,
-                      role => role.Id,
-                      (ur, role) => new { User = ur.User, Role = role })
-                  .GroupBy(
-                      ur => new { ur.User.Id, ur.User.Email, ur.User.UserName, ur.User.CreatedOn },
-                      ur => ur.Role)
-                  .Select(
-                      g => new UserWithRolesResponseModel
-                      {
-                          Id = g.Key.Id,
-                          Username = g.Key.UserName,
-                          Email = g.Key.Email,
-                          CreatedOn = g.Key.CreatedOn.ToString(),
-                          Roles = g.Select(x => new UserRoleResponseModel
-                          {
-                              Name = x.Name,
-                              RoleId = x.Id
-                          })
-                          .ToList()
-                      })
-                  .ToListAsync();
+            var allRoles = await db.Roles.Select(x => new UserRoleResponseModel
+            {
+                RoleId = x.Id,
+                Name = x.Name,
+            })
+                .ToListAsync();
 
-            return usersWithRoles;
+            List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfo();
+
+            var usersAndRoles = new GetUsersAndRolesResponseModel
+            {
+                Users = usersWithRoles.ToList(),
+                ApplicationRoles = allRoles.ToList()
+            };
+
+            return usersAndRoles;
         }
 
         public BasicUserResponseModel GetUserInfoFromJwt()
@@ -174,7 +161,7 @@ namespace ShopHeaven.Data.Services
                 return null;
             }
 
-            var userRoles = await GetUserRolesAsync(user.Id);
+            var userRoles = await GetUserRolesNamesAsync(user.Id);
 
             var userModel = new BasicUserResponseModel
             {
@@ -186,6 +173,146 @@ namespace ShopHeaven.Data.Services
             };
 
             return userModel;
+        }
+
+        public async Task<UserWithRolesResponseModel> AddToRoleAsync(AddToRoleRequestModel model)
+        {
+            var isUserInThisRole = await this.db.UserRoles
+                .AnyAsync(x => x.RoleId == model.RoleId && x.UserId == model.UserId);
+
+            if (isUserInThisRole)
+            {
+                throw new ArgumentException(GlobalConstants.UserIsAlreadyInThisRole);
+            }
+
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var role = await this.db.Roles
+                .FirstOrDefaultAsync(x => x.Id == model.RoleId);
+
+            if (role == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.RoleWithThisIdDoesNotExist);
+            }
+
+            var userRole = new IdentityUserRole<string>()
+            {
+                RoleId = model.RoleId,
+                UserId = model.UserId
+            };
+
+            await this.db.UserRoles.AddAsync(userRole);
+
+            await this.db.SaveChangesAsync();
+
+            var userModel = await GetUserWithRoles(model.UserId);
+
+            return userModel;
+
+        }
+
+        private async Task<UserWithRolesResponseModel> GetUserWithRoles(string userId)
+        {
+            var user = await this.db.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserWithRolesResponseModel
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    CreatedOn = u.CreatedOn.ToString(),
+                    Roles = this.db.UserRoles
+                        .Where(ur => ur.UserId == u.Id)
+                        .Select(ur => new UserRoleResponseModel
+                        {
+                            RoleId = ur.RoleId,
+                            Name = this.db.Roles.FirstOrDefault(r => r.Id == ur.RoleId).Name
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfo()
+        {
+            return await db.Users
+                  .Join(
+                      db.UserRoles,
+                      user => user.Id,
+                      userRole => userRole.UserId,
+                      (user, userRole) => new { User = user, UserRole = userRole })
+                  .Join(
+                      db.Roles,
+                      ur => ur.UserRole.RoleId,
+                      role => role.Id,
+                      (ur, role) => new { User = ur.User, Role = role })
+                  .GroupBy(
+                      ur => new { ur.User.Id, ur.User.Email, ur.User.UserName, ur.User.CreatedOn },
+                      ur => ur.Role)
+                  .Select(
+                      g => new UserWithRolesResponseModel
+                      {
+                          Id = g.Key.Id,
+                          Username = g.Key.UserName,
+                          Email = g.Key.Email,
+                          CreatedOn = g.Key.CreatedOn.ToString(),
+                          Roles = g.Select(x => new UserRoleResponseModel
+                          {
+                              Name = x.Name,
+                              RoleId = x.Id
+                          })
+                          .ToList()
+                      })
+                  .ToListAsync();
+        }
+
+        public async Task<UserWithRolesResponseModel> RemoveFromRoleAsync(RemoveFromRoleRequestModel model)
+        {
+            var userRole = await this.db.UserRoles
+              .FirstOrDefaultAsync(x => x.UserId == model.UserId && x.RoleId == model.RoleId);
+
+            if (userRole == null)
+            {
+                throw new ArgumentException(GlobalConstants.UserIsNotInTheSelectedRole);
+            }
+
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
+            }
+
+            var role = await this.db.Roles
+                .FirstOrDefaultAsync(x => x.Id == model.RoleId);
+
+            if (role == null)
+            {
+                throw new ArgumentNullException(GlobalConstants.RoleWithThisIdDoesNotExist);
+            }
+
+            if (role.Name == GlobalConstants.UserRoleName)
+            {
+                throw new InvalidOperationException(GlobalConstants.CannotRemoveUserFromUserRole);
+            }
+
+            this.db.UserRoles.Remove(userRole);
+
+            await this.db.SaveChangesAsync();
+
+            var userModel = await GetUserWithRoles(model.UserId);
+
+            return userModel;
+
         }
     }
 }

@@ -20,11 +20,7 @@ import PersistLogin from './components/auth/PersistLogin';
 import Unauthorized from './components/auth/Unauthorized';
 import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
 import { coupons } from './components/coupons';
-
-const roles = {
-  User : "User",
-  Admin: "Administrator"
-}
+import { adminRole } from './constants';
 
 export default function App() {
 
@@ -43,7 +39,7 @@ export default function App() {
             <Route path="register" element={<Register/>}/>
 
               {/* admin only routes */}          
-              <Route element={<RequireAuth allowedRoles={roles.Admin} />}>
+              <Route element={<RequireAuth allowedRoles={adminRole} />}>
                   <Route path="admin" element={<Admin/>}>
                       <Route path="" element={<AdminDashboard/>}/>
                       <Route path="users" element={<AdminUsers/>}/>

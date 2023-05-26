@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function DeleteUser(props) {
   let axiosPrivate = useAxiosPrivate();
@@ -108,9 +109,7 @@ export default function DeleteUser(props) {
     } catch (error) {
       setDeleteUserResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setDeleteUserErrorMessage(
-          "You have no permissions to perform the operation"
-        );
+        setDeleteUserErrorMessage(noPermissionsForOperationMessage);
       } else {
         setDeleteUserErrorMessage("Error!");
       }

@@ -31,7 +31,7 @@ export default function AdminUsers() {
 
   const effectRun = useRef(false);
 
-  const [userRoles, setUserRoles] = useState(["User", "Administrator"]);
+  const [applicationRoles, setApplicationRoles] = useState([]);
 
   const searchInputRef = useRef();
   const roleSearchRef = useRef();
@@ -47,8 +47,8 @@ export default function AdminUsers() {
         });
         console.log(response.data);
 
-        setUsers(response?.data);
-        setUserRoles(response?.data?.roles);
+        setUsers(response?.data?.users);
+        setApplicationRoles(response?.data?.applicationRoles);
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
@@ -190,7 +190,7 @@ export default function AdminUsers() {
           <TableBody>
             {users?.map((user, index) => {
               return (
-                <AdminUserRow key={index} userRoles={userRoles} user={user} />
+                <AdminUserRow key={index} applicationRoles={applicationRoles} user={user} />
               );
             })}
           </TableBody>

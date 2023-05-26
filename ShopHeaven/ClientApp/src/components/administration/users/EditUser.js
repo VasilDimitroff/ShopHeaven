@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Paper,
-  Typography,
   Chip,
   InputBase,
   Grid,
@@ -12,27 +11,28 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Close, AddCircle, RemoveCircle } from "@mui/icons-material";
+import { AccountCircle, AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import useAuth from "../../../hooks/useAuth";
+import {
+  applicationUserRole,
+  noPermissionsForOperationMessage,
+} from "../../../constants";
 
 export default function EditUser(props) {
   // api requests
   const axiosPrivate = useAxiosPrivate();
 
-  //auth
-  const { auth } = useAuth();
-
   const [user, setUser] = useState(props.user);
 
   //user is in these roles
-  const currentUserRoles = user.roles?.map(x => x.id);
-  const [userRolesId, setUserRolesId] = useState(currentUserRoles)// array[string]
+  const [userRoles, setUserRoles] = useState(user.roles); // array[{roleId, name}]
 
   //dropdown with all roles of the app
-  const [roles, setRoles] = useState(props.roles);
+  const [applicationRoles, setApplicationRoles] = useState(
+    props.applicationRoles
+  );
 
   //product editing refs
   let userNameRef = useRef();
@@ -44,34 +44,160 @@ export default function EditUser(props) {
   const [messages, setMessages] = useState({
     userNameError: "",
     userEmailError: "",
-    userAddToRoleError: "",
-    userRemoveFromRoleError: "",
   });
 
-  const [editUserResponseMessage, setEditUserResponseMessage] =
-    useState("");
+  const [editUserResponseMessage, setEditUserResponseMessage] = useState("");
   const [editUserErrorMessage, setEditUserErrorMessage] = useState("");
+
+  const [addUserToRoleResponse, setAddUserToRoleResponse] = useState("");
+  const [addUserToRoleErrorMessage, setAddUserToRoleErrorMessage] =
+    useState("");
+
+  const [
+    removeUserFromRoleResponseMessage,
+    setRemoveUserFromRoleResponseMessage,
+  ] = useState("");
+  const [removeUserFromRoleErrorMessage, setRemoveUserFromRoleErrorMessage] =
+    useState("");
 
   useEffect(() => {}, [messages]);
 
   function setValuesToStates() {
-    setUser(prev => {
+    setUser((prev) => {
       return {
         ...prev,
         username: userNameRef.current.value,
         email: userEmailRef.current.value,
-      }
+      };
     });
   }
 
-  function removeUserFromRole(roleId) {
-    const newRoles = userRolesId.filter(x => x !== roleId);
-    setUserRolesId(newRoles);
+  function onRemoveUserFromRole() {
+    let roleId = removeFromRoleRef.current.value;
+    let roleName = userRoles.find((x) => x.roleId === roleId)?.name;
+
+    if (roleName.toLowerCase() === applicationUserRole.toLowerCase()) {
+      setRemoveUserFromRoleResponseMessage("");
+      setRemoveUserFromRoleErrorMessage(
+        `You cannot remove user from ${applicationUserRole} role`
+      );
+      return;
+    } else {
+      setRemoveUserFromRoleErrorMessage("");
+    }
+
+    const newRoles = userRoles.filter((x) => x.roleId !== roleId);
+    setUserRoles(newRoles);
+
+    const userRole = {
+      userId: user.id,
+      roleId: roleId,
+    };
+
+    removeUserFromRole(userRole);
   }
 
-  function addUserToRole(roleId) {
-    const newRoles = userRolesId.push(roleId);
-    setUserRolesId(newRoles);
+  async function removeUserFromRole(userRole) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.users.removeUserFromRole,
+        userRole,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setRemoveUserFromRoleErrorMessage("");
+      setRemoveUserFromRoleResponseMessage(
+        `${
+          user.email
+        } successfully removed from the role! Now he is in roles: ${response?.data?.roles?.map(
+          (r) => r.name
+        )}`
+      );
+
+      props.updateUser(response?.data);
+    } catch (error) {
+      setRemoveUserFromRoleResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setRemoveUserFromRoleErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setRemoveUserFromRoleErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    } finally {
+      setAddUserToRoleErrorMessage("");
+      setAddUserToRoleResponse("");
+    }
+  }
+
+  function onAddUserToRole() {
+    let roleId = addToRoleRef.current.value;
+    let repeatedRole = userRoles.find((x) => x.roleId === roleId);
+
+    if (repeatedRole) {
+      setAddUserToRoleResponse("");
+      setAddUserToRoleErrorMessage(
+        `User already has role ${repeatedRole.name}`
+      );
+      return;
+    } else {
+      setAddUserToRoleErrorMessage("");
+    }
+    let role = applicationRoles.find((x) => x.roleId === roleId);
+
+    setUserRoles((userRoles) => [...userRoles, role]);
+
+    const userRole = {
+      userId: user.id,
+      roleId: role.roleId,
+    };
+
+    addUserToRole(userRole);
+  }
+
+  async function addUserToRole(userRole) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.users.addUserToRole,
+        userRole,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setAddUserToRoleErrorMessage("");
+      setAddUserToRoleResponse(
+        `${
+          user.email
+        } successfully added to new role! Now he is in roles: ${response?.data?.roles?.map(
+          (r) => r.name
+        )}`
+      );
+
+      props.updateUser(response?.data);
+    } catch (error) {
+      setAddUserToRoleResponse("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setAddUserToRoleErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setAddUserToRoleErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    } finally {
+      setRemoveUserFromRoleErrorMessage("");
+      setRemoveUserFromRoleResponseMessage("");
+    }
   }
 
   function onEditUser(e) {
@@ -87,10 +213,9 @@ export default function EditUser(props) {
     }
 
     const editedUser = {
-      username: userNameRef.current.value,
-      email: userEmailRef.current.value,
-      roles: userRolesId
-    }
+      username: userNameRef.current.value.trim(),
+      email: userEmailRef.current.value.trim(),
+    };
 
     editUser(editedUser);
   }
@@ -110,18 +235,14 @@ export default function EditUser(props) {
       controller.abort();
 
       setEditUserErrorMessage("");
-      setEditUserResponseMessage(
-        `${user.Email} successfully updated`
-      );
+      setEditUserResponseMessage(`${user.Email} successfully updated`);
 
       //props.updateProduct(response?.data);
     } catch (error) {
       setEditUserResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setEditUserErrorMessage(
-          "You have no permissions to perform the operation"
-        );
+        setEditUserErrorMessage(noPermissionsForOperationMessage);
       } else {
         setEditUserErrorMessage(error?.response?.data);
       }
@@ -200,7 +321,7 @@ export default function EditUser(props) {
     marginTop: theme.spacing(2),
   });
 
-  const ProductInfoInput = styled(InputBase)({
+  const UserInfoInput = styled(InputBase)({
     background: "rgb(255,249,249)",
     width: "100%",
     marginTop: theme.spacing(1),
@@ -237,8 +358,9 @@ export default function EditUser(props) {
 
   const RoleButton = styled(Button)({
     width: "100%",
-    marginTop: theme.spacing(2)
-  })
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  });
 
   const HeadingChip = styled(Chip)({
     fontSize: 21,
@@ -271,15 +393,13 @@ export default function EditUser(props) {
           <Divider>
             <SubheadingChip label="EMAIL" variant="outlined" color="primary" />
           </Divider>
-          <ProductInfoInput
+          <UserInfoInput
             inputRef={userEmailRef}
             placeholder={user.email}
             defaultValue={user.email}
           />
           {messages.userNameError ? (
-            <ErrorAlert severity="error">
-              {messages.userNameError}
-            </ErrorAlert>
+            <ErrorAlert severity="error">{messages.userNameError}</ErrorAlert>
           ) : (
             <></>
           )}
@@ -288,19 +408,17 @@ export default function EditUser(props) {
           <SubheadingChip label="USERNAME" variant="outlined" color="primary" />
         </Divider>
         <InputBox>
-          <ProductInfoInput
+          <UserInfoInput
             inputRef={userNameRef}
             placeholder={user.username}
             defaultValue={user.username}
           />
-           {messages.userNameError ? (
-            <ErrorAlert severity="error">
-              {messages.userNameError}
-            </ErrorAlert>
+          {messages.userNameError ? (
+            <ErrorAlert severity="error">{messages.userNameError}</ErrorAlert>
           ) : (
             <></>
           )}
-        </InputBox>     
+        </InputBox>
         <EditUserButton type="submit" size="big" variant="contained">
           EDIT USER
         </EditUserButton>
@@ -325,76 +443,110 @@ export default function EditUser(props) {
           ""
         )}
       </Box>
-        <InputBox>
+      <InputBox>
         <Divider>
-          <HeadingChip label="ROLES MANAGEMENT" variant="outlined" color="secondary" />
-         </Divider>
-          <Grid container spacing={3} sx={{ textAlign: "center" }}>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Divider>
-                <SubheadingChip
-                  label="ADD USER TO ROLE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <select
-                style={StyledSelect}
-                ref={addToRoleRef}
-                name="role"
-                defaultValue={"productCategoryId"}
-              >
-                {roles?.map((role) => (
-                  <option key={role?.id} value={role?.id}>
+          <HeadingChip
+            label="ROLES MANAGEMENT"
+            variant="outlined"
+            color="secondary"
+          />
+        </Divider>
+        <Grid container spacing={3} sx={{ textAlign: "center" }}>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Divider>
+              <SubheadingChip
+                label="ADD USER TO ROLE"
+                variant="outlined"
+                color="primary"
+              />
+            </Divider>
+            <select
+              style={StyledSelect}
+              ref={addToRoleRef}
+              name="role"
+              defaultValue={undefined}
+            >
+              {applicationRoles
+                ?.filter(
+                  (x) => !userRoles.some((item) => item.roleId === x.roleId)
+                )
+                .map((role) => (
+                  <option key={role?.roleId} value={role?.roleId}>
                     {role?.name}
                   </option>
                 ))}
-              </select>
-              <RoleButton variant="contained" size="small">
-                ADD TO ROLE
-              </RoleButton>
-              {messages.userAddToRoleError ? (
-                <ErrorAlert severity="error">
-                  {messages.userAddToRoleError}
-                </ErrorAlert>
-              ) : (
-                <></>
-              )}
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Divider>
-                <SubheadingChip
-                  label="REMOVE FROM ROLE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <select
-                style={StyledSelect}
-                name="userRole"
-                defaultValue={"productSubcategoryId"}
-                ref={removeFromRoleRef}
-                onChange={setValuesToStates}
-              >
-                {userRolesId?.map((role) => (
-                  <option key={role?.id} value={role.id}>
-                    {role?.name}
-                  </option>
-                ))}
-              </select>
-              <RoleButton variant="contained" size="small">
-                REMOVE FROM ROLE
-              </RoleButton>
-              {messages.userRemoveFromRoleError ? (
-                <ErrorAlert severity="error">
-                  {messages.userRemoveFromRoleError}
-                </ErrorAlert>
-              ) : (
-                <></>
-              )}
-            </Grid>
+            </select>
+            <RoleButton
+              disabled={
+                applicationRoles?.filter(
+                  (x) => !userRoles.some((item) => item.roleId === x.roleId)
+                ).length < 1
+                  ? true
+                  : false
+              }
+              onClick={onAddUserToRole}
+              variant="contained"
+              size="small"
+            >
+              ADD TO ROLE
+            </RoleButton>
+            {addUserToRoleErrorMessage ? (
+              <ErrorAlert severity="error">
+                {addUserToRoleErrorMessage}
+              </ErrorAlert>
+            ) : (
+              <></>
+            )}
+            {addUserToRoleResponse ? (
+              <Alert sx={{fontWeight: 500}} severity="success">{addUserToRoleResponse}</Alert>
+            ) : (
+              <></>
+            )}
           </Grid>
-        </InputBox>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Divider>
+              <SubheadingChip
+                label="REMOVE FROM ROLE"
+                variant="outlined"
+                color="primary"
+              />
+            </Divider>
+            <select
+              style={StyledSelect}
+              name="userRole"
+              defaultValue={"productSubcategoryId"}
+              ref={removeFromRoleRef}
+            >
+              {userRoles?.map((role) => (
+                <option key={role?.roleId} value={role.roleId}>
+                  {role?.name}
+                </option>
+              ))}
+            </select>
+            <RoleButton
+              onClick={onRemoveUserFromRole}
+              variant="contained"
+              size="small"
+            >
+              REMOVE FROM ROLE
+            </RoleButton>
+            {removeUserFromRoleErrorMessage ? (
+              <ErrorAlert severity="error">
+                {removeUserFromRoleErrorMessage}
+              </ErrorAlert>
+            ) : (
+              <></>
+            )}
+            {removeUserFromRoleResponseMessage ? (
+              <Alert sx={{fontWeight: 500}} severity="success">
+                {removeUserFromRoleResponseMessage}
+              </Alert>
+            ) : (
+              <></>
+            )}
+          </Grid>
+        </Grid>
+      </InputBox>
     </MainWrapper>
   );
 }

@@ -1,4 +1,5 @@
-﻿using ShopHeaven.Models.Requests.Users;
+﻿using ShopHeaven.Models.Requests.Roles;
+using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 
 namespace ShopHeaven.Data.Services.Contracts
@@ -7,12 +8,16 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task RegisterAsync(CreateUserRequestModel model);
 
-        Task<IList<string>> GetUserRolesAsync(string userId);
+        Task<IList<string>> GetUserRolesNamesAsync(string userId);
 
-        Task<IList<UserWithRolesResponseModel>> GetAllAsync();
+        Task<GetUsersAndRolesResponseModel> GetAllAsync();
 
         public BasicUserResponseModel GetUserInfoFromJwt();
 
         public Task<BasicUserResponseModel> GetUserByEmailAsync(string email);
+
+        public Task<UserWithRolesResponseModel> AddToRoleAsync(AddToRoleRequestModel model);
+
+        public Task<UserWithRolesResponseModel> RemoveFromRoleAsync(RemoveFromRoleRequestModel model);
     }
 }

@@ -6,7 +6,7 @@ import {
   Collapse,
   Chip,
   Box,
-  Grid, Button,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -15,21 +15,22 @@ import DeleteUser from "./DeleteUser";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
-  Star,
-  RateReview,
-  Person,
+  Group,
+  Event,
+  AccountCircle,
   Edit,
   Delete,
 } from "@mui/icons-material";
 
 export default function AdminUserRow(props) {
   const [user, setUser] = useState(props.user);
+
   const [isDeleted, setIsDeleted] = useState(false);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
 
   function handleSetOpenEditForm() {
-    if(isDeleted){
+    if (isDeleted) {
       return;
     }
     setOpenDeleteForm(false);
@@ -58,11 +59,11 @@ export default function AdminUserRow(props) {
     setIsDeleted(false);
   }
 
-  function formatDate(date){
-    const day = date.substring(8,10);
-    const month = date.substring(5,7); 
-    const year = date.substring(0,4);
-  
+  function formatDate(date) {
+    const day = date.substring(8, 10);
+    const month = date.substring(5, 7);
+    const year = date.substring(0, 4);
+
     const formattedDate = `${day}/${month}/${year}`;
     return formattedDate;
   }
@@ -120,7 +121,7 @@ export default function AdminUserRow(props) {
               <UserInfoText>
                 <Chip
                   sx={{ padding: 0.5 }}
-                  icon={<Star />}
+                  icon={<AccountCircle />}
                   variant="outlined"
                   color="warning"
                   label={`Username: ${user?.username}`}
@@ -130,7 +131,7 @@ export default function AdminUserRow(props) {
               <UserInfoText>
                 <Chip
                   sx={{ padding: 0.5 }}
-                  icon={<RateReview />}
+                  icon={<Event />}
                   variant="outlined"
                   color="primary"
                   label={`Created on: ${formatDate(user?.createdOn)}`}
@@ -140,9 +141,9 @@ export default function AdminUserRow(props) {
               <UserInfoText>
                 <Chip
                   sx={{ padding: 0.5 }}
-                  icon={<Person />}
+                  icon={<Group />}
                   variant="outlined"
-                  label={`Roles: ${user?.roles?.map(x => x.name )}`}
+                  label={`Roles: ${user?.roles?.map((x) => x.name)}`}
                   size="small"
                 />
               </UserInfoText>
@@ -177,11 +178,19 @@ export default function AdminUserRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-            {/* pass roles and user */}
-            <EditUser user={user}/>
+            <EditUser
+              user={user}
+              applicationRoles={props.applicationRoles}
+              updateUser={updateUser}
+            />
           </Collapse>
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
-            <DeleteUser user={user} onCancelButtonClicked={onCancelButtonClicked} userDeleted={userDeleted} userUndeleted={userUndeleted}/>
+            <DeleteUser
+              user={user}
+              onCancelButtonClicked={onCancelButtonClicked}
+              userDeleted={userDeleted}
+              userUndeleted={userUndeleted}
+            />
           </Collapse>
         </TableCell>
       </TableRow>
