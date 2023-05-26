@@ -8,10 +8,12 @@ import {
   Container,
   Button,
   Typography,
+  Alert
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
+import { passwordRequiredLength } from "../../constants";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import {
@@ -19,6 +21,17 @@ import {
   validatePassword,
   login,
 } from "../../services/authService";
+
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: "Login",
+    uri: "/login",
+  },
+];
 
 export default function Login() {
   const { setAuth } = useAuth();
@@ -125,18 +138,7 @@ export default function Login() {
     setValidPassword(true);
   }
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Login",
-      uri: "/login",
-    },
-  ];
-
-  const ProductInfoInput = styled(TextField)({
+  const LoginInfoInput = styled(TextField)({
     background: "rgb(255,249,249)",
     width: "80%",
     display: "flex",
@@ -182,6 +184,12 @@ export default function Login() {
     display: "flex",
     margin: "auto",
   });
+
+  const ErrorAlert = styled(Alert)({
+    fontWeight: 500,
+    width: "100%",
+    color: theme.palette.error.main,
+  });
   
   return (
     <Fragment>
@@ -190,16 +198,10 @@ export default function Login() {
           <Fragment>
             <FormHeading variant="h5">LOG IN YOUR ACCOUNT</FormHeading>
             <Container>
-              <ErrorMessageHolder>
-                <Typography variant="p">
-                  <b>{errMsg}</b>
-                </Typography>
-              </ErrorMessageHolder>
               <form onSubmit={handleSubmit}>
-                <ProductInfoInput
+                <LoginInfoInput
                   inputRef={emailRef}
                   autoComplete="off"
-                  required
                   defaultValue={email}
                   id="email"
                   label="Email"
@@ -207,17 +209,14 @@ export default function Login() {
                   variant="filled"
                 />
                 {!validEmail && email ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Email!
-                    </Typography>
-                  </ErrorMessageHolder>
+                   <ErrorMessageHolder>
+                      <ErrorAlert severity="error">Invalid Email!</ErrorAlert>
+                   </ErrorMessageHolder>
                 ) : (
                   ""
                 )}
-                <ProductInfoInput
+                <LoginInfoInput
                   inputRef={passwordRef}
-                  required
                   defaultValue={pwd}
                   id="password"
                   label="Password"
@@ -226,11 +225,10 @@ export default function Login() {
                 />
                 {!validPassword && pwd ? (
                   <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Password! Password must contain at
-                      least 10 characters, including lowercase and uppercase,
-                      digit and special symbol!
-                    </Typography>
+                    <ErrorAlert severity="error">
+                    Invalid Password! Password must contain at least{" "}
+                    {passwordRequiredLength} characters!
+                  </ErrorAlert>
                   </ErrorMessageHolder>
                 ) : (
                   ""
@@ -239,6 +237,13 @@ export default function Login() {
                   LOG IN
                 </LoginButton>
               </form>
+              {
+              errMsg ?
+              (<ErrorMessageHolder>
+                <ErrorAlert severity="error">{errMsg}</ErrorAlert>
+              </ErrorMessageHolder>)
+              : <></>
+            }
               <LinkHolder>
                 <Link to="/register">You haven't account? Create one!</Link>
               </LinkHolder>
