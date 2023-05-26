@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ShopHeaven;
 using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services;
@@ -23,7 +24,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.User.RequireUniqueEmail = true;
-    options.Password.RequiredLength = 10;
+    options.Password.RequiredLength = GlobalConstants.PasswordLength;
     options.Password.RequireNonAlphanumeric = false;
 })
     .AddRoles<IdentityRole>()

@@ -149,13 +149,14 @@ export default function EditUser(props) {
     } else {
       setAddUserToRoleErrorMessage("");
     }
+
     let role = applicationRoles.find((x) => x.roleId === roleId);
 
     setUserRoles((userRoles) => [...userRoles, role]);
 
     const userRole = {
       userId: user.id,
-      roleId: role.roleId,
+      roleId: roleId,
     };
 
     addUserToRole(userRole);
@@ -481,8 +482,6 @@ export default function EditUser(props) {
                 applicationRoles?.filter(
                   (x) => !userRoles.some((item) => item.roleId === x.roleId)
                 ).length < 1
-                  ? true
-                  : false
               }
               onClick={onAddUserToRole}
               variant="contained"
@@ -498,7 +497,9 @@ export default function EditUser(props) {
               <></>
             )}
             {addUserToRoleResponse ? (
-              <Alert sx={{fontWeight: 500}} severity="success">{addUserToRoleResponse}</Alert>
+              <Alert sx={{ fontWeight: 500 }} severity="success">
+                {addUserToRoleResponse}
+              </Alert>
             ) : (
               <></>
             )}
@@ -538,7 +539,7 @@ export default function EditUser(props) {
               <></>
             )}
             {removeUserFromRoleResponseMessage ? (
-              <Alert sx={{fontWeight: 500}} severity="success">
+              <Alert sx={{ fontWeight: 500 }} severity="success">
                 {removeUserFromRoleResponseMessage}
               </Alert>
             ) : (

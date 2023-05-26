@@ -39,6 +39,11 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.PasswordsDoesntMatch);
             }
 
+            if (model.Password.Length < GlobalConstants.PasswordLength)
+            {
+                throw new ArgumentException(GlobalConstants.PasswordLengthNotEnough);
+            }
+
             User user = new User
             {
                 UserName = "User" + (db.Users.Count() + 6564),

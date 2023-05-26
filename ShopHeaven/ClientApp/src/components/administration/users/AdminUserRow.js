@@ -47,7 +47,6 @@ export default function AdminUserRow(props) {
   }
 
   function updateUser(updatedUser) {
-    console.log("UPDATED User", updatedUser);
     setUser(updatedUser);
   }
 

@@ -8,6 +8,8 @@
 
         public const string UserRoleName = "User";
 
+        public static int PasswordLength => 8;
+
         public static IReadOnlyList<string> AllowedImageFileExtensions = new List<string>
         {
             ".jpeg",
@@ -20,7 +22,9 @@
 
         public const string PasswordsDoesntMatch = "Password and Confirm Password doesn't match!";
 
-        public const string PasswordNotValid = "Password ais not valid!";
+        public const string PasswordNotValid = "Password is not valid!";
+
+        public static string PasswordLengthNotEnough = $"Password length must be at least {PasswordLength} characters long.";
 
         public const string UserDoesNotExist = "User with given Id doesn't exists!";
 
