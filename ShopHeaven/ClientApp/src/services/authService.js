@@ -1,5 +1,6 @@
 import axios from "../api/axios";
 import { ApiEndpoints } from "../api/endpoints";
+import { passwordRequiredLength } from "../constants";
 
 export async function register(user){
 
@@ -37,15 +38,24 @@ export async function login(user){
 }
 
 export function validateEmail(email) {
+    if(!email) {
+      return false;
+    }
     const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const isEmailValid = EMAIL_REGEX.test(email);
     return isEmailValid;
 }
 
 export function validatePassword(password) {
-   return password.length < 10 ? false : true
+    if (!password) {
+      return false;
+    }
+   return password.length < passwordRequiredLength ? false : true
 }
 
 export function passwordsMatch(password, confirmPassword) {
+    if(!password || !confirmPassword) {
+      return false;
+    }
     return password.trim() === confirmPassword.trim() ? true : false;
 }

@@ -7,10 +7,12 @@ import {
   Container,
   Button,
   Typography,
+  Alert,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
+import { passwordRequiredLength } from "../../constants";
 import BreadcrumbsBar from "../BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import {
@@ -116,7 +118,13 @@ export default function Register() {
     setValidConfirmPassword(true);
   }
 
-  const ProductInfoInput = styled(TextField)({
+  const ErrorAlert = styled(Alert)({
+    fontWeight: 500,
+    width: "100%",
+    color: theme.palette.error.main,
+  });
+
+  const RegisterInfoInput = styled(TextField)({
     background: "rgb(255,249,249)",
     width: "80%",
     display: "flex",
@@ -167,81 +175,77 @@ export default function Register() {
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <FormWrapper>
-          <Fragment>
-            <FormHeading variant="h5"> REGISTER PROFILE</FormHeading>
-            <Container>
-              <ErrorMessageHolder>
-                <Typography variant="p">
-                  <b>{errMsg}</b>
-                </Typography>
-              </ErrorMessageHolder>
-              <form onSubmit={handleSubmit}>
-                <ProductInfoInput
-                  inputRef={emailRef}
-                  autoComplete="off"
-                  required
-                  defaultValue={email}
-                  id="email"
-                  label="Email"
-                  type="text"
-                  variant="filled"
-                />
-                {!validEmail && email ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Email!
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <ProductInfoInput
-                  inputRef={passwordRef}
-                  required
-                  defaultValue={pwd}
-                  id="password"
-                  label="Password"
-                  type="password"
-                  variant="filled"
-                />
-                {!validPassword && pwd ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Invalid Password! Password must contain at
-                      least 10 characters, including lowercase and uppercase,
-                      digit and special symbol!{" "}
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <ProductInfoInput
-                  inputRef={confirmPasswordRef}
-                  required
-                  defaultValue={matchPwd}
-                  id="confirm-password"
-                  label="Confirm Password"
-                  type="password"
-                  variant="filled"
-                />
-                {!validConfirmPassword && matchPwd ? (
-                  <ErrorMessageHolder>
-                    <Typography variant="p">
-                      <InfoIcon /> Passwords must match!
-                    </Typography>
-                  </ErrorMessageHolder>
-                ) : (
-                  ""
-                )}
-                <RegisterButton type="submit" variant="contained" size="large">
-                  REGISTER
-                </RegisterButton>
-              </form>
-              <LinkHolder>
-                <Link to="/login">Already have a profile? Log in!</Link>
-              </LinkHolder>
-            </Container>
-          </Fragment>
+        <Fragment>
+          <FormHeading variant="h5"> REGISTER PROFILE</FormHeading>
+          <Container>
+            <form onSubmit={handleSubmit}>
+              <RegisterInfoInput
+                inputRef={emailRef}
+                autoComplete="off"
+                defaultValue={email}
+                id="email"
+                label="Email"
+                type="text"
+                variant="filled"
+              />
+              {!validEmail && email ? (
+                <ErrorMessageHolder>
+                  <ErrorAlert severity="error">Invalid Email!</ErrorAlert>
+                </ErrorMessageHolder>
+              ) : (
+                ""
+              )}
+              <RegisterInfoInput
+                inputRef={passwordRef}
+                defaultValue={pwd}
+                id="password"
+                label="Password"
+                type="password"
+                variant="filled"
+              />
+              {!validPassword && pwd ? (
+                <ErrorMessageHolder>
+                  <ErrorAlert severity="error">
+                    Invalid Password! Password must contain at least{" "}
+                    {passwordRequiredLength} characters!
+                  </ErrorAlert>
+                </ErrorMessageHolder>
+              ) : (
+                ""
+              )}
+              <RegisterInfoInput
+                inputRef={confirmPasswordRef}
+                defaultValue={matchPwd}
+                id="confirm-password"
+                label="Confirm Password"
+                type="password"
+                variant="filled"
+              />
+              {!validConfirmPassword && matchPwd ? (
+                <ErrorMessageHolder>
+                  <ErrorAlert severity="error">
+                    Passwords must match!
+                  </ErrorAlert>
+                </ErrorMessageHolder>
+              ) : (
+                ""
+              )}
+              <RegisterButton type="submit" variant="contained" size="large">
+                REGISTER
+              </RegisterButton>
+            </form>
+            {
+              errMsg ?
+              (<ErrorMessageHolder>
+                <ErrorAlert severity="error">{errMsg}</ErrorAlert>
+              </ErrorMessageHolder>)
+              : <></>
+            }
+            <LinkHolder>
+              <Link to="/login">Already have a profile? Log in!</Link>
+            </LinkHolder>
+          </Container>
+        </Fragment>
       </FormWrapper>
       <Box sx={{ mt: theme.spacing(3) }}>
         <FullWidthBanner
