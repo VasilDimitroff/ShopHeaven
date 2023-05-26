@@ -21,5 +21,9 @@ namespace ShopHeaven.Data.Services.Contracts
         public Task<UserWithRolesResponseModel> RemoveFromRoleAsync(RemoveFromRoleRequestModel model);
 
         public Task<UserWithRolesResponseModel> EditUserAsync(EditUserRequestModel model);
+
+        public Task<UserWithRolesResponseModel> DeleteUserAsync(DeleteUserRequestModel model);
+
+        public Task<UserWithRolesResponseModel> UndeleteUserAsync(UndeleteUserRequestModel model);
     }
 }

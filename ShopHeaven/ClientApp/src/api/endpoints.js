@@ -10,6 +10,8 @@ export const ApiEndpoints = {
     users: {
         getAll: "api/users/getall",
         editUser: "api/users/edit",
+        deleteUser: "api/users/delete",
+        undeleteUser: "api/users/undelete",
         addUserToRole: "api/users/addToRole",
         removeUserFromRole: "api/users/removeFromRole"
     },

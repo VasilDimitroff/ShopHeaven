@@ -7,6 +7,7 @@ import {
   Chip,
   Box,
   Grid,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -20,42 +21,48 @@ import {
   AccountCircle,
   Edit,
   Delete,
+  RestoreFromTrash
 } from "@mui/icons-material";
+import UndeleteUser from "./UndeleteUser";
 
 export default function AdminUserRow(props) {
   const [user, setUser] = useState(props.user);
 
-  const [isDeleted, setIsDeleted] = useState(false);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
+  const [openUndeleteForm, setOpenUndeleteForm] = useState(false);
 
   function handleSetOpenEditForm() {
-    if (isDeleted) {
+    if (user?.isDeleted) {
       return;
     }
     setOpenDeleteForm(false);
+    setOpenUndeleteForm(false);
     setOpenEditForm((prev) => !prev);
   }
 
   function handleSetOpenDeleteForm() {
     setOpenEditForm(false);
+    setOpenUndeleteForm(false);
     setOpenDeleteForm((prev) => !prev);
+  }
+
+  function handleSetOpenUndeleteForm() {
+    setOpenEditForm(false);
+    setOpenDeleteForm(false);
+    setOpenUndeleteForm(prev => !prev);
   }
 
   function onCancelButtonClicked() {
     setOpenDeleteForm((prev) => !prev);
   }
 
+  function onUndeleteCancelButtonClicked() {
+    setOpenUndeleteForm((prev) => !prev);
+  }
+
   function updateUser(updatedUser) {
     setUser(updatedUser);
-  }
-
-  function userDeleted() {
-    setIsDeleted(true);
-  }
-
-  function userUndeleted() {
-    setIsDeleted(false);
   }
 
   function formatDate(date) {
@@ -114,8 +121,14 @@ export default function AdminUserRow(props) {
           component="th"
           scope="row"
         >
-          {!isDeleted ? user?.email : "USER DELETED"}
-          {!isDeleted ? (
+          {user?.isDeleted ? (
+            <>
+            {user?.email}
+            <Typography color="error" sx={{display: "inline", fontWeight: 500}}>
+          {" "}(User Deleted)
+            </Typography>
+            </>) : user?.email
+            }
             <UserInfoHolder>
               <UserInfoText>
                 <Chip
@@ -147,9 +160,6 @@ export default function AdminUserRow(props) {
                 />
               </UserInfoText>
             </UserInfoHolder>
-          ) : (
-            <></>
-          )}
         </UserNameTableCell>
         <TableCell align="center">
           <Grid container spacing={2}>
@@ -163,13 +173,25 @@ export default function AdminUserRow(props) {
               </StyledIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
-                onClick={handleSetOpenDeleteForm}
-                color="error"
-                size="small"
-              >
-                <Delete />
-              </StyledIconButton>
+              {
+                !user?.isDeleted
+                ?
+                (              <StyledIconButton
+                  onClick={handleSetOpenDeleteForm}
+                  color="error"
+                  size="small"
+                >
+                  <Delete />
+                </StyledIconButton>)
+                :                 (<StyledIconButton
+                  onClick={handleSetOpenUndeleteForm}
+                  color="success"
+                  size="small"
+                >
+                  <RestoreFromTrash />
+                </StyledIconButton>)
+              }
+
             </Grid>
           </Grid>
         </TableCell>
@@ -187,9 +209,14 @@ export default function AdminUserRow(props) {
             <DeleteUser
               user={user}
               onCancelButtonClicked={onCancelButtonClicked}
-              userDeleted={userDeleted}
-              userUndeleted={userUndeleted}
+              updateUser={updateUser}
             />
+          </Collapse>
+          <Collapse in={openUndeleteForm} timeout="auto" unmountOnExit>
+            <UndeleteUser
+              onUndeleteCancelButtonClicked={onUndeleteCancelButtonClicked}
+              updateUser={updateUser}
+              user={user}/>
           </Collapse>
         </TableCell>
       </TableRow>

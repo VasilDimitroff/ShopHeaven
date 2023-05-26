@@ -16,6 +16,8 @@ namespace ShopHeaven.Models.Responses.Users
 
         public string CreatedOn { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ICollection<UserRoleResponseModel> Roles { get; set; }
     }
 }

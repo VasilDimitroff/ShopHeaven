@@ -58,7 +58,7 @@ export default function DeleteUser(props) {
       setUndoDeleteButtonClicked(false);
       
       setIsDeleted(true);
-      props.userDeleted();
+      props.updateUser(response?.data);
       console.log(response?.data);
     } catch (error) {
       setDeleteUserResponseMessage("");
@@ -100,11 +100,11 @@ export default function DeleteUser(props) {
         "User " + user.email + " undeleted!"
       );
       setDeleteResponse(undefined);
-      setUndeleteResponse(response?.data);
+      setUndeleteResponse("Success");
       setUndoDeleteButtonClicked(true);
 
       setIsDeleted(false);
-      props.userUndeleted();
+      props.updateUser(response?.data);
       console.log(response?.data);
     } catch (error) {
       setDeleteUserResponseMessage("");
@@ -139,24 +139,6 @@ export default function DeleteUser(props) {
             <AlertTitle>
               User {user.email} successfully deleted!
             </AlertTitle>
-            <ul>
-              <li>1 user deleted</li>
-              <li>{deleteResponse?.deletedReviews} reviews deleted</li>
-              <li>{deleteResponse?.deletedTags} tags deleted</li>
-              <li>{deleteResponse?.deletedCarts} cart products deleted</li>
-              <li>
-                {deleteResponse?.deletedWishlists} wishlist products deleted
-              </li>
-              <li>{deleteResponse?.deletedOrders} order products deleted</li>
-              <li>
-                {deleteResponse?.deletedLabels} labels of products deleted
-              </li>
-              <li>{deleteResponse?.deletedImages} product images deleted</li>
-              <li>
-                {deleteResponse?.deletedSpecifications} product specifications
-                deleted
-              </li>
-            </ul>
             <Box sx={{ display: "flex", gap: 2 }}>
               {!undoDeleteButtonClicked ? (
                 <Button
@@ -170,9 +152,6 @@ export default function DeleteUser(props) {
               ) : (
                 ""
               )}
-              <Button size="small" variant="contained" onClick={refreshPage}>
-                REFRESH
-              </Button>
             </Box>
           </Alert>
         ) : (
@@ -180,29 +159,6 @@ export default function DeleteUser(props) {
             <AlertTitle>
               User {user.email} successfully revealed!
             </AlertTitle>
-            <ul>
-              <li>1 user revealed</li>
-              <li>{undeleteResponse?.revealedReviews} reviews revealed</li>
-              <li>{undeleteResponse?.revealedTags} tags revealed</li>
-              <li>{undeleteResponse?.revealedCarts} cart products revealed</li>
-              <li>
-                {undeleteResponse?.revealedWishlists} wishlist products revealed
-              </li>
-              <li>{undeleteResponse?.revealedOrders} order products revealed</li>
-              <li>
-                {undeleteResponse?.revealedLabels} labels of products revealed
-              </li>
-              <li>{undeleteResponse?.revealedImages} product images revealed</li>
-              <li>
-                {undeleteResponse?.revealedSpecifications} product specifications
-                revealed
-              </li>
-            </ul>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button size="small" variant="contained" onClick={refreshPage}>
-                REFRESH
-              </Button>
-            </Box>
           </Alert>
         )
       ) : (
