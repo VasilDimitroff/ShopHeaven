@@ -156,7 +156,7 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
-        public async Task<BasicUserResponseModel> GetUserByEmailAsync(string email)
+        public async Task<BasicUserResponseModel> GetUserByEmailAsyncOLD(string email)
         {
 
             var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
@@ -227,6 +227,31 @@ namespace ShopHeaven.Data.Services
             var user = await this.db.Users
                 //.Where(u => u.Id == userId && u.IsDeleted != true)
                 .Where(u => u.Id == userId)
+                .Select(u => new UserWithRolesResponseModel
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    CreatedOn = u.CreatedOn.ToString(),
+                    IsDeleted = u.IsDeleted,
+                    Roles = this.db.UserRoles
+                        .Where(ur => ur.UserId == u.Id)
+                        .Select(ur => new UserRoleResponseModel
+                        {
+                            RoleId = ur.RoleId,
+                            Name = this.db.Roles.FirstOrDefault(r => r.Id == ur.RoleId).Name
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<UserWithRolesResponseModel> GetUserByEmailAsync(string email)
+        {
+            var user = await this.db.Users
+                .Where(u => u.Email == email.Trim() && u.IsDeleted != true)
                 .Select(u => new UserWithRolesResponseModel
                 {
                     Id = u.Id,

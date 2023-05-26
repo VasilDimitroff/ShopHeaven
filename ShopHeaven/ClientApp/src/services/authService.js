@@ -33,7 +33,7 @@ export async function login(user){
         withCredentials: true,
       }
     );
-    
+   console.log("LOGIN ", response?.data)
   return response;
 }
 
