@@ -226,6 +226,7 @@ namespace ShopHeaven.Data.Services
         {
             var user = await this.db.Users
                 //.Where(u => u.Id == userId && u.IsDeleted != true)
+                .Where(u => u.Id == userId)
                 .Select(u => new UserWithRolesResponseModel
                 {
                     Id = u.Id,

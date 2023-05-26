@@ -120,7 +120,7 @@ export default function EditUser(props) {
           (r) => r.name
         )}`
       );
-
+      console.log("ADDDU SER", response?.data)
       props.updateUser(response?.data);
     } catch (error) {
       setRemoveUserFromRoleResponseMessage("");
@@ -185,8 +185,8 @@ export default function EditUser(props) {
           (r) => r.name
         )}`
       );
-
-      props.updateUser(response?.data);
+          console.log("ADDDU SER", response?.data)
+     props.updateUser(response?.data);
     } catch (error) {
       setAddUserToRoleResponse("");
 
