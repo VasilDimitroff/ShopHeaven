@@ -107,8 +107,7 @@ export default function Login() {
       console.log("TOKEN IS: " + response.data.jwtToken);
       console.log("EMAIL IS: " + response.data.email);
       console.log("ID IS: " + response.data.id);
-      console.log("ROLES ARE: " + response.data.roles.length);
-      console.log("ROLE IS: " + response.data.roles[0]);
+      console.log("ROLES ARE: " + response.data.roles);
       console.log("REFRESH TOKEN IS: " + response.data.refreshToken);
       console.log("CREATED REFRESH TOKEN IS: " + response.data.tokenCreated);
       console.log("EXPIRES  REFRESH TOKEN IS: " + response.data.tokenExpires);

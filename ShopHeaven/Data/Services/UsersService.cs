@@ -222,67 +222,6 @@ namespace ShopHeaven.Data.Services
 
         }
 
-        private async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
-        {
-            var user = await this.db.Users
-                //.Where(u => u.Id == userId && u.IsDeleted != true)
-                .Where(u => u.Id == userId)
-                .Select(u => new UserWithRolesResponseModel
-                {
-                    Id = u.Id,
-                    Username = u.UserName,
-                    Email = u.Email,
-                    CreatedOn = u.CreatedOn.ToString(),
-                    IsDeleted = u.IsDeleted,
-                    Roles = this.db.UserRoles
-                        .Where(ur => ur.UserId == u.Id)
-                        .Select(ur => new UserRoleResponseModel
-                        {
-                            RoleId = ur.RoleId,
-                            Name = this.db.Roles.FirstOrDefault(r => r.Id == ur.RoleId).Name
-                        })
-                        .ToList()
-                })
-                .FirstOrDefaultAsync();
-
-            return user;
-        }
-
-        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync()
-        {
-            return await db.Users
-                  //.Where(u => u.IsDeleted != true)
-                  .Join(
-                      db.UserRoles,
-                      user => user.Id,
-                      userRole => userRole.UserId,
-                      (user, userRole) => new { User = user, UserRole = userRole })
-                  .Join(
-                      db.Roles,
-                      ur => ur.UserRole.RoleId,
-                      role => role.Id,
-                      (ur, role) => new { User = ur.User, Role = role })
-                  .GroupBy(
-                      ur => new { ur.User.Id, ur.User.Email, ur.User.UserName, ur.User.CreatedOn, ur.User.IsDeleted },
-                      ur => ur.Role)
-                  .Select(
-                      g => new UserWithRolesResponseModel
-                      {
-                          Id = g.Key.Id,
-                          Username = g.Key.UserName,
-                          Email = g.Key.Email,
-                          CreatedOn = g.Key.CreatedOn.ToString(),
-                          IsDeleted = g.Key.IsDeleted,
-                          Roles = g.Select(x => new UserRoleResponseModel
-                          {
-                              Name = x.Name,
-                              RoleId = x.Id
-                          })
-                          .ToList()
-                      })
-                  .ToListAsync();
-        }
-
         public async Task<UserWithRolesResponseModel> RemoveFromRoleAsync(RemoveFromRoleRequestModel model)
         {
             var userRole = await this.db.UserRoles
@@ -390,5 +329,67 @@ namespace ShopHeaven.Data.Services
 
             return userModel;
         }
+
+        private async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
+        {
+            var user = await this.db.Users
+                //.Where(u => u.Id == userId && u.IsDeleted != true)
+                .Where(u => u.Id == userId)
+                .Select(u => new UserWithRolesResponseModel
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    CreatedOn = u.CreatedOn.ToString(),
+                    IsDeleted = u.IsDeleted,
+                    Roles = this.db.UserRoles
+                        .Where(ur => ur.UserId == u.Id)
+                        .Select(ur => new UserRoleResponseModel
+                        {
+                            RoleId = ur.RoleId,
+                            Name = this.db.Roles.FirstOrDefault(r => r.Id == ur.RoleId).Name
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync()
+        {
+            return await db.Users
+                  //.Where(u => u.IsDeleted != true)
+                  .Join(
+                      db.UserRoles,
+                      user => user.Id,
+                      userRole => userRole.UserId,
+                      (user, userRole) => new { User = user, UserRole = userRole })
+                  .Join(
+                      db.Roles,
+                      ur => ur.UserRole.RoleId,
+                      role => role.Id,
+                      (ur, role) => new { User = ur.User, Role = role })
+                  .GroupBy(
+                      ur => new { ur.User.Id, ur.User.Email, ur.User.UserName, ur.User.CreatedOn, ur.User.IsDeleted },
+                      ur => ur.Role)
+                  .Select(
+                      g => new UserWithRolesResponseModel
+                      {
+                          Id = g.Key.Id,
+                          Username = g.Key.UserName,
+                          Email = g.Key.Email,
+                          CreatedOn = g.Key.CreatedOn.ToString(),
+                          IsDeleted = g.Key.IsDeleted,
+                          Roles = g.Select(x => new UserRoleResponseModel
+                          {
+                              Name = x.Name,
+                              RoleId = x.Id
+                          })
+                          .ToList()
+                      })
+                  .ToListAsync();
+        }
+
     }
 }
