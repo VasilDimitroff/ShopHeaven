@@ -1,6 +1,4 @@
-﻿using ShopHeaven.Models.Responses.Roles;
-
-namespace ShopHeaven.Models.Responses.Users
+﻿namespace ShopHeaven.Models.Responses.Users
 {
     public class UserAuthorizationModel
     {
@@ -16,6 +14,6 @@ namespace ShopHeaven.Models.Responses.Users
 
         public string JwtToken { get; set; }
 
-        public ICollection<UserRoleResponseModel> Roles { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }
