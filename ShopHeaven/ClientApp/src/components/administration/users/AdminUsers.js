@@ -9,7 +9,6 @@ import {
   TableHead,
   TableContainer,
   Grid,
-  Pagination,
 } from "@mui/material";
 import { Search, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -18,6 +17,8 @@ import Loader from "../../common/Loader";
 import AdminUserRow from "./AdminUserRow";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { productsPerPageInAdminPanel } from "../../../constants";
+import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AdminUsers() {
@@ -25,6 +26,10 @@ export default function AdminUsers() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState();
+
+  //current page with records
+  const [page, setPage] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(10);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,14 +46,26 @@ export default function AdminUsers() {
 
     const getUsers = async () => {
       try {
+        console.log("PAGE IS ", page);
         setIsLoading(true);
-        const response = await axiosPrivate.get(ApiEndpoints.users.getAll, {
-          signal: controller.signal,
-        });
-        console.log(response.data);
 
+        let pagingModel = {
+          recordsPerPage: productsPerPageInAdminPanel,
+          page: page,
+          searchTerm: "",
+        };
+
+        const response = await axiosPrivate.post(
+          ApiEndpoints.users.getAll,
+          pagingModel,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response.data);
         setUsers(response?.data?.users);
         setApplicationRoles(response?.data?.applicationRoles);
+        setNumberOfPages(response?.data?.pagesCount);
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
@@ -64,7 +81,7 @@ export default function AdminUsers() {
       controller.abort();
       effectRun.current = true; // update the value of effectRun to true
     };
-  }, []);
+  }, [page]);
 
   function clearSearchValue() {
     searchInputRef.current.value = "";
@@ -91,8 +108,6 @@ export default function AdminUsers() {
   const UserTableCell = styled(TableCell)({
     fontSize: 18,
   });
-
-  const StyledPagination = styled(Pagination)({});
 
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(4),
@@ -188,23 +203,31 @@ export default function AdminUsers() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users?.map((user, index) => {
+            {users?.map((user) => {
               return (
-                <AdminUserRow key={index} applicationRoles={applicationRoles} user={user} />
+                <AdminUserRow
+                  key={user.id}
+                  applicationRoles={applicationRoles}
+                  user={user}
+                />
               );
             })}
           </TableBody>
         </Table>
       </TableContainer>
       {isLoading ? (
-        <Box sx={{ padding: theme.spacing(3)}}>
+        <Box sx={{ padding: theme.spacing(3) }}>
           <Loader />
         </Box>
       ) : (
         <></>
       )}
       <PaginationHolder>
-        <StyledPagination count={10} size="medium" color="secondary" />
+        <AppPagination
+          page={page}
+          setPage={setPage}
+          numberOfPages={numberOfPages}
+        />
       </PaginationHolder>
     </Box>
   );

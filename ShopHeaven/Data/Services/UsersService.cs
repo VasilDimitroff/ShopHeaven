@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Roles;
@@ -95,7 +96,7 @@ namespace ShopHeaven.Data.Services
             return userRoles;
         }
 
-        public async Task<GetUsersAndRolesResponseModel> GetAllAsync()
+        public async Task<GetUsersAndRolesResponseModel> GetAllAsync(UserPaginationRequestModel model)
         {
             var allRoles = await db.Roles.Select(x => new UserRoleResponseModel
             {
@@ -104,12 +105,16 @@ namespace ShopHeaven.Data.Services
             })
                 .ToListAsync();
 
-            List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync();
+            var usersCount = this.db.Users.Count();
+
+            List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
 
             var usersAndRoles = new GetUsersAndRolesResponseModel
             {
                 Users = usersWithRoles.ToList(),
-                ApplicationRoles = allRoles.ToList()
+                ApplicationRoles = allRoles.ToList(),
+                UsersCount = usersCount,
+                RecordsPerPage = model.RecordsPerPage
             };
 
             return usersAndRoles;
@@ -356,10 +361,14 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
-        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync()
+        private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync(UserPaginationRequestModel model)
         {
             return await db.Users
                   //.Where(u => u.IsDeleted != true)
+                  .OrderByDescending(x => x.CreatedOn)
+                  .Where(u => u.Email.Contains(model.SearchTerm.Trim()) || u.UserName.Contains(model.SearchTerm.Trim()))
+                  .Skip((model.Page - 1) * model.RecordsPerPage)
+                  .Take(model.RecordsPerPage)
                   .Join(
                       db.UserRoles,
                       user => user.Id,

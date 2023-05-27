@@ -1,4 +1,5 @@
-﻿using ShopHeaven.Models.Requests.Roles;
+﻿using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
 
@@ -10,7 +11,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<IList<string>> GetUserRolesNamesAsync(string userId);
 
-        Task<GetUsersAndRolesResponseModel> GetAllAsync();
+        Task<GetUsersAndRolesResponseModel> GetAllAsync(UserPaginationRequestModel model);
 
         public BasicUserResponseModel GetUserInfoFromJwt();
 

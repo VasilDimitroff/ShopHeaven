@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
@@ -19,12 +20,12 @@ namespace ShopHeaven.Controllers
             this.usersService = usersService;
         }
 
-        [HttpGet, Route(nameof(GetAll)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
-        public async Task<ActionResult<GetUsersAndRolesResponseModel>> GetAll()
+        [HttpPost, Route(nameof(GetAll)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<ActionResult<GetUsersAndRolesResponseModel>> GetAll([FromBody] UserPaginationRequestModel model)
         {
             try
             {
-                var users = await this.usersService.GetAllAsync();
+                var users = await this.usersService.GetAllAsync(model);
 
                 return Ok(users);
             }
