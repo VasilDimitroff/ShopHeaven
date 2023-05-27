@@ -5,3 +5,4 @@ export const passwordRequiredLength = 8;
 export const usernameRequiredLength = 2;
 export const usersPerPageInAdminPanel = 5;
 export const productsPerPageInAdminPanel = 5;
+export const requestTimerMilliseconds = 400;

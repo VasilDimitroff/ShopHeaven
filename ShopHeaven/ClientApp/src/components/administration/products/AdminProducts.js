@@ -18,7 +18,7 @@ import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { productsPerPageInAdminPanel } from "../../../constants";
+import { productsPerPageInAdminPanel, requestTimerMilliseconds } from "../../../constants";
 import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
 import AppPagination from "../../common/AppPagination";
@@ -28,6 +28,8 @@ import Loader from "../../common/Loader";
 export default function AdminProducts() {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [timer, setTimer] = useState(0);
 
   //current page with records
   const [page, setPage] = useState(1);
@@ -53,18 +55,20 @@ export default function AdminProducts() {
   const location = useLocation();
 
   useEffect(() => {
+    let timeoutId;
+
     const controller = new AbortController();
 
-    let pagingModel = {
-      recordsPerPage: productsPerPageInAdminPanel,
-      page: page,
-      searchTerm: searchTerm,
-      categoryId: searchProductByCategoryId,
-    };
-
-    const getProducts = async (requestModel) => {
+    const getProducts = async () => {
       try {
         setIsLoading(true);
+
+        let pagingModel = {
+          recordsPerPage: productsPerPageInAdminPanel,
+          page: page,
+          searchTerm: searchTerm,
+          categoryId: searchProductByCategoryId,
+        };
 
         console.log("REQUIEST ", pagingModel);
 
@@ -83,9 +87,11 @@ export default function AdminProducts() {
         setCurrencies(response?.data?.currencies);
         setNumberOfPages(response?.data?.pagesCount);
         setTotalProductsCount(response?.data?.productsCount)  
+
         if (page > response?.data?.pagesCount) {
           setPage(1)
         }
+
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -93,13 +99,22 @@ export default function AdminProducts() {
       }
     };
 
-    if (effectRun.current) {
-      getProducts(pagingModel);
-    }
+    const delayGetProductsRequest = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (effectRun.current) {
+          getProducts();
+        }
+      }, timer);
+    };
+
+    delayGetProductsRequest();
 
     return () => {
       effectRun.current = true; // update the value of effectRun to true
       controller.abort();
+      clearTimeout(timeoutId);
+      setTimer(0);
     };
   }, [page, searchTerm, searchProductByCategoryId]);
 
@@ -118,6 +133,7 @@ export default function AdminProducts() {
     }
     setSearchTerm(searchValue);
     setSearchProductByCategoryId(categoryId);
+    setTimer(requestTimerMilliseconds);
   }
 
   function clearSearchValues() {
@@ -148,16 +164,6 @@ export default function AdminProducts() {
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
-  });
-
-  const SearchInput = styled("input")({
-    position: "relative",
-    width: "100%",
-    border: "1px solid #C6BFBE",
-    backgroundColor: "rgb(255,249,249)",
-    padding: theme.spacing(0.65),
-    paddingLeft: theme.spacing(5),
-    borderRadius: theme.shape.borderRadius,
   });
 
   const StyledSelect = {
@@ -202,7 +208,15 @@ export default function AdminProducts() {
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
-            <SearchInput
+            <input
+              style={{position: "relative",
+              width: "100%",
+              border: "1px solid #C6BFBE",
+              backgroundColor: "rgb(255,249,249)",
+              padding: theme.spacing(0.65),
+              paddingLeft: theme.spacing(5),
+              borderRadius: theme.shape.borderRadius,}}
+              onChange={onSearchProduct}
               defaultValue={searchTerm}
               ref={searchInputRef}
               placeholder="Search product by name..."
@@ -211,6 +225,7 @@ export default function AdminProducts() {
           </Grid>
           <Grid item xs={8} sm={8} md={3} lg={4}>
             <select
+              onChange={onSearchProduct}
               defaultValue={searchProductByCategoryId}
               style={StyledSelect}
               ref={categorySearchRef}

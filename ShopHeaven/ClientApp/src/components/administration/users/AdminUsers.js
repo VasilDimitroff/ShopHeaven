@@ -10,7 +10,7 @@ import {
   TableContainer,
   Grid,
   Alert,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Search, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -19,7 +19,10 @@ import Loader from "../../common/Loader";
 import AdminUserRow from "./AdminUserRow";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { usersPerPageInAdminPanel } from "../../../constants";
+import {
+  usersPerPageInAdminPanel,
+  requestTimerMilliseconds,
+} from "../../../constants";
 import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -29,14 +32,15 @@ export default function AdminUsers() {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState();
 
+  const [timer, setTimer] = useState(0);
+
   //current page with records
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(10);
   const [totalUsersCount, setTotalUsersCount] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchUserProperty, setSearchUserProperty] =
-    useState("");
+  const [searchUserProperty, setSearchUserProperty] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,20 +53,22 @@ export default function AdminUsers() {
   const propertySearchRef = useRef();
 
   useEffect(() => {
-    const controller = new AbortController();
+    let timeoutId;
 
-    let pagingModel = {
-      recordsPerPage: usersPerPageInAdminPanel,
-      page: page,
-      searchTerm: searchTerm.trim(),
-      criteria: searchUserProperty.trim(),
-    };
+    const controller = new AbortController();
 
     const getUsers = async () => {
       try {
-        console.log("PAGE IS ", page);
-        console.log("USER REQUEST ", pagingModel);
         setIsLoading(true);
+
+        let pagingModel = {
+          recordsPerPage: usersPerPageInAdminPanel,
+          page: page,
+          searchTerm: searchTerm.trim(),
+          criteria: searchUserProperty.trim(),
+        };
+
+        console.log("USER REQUEST ", pagingModel);
 
         const response = await axiosPrivate.post(
           ApiEndpoints.users.getAll,
@@ -75,10 +81,12 @@ export default function AdminUsers() {
         setUsers(response?.data?.users);
         setApplicationRoles(response?.data?.applicationRoles);
         setNumberOfPages(response?.data?.pagesCount);
-        setTotalUsersCount(response?.data?.usersCount)
+        setTotalUsersCount(response?.data?.usersCount);
+
         if (page > response?.data?.pagesCount) {
-          setPage(1)
+          setPage(1);
         }
+
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
@@ -86,23 +94,24 @@ export default function AdminUsers() {
       }
     };
 
-    if (effectRun.current) {
-      getUsers();
-    }
+    const delayGetUsersRequest = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (effectRun.current) {
+          getUsers();
+        }
+      }, timer);
+    };
+
+    delayGetUsersRequest();
 
     return () => {
       controller.abort();
       effectRun.current = true; // update the value of effectRun to true
+      clearTimeout(timeoutId);
+      setTimer(0);
     };
   }, [page, searchTerm, searchUserProperty]);
-
-  function clearSearchValue() {
-    searchInputRef.current.value = "";
-    propertySearchRef.current.value = "";
-    setSearchTerm("");
-    setSearchUserProperty("");
-    setPage(1);
-  }
 
   function onSearchUser(e) {
     e.preventDefault();
@@ -119,6 +128,15 @@ export default function AdminUsers() {
     }
     setSearchTerm(searchValue);
     setSearchUserProperty(propertyToSearch);
+    setTimer(requestTimerMilliseconds);
+  }
+
+  function clearSearchValue() {
+    searchInputRef.current.value = "";
+    propertySearchRef.current.value = "";
+    setSearchTerm("");
+    setSearchUserProperty("");
+    setPage(1);
   }
 
   const UserTableCell = styled(TableCell)({
@@ -128,16 +146,6 @@ export default function AdminUsers() {
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
-  });
-
-  const SearchInput = styled("input")({
-    position: "relative",
-    width: "100%",
-    border: "1px solid #C6BFBE",
-    backgroundColor: "rgb(255,249,249)",
-    padding: theme.spacing(0.65),
-    paddingLeft: theme.spacing(5),
-    borderRadius: theme.shape.borderRadius,
   });
 
   const StyledSelect = {
@@ -182,11 +190,31 @@ export default function AdminUsers() {
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
-            <SearchInput ref={searchInputRef}  defaultValue={searchTerm} placeholder="Search user by name or email..." />
+            <input
+              style={{
+                position: "relative",
+                width: "100%",
+                border: "1px solid #C6BFBE",
+                backgroundColor: "rgb(255,249,249)",
+                padding: theme.spacing(0.65),
+                paddingLeft: theme.spacing(5),
+                borderRadius: theme.shape.borderRadius,
+              }}
+              ref={searchInputRef}
+              onChange={onSearchUser}
+              defaultValue={searchTerm}
+              placeholder="Search user by name or email..."
+            />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
           <Grid item xs={8} sm={8} md={3} lg={4}>
-            <select style={StyledSelect} defaultValue={searchUserProperty} ref={propertySearchRef} name="filter">
+            <select
+              onChange={onSearchUser}
+              style={StyledSelect}
+              defaultValue={searchUserProperty}
+              ref={propertySearchRef}
+              name="filter"
+            >
               <option value="">{"--- EMAIL AND USERNAME ---"}</option>
               <option value="email">Email</option>
               <option value="username">Username</option>
@@ -207,20 +235,17 @@ export default function AdminUsers() {
       {searchTerm || searchUserProperty ? (
         <Alert severity="info" variant="filled" sx={{ mt: 1 }}>
           <Typography>
-          <b>{totalUsersCount} results</b> for <b>"{searchTerm ? searchTerm : <></> }"</b>
+            <b>{totalUsersCount} results</b> for{" "}
+            <b>"{searchTerm ? searchTerm : <></>}"</b>
             {searchUserProperty ? (
               <Fragment>
-                {" "} filtered by {" "}
-                <b>
-                  {
-                   searchUserProperty
-                  }
-                </b>
+                {" "}
+                filtered by <b>{searchUserProperty}</b>
               </Fragment>
             ) : (
               <></>
-            )}
-            {" "} - (<b>Page {page}</b>) 
+            )}{" "}
+            - (<b>Page {page}</b>)
           </Typography>
         </Alert>
       ) : (
@@ -232,33 +257,33 @@ export default function AdminUsers() {
         </Box>
       ) : (
         <TableContainer component={Box}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  width: "20px",
-                  padding: 0,
-                  paddingLeft: theme.spacing(1),
-                }}
-              />
-              <UserTableCell></UserTableCell>
-              <UserTableCell align="center"></UserTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users?.map((user) => {
-              return (
-                <AdminUserRow
-                  key={user.id}
-                  applicationRoles={applicationRoles}
-                  user={user}
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  sx={{
+                    width: "20px",
+                    padding: 0,
+                    paddingLeft: theme.spacing(1),
+                  }}
                 />
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                <UserTableCell></UserTableCell>
+                <UserTableCell align="center"></UserTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users?.map((user) => {
+                return (
+                  <AdminUserRow
+                    key={user.id}
+                    applicationRoles={applicationRoles}
+                    user={user}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
       <PaginationHolder>
         <AppPagination
