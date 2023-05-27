@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from "react";
+import { React, Fragment, useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -9,6 +9,8 @@ import {
   TableHead,
   TableContainer,
   Grid,
+  Alert,
+  Typography
 } from "@mui/material";
 import { Search, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -30,6 +32,11 @@ export default function AdminUsers() {
   //current page with records
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(10);
+  const [totalUsersCount, setTotalUsersCount] = useState(0);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchUserProperty, setSearchUserProperty] =
+    useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,21 +46,23 @@ export default function AdminUsers() {
   const [applicationRoles, setApplicationRoles] = useState([]);
 
   const searchInputRef = useRef();
-  const roleSearchRef = useRef();
+  const propertySearchRef = useRef();
 
   useEffect(() => {
     const controller = new AbortController();
 
+    let pagingModel = {
+      recordsPerPage: usersPerPageInAdminPanel,
+      page: page,
+      searchTerm: searchTerm.trim(),
+      criteria: searchUserProperty.trim(),
+    };
+
     const getUsers = async () => {
       try {
         console.log("PAGE IS ", page);
+        console.log("USER REQUEST ", pagingModel);
         setIsLoading(true);
-
-        let pagingModel = {
-          recordsPerPage: usersPerPageInAdminPanel,
-          page: page,
-          searchTerm: "",
-        };
 
         const response = await axiosPrivate.post(
           ApiEndpoints.users.getAll,
@@ -66,6 +75,7 @@ export default function AdminUsers() {
         setUsers(response?.data?.users);
         setApplicationRoles(response?.data?.applicationRoles);
         setNumberOfPages(response?.data?.pagesCount);
+        setTotalUsersCount(response?.data?.usersCount)
         if (page > response?.data?.pagesCount) {
           setPage(1)
         }
@@ -84,28 +94,31 @@ export default function AdminUsers() {
       controller.abort();
       effectRun.current = true; // update the value of effectRun to true
     };
-  }, [page]);
+  }, [page, searchTerm, searchUserProperty]);
 
   function clearSearchValue() {
     searchInputRef.current.value = "";
+    propertySearchRef.current.value = "";
+    setSearchTerm("");
+    setSearchUserProperty("");
+    setPage(1);
   }
 
   function onSearchUser(e) {
     e.preventDefault();
 
-    const searchValue = searchInputRef.current.value;
-    const userId = roleSearchRef.current.value;
+    let searchValue = searchInputRef.current.value;
+    let propertyToSearch = propertySearchRef.current.value;
 
-    if (!searchValue.trim() || !userId.trim()) {
-      return;
+    if (!searchValue.trim()) {
+      searchValue = "";
     }
 
-    var filtered = users.filter((x) =>
-      x.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setUsers(filtered);
-
-    console.log(searchValue, userId);
+    if (!propertyToSearch.trim()) {
+      propertyToSearch = "";
+    }
+    setSearchTerm(searchValue);
+    setSearchUserProperty(propertyToSearch);
   }
 
   const UserTableCell = styled(TableCell)({
@@ -169,11 +182,12 @@ export default function AdminUsers() {
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
-            <SearchInput ref={searchInputRef} placeholder="Search user by..." />
+            <SearchInput ref={searchInputRef}  defaultValue={searchTerm} placeholder="Search user by name or email..." />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
           <Grid item xs={8} sm={8} md={3} lg={4}>
-            <select style={StyledSelect} ref={roleSearchRef} name="filter">
+            <select style={StyledSelect} defaultValue={searchUserProperty} ref={propertySearchRef} name="filter">
+              <option value="">{"--- EMAIL AND USERNAME ---"}</option>
               <option value="email">Email</option>
               <option value="username">Username</option>
             </select>
@@ -190,7 +204,34 @@ export default function AdminUsers() {
           </Grid>
         </Grid>
       </form>
-      <TableContainer component={Box}>
+      {searchTerm || searchUserProperty ? (
+        <Alert severity="info" variant="filled" sx={{ mt: 1 }}>
+          <Typography>
+          <b>{totalUsersCount} results</b> for <b>"{searchTerm ? searchTerm : <></> }"</b>
+            {searchUserProperty ? (
+              <Fragment>
+                {" "} filtered by {" "}
+                <b>
+                  {
+                   searchUserProperty
+                  }
+                </b>
+              </Fragment>
+            ) : (
+              <></>
+            )}
+            {" "} - (<b>Page {page}</b>) 
+          </Typography>
+        </Alert>
+      ) : (
+        <></>
+      )}
+      {isLoading ? (
+        <Box sx={{ padding: theme.spacing(3) }}>
+          <Loader />
+        </Box>
+      ) : (
+        <TableContainer component={Box}>
         <Table>
           <TableHead>
             <TableRow>
@@ -218,12 +259,6 @@ export default function AdminUsers() {
           </TableBody>
         </Table>
       </TableContainer>
-      {isLoading ? (
-        <Box sx={{ padding: theme.spacing(3) }}>
-          <Loader />
-        </Box>
-      ) : (
-        <></>
       )}
       <PaginationHolder>
         <AppPagination

@@ -34,6 +34,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+       
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<ActionResult<AdminProductResponseModel>> Edit([FromForm] EditProductRequestModel model)
         {
@@ -50,6 +51,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAllWithCreationInfo))]
         public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo([FromBody]ProductPaginationRequestModel model)
         {
@@ -69,6 +71,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
         public async Task<ActionResult<DeleteProductResponseModel>> Delete([FromBody] DeleteProductRequestModel model)
         {
@@ -85,6 +88,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
         public async Task<ActionResult<DeleteProductResponseModel>> Undelete([FromBody] UndeleteProductRequestModel model)
         {

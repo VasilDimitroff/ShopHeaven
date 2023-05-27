@@ -32,6 +32,7 @@ export default function AdminProducts() {
   //current page with records
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(10);
+  const [totalProductsCount, setTotalProductsCount] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchProductByCategoryId, setSearchProductByCategoryId] =
@@ -81,7 +82,7 @@ export default function AdminProducts() {
         setProducts(response?.data?.products);
         setCurrencies(response?.data?.currencies);
         setNumberOfPages(response?.data?.pagesCount);
-
+        setTotalProductsCount(response?.data?.productsCount)  
         if (page > response?.data?.pagesCount) {
           setPage(1)
         }
@@ -236,12 +237,12 @@ export default function AdminProducts() {
         </Grid>
       </form>
       {searchTerm || searchProductByCategoryId ? (
-        <Alert severity="info" variant="outlined" sx={{ mt: 1 }}>
+        <Alert severity="info" variant="filled" sx={{ mt: 1 }}>
           <Typography>
-            Products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
+          <b>{totalProductsCount} results</b> for <b>"{searchTerm ? searchTerm : <></> }"</b>
             {searchProductByCategoryId ? (
               <Fragment>
-                {" "} and category {" "}
+                {" "} in category {" "}
                 <b>
                   {
                     categories?.find((x) => x.id === searchProductByCategoryId)

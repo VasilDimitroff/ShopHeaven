@@ -96,6 +96,7 @@ namespace ShopHeaven.Data.Services
             return userRoles;
         }
 
+        //implement searching of user!!
         public async Task<GetUsersAndRolesResponseModel> GetAllAsync(UserPaginationRequestModel model)
         {
             var allRoles = await db.Roles.Select(x => new UserRoleResponseModel
@@ -105,12 +106,16 @@ namespace ShopHeaven.Data.Services
             })
                 .ToListAsync();
 
+            string searchTermToLower = model.SearchTerm.Trim().ToLower();
+
             //gets deleted user too
             var usersCount = this.db.Users
-               .Where(u => u.Email.ToLower()
-                                .Contains(model.SearchTerm.Trim().ToLower())
-                            || u.UserName.ToLower()
-                                .Contains(model.SearchTerm.Trim().ToLower()))
+               .Where(u => model.Criteria == "" 
+                           ? u.Email.ToLower().Contains(searchTermToLower) || u.UserName.ToLower().Contains(searchTermToLower)
+                           : (model.Criteria.ToLower() == "email"
+                               ? u.Email.ToLower().Contains(searchTermToLower)
+                               : u.UserName.ToLower().Contains(searchTermToLower))
+                           )
                 .Count();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
@@ -120,7 +125,7 @@ namespace ShopHeaven.Data.Services
                 Users = usersWithRoles.ToList(),
                 ApplicationRoles = allRoles.ToList(),
                 UsersCount = usersCount,
-                PagesCount = (int)Math.Ceiling((double)usersCount / model.RecordsPerPage)
+                PagesCount = (int)Math.Ceiling((double)usersCount / model.RecordsPerPage),   
             };
 
             return usersAndRoles;
@@ -369,15 +374,18 @@ namespace ShopHeaven.Data.Services
 
         private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync(UserPaginationRequestModel model)
         {
+            string searchTermToLower = model.SearchTerm.Trim().ToLower();
+            
             //gets deleted users too
-
             return await db.Users
                   //.Where(u => u.IsDeleted != true)
                   .OrderByDescending(x => x.CreatedOn)
-                  .Where(u => u.Email.ToLower()
-                                .Contains(model.SearchTerm.Trim().ToLower()) 
-                            || u.UserName.ToLower()
-                                .Contains(model.SearchTerm.Trim().ToLower()))
+                  .Where(u => model.Criteria == ""
+                               ? u.Email.ToLower().Contains(searchTermToLower) || u.UserName.ToLower().Contains(searchTermToLower)
+                               : (model.Criteria.ToLower() == "email"
+                                   ? u.Email.ToLower().Contains(searchTermToLower)
+                                   : u.UserName.ToLower().Contains(searchTermToLower))
+                               )
                   .Skip((model.Page - 1) * model.RecordsPerPage)
                   .Take(model.RecordsPerPage)
                   .Join(

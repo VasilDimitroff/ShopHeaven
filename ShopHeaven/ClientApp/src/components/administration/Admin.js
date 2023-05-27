@@ -164,7 +164,7 @@ export default function Admin() {
 
   return (
     <MainWrapper>
-      <Box sx={{marginBottom: theme.spacing(2)}} >
+      <Box sx={{ marginBottom: theme.spacing(2) }}>
         <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       </Box>
       <Box sx={{ flexGrow: 1 }}>

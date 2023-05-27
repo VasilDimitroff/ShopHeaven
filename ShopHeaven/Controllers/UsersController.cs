@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
-using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
@@ -25,6 +24,11 @@ namespace ShopHeaven.Controllers
         {
             try
             {
+                if (model.Criteria == null)
+                {
+                    model.Criteria = "";
+                };
+
                 var users = await this.usersService.GetAllAsync(model);
 
                 return Ok(users);
@@ -35,6 +39,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        
         [HttpPost, Route(nameof(Edit)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<ActionResult<UserWithRolesResponseModel>> Edit(EditUserRequestModel model)
         {
@@ -50,6 +55,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+       
         [HttpPost, Route(nameof(Delete)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<ActionResult<UserWithRolesResponseModel>> Delete(DeleteUserRequestModel model)
         {
@@ -81,6 +87,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        
         [HttpPost, Route(nameof(AddToRole)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<ActionResult<UserWithRolesResponseModel>> AddToRole(AddToRoleRequestModel model)
         {
@@ -96,6 +103,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
+       
         [HttpPost, Route(nameof(RemoveFromRole)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<ActionResult<UserWithRolesResponseModel>> RemoveFromRole(RemoveFromRoleRequestModel model)
         {
