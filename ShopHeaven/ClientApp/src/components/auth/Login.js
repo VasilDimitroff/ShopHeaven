@@ -175,7 +175,7 @@ export default function Login() {
     margin: "auto",
   });
 
-  const ErrorMessageHolder = styled(Typography)({
+  const ErrorMessageHolder = styled(Box)({
     color: theme.palette.error.main,
     paddingTop: theme.spacing(1),
     width: "80%",
@@ -247,15 +247,7 @@ export default function Login() {
             </LinkHolder>
           </Container>
         </Fragment>
-      </FormWrapper>
-      <Box sx={{ mt: theme.spacing(3) }}>
-        <FullWidthBanner
-          paddingTop={theme.spacing(3.5)}
-          height={250}
-          heightSm={180}
-          image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
-        />
-      </Box>
+      </FormWrapper>  
     </Fragment>
   );
 }

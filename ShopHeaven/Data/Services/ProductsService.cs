@@ -389,7 +389,7 @@ namespace ShopHeaven.Data.Services
 
             List<CategoryNamesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
 
-            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
+            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();)
 
             //select these product which contains search term in their name
             //also product is not deleted

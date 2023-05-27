@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
-using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
 using System.Data;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ShopHeaven.Data.Services
@@ -121,6 +121,7 @@ namespace ShopHeaven.Data.Services
                 .Count();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
+            usersWithRoles = usersWithRoles.OrderByDescending(x => DateTime.Parse(x.CreatedOn)).ToList();
 
             var usersAndRoles = new GetUsersAndRolesResponseModel
             {
@@ -381,13 +382,13 @@ namespace ShopHeaven.Data.Services
             //gets deleted users too
             return await db.Users
                   //.Where(u => u.IsDeleted != true)
-                  .OrderByDescending(x => x.CreatedOn)
                   .Where(u => model.Criteria == ""
                                ? u.Email.ToLower().Contains(searchTermToLower) || u.UserName.ToLower().Contains(searchTermToLower)
                                : (model.Criteria.ToLower() == "email"
                                    ? u.Email.ToLower().Contains(searchTermToLower)
                                    : u.UserName.ToLower().Contains(searchTermToLower))
                                )
+                  .OrderByDescending(x => x.CreatedOn)
                   .Skip((model.Page - 1) * model.RecordsPerPage)
                   .Take(model.RecordsPerPage)
                   .Join(
