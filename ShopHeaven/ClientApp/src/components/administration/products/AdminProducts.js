@@ -238,7 +238,7 @@ export default function AdminProducts() {
       {searchTerm || searchProductByCategoryId ? (
         <Alert severity="info" variant="outlined" sx={{ mt: 1 }}>
           <Typography>
-            <b>Page {page}</b> with products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
+            Products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
             {searchProductByCategoryId ? (
               <Fragment>
                 {" "} and category {" "}
@@ -252,6 +252,7 @@ export default function AdminProducts() {
             ) : (
               <></>
             )}
+            {" "} - <b>Page {page}</b> 
           </Typography>
         </Alert>
       ) : (

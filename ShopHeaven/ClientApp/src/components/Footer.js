@@ -26,7 +26,7 @@ import { theme } from "./../theme";
 import LogoImg from "../static/images/shop_heaven_logo_big_2.png";
 import { Fragment } from "react";
 
-export default function Footer(props) {
+export default function Footer() {
   const FooterWrapper = styled(Box)({
     color: theme.palette.primary.main,
   });

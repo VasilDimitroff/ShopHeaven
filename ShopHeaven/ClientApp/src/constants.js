@@ -4,4 +4,4 @@ export const noPermissionsForOperationMessage = "You have no permissions to perf
 export const passwordRequiredLength = 8;
 export const usernameRequiredLength = 2;
 export const usersPerPageInAdminPanel = 5;
-export const productsPerPageInAdminPanel = 1;
+export const productsPerPageInAdminPanel = 5;
