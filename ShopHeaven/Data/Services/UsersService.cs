@@ -77,6 +77,8 @@ namespace ShopHeaven.Data.Services
                 UserId = user.Id
             };
 
+            await this.db.Wishlists.AddAsync(wishlist);
+            await this.db.Carts.AddAsync(cart);
             await this.db.UserRoles.AddAsync(userRole);
 
             await this.db.SaveChangesAsync();
