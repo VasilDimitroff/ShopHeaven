@@ -396,7 +396,8 @@ namespace ShopHeaven.Data.Services
             //and also if there is Category Id selected, filter products by this category
             //if categoryid is empty, dont filter by category
             var productsCount = this.db.Products
-                 .Where(p => p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                 .Where(p => (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                    || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
                             ? p.SubCategory.MainCategoryId != null
                             : p.SubCategory.MainCategoryId == model.CategoryId)
@@ -418,7 +419,8 @@ namespace ShopHeaven.Data.Services
         public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model)
         {
             var products = await this.db.Products
-            .Where(p => p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+            .Where(p => (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+             || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
                             ? p.SubCategory.MainCategoryId != null
                             : p.SubCategory.MainCategoryId == model.CategoryId)

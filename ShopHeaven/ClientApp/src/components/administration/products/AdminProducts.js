@@ -56,7 +56,7 @@ export default function AdminProducts() {
 
     let pagingModel = {
       recordsPerPage: productsPerPageInAdminPanel,
-      page: searchTerm ? 1 : page, //if there is search term, set page to 1 to not skip results in backend
+      page: page,
       searchTerm: searchTerm,
       categoryId: searchProductByCategoryId,
     };
@@ -81,6 +81,10 @@ export default function AdminProducts() {
         setProducts(response?.data?.products);
         setCurrencies(response?.data?.currencies);
         setNumberOfPages(response?.data?.pagesCount);
+
+        if (page > response?.data?.pagesCount) {
+          setPage(1)
+        }
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -231,18 +235,10 @@ export default function AdminProducts() {
           </Grid>
         </Grid>
       </form>
-      {isLoading ? (
-        <Box sx={{ padding: theme.spacing(3) }}>
-          <Loader />
-        </Box>
-      ) : (
-        <></>
-      )}
-
       {searchTerm || searchProductByCategoryId ? (
         <Alert severity="info" variant="outlined" sx={{ mt: 1 }}>
           <Typography>
-            Products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
+            <b>Page {page}</b> with products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
             {searchProductByCategoryId ? (
               <Fragment>
                 {" "} and category {" "}
@@ -261,8 +257,12 @@ export default function AdminProducts() {
       ) : (
         <></>
       )}
-
-      <TableContainer component={Box}>
+      {isLoading ? (
+        <Box sx={{ padding: theme.spacing(3) }}>
+          <Loader />
+        </Box>
+      ) : (
+        <TableContainer component={Box}>
         <Table>
           <TableHead>
             <TableRow>
@@ -312,6 +312,7 @@ export default function AdminProducts() {
           )}
         </StyledButtonBox>
       </TableContainer>
+      )}
       <Collapse in={showCreateProduct} timeout="auto" unmountOnExit>
         <CreateProduct
           productListChanged={productListChanged}

@@ -66,6 +66,9 @@ export default function AdminUsers() {
         setUsers(response?.data?.users);
         setApplicationRoles(response?.data?.applicationRoles);
         setNumberOfPages(response?.data?.pagesCount);
+        if (page > response?.data?.pagesCount) {
+          setPage(1)
+        }
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
