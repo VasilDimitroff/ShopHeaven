@@ -120,7 +120,8 @@ export default function AdminCategories() {
             <Button
               onClick={handleOpen}
               variant="contained"
-              size="small"
+              size="big"
+              color="secondary"
               startIcon={<RemoveCircle />}
             >
               HIDE CREATION FORM
@@ -129,7 +130,8 @@ export default function AdminCategories() {
             <Button
               onClick={handleOpen}
               variant="contained"
-              size="small"
+              size="big"
+              color="secondary"
               startIcon={<AddCircle />}
             >
               ADD NEW CATEGORY

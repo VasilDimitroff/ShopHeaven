@@ -17,7 +17,7 @@ const AppPagination = ({ setPage, numberOfPages, page }) => {
       onChange={(e) => handleChange(e.target.textContent)}
       count={numberOfPages}
       size="medium"
-      color="secondary"
+      color="primary"
     />
   );
 };

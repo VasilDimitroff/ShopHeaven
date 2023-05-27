@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { PhotoCamera, Edit } from "@mui/icons-material";
+import { PhotoCamera, Edit, Forward } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../../hooks/useAuth";
@@ -170,12 +170,13 @@ export default function EditSubcategoryForm(props) {
             style={{
               color: theme.palette.warning.main,
               marginTop: theme.spacing(2),
+              listStyle: "none"
             }}
           >
             <li>
-              Warning! If you submit a new image, the old one will be deleted
+              <Forward/>Warning! If you submit a new image, the old one will be deleted
             </li>
-            <li>.jpg, .jpeg and .png file formats are allowed</li>
+            <li> <Forward/> .jpg, .jpeg, .png and .webp file formats are allowed</li>
           </ul>
         </InputBox>
         <InputBox>
@@ -189,7 +190,7 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton startIcon={<Edit />} type="submit" size="large" variant="contained">
+          <CreateCategoryButton color="secondary" startIcon={<Edit />} type="submit" size="large" variant="contained">
             Edit subcategory
           </CreateCategoryButton>
         </InputBox>

@@ -312,7 +312,8 @@ export default function AdminProducts() {
             <Button
               onClick={handleShowCreateProduct}
               variant="contained"
-              size="small"
+              size="big"
+              color="secondary"
               startIcon={<RemoveCircle />}
             >
               HIDE CREATION FORM
@@ -321,7 +322,8 @@ export default function AdminProducts() {
             <Button
               onClick={handleShowCreateProduct}
               variant="contained"
-              size="small"
+              size="big"
+              color="secondary"
               startIcon={<AddCircle />}
             >
               ADD NEW PRODUCT

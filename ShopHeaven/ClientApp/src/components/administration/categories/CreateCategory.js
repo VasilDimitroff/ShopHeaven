@@ -157,7 +157,7 @@ export default function CreateCategory(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton startIcon={<AddCircle />} type="submit" size="large" variant="contained">
+          <CreateCategoryButton color="secondary" startIcon={<AddCircle />} type="submit" size="large" variant="contained">
             Create category
           </CreateCategoryButton>
         </InputBox>

@@ -26,6 +26,7 @@ import {
   Person,
   ShoppingBag,
   Category,
+  Label
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
@@ -164,7 +165,7 @@ export default function AdminCategoriesRow(props) {
           component="th"
           scope="row"
         >
-          {!isDeleted ? category?.name : "CATEGORY DELETED"}
+          {!isDeleted ?  <><Label sx={{color: theme.palette.primary.main, mr: 1}}/>{category?.name}</> : "CATEGORY DELETED"}
           {!isDeleted ? (
             <CategoryInfoHolder>
               <CategoryInfoText>
@@ -172,7 +173,7 @@ export default function AdminCategoriesRow(props) {
                   sx={{ padding: 0.5 }}
                   icon={<Category />}
                   variant="outlined"
-                  color="warning"
+                  color="primary"
                   label={`${subcategories?.length} subcategories`}
                   size="small"
                 />
@@ -194,6 +195,7 @@ export default function AdminCategoriesRow(props) {
                   variant="outlined"
                   label={`By: ${category?.createdBy}`}
                   size="small"
+                  color="primary"
                 />
               </CategoryInfoText>
             </CategoryInfoHolder>
@@ -281,16 +283,18 @@ export default function AdminCategoriesRow(props) {
                   <Button
                     onClick={handleOpenSubcategoryForm}
                     variant="contained"
-                    size="small"
+                    color="secondary" 
+                    size="medium"
                     startIcon={<RemoveCircle />}
                   >
                     Hide creation form
                   </Button>
                 ) : (
                   <Button
+                    color="secondary" 
                     onClick={handleOpenSubcategoryForm}
                     variant="contained"
-                    size="small"
+                    size="medium"
                     startIcon={<AddCircle />}
                   >
                     Add new subcategory to {category.name}

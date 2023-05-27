@@ -1168,8 +1168,8 @@ export default function CreateProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <CreateProductButton type="submit" size="big" variant="contained">
-          CREATE PRODUCT
+        <CreateProductButton startIcon={<AddCircle/>} color="secondary" type="submit" size="big" variant="contained">
+           CREATE PRODUCT
         </CreateProductButton>
       </form>
       <Box>

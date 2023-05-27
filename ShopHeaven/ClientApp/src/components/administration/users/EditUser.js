@@ -421,7 +421,7 @@ export default function EditUser(props) {
             <></>
           )}
         </InputBox>
-        <EditUserButton startIcon={<Edit />} type="submit" size="big" variant="contained">
+        <EditUserButton color="secondary" startIcon={<Edit />} type="submit" size="big" variant="contained">
           EDIT USER
         </EditUserButton>
       </form>
@@ -487,6 +487,7 @@ export default function EditUser(props) {
               onClick={onAddUserToRole}
               variant="contained"
               size="small"
+              color="secondary"
               startIcon={<AddCircle />}
             >
               ADD TO ROLE
@@ -530,6 +531,7 @@ export default function EditUser(props) {
               onClick={onRemoveUserFromRole}
               variant="contained"
               size="small"
+              color="secondary"
               startIcon={<RemoveCircle />}
             >
               REMOVE FROM ROLE

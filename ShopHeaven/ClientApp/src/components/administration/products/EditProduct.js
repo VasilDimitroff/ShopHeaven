@@ -305,6 +305,9 @@ export default function EditProduct(props) {
 
   function onDeleteImage(imageUrl) {
 
+    //5
+    setValuesToStates();
+
     if (productImages.length < 2) {
       setDeleteProductImageResponseMessage("");
       setDeleteProductImageErrorMessage("Product must contain at least 1 image");
@@ -1304,7 +1307,7 @@ export default function EditProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <EditProductButton startIcon={<Edit />} type="submit" size="big" variant="contained">
+        <EditProductButton color="secondary" startIcon={<Edit />} type="submit" size="big" variant="contained">
           EDIT PRODUCT
         </EditProductButton>
       </form>

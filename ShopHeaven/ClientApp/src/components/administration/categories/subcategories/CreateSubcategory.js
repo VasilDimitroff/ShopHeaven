@@ -167,6 +167,7 @@ export default function CreateSubcategory(props) {
           <CreateSubCategoryButton
             type="submit"
             size="large"
+            color="secondary"  
             variant="contained"
             startIcon={<AddCircle />}
           >
