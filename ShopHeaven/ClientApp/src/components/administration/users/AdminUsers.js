@@ -17,7 +17,7 @@ import Loader from "../../common/Loader";
 import AdminUserRow from "./AdminUserRow";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { productsPerPageInAdminPanel } from "../../../constants";
+import { usersPerPageInAdminPanel } from "../../../constants";
 import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -50,7 +50,7 @@ export default function AdminUsers() {
         setIsLoading(true);
 
         let pagingModel = {
-          recordsPerPage: productsPerPageInAdminPanel,
+          recordsPerPage: usersPerPageInAdminPanel,
           page: page,
           searchTerm: "",
         };

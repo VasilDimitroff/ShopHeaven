@@ -50,12 +50,17 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpGet, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAllWithCreationInfo))]
-        public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo()
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAllWithCreationInfo))]
+        public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo([FromBody]ProductPaginationRequestModel model)
         {
             try
             {
-                var productsWithCategoriesAndCurrencies = await this.productsService.GetAllWithCreationInfoAsync();
+                if (model.CategoryId == null)
+                {
+                    model.CategoryId = "";
+                };
+
+                var productsWithCategoriesAndCurrencies = await this.productsService.GetAllWithCreationInfoAsync(model);
                 return Ok(productsWithCategoriesAndCurrencies);
             }
             catch (Exception ex)

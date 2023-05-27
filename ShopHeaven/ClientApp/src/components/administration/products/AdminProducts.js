@@ -9,23 +9,27 @@ import {
   TableBody,
   TableHead,
   TableContainer,
-  Pagination,
   Grid,
-  Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { productsPerPageInAdminPanel } from "../../../constants";
 import CreateProduct from "./CreateProduct";
 import ProductRow from "./ProductRow";
+import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../common/Loader";
 
 export default function AdminProducts() {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  //current page with records
+  const [page, setPage] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(10);
 
   const [products, setProducts] = useState();
   const [categories, setCategories] = useState([]);
@@ -46,9 +50,22 @@ export default function AdminProducts() {
 
     const getProducts = async () => {
       try {
+
+          console.log("PAGE IS ", page);
           setIsLoading(true);
-          const response = await axiosPrivate.get(
+
+          let pagingModel = {
+            recordsPerPage: productsPerPageInAdminPanel,
+            page: page,
+            searchTerm: "",
+            categoryId: ""
+          };
+
+          console.log("REQUIEST ", pagingModel)
+
+          const response = await axiosPrivate.post(
           ApiEndpoints.products.getAllWithCreationInfo,
+          pagingModel,
           {
             signal: controller.signal,
           }
@@ -59,7 +76,7 @@ export default function AdminProducts() {
         setCategories(response?.data?.categories);
         setProducts(response?.data?.products);
         setCurrencies(response?.data?.currencies);
-
+        setNumberOfPages(response?.data?.pagesCount);
         setIsLoading(false);
 
       } catch (error) {
@@ -76,7 +93,7 @@ export default function AdminProducts() {
       effectRun.current = true; // update the value of effectRun to true
       controller.abort();
     };
-  }, []);
+  }, [page]);
 
   function clearSearchValue() {
     searchInputRef.current.value = "";
@@ -98,8 +115,6 @@ export default function AdminProducts() {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
   });
-
-  const StyledPagination = styled(Pagination)({});
 
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(4),
@@ -207,10 +222,10 @@ export default function AdminProducts() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products?.map((product, index) => {
+            {products?.map((product) => {
               return (
                 <ProductRow
-                  key={index}
+                  key={product.id}
                   categories={categories}
                   currencies={currencies}
                   product={product}
@@ -249,7 +264,7 @@ export default function AdminProducts() {
         />
       </Collapse>
       <PaginationHolder>
-        <StyledPagination count={10} size="medium" color="secondary" />
+        <AppPagination setPage={setPage} page={page} numberOfPages={numberOfPages}/>
       </PaginationHolder>
     </Box>
   );

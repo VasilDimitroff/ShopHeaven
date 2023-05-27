@@ -105,7 +105,9 @@ namespace ShopHeaven.Data.Services
             })
                 .ToListAsync();
 
-            var usersCount = this.db.Users.Count();
+            var usersCount = this.db.Users
+                .Where(u => u.Email.Contains(model.SearchTerm.Trim()) || u.UserName.Contains(model.SearchTerm.Trim()))
+                .Count();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
 
@@ -114,7 +116,7 @@ namespace ShopHeaven.Data.Services
                 Users = usersWithRoles.ToList(),
                 ApplicationRoles = allRoles.ToList(),
                 UsersCount = usersCount,
-                RecordsPerPage = model.RecordsPerPage
+                PagesCount = (int)Math.Ceiling((double)usersCount / model.RecordsPerPage)
             };
 
             return usersAndRoles;

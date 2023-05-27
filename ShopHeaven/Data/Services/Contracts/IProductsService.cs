@@ -7,9 +7,9 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<AdminProductResponseModel> CreateProductAsync(CreateProductRequestModel model);
 
-        Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync();
+        Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync(ProductPaginationRequestModel model);
 
-        Task<ICollection<AdminProductResponseModel>> GetAllAsync();
+        Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model);
 
         Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model);
 

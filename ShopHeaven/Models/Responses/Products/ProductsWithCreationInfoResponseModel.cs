@@ -10,5 +10,9 @@ namespace ShopHeaven.Models.Responses.Products
         public ICollection<CategoryNamesResponseModel> Categories { get; set; }
 
         public ICollection<CurrencyResponseModel> Currencies { get; set; }
+
+        public int ProductsCount { get; set; }
+
+        public int PagesCount { get; set; }
     }
 }

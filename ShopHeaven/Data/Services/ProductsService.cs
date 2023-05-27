@@ -383,28 +383,48 @@ namespace ShopHeaven.Data.Services
             return updatedProduct;
         }
 
-        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync()
+        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync(ProductPaginationRequestModel model)
         {
-            List<AdminProductResponseModel> products = await this.GetAllAsync() as List<AdminProductResponseModel>;
+            List<AdminProductResponseModel> products = await this.GetAllAsync(model) as List<AdminProductResponseModel>;
 
             List<CategoryNamesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
 
             List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
 
-            var model = new ProductsWithCreationInfoResponseModel
+            //select these product which contains search term in their name
+            //also product is not deleted
+            //and also if there is Category Id selected, filter products by this category
+            //if categoryid is empty, dont filter by category
+            var productsCount = this.db.Products
+                 .Where(p => p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                    && (model.CategoryId == ""
+                            ? p.SubCategory.MainCategoryId != null
+                            : p.SubCategory.MainCategoryId == model.CategoryId)
+                    && p.IsDeleted != true)
+                .Count();
+
+            var responseModel = new ProductsWithCreationInfoResponseModel
             {
                 Products = products,
                 Categories = categories,
-                Currencies = currencies
+                Currencies = currencies,
+                ProductsCount = productsCount,
+                PagesCount = (int)Math.Ceiling((double)productsCount / model.RecordsPerPage)
             };
 
-            return model;
+            return responseModel;
         }
 
-        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync()
+        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model)
         {
             var products = await this.db.Products
-            .Where(p => p.IsDeleted != true)
+            .Where(p => p.Name.Contains(model.SearchTerm.Trim())
+                    && (model.CategoryId == "" 
+                            ? p.SubCategory.MainCategoryId != null 
+                            : p.SubCategory.MainCategoryId  == model.CategoryId)
+                    && p.IsDeleted != true)
+            .Skip((model.Page - 1) * model.RecordsPerPage)
+            .Take(model.RecordsPerPage)
             .OrderByDescending(p => p.CreatedOn)
             .Select(p => new AdminProductResponseModel
             {
