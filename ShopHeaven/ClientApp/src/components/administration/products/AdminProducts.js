@@ -219,7 +219,7 @@ export default function AdminProducts() {
               onChange={onSearchProduct}
               defaultValue={searchTerm}
               ref={searchInputRef}
-              placeholder="Search product by name..."
+              placeholder="Search product by name or brand..."
             />
             <CancelButton onClick={clearSearchValues} />
           </Grid>

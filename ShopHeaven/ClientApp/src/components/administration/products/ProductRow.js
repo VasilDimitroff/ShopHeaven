@@ -18,9 +18,14 @@ import {
   Person,
   Edit,
   Delete,
+  Check,
+  Close,
+  Percent,
+  TurnedIn
 } from "@mui/icons-material";
 import EditProduct from "./EditProduct";
 import DeleteProduct from "./DeleteProduct";
+import { palette } from "@mui/system";
 
 export default function ProductRow(props) {
   const [product, setProduct] = useState(props.product);
@@ -29,7 +34,7 @@ export default function ProductRow(props) {
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
 
   function handleSetOpenEditForm() {
-    if(isDeleted){
+    if (isDeleted) {
       return;
     }
     setOpenDeleteForm(false);
@@ -105,39 +110,92 @@ export default function ProductRow(props) {
           component="th"
           scope="row"
         >
-          {!isDeleted ? product?.name : "PRODUCT DELETED"}
+          {!isDeleted ? <><TurnedIn sx={{color: theme.palette.primary.main, mr: 1}}/>{product?.name}</>: "PRODUCT DELETED"}
           {!isDeleted ? (
-            <ProductInfoHolder>
-              <ProductInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Star />}
-                  variant="outlined"
-                  color="warning"
-                  label={`Rating: ${product?.rating}`}
-                  size="small"
-                />
-              </ProductInfoText>
-              <ProductInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<RateReview />}
-                  variant="outlined"
-                  color="primary"
-                  label={`${product?.reviewsCount} reviews`}
-                  size="small"
-                />
-              </ProductInfoText>
-              <ProductInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Person />}
-                  variant="outlined"
-                  label={`By: ${product?.createdBy}`}
-                  size="small"
-                />
-              </ProductInfoText>
-            </ProductInfoHolder>
+            <Fragment>
+                <ProductInfoHolder>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    color="primary"
+                    variant="outlined"
+                    label={`${product?.categoryName}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    color="primary"
+                    variant="outlined"
+                    label={`${product?.subcategoryName}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    variant="outlined"
+                    icon={product?.discount > 0 ? <Percent/> : <></>}
+                    color="primary"
+                    label={`${product.currency.code} ${(product?.price - ((product.discount / 100) * product?.price)).toFixed(2)}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={product?.isAvailable ? <Check/> : <Close />}
+                    variant="outlined"
+                    color="primary"
+                    label={product?.isAvailable ? "In Stock" : "Out of Stock"}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={product?.hasGuarantee ? <Check/> : <Close />}
+                    variant="outlined"
+                    color="primary"
+                    label={product?.hasGuarantee ? "Warranty" : "No warranty"}
+                    size="small"
+                  />
+                </ProductInfoText>
+              </ProductInfoHolder>
+              <ProductInfoHolder>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Star />}
+                    variant="outlined"
+                    color="primary"
+                    label={`Rating: ${product?.rating}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<RateReview />}
+                    variant="outlined"
+                    color="primary"
+                    label={`${product?.reviewsCount} reviews`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Person />}
+                    variant="outlined"
+                    color="primary"
+                    label={`By: ${product?.createdBy}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+              </ProductInfoHolder>
+            </Fragment>
           ) : (
             <></>
           )}

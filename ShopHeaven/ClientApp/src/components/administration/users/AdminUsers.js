@@ -29,9 +29,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function AdminUsers() {
   const axiosPrivate = useAxiosPrivate();
 
+  //is data loading
   const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState();
 
+  //users array
+  const [users, setUsers] = useState();
+  // all roles in the app
+  const [applicationRoles, setApplicationRoles] = useState([]);
+
+  //timer for delay request
   const [timer, setTimer] = useState(0);
 
   //current page with records
@@ -39,6 +45,7 @@ export default function AdminUsers() {
   const [numberOfPages, setNumberOfPages] = useState(10);
   const [totalUsersCount, setTotalUsersCount] = useState(0);
 
+  //searching values
   const [searchTerm, setSearchTerm] = useState("");
   const [searchUserProperty, setSearchUserProperty] = useState("");
 
@@ -47,8 +54,7 @@ export default function AdminUsers() {
 
   const effectRun = useRef(false);
 
-  const [applicationRoles, setApplicationRoles] = useState([]);
-
+  // searchTerm and filter criteria refs for input
   const searchInputRef = useRef();
   const propertySearchRef = useRef();
 

@@ -23,6 +23,7 @@ import {
   Edit,
   Delete,
   RestoreFromTrash,
+  AccountBox
 } from "@mui/icons-material";
 import UndeleteUser from "./UndeleteUser";
 
@@ -141,7 +142,7 @@ export default function AdminUserRow(props) {
               </Typography>
             </>
           ) : (
-            user?.email
+            <><AccountBox sx={{color: theme.palette.primary.main, mr: 1}}/>{user?.email}</>
           )}
           <UserInfoHolder>
             <UserInfoText>
@@ -149,7 +150,7 @@ export default function AdminUserRow(props) {
                 sx={{ padding: 0.5 }}
                 icon={<AccountCircle />}
                 variant="outlined"
-                color="warning"
+                color="primary"
                 label={`Username: ${user?.username}`}
                 size="small"
               />
@@ -171,6 +172,7 @@ export default function AdminUserRow(props) {
                 variant="outlined"
                 label={`Roles: ${user?.roles?.map((x) => x.name)}`}
                 size="small"
+                color="primary"
               />
             </UserInfoText>
             <UserInfoText>
