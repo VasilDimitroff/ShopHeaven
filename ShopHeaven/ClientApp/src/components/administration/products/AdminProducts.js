@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from "react";
+import { React, useState, useEffect, useRef, Fragment } from "react";
 import {
   Box,
   Button,
@@ -10,6 +10,8 @@ import {
   TableHead,
   TableContainer,
   Grid,
+  Typography,
+  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -31,6 +33,10 @@ export default function AdminProducts() {
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(10);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchProductByCategoryId, setSearchProductByCategoryId] =
+    useState("");
+
   const [products, setProducts] = useState();
   const [categories, setCategories] = useState([]);
   const [currencies, setCurrencies] = useState([]);
@@ -48,22 +54,20 @@ export default function AdminProducts() {
   useEffect(() => {
     const controller = new AbortController();
 
-    const getProducts = async () => {
+    let pagingModel = {
+      recordsPerPage: productsPerPageInAdminPanel,
+      page: searchTerm ? 1 : page, //if there is search term, set page to 1 to not skip results in backend
+      searchTerm: searchTerm,
+      categoryId: searchProductByCategoryId,
+    };
+
+    const getProducts = async (requestModel) => {
       try {
+        setIsLoading(true);
 
-          console.log("PAGE IS ", page);
-          setIsLoading(true);
+        console.log("REQUIEST ", pagingModel);
 
-          let pagingModel = {
-            recordsPerPage: productsPerPageInAdminPanel,
-            page: page,
-            searchTerm: "",
-            categoryId: ""
-          };
-
-          console.log("REQUIEST ", pagingModel)
-
-          const response = await axiosPrivate.post(
+        const response = await axiosPrivate.post(
           ApiEndpoints.products.getAllWithCreationInfo,
           pagingModel,
           {
@@ -78,7 +82,6 @@ export default function AdminProducts() {
         setCurrencies(response?.data?.currencies);
         setNumberOfPages(response?.data?.pagesCount);
         setIsLoading(false);
-
       } catch (error) {
         console.log(error);
         navigate("/login", { state: { from: location }, replace: true });
@@ -86,17 +89,38 @@ export default function AdminProducts() {
     };
 
     if (effectRun.current) {
-      getProducts();
+      getProducts(pagingModel);
     }
 
     return () => {
       effectRun.current = true; // update the value of effectRun to true
       controller.abort();
     };
-  }, [page]);
+  }, [page, searchTerm, searchProductByCategoryId]);
 
-  function clearSearchValue() {
+  function onSearchProduct(e) {
+    e.preventDefault();
+
+    let searchValue = searchInputRef.current.value;
+    let categoryId = categorySearchRef.current.value;
+
+    if (!searchValue.trim()) {
+      searchValue = "";
+    }
+
+    if (!categoryId.trim()) {
+      categoryId = "";
+    }
+    setSearchTerm(searchValue);
+    setSearchProductByCategoryId(categoryId);
+  }
+
+  function clearSearchValues() {
     searchInputRef.current.value = "";
+    categorySearchRef.current.value = "";
+    setSearchTerm("");
+    setSearchProductByCategoryId("");
+    setPage(1);
   }
 
   function handleShowCreateProduct() {
@@ -160,52 +184,84 @@ export default function AdminProducts() {
     zIndex: 1,
   });
 
-  function onSearchProduct(e){
-    e.preventDefault();
-
-    const searchValue = searchInputRef.current.value;
-    const categoryId = categorySearchRef.current.value;
-
-    if (!searchValue.trim() || !categoryId.trim()) {
-      return;
-    }
-
-    var filtered = products.filter((x) => x.name.toLowerCase().includes(searchValue.toLowerCase()));
-    setProducts(filtered);
-
-    console.log(searchValue, categoryId);
-  }
-
   return (
     <Box>
       <form onSubmit={onSearchProduct}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md={7} lg={7} sx={{ position: "relative" }}>
-            <StyledSearchIcon />
-            <SearchInput ref={searchInputRef} placeholder="Search product..." />
-            <CancelButton onClick={clearSearchValue} />
-        </Grid>
-        <Grid item xs={8} sm={8} md={3} lg={4}>
-          <select
-            style={StyledSelect}
-            ref={categorySearchRef}
-            name="category"
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={7}
+            lg={7}
+            sx={{ position: "relative" }}
           >
-            {categories?.map((cat) => (
-              <option key={cat?.id} value={cat?.id}>
-                {cat?.name}
-              </option>
-            ))}
-          </select>
+            <StyledSearchIcon />
+            <SearchInput
+              defaultValue={searchTerm}
+              ref={searchInputRef}
+              placeholder="Search product by name..."
+            />
+            <CancelButton onClick={clearSearchValues} />
+          </Grid>
+          <Grid item xs={8} sm={8} md={3} lg={4}>
+            <select
+              defaultValue={searchProductByCategoryId}
+              style={StyledSelect}
+              ref={categorySearchRef}
+              name="category"
+            >
+              <option value="">{"--- ALL CATEGORIES ---"}</option>
+              {categories?.map((cat) => (
+                <option key={cat?.id} value={cat?.id}>
+                  {cat?.name}
+                </option>
+              ))}
+            </select>
+          </Grid>
+          <Grid item xs={4} sm={4} md={2} lg={1}>
+            <Button
+              sx={{ width: "100%", fontSize: 13 }}
+              variant="contained"
+              type="submit"
+              color="primary"
+            >
+              SEARCH
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={4} sm={4} md={2} lg={1}>
-       <Button sx={{width: "100%", fontSize: 13}} variant="contained" type="submit" color="primary">
-         SEARCH
-       </Button>
-        </Grid>
-      </Grid>
       </form>
-      {isLoading ? <Box sx={{padding: theme.spacing(3)}}><Loader/></Box> : <></>}
+      {isLoading ? (
+        <Box sx={{ padding: theme.spacing(3) }}>
+          <Loader />
+        </Box>
+      ) : (
+        <></>
+      )}
+
+      {searchTerm || searchProductByCategoryId ? (
+        <Alert severity="info" variant="outlined" sx={{ mt: 1 }}>
+          <Typography>
+            Products filtered by <b>{searchTerm ? searchTerm : '""'}</b>
+            {searchProductByCategoryId ? (
+              <Fragment>
+                {" "} and category {" "}
+                <b>
+                  {
+                    categories?.find((x) => x.id === searchProductByCategoryId)
+                      .name
+                  }
+                </b>
+              </Fragment>
+            ) : (
+              <></>
+            )}
+          </Typography>
+        </Alert>
+      ) : (
+        <></>
+      )}
+
       <TableContainer component={Box}>
         <Table>
           <TableHead>
@@ -264,7 +320,11 @@ export default function AdminProducts() {
         />
       </Collapse>
       <PaginationHolder>
-        <AppPagination setPage={setPage} page={page} numberOfPages={numberOfPages}/>
+        <AppPagination
+          setPage={setPage}
+          page={page}
+          numberOfPages={numberOfPages}
+        />
       </PaginationHolder>
     </Box>
   );

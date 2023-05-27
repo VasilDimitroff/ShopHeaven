@@ -418,14 +418,14 @@ namespace ShopHeaven.Data.Services
         public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model)
         {
             var products = await this.db.Products
-            .Where(p => p.Name.Contains(model.SearchTerm.Trim())
-                    && (model.CategoryId == "" 
-                            ? p.SubCategory.MainCategoryId != null 
-                            : p.SubCategory.MainCategoryId  == model.CategoryId)
+            .Where(p => p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                    && (model.CategoryId == ""
+                            ? p.SubCategory.MainCategoryId != null
+                            : p.SubCategory.MainCategoryId == model.CategoryId)
                     && p.IsDeleted != true)
+            .OrderByDescending(p => p.CreatedOn)
             .Skip((model.Page - 1) * model.RecordsPerPage)
             .Take(model.RecordsPerPage)
-            .OrderByDescending(p => p.CreatedOn)
             .Select(p => new AdminProductResponseModel
             {
                 Id = p.Id,

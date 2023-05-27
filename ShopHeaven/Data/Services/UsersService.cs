@@ -105,8 +105,12 @@ namespace ShopHeaven.Data.Services
             })
                 .ToListAsync();
 
+            //gets deleted user too
             var usersCount = this.db.Users
-                .Where(u => u.Email.Contains(model.SearchTerm.Trim()) || u.UserName.Contains(model.SearchTerm.Trim()))
+               .Where(u => u.Email.ToLower()
+                                .Contains(model.SearchTerm.Trim().ToLower())
+                            || u.UserName.ToLower()
+                                .Contains(model.SearchTerm.Trim().ToLower()))
                 .Count();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
@@ -365,10 +369,15 @@ namespace ShopHeaven.Data.Services
 
         private async Task<List<UserWithRolesResponseModel>> GetAllUsersWithRolesInfoAsync(UserPaginationRequestModel model)
         {
+            //gets deleted users too
+
             return await db.Users
                   //.Where(u => u.IsDeleted != true)
                   .OrderByDescending(x => x.CreatedOn)
-                  .Where(u => u.Email.Contains(model.SearchTerm.Trim()) || u.UserName.Contains(model.SearchTerm.Trim()))
+                  .Where(u => u.Email.ToLower()
+                                .Contains(model.SearchTerm.Trim().ToLower()) 
+                            || u.UserName.ToLower()
+                                .Contains(model.SearchTerm.Trim().ToLower()))
                   .Skip((model.Page - 1) * model.RecordsPerPage)
                   .Take(model.RecordsPerPage)
                   .Join(
