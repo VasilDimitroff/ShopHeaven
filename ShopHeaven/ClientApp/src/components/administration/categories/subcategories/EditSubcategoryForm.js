@@ -7,7 +7,7 @@ import {
   TextField,
   Paper,
   Zoom,
-  Alert
+  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
@@ -82,7 +82,7 @@ export default function EditSubcategoryForm(props) {
       setEditSubcategoryResponseMessage(
         "Subcategory now has name " + formData.get("name")
       );
-      console.log("MSG: " + editSubcategoryResponseMessage)
+      console.log("MSG: " + editSubcategoryResponseMessage);
       setSubcategory(response?.data);
       props.subcategoryUpdated(response?.data);
     } catch (error) {
@@ -123,7 +123,7 @@ export default function EditSubcategoryForm(props) {
   });
 
   return (
-    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
+    <Paper sx={{ paddingTop: 2, paddingBottom: 2, marginTop: theme.spacing(2)}}>
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
@@ -145,9 +145,13 @@ export default function EditSubcategoryForm(props) {
         </InputBox>
         <ImageHolder>
           <img
-            style={{ objectFit: "cover" }}
-            width="250px"
-            height="150px"
+            style={{
+              maxWidth: "750px",
+              maxHeight: "450px",
+              display: "block",
+              width: "100%",
+              margin: "auto",
+            }}
             src={subcategory.image}
             alt={subcategory.name}
           />
@@ -170,13 +174,17 @@ export default function EditSubcategoryForm(props) {
             style={{
               color: theme.palette.warning.main,
               marginTop: theme.spacing(2),
-              listStyle: "none"
+              listStyle: "none",
             }}
           >
             <li>
-              <Forward/>Warning! If you submit a new image, the old one will be deleted
+              <Forward />
+              Warning! If you submit a new image, the old one will be deleted
             </li>
-            <li> <Forward/> .jpg, .jpeg, .png and .webp file formats are allowed</li>
+            <li>
+              {" "}
+              <Forward /> .jpg, .jpeg, .png and .webp file formats are allowed
+            </li>
           </ul>
         </InputBox>
         <InputBox>
@@ -190,7 +198,13 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton color="secondary" startIcon={<Edit />} type="submit" size="large" variant="contained">
+          <CreateCategoryButton
+            color="secondary"
+            startIcon={<Edit />}
+            type="submit"
+            size="large"
+            variant="contained"
+          >
             Edit subcategory
           </CreateCategoryButton>
         </InputBox>

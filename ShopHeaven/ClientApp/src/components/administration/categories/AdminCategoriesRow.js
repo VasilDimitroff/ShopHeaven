@@ -203,7 +203,7 @@ export default function AdminCategoriesRow(props) {
             <></>
           )}
         </CategoryNameTableCell>
-        <TableCell align="center">
+        <TableCell>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <StyledIconButton
@@ -249,8 +249,8 @@ export default function AdminCategoriesRow(props) {
           <Collapse in={showSubcategories} timeout="auto" unmountOnExit>
             <Paper
               sx={{
-                margin: 2,
-                padding: theme.spacing(3),
+                marginTop: 2,
+                padding: theme.spacing(2),
                 display: "block",
               }}
             >
@@ -265,8 +265,7 @@ export default function AdminCategoriesRow(props) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="left">NAME</TableCell>
-                    <TableCell align="center"></TableCell>
+                    <TableCell align="left">NAME</TableCell>  
                   </TableRow>
                 </TableHead>
                 <TableBody>

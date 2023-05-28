@@ -7,7 +7,7 @@ import {
   Typography,
   Box,
   IconButton,
-  Grid
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit, Person, ShoppingBag } from "@mui/icons-material";
@@ -28,7 +28,7 @@ export default function CategorySubcategoriesRow(props) {
 
   function subcategoryUndeleted() {
     setIsDeleted(false);
-  } 
+  }
 
   function subcategoryUpdated(newCategory) {
     setSubcategory(newCategory);
@@ -39,7 +39,7 @@ export default function CategorySubcategoriesRow(props) {
   }
 
   function handleOpenEditSubcategoryForm() {
-    if(isDeleted) {
+    if (isDeleted) {
       return;
     }
     setOpenDeleteSubcategoryForm(false);
@@ -89,70 +89,68 @@ export default function CategorySubcategoriesRow(props) {
 
   return (
     <Fragment>
-      <StyledTableRow sx={{
-            "&:hover": {
-              cursor: "pointer",
-              background: "#EAEAF7",
-            },
-          }}>
-        <TableCell
-          
-          onClick={handleOpenEditSubcategoryForm}
+      <StyledTableRow
+        sx={{
+          "&:hover": {
+            cursor: "pointer",
+            background: "#EAEAF7",
+          },
+        }}
+      >
+        <TableCell 
           component="th"
           scope="row"
         >
           <Typography sx={{ fontSize: 17, fontWeight: 500 }}>
-           {!isDeleted ? subcategory?.name : "SUBCATEGORY DELETED"}
+            {!isDeleted ? subcategory?.name : "SUBCATEGORY DELETED"}
           </Typography>
-          {
-            !isDeleted
-            ? (
-              <CategoryInfoHolder>
-              <SubcategoryInfoText>
-                <Chip
-                  sx={{padding: 0.5}}
-                  icon={<ShoppingBag />}
-                  color="primary"
-                  variant="outlined"
-                  label={`${subcategory?.productsCount} products`}
+          {!isDeleted ? (
+            <Grid container spacing={1}>
+              <Grid item xs={8} sm={8} md={10} lg={10} onClick={handleOpenEditSubcategoryForm}>
+                <CategoryInfoHolder>
+                  <SubcategoryInfoText>
+                    <Chip
+                      sx={{ padding: 0.5 }}
+                      icon={<ShoppingBag />}
+                      color="primary"
+                      variant="outlined"
+                      label={`${subcategory?.productsCount} products`}
+                      size="small"
+                    />
+                  </SubcategoryInfoText>
+                  <SubcategoryInfoText>
+                    <Chip
+                      sx={{ padding: 0.5 }}
+                      icon={<Person />}
+                      variant="outlined"
+                      label={`By: ${subcategory?.createdBy}`}
+                      size="small"
+                    />
+                  </SubcategoryInfoText>
+                </CategoryInfoHolder>
+              </Grid>
+              <Grid item xs={2} sm={2} md={1} lg={1}>
+                <StyledIconButton
+                  onClick={handleOpenEditSubcategoryForm}
+                  color="warning"
                   size="small"
-                />
-              </SubcategoryInfoText>
-              <SubcategoryInfoText>
-                <Chip
-                  sx={{padding: 0.5}}
-                  icon={<Person />}
-                  variant="outlined"
-                  label={`By: ${subcategory?.createdBy}`}
+                >
+                  <Edit />
+                </StyledIconButton>
+              </Grid>
+              <Grid item xs={2} sm={2} md={1} lg={1}>
+                <StyledIconButton
+                  onClick={handleOpenDeleteSubcategoryForm}
+                  color="error"
                   size="small"
-                />
-              </SubcategoryInfoText>
-            </CategoryInfoHolder>
-            )
-            : <></>
-          }
-        </TableCell>
-        <TableCell align="center">
-        <Grid container spacing={0}>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
-                onClick={handleOpenEditSubcategoryForm}
-                color="warning"
-                size="small"
-              >
-                <Edit />
-              </StyledIconButton>
+                >
+                  <Delete />
+                </StyledIconButton>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
-                onClick={handleOpenDeleteSubcategoryForm}
-                color="error"
-                size="small"
-              >
-                <Delete />
-              </StyledIconButton>
-            </Grid>
-          </Grid>
+          ) : (
+            <></>
+          )}
         </TableCell>
       </StyledTableRow>
       <TableRow>
