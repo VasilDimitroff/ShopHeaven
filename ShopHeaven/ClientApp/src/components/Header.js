@@ -47,15 +47,10 @@ export default function Header() {
 
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showFavoritesMenu, setShowFavoritesMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   function handleShowMobileMenu(value) {
     setShowMobileMenu(value);
-  }
-
-  function handleShowFavoritesMenu(value) {
-    setShowFavoritesMenu(value);
   }
 
   function handleShowSearchBar(value) {
@@ -74,7 +69,6 @@ export default function Header() {
   function HideAllMenusExcept(setterFuncToShowMenu) {
     let useStatesSetterNames = [
       handleShowUserMenu,
-      handleShowFavoritesMenu,
       handleShowMobileMenu,
     ];
 
@@ -322,11 +316,6 @@ export default function Header() {
                 <CustomBadge
                   badgeContent={1}
                   color="secondary"
-                  onClick={() =>
-                    showFavoritesMenu === true
-                      ? handleShowFavoritesMenu(false)
-                      : HideAllMenusExcept(handleShowFavoritesMenu)
-                  }
                   sx={{
                     cursor: "pointer",
                     "&:hover": {
@@ -445,7 +434,7 @@ export default function Header() {
 
       <Fade in={showMobileMenu} timeout={500} unmountOnExit>
         <MobileMenuWrapper>
-          <CategoriesHomeList />
+          <CategoriesHomeList handleShowMobileMenu={handleShowMobileMenu} />
         </MobileMenuWrapper>
       </Fade>
     </div>

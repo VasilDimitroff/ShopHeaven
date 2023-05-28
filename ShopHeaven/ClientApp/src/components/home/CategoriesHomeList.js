@@ -32,7 +32,7 @@ import axios from "../../api/axios";
 
 let mainCategoryOfSubcategoriesName;
 
-export default function CategoriesHomeList() {
+export default function CategoriesHomeList(props) {
   let switchCategorySubcategoriesTimer;
 
   let hideSubmenuTimer = useRef(null);
@@ -83,6 +83,7 @@ export default function CategoriesHomeList() {
   }, []);
 
   function handleShowSubmenu(show) {
+
     clearTimeout(hideSubmenuTimer.current);
 
     if (show == true || isLowerOrEqualThanMd) {
@@ -339,6 +340,7 @@ export default function CategoriesHomeList() {
           <ViewAllCategoriesButtonHolder>
             <Link
               to="/categories"
+              onClick={() => isLowerOrEqualThanMd ? props.handleShowMobileMenu(false) : ""}
               style={{
                 color: theme.palette.white.main,
                 textDecoration: "none",
