@@ -157,22 +157,6 @@ export default function Header() {
     boxShadow: theme.palette.dropdown.boxShadow,
   });
 
-  const FavoritesList = styled(List)({
-    width: "100%",
-    zIndex: "10",
-    maxWidth: 360,
-    position: "absolute",
-    right: "8%",
-    backgroundColor: theme.palette.dropdown.main,
-    color: theme.palette.dropdown.main.color,
-    marginTop: theme.spacing(7),
-    paddingTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-    display: showFavoritesMenu === true ? "block" : "none",
-    alignItems: "center",
-    boxShadow: theme.palette.dropdown.boxShadow,
-  });
-
   const CustomSearchInput = styled(InputBase)({
     color: "white",
     width: "92%",
@@ -392,6 +376,7 @@ export default function Header() {
       ) : (
         <Slide in={showUserMenu} direction="down">
           <UserMenu
+            onClick={() => handleShowUserMenu(false)}
             unmountonexit="true"
             onMouseLeave={() =>
               showUserMenu === true
