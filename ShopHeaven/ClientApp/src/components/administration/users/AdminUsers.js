@@ -185,14 +185,14 @@ export default function AdminUsers() {
 
   return (
     <Box>
-      <form onSubmit={onSearchUser}>
+      <form>
         <Grid container spacing={2}>
           <Grid
             item
             xs={12}
-            sm={12}
-            md={7}
-            lg={7}
+            sm={8}
+            md={9}
+            lg={9}
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
@@ -213,7 +213,7 @@ export default function AdminUsers() {
             />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
-          <Grid item xs={8} sm={8} md={3} lg={4}>
+          <Grid item xs={12} sm={4} md={3} lg={3}>
             <select
               onChange={onSearchUser}
               style={StyledSelect}
@@ -225,16 +225,6 @@ export default function AdminUsers() {
               <option value="email">Email</option>
               <option value="username">Username</option>
             </select>
-          </Grid>
-          <Grid item xs={4} sm={4} md={2} lg={1}>
-            <Button
-              sx={{ width: "100%", fontSize: 13 }}
-              variant="contained"
-              type="submit"
-              color="primary"
-            >
-              SEARCH
-            </Button>
           </Grid>
         </Grid>
       </form>
