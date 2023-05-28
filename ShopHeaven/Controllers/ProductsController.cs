@@ -78,7 +78,7 @@ namespace ShopHeaven.Controllers
 
             try
             {
-                var productsByLabels = await this.productsService.GetProductsByLabelAsync(model);
+                var productsByLabels = await this.productsService.GetProductsByLabelsAsync(model);
                 return Ok(productsByLabels);
             }
             catch (Exception ex)

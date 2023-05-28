@@ -296,9 +296,10 @@ export default function CategoriesHomeList(props) {
   });
 
   const CategoryName = styled(Typography)({
+    textTransform: "uppercase",
     marginLeft: theme.spacing(2),
     width: "100%",
-    fontSize: "18px",
+    fontSize: 18,
     fontWeight: "500",
   });
 
@@ -326,7 +327,7 @@ export default function CategoriesHomeList(props) {
                     onMouseEnter={() => setSubCategoriesData(category.id)}
                   >
                     {/* onClick={() => setSubCategoriesData(category.id)} */}
-                    <CategoryItem>
+                    <CategoryItem sx={{ paddingTop: 3, paddingBottom: 3}}>
                       <RadioButtonChecked />
                       <CategoryName>{category.name}</CategoryName>
                       <KeyboardArrowRight />
@@ -384,6 +385,7 @@ export default function CategoriesHomeList(props) {
                       sx={{
                         marginLeft: theme.spacing(2),
                         fontSize: "16px",
+                        textTransform: "uppercase"
                       }}
                     >
                       {subcategory.name}

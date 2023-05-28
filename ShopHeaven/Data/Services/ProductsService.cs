@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
@@ -7,6 +8,7 @@ using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Specifications;
+using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Data.Services
 {
@@ -482,10 +484,69 @@ namespace ShopHeaven.Data.Services
             return products;
         }
 
-        public Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelAsync(GetProductsByLabelRequestModel model)
+        public async Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelsAsync(GetProductsByLabelRequestModel model)
         {
-            ;
-            return null;
+            model.Labels = model.Labels.Select(x => x.Trim().ToLower()).ToList();
+
+            /*
+            List<GetProductByLabelsResponseModel> products = await this.db.Products
+               .Where(p => p.Labels.Any(pl => pl.Label.Content.ToLower() == model.Label))
+               .Select(product => new GetProductByLabelsResponseModel
+               {
+                   Id = product.Id,
+                   Name = product.Name,
+                   Description = product.Description,
+                   Image = product.Images.FirstOrDefault().Image.Url ?? "",
+                   Category = new CategoryBaseModel
+                   {
+                       CategoryId = product.SubCategory.MainCategoryId,
+                       Name = product.SubCategory.MainCategory.Name,
+                   },
+                   Subcategory = new SubcategoryBaseResponseModel
+                   {
+                       SubcategoryId = product.SubCategoryId,
+                       Name = product.SubCategory.Name
+                   }
+               })
+               .ToListAsync();
+            */
+            var filteredProducts = new HashSet<Product>();
+
+            foreach (var label in model.Labels)
+            {
+                var productsByCurrentLabel = await this.db.Products
+                    .Include(x => x.Images)
+                    .ThenInclude(x => x.Image)
+                    .Include(x => x.SubCategory)
+                    .ThenInclude(x => x.MainCategory)
+                    .Where(product => product.Labels.Any(pl => pl.Label.Content.Trim().ToLower() == label))
+                    .ToListAsync();
+
+                filteredProducts.AddRange(productsByCurrentLabel);
+            }
+           
+            List<GetProductByLabelsResponseModel> products = filteredProducts
+                .Take(model.ProductsCount)
+                .Select(product => new GetProductByLabelsResponseModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Image = product.Images.FirstOrDefault().Image.Url ?? "",
+                    Category = new CategoryBaseModel
+                    {
+                        CategoryId = product.SubCategory.MainCategoryId,
+                        Name = product.SubCategory.MainCategory.Name,
+                    },
+                    Subcategory = new SubcategoryBaseResponseModel
+                    {
+                        SubcategoryId = product.SubCategoryId,
+                        Name = product.SubCategory.Name
+                    }
+                })
+                .ToList();
+            
+            return products;
         }
 
         public async Task<ProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete)

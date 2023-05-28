@@ -9,5 +9,5 @@ export const requestTimerMilliseconds = 500; // in search fields
 export const loadSubcategoriesInMainMenuTimerMilliseconds = 500; // time waiting before start new request in main menu when user move the mouse
 export const hideSubmenuWhenUserIsOutsideTimerMilliseconds = 1000; // how much time to show submenu when user is outside of submenu
 
-export const labelCriteriaForProductsInHomeSlider = ["hot"]; // filter main slider products by these labels
+export const labelCriteriaForProductsInHomeSlider = ["new", "hot"]; // filter main slider products by these labels
 export const productsCountInHomeSlider = 5; // how many product to show in main slider

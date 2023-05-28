@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Paper, Box, Typography, Chip, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
 
 function CarouselItem(props) {
+
+  const [product, setProduct] = useState(props.product);
+
   const StyledChip = styled(Chip)({
     textTransform: "uppercase",
     fontWeight: 500,
@@ -47,15 +51,15 @@ function CarouselItem(props) {
   });
 
   return (
-    <Paper sx={{ position: "relative" }}>
-      <SliderImage src={props.item.image} />
+    <Paper sx={{ position: "relative"}}>
+      <SliderImage src={product.image} />
       <ContentWrapper>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <StyledChip variant="filled" color="primary" label="Category name" />
+          <StyledChip variant="filled" color="primary" label={product.category.name} />
           <StyledChip
             variant="filled"
             color="secondary"
-            label="Subcategory name"
+            label={product.subcategory.name}
           />
         </Box>
         <Typography
@@ -65,11 +69,13 @@ function CarouselItem(props) {
             textTransform: "uppercase",
             textShadow: "2px 2px 1px #373737;",
             [theme.breakpoints.down("md")]: {
-              fontSize: "22px",
+              fontSize: "20px",
             },
           }}
         >
-          {props.item.name}
+           {product.name.length > 70
+            ? `${product.name.slice(0, 70)}...`
+            : `${product.name}`}
         </Typography>
         <Typography
           sx={{
@@ -81,9 +87,9 @@ function CarouselItem(props) {
             },
           }}
         >
-          {props.item.description.length > 200
-            ? `${props.item.description.slice(0, 200)}...`
-            : `${props.item.description.slice(0, 200)}`}
+          {product.description.length > 200
+            ? `${product.description.slice(0, 200)}...`
+            : `${product.description}`}
         </Typography>
         <Box sx={{ marginBottom: theme.spacing(7) }}>
           <Button variant="contained" size="small">

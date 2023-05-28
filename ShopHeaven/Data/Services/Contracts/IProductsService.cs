@@ -11,7 +11,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model);
 
-        Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelAsync(GetProductsByLabelRequestModel model);
+        Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelsAsync(GetProductsByLabelRequestModel model);
 
         Task<AdminProductResponseModel> EditProductAsync(EditProductRequestModel model);
 

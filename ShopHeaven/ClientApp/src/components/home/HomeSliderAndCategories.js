@@ -28,7 +28,7 @@ export default function HomeSliderAndCategories(props) {
           xs={12}
           md={5}
           lg={5}
-          xl={3}
+          xl={4}
           sx={{
             [theme.breakpoints.down("md")]: {
               display: "none",
@@ -42,7 +42,7 @@ export default function HomeSliderAndCategories(props) {
           xs={12}
           md={7}
           lg={7}
-          xl={9}
+          xl={8}
           sx={{ paddingTop: theme.spacing(1) }}
         >
           <HomeCarousel items={props.items} />

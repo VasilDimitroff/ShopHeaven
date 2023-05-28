@@ -1,11 +1,11 @@
 import  { React, Fragment, useEffect, useRef, useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box } from "@mui/material";
 import CarouselItem from "./CarouselItem";
 import { ApiEndpoints } from "../../api/endpoints";
 import { productsCountInHomeSlider, labelCriteriaForProductsInHomeSlider } from "../../constants";
 import axios from "../../api/axios";
 import { theme } from "../../theme";
+import { Box } from "@mui/system";
 
 function HomeCarousel(props) {
   const [products, setProducts] = useState([]);
@@ -47,7 +47,7 @@ function HomeCarousel(props) {
   }, []);
 
   return (
-    <Fragment>
+    <Box>
       <Carousel
         animation="slide"
         swipe={false}
@@ -87,11 +87,13 @@ function HomeCarousel(props) {
           },
         }}
       >
-        {props.items.map((item, index) => (
-          <CarouselItem item={item} key={index} />
+        {products?.map((product, index) => (
+          <Fragment key={index}>
+            <CarouselItem product={product} />
+          </Fragment>
         ))}
       </Carousel>
-    </Fragment>
+    </Box>
   );
 }
 
