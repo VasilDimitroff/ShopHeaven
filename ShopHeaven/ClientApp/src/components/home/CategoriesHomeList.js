@@ -21,7 +21,6 @@ import {
   RadioButtonChecked,
   KeyboardArrowRight,
   ArrowBackIos,
-  Close,
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
 import {
@@ -281,6 +280,13 @@ export default function CategoriesHomeList() {
     },
   });
 
+  const ViewAllCategoriesButtonHolder = styled(ViewAllButtonHolder)({
+    cursor: "pointer",
+    [theme.breakpoints.up("md")]: {
+      borderBottomLeftRadius: theme.shape.borderRadius,
+    },
+  });
+
   const ViewAllSubcategoriesButton = styled(ViewAllButton)({
     display: "none",
     [theme.breakpoints.down("md")]: {
@@ -330,7 +336,7 @@ export default function CategoriesHomeList() {
             );
           })}
           <Divider />
-          <ViewAllButtonHolder>
+          <ViewAllCategoriesButtonHolder>
             <Link
               to="/categories"
               style={{
@@ -338,15 +344,15 @@ export default function CategoriesHomeList() {
                 textDecoration: "none",
                 width: "100%",
               }}
-            >
+            >         
               <ViewAllButton variant="contained">
                 VIEW ALL CATEGORIES
               </ViewAllButton>
             </Link>
-          </ViewAllButtonHolder>
+          </ViewAllCategoriesButtonHolder>
         </MenuHolder>
 
-        <Fade in={showSubmenu} timeout={400}>
+        <Fade in={showSubmenu} timeout={400} unmountOnExit>
           <Submenu
             onMouseLeave={() => handleShowSubmenu(false)}
             onMouseEnter={() => handleShowSubmenu(true)}

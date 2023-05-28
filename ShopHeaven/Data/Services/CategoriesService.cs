@@ -321,6 +321,10 @@ namespace ShopHeaven.Data.Services
         {
             List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
+                .OrderByDescending(category => category.SubCategories
+                        .SelectMany(subcategory => subcategory.Products)
+                        .Count())
+                .ThenByDescending(category => category.SubCategories.Count())
                 .Select(x => new GetCategoriesResponseModel
                 {
                     Id = x.Id,
@@ -350,6 +354,10 @@ namespace ShopHeaven.Data.Services
         {
             var categories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
+                .OrderByDescending(category => category.SubCategories
+                        .SelectMany(subcategory => subcategory.Products)
+                        .Count())
+                .ThenByDescending(category => category.SubCategories.Count())
                 .Select(x => new CategoryNamesResponseModel
                 {
                     Id = x.Id,

@@ -27,7 +27,6 @@ function CarouselItem(props) {
           sx={{
             width: "100%",
             position: "absolute",
-
             backgroundColor: "rgba(0,0,0,.5)",
             color: "white",
             display: "flex",

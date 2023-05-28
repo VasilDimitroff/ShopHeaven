@@ -6,18 +6,22 @@ import { theme } from "../../theme";
 
 export default function HomeSliderAndCategories(props) {
   return (
-    <Box sx={{ paddingTop: theme.spacing(11),}}>
+    <Box
+      sx={{
+        paddingTop: theme.spacing(11),
+        width: "80%",
+        [theme.breakpoints.down("md")]: {
+          width: "95%",
+        },
+        margin: "auto",
+      }}
+    >
       <Grid
         container
-        sx={{
-          width: "80%",
-          [theme.breakpoints.down("md")]: {
-            width: "95%",
-          },
-          margin: "auto",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
+        // sx={{
+        //  display: "flex",
+        //  justifyContent: "space-between",
+        //  }}
       >
         <Grid
           item
@@ -31,10 +35,17 @@ export default function HomeSliderAndCategories(props) {
             },
           }}
         >
-            <CategoriesHomeList categories={props.categories} />
+          <CategoriesHomeList />
         </Grid>
-        <Grid item xs={12} md={7} lg={7} xl={9} sx={{paddingTop: theme.spacing(1)}}>       
-            <HomeCarousel items={props.items}/>     
+        <Grid
+          item
+          xs={12}
+          md={7}
+          lg={7}
+          xl={9}
+          sx={{ paddingTop: theme.spacing(1) }}
+        >
+          <HomeCarousel items={props.items} />
         </Grid>
       </Grid>
     </Box>

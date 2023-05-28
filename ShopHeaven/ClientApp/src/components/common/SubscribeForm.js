@@ -130,7 +130,6 @@ function SubscribeForm(props) {
                         </InputAdornment>
                       ),
                     }}
-                    id="input-with-sx"
                     label="Name"
                     color="white"
                     variant="filled"
@@ -152,7 +151,6 @@ function SubscribeForm(props) {
                         </InputAdornment>
                       ),
                     }}
-                    id="input-with-sx"
                     label="E-mail"
                     color="white"
                     variant="filled"
