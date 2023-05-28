@@ -7,6 +7,7 @@ import {
   Alert,
   AlertTitle,
   Zoom,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Cancel, Refresh, Undo } from "@mui/icons-material";
@@ -116,14 +117,6 @@ export default function DeleteCategoryForm(props) {
     marginBottom: theme.spacing(1),
   });
 
-  const ButtonsHolder = styled(Box)({
-    display: "flex",
-    width: "100%",
-    margin: "auto",
-    gap: 60,
-    justifyContent: "center",
-  });
-
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       {deleteResponse || undeleteResponse ? (
@@ -154,8 +147,11 @@ export default function DeleteCategoryForm(props) {
                 deleted
               </li>
             </ul>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              {!undoDeleteButtonClicked ? (
+
+
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={6} lg={6}>
+            {!undoDeleteButtonClicked ? (
                 <Button
                   startIcon={<Undo />}
                   size="small"
@@ -168,10 +164,26 @@ export default function DeleteCategoryForm(props) {
               ) : (
                 ""
               )}
-              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={6}
+              lg={6}
+              sx={{ position: "relative" }}
+            >
+                   <Button
+                startIcon={<Refresh />}
+                size="small"
+                variant="contained"
+                onClick={refreshPage}
+              >
                 REFRESH
               </Button>
-            </Box>
+            </Grid>
+          </Grid>
+
           </Alert>
         ) : (
           <Alert severity="success">
@@ -190,18 +202,27 @@ export default function DeleteCategoryForm(props) {
               <li>
                 {undeleteResponse?.revealedWishlists} wishlist products revealed
               </li>
-              <li>{undeleteResponse?.revealedOrders} order products revealed</li>
+              <li>
+                {undeleteResponse?.revealedOrders} order products revealed
+              </li>
               <li>
                 {undeleteResponse?.revealedLabels} labels of products revealed
               </li>
-              <li>{undeleteResponse?.revealedImages} product images revealed</li>
               <li>
-                {undeleteResponse?.revealedSpecifications} product specifications
-                revealed
+                {undeleteResponse?.revealedImages} product images revealed
+              </li>
+              <li>
+                {undeleteResponse?.revealedSpecifications} product
+                specifications revealed
               </li>
             </ul>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <Button startIcon={<Refresh />} size="small" variant="contained" onClick={refreshPage}>
+              <Button
+                startIcon={<Refresh />}
+                size="small"
+                variant="contained"
+                onClick={refreshPage}
+              >
                 REFRESH
               </Button>
             </Box>
@@ -225,28 +246,41 @@ export default function DeleteCategoryForm(props) {
               products in it!
             </Typography>
           </Box>
-          <ButtonsHolder>
-            <DeleteCategoryButton
-              onClick={onDeleteCategory}
-              type="submit"
-              size="large"
-              variant="outlined"
-              color="error"
-              startIcon={<Delete />}
+
+          <Grid container spacing={3}>
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <DeleteCategoryButton
+                onClick={onDeleteCategory}
+                type="submit"
+                size="large"
+                variant="outlined"
+                color="error"
+                startIcon={<Delete />}
+              >
+                DELETE
+              </DeleteCategoryButton>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              md={6}
+              lg={6}
+              sx={{ position: "relative" }}
             >
-              DELETE CATEGORY
-            </DeleteCategoryButton>
-            <DeleteCategoryButton
-              onClick={props.onCancelButtonClicked}
-              type="submit"
-              size="large"
-              variant="contained"
-              color="error"
-              startIcon={<Cancel />}
-            >
-              CANCEL
-            </DeleteCategoryButton>
-          </ButtonsHolder>
+              <DeleteCategoryButton
+                onClick={props.onCancelButtonClicked}
+                type="submit"
+                size="large"
+                variant="contained"
+                color="error"
+                startIcon={<Cancel />}
+              >
+                CANCEL
+              </DeleteCategoryButton>
+            </Grid>
+          </Grid>
+
           {deleteCategoryResponseMessage ? (
             <Zoom in={deleteCategoryResponseMessage.length > 0 ? true : false}>
               <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">

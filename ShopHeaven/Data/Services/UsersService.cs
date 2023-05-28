@@ -27,7 +27,6 @@ namespace ShopHeaven.Data.Services
 
         public async Task RegisterAsync(CreateUserRequestModel model)
         {
-
             User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim() && x.IsDeleted != true);
 
             if (userWithSameEmail != null)
@@ -110,7 +109,7 @@ namespace ShopHeaven.Data.Services
 
             string searchTermToLower = model.SearchTerm.Trim().ToLower();
 
-            //gets deleted user too
+            //gets deleted users too
             var usersCount = this.db.Users
                .Where(u => model.Criteria == "" 
                            ? u.Email.ToLower().Contains(searchTermToLower) || u.UserName.ToLower().Contains(searchTermToLower)
@@ -177,7 +176,6 @@ namespace ShopHeaven.Data.Services
 
         public async Task<BasicUserResponseModel> GetUserByEmailAsync(string email)
         {
-
             var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
 
             if (user == null)
