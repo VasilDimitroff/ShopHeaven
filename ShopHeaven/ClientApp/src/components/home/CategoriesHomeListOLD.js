@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import {
   Box,
   List,
@@ -12,7 +12,6 @@ import {
   ListItem,
   Zoom,
   Tooltip,
-  Grid,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
@@ -21,29 +20,18 @@ import {
   RadioButtonChecked,
   KeyboardArrowRight,
   ArrowBackIos,
-  Close,
 } from "@mui/icons-material";
 import { theme } from "./../../theme";
-import {
-  loadSubcategoriesInMainMenuTimerMilliseconds,
-  hideSubmenuWhenUserIsOutsideTimerMilliseconds,
-} from "../../constants";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ApiEndpoints } from "../../api/endpoints";
 import axios from "../../api/axios";
 
 let mainCategoryOfSubcategoriesName;
 
-export default function CategoriesHomeList() {
-  let switchCategorySubcategoriesTimer;
-
-  let hideSubmenuTimer = useRef(null);
-
+export default function CategoriesHomeListOLD() {
   const [showSubmenu, setShowSubmenu] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
-  const [isLowerOrEqualThanMd, setIsLowerOrEqualThanMd] = useState(
-    useMediaQuery(theme.breakpoints.down("md"))
-  );
 
   let categoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 9;
@@ -52,6 +40,9 @@ export default function CategoriesHomeList() {
       ? categoriesToShow + 1
       : subcategories.length;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const effectRun = useRef(false);
 
   useEffect(() => {
@@ -59,17 +50,15 @@ export default function CategoriesHomeList() {
 
     const getCategories = async () => {
       try {
-        const response = await axios.get(
-          ApiEndpoints.categories.getCategoryNames,
-          {
-            signal: controller.signal,
-          }
-        );
+        const response = await axios.get(ApiEndpoints.categories.getCategoryNames, {
+          signal: controller.signal,
+        });
         console.log(response?.data);
 
         setCategories(response?.data);
       } catch (error) {
         console.log(error);
+        navigate("/login", { state: { from: location }, replace: true }); 
       }
     };
 
@@ -83,41 +72,14 @@ export default function CategoriesHomeList() {
     };
   }, []);
 
-  function handleShowSubmenu(show) {
-    clearTimeout(hideSubmenuTimer.current);
-
-    if (show == true || isLowerOrEqualThanMd) {
-      setShowSubmenu(show);
-      return;
-    }
-
-    hideSubmenuTimer.current = setTimeout(() => {
-      setShowSubmenu(show);
-    }, hideSubmenuWhenUserIsOutsideTimerMilliseconds);
+  function handleShowSubmenu() {
+    setShowSubmenu(prev => !prev);
   }
 
   function setSubCategoriesData(mainCategoryId) {
-    clearTimeout(switchCategorySubcategoriesTimer);
-
-    handleShowSubmenu(true);
-
-    const targetSubcategories = categories.find(
-      (cat) => cat.id == mainCategoryId
-    ).subcategories;
-
-    switchCategorySubcategoriesTimer = setTimeout(
-      () => {
-        setSubcategories(targetSubcategories);
-        mainCategoryOfSubcategoriesName = categories.find(
-          (cat) => cat.id == mainCategoryId
-        ).name;
-      },
-      !isLowerOrEqualThanMd ? loadSubcategoriesInMainMenuTimerMilliseconds : 0
-    );
-  }
-
-  function handleCategoryLeave() {
-    clearTimeout(switchCategorySubcategoriesTimer);
+    setShowSubmenu(true);
+    setSubcategories(sub => categories.find(cat => cat.id == mainCategoryId).subcategories);
+    mainCategoryOfSubcategoriesName = categories.find(cat => cat.id == mainCategoryId).name;
   }
 
   const ViewAllButton = styled(Button)({
@@ -146,7 +108,6 @@ export default function CategoriesHomeList() {
     marginTop: theme.spacing(9.5),
     position: "absolute",
     left: "100%",
-    width: "100%",
     zIndex: 23,
     [theme.breakpoints.down("md")]: {
       display: "block",
@@ -266,7 +227,6 @@ export default function CategoriesHomeList() {
   });
 
   const SubCategoryItem = styled(CategoryItem)({
-    width: "100%",
     backgroundColor: theme.palette.white.main,
     color: "black",
     "&:hover": {
@@ -296,13 +256,13 @@ export default function CategoriesHomeList() {
   });
 
   return (
-    <CategoriesWrapper onMouseLeave={() => handleShowSubmenu(false)}>
+    <CategoriesWrapper>
       <StyledList component="nav" aria-label="mailbox folders">
-        <MenuHolder>
+        <MenuHolder onMouseLeave={() => handleShowSubmenu()}>
           <CategoriesHeading variant="h5">CATEGORIES</CategoriesHeading>
           {categories.slice(0, categoriesToShow).map((category) => {
             return (
-              <Box key={category.id} sx={{ position: "relative" }}>
+              <div key={category.id}>
                 <Divider />
                 <Tooltip
                   disableInteractive={true}
@@ -315,44 +275,36 @@ export default function CategoriesHomeList() {
                 >
                   <Box
                     sx={{ display: "flex" }}
-                    onMouseLeave={handleCategoryLeave}
-                    onMouseEnter={() => setSubCategoriesData(category.id)}
+                    onClick={() => setSubCategoriesData(category.id)}
                   >
-                    {/* onClick={() => setSubCategoriesData(category.id)} */}
                     <CategoryItem>
                       <RadioButtonChecked />
-                      <CategoryName>{category.name}</CategoryName>
+                      <CategoryName>
+                        {category.name}
+                      </CategoryName>
                       <KeyboardArrowRight />
                     </CategoryItem>
                   </Box>
                 </Tooltip>
-              </Box>
+              </div>
             );
           })}
           <Divider />
           <ViewAllButtonHolder>
-            <Link
-              to="/categories"
-              style={{
-                color: theme.palette.white.main,
-                textDecoration: "none",
-                width: "100%",
-              }}
-            >
-              <ViewAllButton variant="contained">
-                VIEW ALL CATEGORIES
-              </ViewAllButton>
+          <Link to="/categories" style={{ color: theme.palette.white.main, textDecoration: "none", width: "100%"}}>
+            <ViewAllButton variant="contained">
+             VIEW ALL CATEGORIES
+            </ViewAllButton>
             </Link>
           </ViewAllButtonHolder>
         </MenuHolder>
 
         <Fade in={showSubmenu} timeout={400}>
           <Submenu
-            onMouseLeave={() => handleShowSubmenu(false)}
-            onMouseEnter={() => handleShowSubmenu(true)}
+            onMouseEnter={() => handleShowSubmenu()}
           >
             <SubcategoriesHeading>
-              <CategoryItem onClick={() => handleShowSubmenu(!showSubmenu)}>
+              <CategoryItem onClick={() => setShowSubmenu(true)}>
                 <ArrowBackIos />
                 <MainCategoryNameText variant="h5">
                   {mainCategoryOfSubcategoriesName}
@@ -360,33 +312,31 @@ export default function CategoriesHomeList() {
               </CategoryItem>
             </SubcategoriesHeading>
             <MainCategoryName>
-              <Grid container spacing={0}>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <MainCategoryNameText component="h3">
-                    {mainCategoryOfSubcategoriesName}
-                  </MainCategoryNameText>
-                </Grid>
-              </Grid>
+              <MainCategoryNameText component="h3">
+                {mainCategoryOfSubcategoriesName}
+              </MainCategoryNameText>
             </MainCategoryName>
-            {subcategories.slice(0, subCategoriesToShow).map((subcategory) => {
-              return (
-                <Box key={subcategory.id}>
-                  <SubCategoryItem>
-                    <Label sx={{ fontSize: "14px" }} />
-                    <Typography
-                      sx={{
-                        marginLeft: theme.spacing(2),
-                        fontSize: "16px",
-                      }}
-                    >
-                      {subcategory.name}
-                    </Typography>
-                  </SubCategoryItem>
-                  <Divider />
-                  <Divider />
-                </Box>
-              );
-            })}
+            {subcategories
+              .slice(0, subCategoriesToShow)
+              .map((subcategory) => {
+                return (
+                  <Box key={subcategory.id}>
+                    <SubCategoryItem>
+                      <Label sx={{ fontSize: "14px" }} />
+                      <Typography
+                        sx={{
+                          marginLeft: theme.spacing(2),
+                          fontSize: "16px",
+                        }}
+                      >
+                        {subcategory.name}
+                      </Typography>
+                    </SubCategoryItem>
+                    <Divider />
+                    <Divider />
+                  </Box>
+                );
+              })}
             <ViewAllSubcategoriesButtonHolder>
               <ViewAllSubcategoriesButton variant="contained">
                 VIEW ALL SUBCATEGORIES
