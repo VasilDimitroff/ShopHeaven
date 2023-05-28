@@ -19,6 +19,33 @@ namespace ShopHeaven.Data.Services
             this.storageService = storageService;
             this.db = db;
         }
+        public async Task<List<CategorySummaryInfoResponseModel>> GetCategoriesSummaryInfoAsync()
+        {
+            var categories = await this.db.MainCategories
+                .Where(x => x.IsDeleted != true)
+                .OrderByDescending(x => x.SubCategories
+                    .Where(x => x.IsDeleted != true)
+                    .SelectMany(x => x.Products
+                        .Where(x => x.IsDeleted !=true))
+                    .Count())
+                .ThenByDescending(x => x.SubCategories.Count())
+                .Select(x => new CategorySummaryInfoResponseModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Image = x.Image.Url,
+                    ProductsCount = x.SubCategories
+                        .Where(x => x.IsDeleted != true)
+                        .SelectMany(x => x.Products.Where(x => x.IsDeleted != true))
+                        .Count(),
+                    SubcategoriesCount = x.SubCategories
+                        .Where(x => x.IsDeleted != true)
+                        .Count()
+                })
+                .ToListAsync();
+
+            return categories;
+        }
 
         public async Task<GetCategoriesResponseModel> CreateCategoryAsync(CreateCategoryRequestModel model)
         {
@@ -354,8 +381,8 @@ namespace ShopHeaven.Data.Services
         {
             var categories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
-                .OrderByDescending(category => category.SubCategories
-                        .SelectMany(subcategory => subcategory.Products)
+                .OrderByDescending(category => category.SubCategories.Where(s => s.IsDeleted != true)
+                        .SelectMany(subcategory => subcategory.Products.Where(p => p.IsDeleted != true))
                         .Count())
                 .ThenByDescending(category => category.SubCategories.Count())
                 .Select(x => new CategoryNamesResponseModel

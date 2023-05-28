@@ -13,6 +13,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id);
 
+        Task<List<CategorySummaryInfoResponseModel>> GetCategoriesSummaryInfoAsync();
+
         Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync();
 
         Task<List<CategoryNamesResponseModel>> GetAllCategoryNamesAsync();
