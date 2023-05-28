@@ -3,7 +3,19 @@ import BreadcrumbsBar from "../BreadcrumbsBar";
 import CategoriesWrapper from "./CategoriesWrapper";
 import FullWidthBanner from "../banners/FullWidthBanner";
 
-export default function Categories(props) {
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: "Categories",
+    uri: "/categories",
+  },
+];
+
+export default function Categories() {
+
   const categories = [
     {
       name: "Phones, Laptops and Tablets",
@@ -265,17 +277,6 @@ export default function Categories(props) {
         "Category 15, Subcategory 9",
         "Category 15, Subcategory 10",
       ],
-    },
-  ];
-
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: "Categories",
-      uri: "/categories",
     },
   ];
 

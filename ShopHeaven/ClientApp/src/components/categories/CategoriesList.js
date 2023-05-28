@@ -1,4 +1,5 @@
-import { React } from "react";
+import { React, useState, useRef, useEffect } from "react";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   Box,
   ImageList,
@@ -8,18 +9,52 @@ import {
   IconButton,
   Tooltip,
   Zoom,
-  Fade
+  Fade,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link } from "react-router-dom";
 import { Info } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
+import axios from "../../api/axios";
+import { ApiEndpoints } from "../../api/endpoints";
+import { Link } from "react-router-dom";
 
 let colsToShow = 0;
 
 export default function CategoriesList(props) {
+  const [categories, setCategories] = useState([]); // array[{}]
+
+  const effectRun = useRef(false);
+
   colsToShow = useMediaQuery(theme.breakpoints.down("md")) === true ? 2 : 4;
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          ApiEndpoints.categories.getCategoriesSummary,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response?.data);
+
+        setCategories(response?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getCategories();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
 
   const StyledImageList = styled(ImageList)({
     padding: theme.spacing(0.5),
@@ -50,44 +85,47 @@ export default function CategoriesList(props) {
     fontSize: 35,
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(-2),
-  })
+  });
 
   return (
     <GridHolder>
       <Heading>{props.heading}</Heading>
       <StyledImageList cols={colsToShow}>
-        {props.categories.map((item) => (
-          <Zoom in={true} key={item.id}>
-          <StyledImageListItem>
-            <img
-              src={`${item.img}?w=248&fit=crop&auto=format`}
-              srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-              alt={item.name}
-              loading="lazy"
-            />
-            <Fade in={true} direction="up" timeout={900}>
-            <Link to="/">
-              <StyledImageListItemBar
-                title={item.name}
-                subtitle={ item.subcategories !== null ? `${item.subcategories.length} subcategories` : ""}
-                actionIcon={
-                  <Tooltip
-                    TransitionComponent={Zoom}
-                    title={item.description}
-                    arrow
-                  >
-                    <IconButton
-                      sx={{ color: theme.palette.white.main, opacity: "0.67" }}
-                      aria-label={`info about ${item.name}`}
-                    >
-                      <Info />
-                    </IconButton>
-                  </Tooltip>
-                }
-              />
-            </Link>
-            </Fade>
-          </StyledImageListItem>
+        {categories?.map((category) => (
+          <Zoom in={true} key={category.id}>
+            <Tooltip
+              TransitionComponent={Zoom}
+              title={category.description}
+              arrow
+            >
+              <StyledImageListItem>
+                <img
+                  src={`${category.image}?w=248&fit=crop&auto=format`}
+                  srcSet={`${category.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  alt={category.name}
+                  loading="lazy"
+                />
+                <Fade in={true} direction="up" timeout={900}>
+                  <Link to="/">
+                    <StyledImageListItemBar
+                      title={category.name}
+                      subtitle={`${category.subcategoriesCount} subcategories, ${category.productsCount} products`}
+                      actionIcon={
+                        <IconButton
+                          sx={{
+                            color: theme.palette.white.main,
+                            opacity: "0.67",
+                          }}
+                          aria-label={`info about ${category.name}`}
+                        >
+                          <Info />
+                        </IconButton>
+                      }
+                    />
+                  </Link>
+                </Fade>
+              </StyledImageListItem>
+            </Tooltip>
           </Zoom>
         ))}
       </StyledImageList>

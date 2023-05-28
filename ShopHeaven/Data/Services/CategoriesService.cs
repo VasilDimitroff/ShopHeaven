@@ -19,6 +19,7 @@ namespace ShopHeaven.Data.Services
             this.storageService = storageService;
             this.db = db;
         }
+
         public async Task<List<CategorySummaryInfoResponseModel>> GetCategoriesSummaryInfoAsync()
         {
             var categories = await this.db.MainCategories
@@ -33,6 +34,7 @@ namespace ShopHeaven.Data.Services
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    Description = x.Description,
                     Image = x.Image.Url,
                     ProductsCount = x.SubCategories
                         .Where(x => x.IsDeleted != true)
