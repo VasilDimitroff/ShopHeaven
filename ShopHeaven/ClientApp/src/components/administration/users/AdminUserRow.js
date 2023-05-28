@@ -120,16 +120,14 @@ export default function AdminUserRow(props) {
           },
         }}
       >
-        <TableCell sx={{ width: "20px", padding: 0, paddingLeft: 1 }}>
-          <IconButton size="small" onClick={handleSetOpenEditForm}>
-            {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        </TableCell>
         <UserNameTableCell
           onClick={handleSetOpenEditForm}
           component="th"
           scope="row"
         >
+           <IconButton size="small">
+            {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </IconButton>
           {user?.isDeleted ? (
             <>
               {user?.email}
@@ -142,7 +140,7 @@ export default function AdminUserRow(props) {
               </Typography>
             </>
           ) : (
-            <><AccountBox sx={{color: theme.palette.primary.main, mr: 1}}/>{user?.email}</>
+            <>{user?.email}</>
           )}
           <UserInfoHolder>
             <UserInfoText>

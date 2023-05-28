@@ -7,6 +7,7 @@ import {
   Chip,
   Box,
   Grid,
+  Tooltip
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -21,7 +22,6 @@ import {
   Check,
   Close,
   Percent,
-  TurnedIn
 } from "@mui/icons-material";
 import EditProduct from "./EditProduct";
 import DeleteProduct from "./DeleteProduct";
@@ -81,7 +81,7 @@ export default function ProductRow(props) {
     fontSize: 13,
     fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
-      marginTop: theme.spacing(0.4),
+      //marginTop: theme.spacing(0.4),
     },
   });
 
@@ -100,39 +100,22 @@ export default function ProductRow(props) {
           },
         }}
       >
-        <TableCell sx={{ width: "20px", padding: 0, paddingLeft: 1 }}>
-          <IconButton size="small" onClick={handleSetOpenEditForm}>
-            {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        </TableCell>
         <ProductNameTableCell
           onClick={handleSetOpenEditForm}
           component="th"
           scope="row"
         >
-          {!isDeleted ? <><TurnedIn sx={{color: theme.palette.primary.main, mr: 1}}/>{product?.name}</>: "PRODUCT DELETED"}
+          <IconButton size="small">
+            {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </IconButton>
+          {!isDeleted ? <>{product?.name}</>: "PRODUCT DELETED"}
           {!isDeleted ? (
             <Fragment>
-                <ProductInfoHolder>
-                <ProductInfoText>
-                  <Chip
-                    sx={{ padding: 0.5 }}
-                    color="primary"
-                    variant="outlined"
-                    label={`${product?.categoryName}`}
-                    size="small"
-                  />
-                </ProductInfoText>
-                <ProductInfoText>
-                  <Chip
-                    sx={{ padding: 0.5 }}
-                    color="primary"
-                    variant="outlined"
-                    label={`${product?.subcategoryName}`}
-                    size="small"
-                  />
-                </ProductInfoText>
-                <ProductInfoText>
+
+          <Grid container spacing={1} columns={8}>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Price: ${product.currency.code} ${(product?.price - ((product.discount / 100) * product?.price)).toFixed(2)}`} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     variant="outlined"
@@ -142,7 +125,11 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-                <ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={product?.isAvailable ? "Product is In Stock" : "Product is Out of Stock"} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={product?.isAvailable ? <Check/> : <Close />}
@@ -152,7 +139,11 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-                <ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={product?.hasGuarantee ? "Product has warranty" : "Product hasn't warranty"} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={product?.hasGuarantee ? <Check/> : <Close />}
@@ -162,9 +153,11 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-              </ProductInfoHolder>
-              <ProductInfoHolder>
-                <ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Product's rating is ${product?.rating}`} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<Star />}
@@ -174,7 +167,11 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-                <ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Product has ${product?.reviewsCount} reviews`} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<RateReview />}
@@ -184,7 +181,11 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-                <ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Product is created by ${product?.createdBy}`} arrow>
+            <ProductInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<Person />}
@@ -194,7 +195,37 @@ export default function ProductRow(props) {
                     size="small"
                   />
                 </ProductInfoText>
-              </ProductInfoHolder>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Product's main category is ${product?.categoryName}`} arrow>
+            <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    color="primary"
+                    variant="outlined"
+                    label={`${product?.categoryName}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                </Tooltip>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Tooltip title={`Product's subcategory is ${product?.subcategoryName}`} arrow>
+            <ProductInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    color="primary"
+                    variant="outlined"
+                    label={`${product?.subcategoryName}`}
+                    size="small"
+                  />
+                </ProductInfoText>
+                </Tooltip>
+            </Grid>
+          </Grid>
+
+
             </Fragment>
           ) : (
             <></>

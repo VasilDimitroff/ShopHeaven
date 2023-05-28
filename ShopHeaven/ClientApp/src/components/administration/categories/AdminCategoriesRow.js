@@ -149,23 +149,18 @@ export default function AdminCategoriesRow(props) {
           "& > *": { borderBottom: "unset" },
         }}
       >
-        <TableCell
-          sx={{ width: "20px", padding: 0, paddingLeft: theme.spacing(1) }}
-        >
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => handleShowSubcategories()}
-          >
-            {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        </TableCell>
         <CategoryNameTableCell
           onClick={handleShowSubcategories}
           component="th"
           scope="row"
         >
-          {!isDeleted ?  <><Label sx={{color: theme.palette.primary.main, mr: 1}}/>{category?.name}</> : "CATEGORY DELETED"}
+           <IconButton
+            aria-label="expand row"
+            size="small"
+          >
+            {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </IconButton>
+          {!isDeleted ?  <>{category?.name}</> : "CATEGORY DELETED"}
           {!isDeleted ? (
             <CategoryInfoHolder>
               <CategoryInfoText>

@@ -266,13 +266,6 @@ export default function AdminUsers() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell
-                  sx={{
-                    width: "20px",
-                    padding: 0,
-                    paddingLeft: theme.spacing(1),
-                  }}
-                />
                 <UserTableCell></UserTableCell>
                 <UserTableCell align="center"></UserTableCell>
               </TableRow>

@@ -283,13 +283,7 @@ export default function AdminProducts() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{
-                  width: "20px",
-                  padding: 0,
-                  paddingLeft: theme.spacing(1),
-                }}
-              />
+
               <MainCategoryTableCell></MainCategoryTableCell>
               <MainCategoryTableCell align="center"></MainCategoryTableCell>
             </TableRow>

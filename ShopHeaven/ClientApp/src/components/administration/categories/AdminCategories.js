@@ -92,13 +92,6 @@ export default function AdminCategories() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{
-                  width: "20px",
-                  padding: 0,
-                  paddingLeft: theme.spacing(1),
-                }}
-              ></TableCell>
               <MainCategoryTableCell>CATEGORY</MainCategoryTableCell>
               <MainCategoryTableCell align="center"></MainCategoryTableCell>
             </TableRow>
