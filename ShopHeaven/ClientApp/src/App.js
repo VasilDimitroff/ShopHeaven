@@ -25,7 +25,7 @@ import { adminRole } from './constants';
 export default function App() {
 
   return (  
-   <div style={{backgroundColor: theme.palette.appBackground.main }}>
+   <div style={{backgroundColor: theme.palette.appBackground.main}}>
       <Routes>
         {/* public routes */}
         <Route element={<PersistLogin/>}>

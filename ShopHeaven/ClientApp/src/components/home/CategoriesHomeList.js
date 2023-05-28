@@ -45,7 +45,7 @@ export default function CategoriesHomeList(props) {
   );
 
   let categoriesToShow =
-    useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 9;
+    useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 10;
   let subCategoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true
       ? categoriesToShow + 1
@@ -249,8 +249,7 @@ export default function CategoriesHomeList(props) {
     fontWeight: "500",
     lineHeight: 1.2,
     textAlign: "center",
-    paddingBottom: theme.spacing(1),
-    paddingTop: theme.spacing(1),
+
     fontSize: "20px",
   });
 
@@ -299,7 +298,10 @@ export default function CategoriesHomeList(props) {
     textTransform: "uppercase",
     marginLeft: theme.spacing(2),
     width: "100%",
-    fontSize: 18,
+    fontSize: 14,
+    [theme.breakpoints.down("md")]: {
+      fontSize: 16
+    },
     fontWeight: "500",
   });
 
@@ -327,7 +329,7 @@ export default function CategoriesHomeList(props) {
                     onMouseEnter={() => setSubCategoriesData(category.id)}
                   >
                     {/* onClick={() => setSubCategoriesData(category.id)} */}
-                    <CategoryItem sx={{ paddingTop: 2, paddingBottom: 2}}>
+                    <CategoryItem>
                       <RadioButtonChecked />
                       <CategoryName>{category.name}</CategoryName>
                       <KeyboardArrowRight />

@@ -18,6 +18,7 @@ export default function HomeSliderAndCategories(props) {
     >
       <Grid
         container
+        spacing={2}
         // sx={{
         //  display: "flex",
         //  justifyContent: "space-between",
@@ -28,7 +29,7 @@ export default function HomeSliderAndCategories(props) {
           xs={12}
           md={5}
           lg={5}
-          xl={4}
+          xl={3}
           sx={{
             [theme.breakpoints.down("md")]: {
               display: "none",
@@ -42,8 +43,7 @@ export default function HomeSliderAndCategories(props) {
           xs={12}
           md={7}
           lg={7}
-          xl={8}
-          sx={{ paddingTop: theme.spacing(1) }}
+          xl={9}
         >
           <HomeCarousel items={props.items} />
         </Grid>
