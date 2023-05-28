@@ -142,7 +142,6 @@ export default function AdminUserRow(props) {
           ) : (
             <>{user?.email}</>
           )}
-
           <Grid container spacing={1} columns={4}>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip title={`Username: ${user?.username}`} placement="bottom-start" arrow>
@@ -189,7 +188,7 @@ export default function AdminUserRow(props) {
                     sx={{ padding: 0.5 }}
                     icon={<Group />}
                     variant="outlined"
-                    label={`Roles: ${user?.roles?.map((x) => x.name)}`}
+                    label={`User roles: ${user?.roles?.map((x) => x.name)}`}
                     size="small"
                     color="primary"
                   />

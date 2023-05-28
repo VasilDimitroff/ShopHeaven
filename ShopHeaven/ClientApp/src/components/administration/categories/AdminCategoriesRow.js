@@ -13,6 +13,7 @@ import {
   Paper,
   Chip,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -26,7 +27,7 @@ import {
   Person,
   ShoppingBag,
   Category,
-  Label
+  Label,
 } from "@mui/icons-material";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
@@ -72,7 +73,7 @@ export default function AdminCategoriesRow(props) {
   }
 
   function handleShowEditForm() {
-    if(isDeleted) {
+    if (isDeleted) {
       return;
     }
     setShowSubcategories(false);
@@ -87,7 +88,7 @@ export default function AdminCategoriesRow(props) {
   }
 
   function handleShowSubcategories() {
-    if(isDeleted) {
+    if (isDeleted) {
       return;
     }
     setOpenEditForm(false);
@@ -154,46 +155,67 @@ export default function AdminCategoriesRow(props) {
           component="th"
           scope="row"
         >
-           <IconButton
-            aria-label="expand row"
-            size="small"
-          >
+          <IconButton aria-label="expand row" size="small">
             {showSubcategories ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
-          {!isDeleted ?  <>{category?.name}</> : "CATEGORY DELETED"}
+          {!isDeleted ? <>{category?.name}</> : "CATEGORY DELETED"}
           {!isDeleted ? (
-            <CategoryInfoHolder>
-              <CategoryInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Category />}
-                  variant="outlined"
-                  color="primary"
-                  label={`${subcategories?.length} subcategories`}
-                  size="small"
-                />
-              </CategoryInfoText>
-              <CategoryInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<ShoppingBag />}
-                  variant="outlined"
-                  color="primary"
-                  label={`${renderCategoryProductsCount()} products`}
-                  size="small"
-                />
-              </CategoryInfoText>
-              <CategoryInfoText>
-                <Chip
-                  sx={{ padding: 0.5 }}
-                  icon={<Person />}
-                  variant="outlined"
-                  label={`By: ${category?.createdBy}`}
-                  size="small"
-                  color="primary"
-                />
-              </CategoryInfoText>
-            </CategoryInfoHolder>
+            <Grid container spacing={1} columns={3}>
+              <Grid item xs={3} sm={1} md={1} lg={1}>
+                <Tooltip
+                  title={`${subcategories?.length} subcategories`}
+                  placement="bottom-start"
+                  arrow
+                >
+                  <CategoryInfoText>
+                    <Chip
+                      sx={{ padding: 0.5 }}
+                      icon={<Category />}
+                      variant="outlined"
+                      color="primary"
+                      label={`${subcategories?.length} subcategories`}
+                      size="small"
+                    />
+                  </CategoryInfoText>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={3} sm={1} md={1} lg={1}>
+                <Tooltip
+                  placement="bottom-start"
+                  title={`${renderCategoryProductsCount()} products`}
+                  arrow
+                >
+                  <CategoryInfoText>
+                    <Chip
+                      sx={{ padding: 0.5 }}
+                      icon={<ShoppingBag />}
+                      variant="outlined"
+                      color="primary"
+                      label={`${renderCategoryProductsCount()} products`}
+                      size="small"
+                    />
+                  </CategoryInfoText>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={3} sm={1} md={1} lg={1}>
+                <Tooltip
+                  placement="bottom-start"
+                  title={`Created by: ${category?.createdBy}`}
+                  arrow
+                >
+                  <CategoryInfoText>
+                    <Chip
+                      sx={{ padding: 0.5 }}
+                      icon={<Person />}
+                      variant="outlined"
+                      label={`By: ${category?.createdBy}`}
+                      size="small"
+                      color="primary"
+                    />
+                  </CategoryInfoText>
+                </Tooltip>
+              </Grid>
+            </Grid>
           ) : (
             <></>
           )}
@@ -260,7 +282,7 @@ export default function AdminCategoriesRow(props) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="left">NAME</TableCell>  
+                    <TableCell align="left">NAME</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -277,7 +299,7 @@ export default function AdminCategoriesRow(props) {
                   <Button
                     onClick={handleOpenSubcategoryForm}
                     variant="contained"
-                    color="secondary" 
+                    color="secondary"
                     size="medium"
                     startIcon={<RemoveCircle />}
                   >
@@ -285,7 +307,7 @@ export default function AdminCategoriesRow(props) {
                   </Button>
                 ) : (
                   <Button
-                    color="secondary" 
+                    color="secondary"
                     onClick={handleOpenSubcategoryForm}
                     variant="contained"
                     size="medium"
