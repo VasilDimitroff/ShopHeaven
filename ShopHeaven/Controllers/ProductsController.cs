@@ -71,7 +71,23 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        
+        [HttpPost, Route(nameof(GetByLabels))]
+        public async Task<ActionResult<List<GetProductByLabelsResponseModel>>> GetByLabels([FromBody] GetProductsByLabelRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var productsByLabels = await this.productsService.GetProductsByLabelAsync(model);
+                return Ok(productsByLabels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
         public async Task<ActionResult<DeleteProductResponseModel>> Delete([FromBody] DeleteProductRequestModel model)
         {

@@ -482,7 +482,13 @@ namespace ShopHeaven.Data.Services
             return products;
         }
 
-        public async Task<DeleteProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete)
+        public Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelAsync(GetProductsByLabelRequestModel model)
+        {
+            ;
+            return null;
+        }
+
+        public async Task<ProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete)
         {
             Product productToDelete = await this.db.Products
                 .Include(x => x.Reviews
@@ -896,6 +902,6 @@ namespace ShopHeaven.Data.Services
             await this.db.ProductsLabels.AddRangeAsync(productLabels);
 
             return productLabels;
-        }
+        } 
     }
 }

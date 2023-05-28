@@ -1,10 +1,50 @@
-import  { React, Fragment } from "react";
+import  { React, Fragment, useEffect, useRef, useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import CarouselItem from "./CarouselItem";
+import { ApiEndpoints } from "../../api/endpoints";
+import { productsCountInHomeSlider, labelCriteriaForProductsInHomeSlider } from "../../constants";
+import axios from "../../api/axios";
 import { theme } from "../../theme";
 
 function HomeCarousel(props) {
+  const [products, setProducts] = useState([]);
+  const effectRun = useRef(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCategories = async () => {
+      try {
+        const requestBody = {
+          labels: labelCriteriaForProductsInHomeSlider,
+          productsCount: productsCountInHomeSlider
+        }
+
+        const response = await axios.post(
+          ApiEndpoints.products.getByLabels,
+          requestBody,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response?.data);
+
+        setProducts(response?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getCategories();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
 
   return (
     <Fragment>

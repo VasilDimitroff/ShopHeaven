@@ -113,7 +113,7 @@ namespace ShopHeaven.Data.Services
         }
 
         //this method works for delete and undelete dependent of delete parameter
-        public async Task<DeleteCategoryBaseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
+        public async Task<CategoryBaseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
         {
             var categoryToDelete = await this.db.MainCategories
                 .FirstOrDefaultAsync(x => x.Id == model.CategoryId && x.IsDeleted != delete);

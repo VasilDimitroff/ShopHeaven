@@ -38,6 +38,7 @@ export const ApiEndpoints = {
         createProduct: "api/products/create",
         editProduct: "api/products/edit",
         getAllWithCreationInfo: "api/products/getallwithcreationinfo",
+        getByLabels: "api/products/getByLabels",
         deleteProduct: "api/products/delete",
         undeleteProduct: "api/products/undelete",
     },

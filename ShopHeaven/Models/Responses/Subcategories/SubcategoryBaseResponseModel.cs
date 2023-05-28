@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Responses.Subcategories
 {
-    public class DeleteSubcategoryBaseResponseModel
+    public class SubcategoryBaseResponseModel
     {
         public string SubcategoryId { get; set; }
 

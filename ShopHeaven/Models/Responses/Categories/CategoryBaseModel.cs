@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Responses.Categories
 {
-    public class DeleteCategoryBaseModel
+    public class CategoryBaseModel
     {
         public string CategoryId { get; set; }
 

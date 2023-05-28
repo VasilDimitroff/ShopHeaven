@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Responses.Products
 {
-    public class UndeleteProductResponseModel : DeleteProductBaseResponseModel
+    public class UndeleteProductResponseModel : ProductBaseResponseModel
     {
 
         public int RevealedReviews { get; set; }

@@ -78,7 +78,7 @@ namespace ShopHeaven.Data.Services
         }
 
         //this method is used for undelete too dependent of bool parameter
-        public async Task<DeleteSubcategoryBaseResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
+        public async Task<SubcategoryBaseResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
         {
             var subcategoryToDelete = await this.db.SubCategories
               .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != delete);
