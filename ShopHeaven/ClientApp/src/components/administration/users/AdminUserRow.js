@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Snackbar,
+  Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -23,7 +24,6 @@ import {
   Edit,
   Delete,
   RestoreFromTrash,
-  AccountBox
 } from "@mui/icons-material";
 import UndeleteUser from "./UndeleteUser";
 
@@ -125,7 +125,7 @@ export default function AdminUserRow(props) {
           component="th"
           scope="row"
         >
-           <IconButton size="small">
+          <IconButton size="small">
             {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
           {user?.isDeleted ? (
@@ -142,48 +142,79 @@ export default function AdminUserRow(props) {
           ) : (
             <>{user?.email}</>
           )}
-          <UserInfoHolder>
-            <UserInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<AccountCircle />}
-                variant="outlined"
-                color="primary"
-                label={`Username: ${user?.username}`}
-                size="small"
-              />
-            </UserInfoText>
-            <UserInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Event />}
-                variant="outlined"
-                color="primary"
-                label={`Created on: ${formatDate(user?.createdOn)}`}
-                size="small"
-              />
-            </UserInfoText>
-            <UserInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Group />}
-                variant="outlined"
-                label={`Roles: ${user?.roles?.map((x) => x.name)}`}
-                size="small"
-                color="primary"
-              />
-            </UserInfoText>
-            <UserInfoText>
-              <Chip
-                sx={{ padding: 0.5 }}
-                icon={<Delete />}
-                variant="outlined"
-                color={user?.isDeleted ? "error" : "success"}
-                label={`Deleted: ${user?.isDeleted ? "Yes" : "No"}`}
-                size="small"
-              />
-            </UserInfoText>
-          </UserInfoHolder>
+
+          <Grid container spacing={1} columns={4}>
+            <Grid item xs={4} sm={2} md={1} lg={1}>
+              <Tooltip title={`Username: ${user?.username}`} placement="bottom-start" arrow>
+                <UserInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<AccountCircle />}
+                    variant="outlined"
+                    color="primary"
+                    label={`Username: ${user?.username}`}
+                    size="small"
+                  />
+                </UserInfoText>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={4} sm={2} md={1} lg={1}>
+              <Tooltip
+                placement="bottom-start"
+                title={`Created on: ${formatDate(user?.createdOn)}`}
+                arrow
+              >
+                <UserInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Event />}
+                    variant="outlined"
+                    color="primary"
+                    label={`Created on: ${formatDate(user?.createdOn)}`}
+                    size="small"
+                  />
+                </UserInfoText>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={4} sm={2} md={1} lg={1}>
+              <Tooltip
+                placement="bottom-start"
+                title={`User has these roles: ${user?.roles?.map(
+                  (x) => x.name
+                )}`}
+                arrow
+              >
+                <UserInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Group />}
+                    variant="outlined"
+                    label={`Roles: ${user?.roles?.map((x) => x.name)}`}
+                    size="small"
+                    color="primary"
+                  />
+                </UserInfoText>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={4} sm={2} md={1} lg={1}>
+              <Tooltip
+                placement="bottom-start"
+                title={`Is user deleted: ${user?.isDeleted ? "Yes" : "No"}`}
+                arrow
+              >
+                <UserInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Delete />}
+                    variant="outlined"
+                    label={`Deleted: ${user?.isDeleted ? "Yes" : "No"}`}
+                    size="small"
+                    color={user?.isDeleted ? "error" : "success"}
+                  />
+                </UserInfoText>
+              </Tooltip>
+            </Grid>
+          </Grid>
         </UserNameTableCell>
         <TableCell align="center">
           <Grid container spacing={2}>
