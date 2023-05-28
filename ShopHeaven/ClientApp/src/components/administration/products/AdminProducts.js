@@ -105,7 +105,7 @@ export default function AdminProducts() {
         if (effectRun.current) {
           getProducts();
         }
-      }, timer);
+      }, timer); 
     };
 
     delayGetProductsRequest();
@@ -197,14 +197,14 @@ export default function AdminProducts() {
 
   return (
     <Box>
-      <form onSubmit={onSearchProduct}>
+      <form>
         <Grid container spacing={2}>
           <Grid
             item
             xs={12}
-            sm={12}
-            md={7}
-            lg={7}
+            sm={8}
+            md={9}
+            lg={9}
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
@@ -223,7 +223,7 @@ export default function AdminProducts() {
             />
             <CancelButton onClick={clearSearchValues} />
           </Grid>
-          <Grid item xs={8} sm={8} md={3} lg={4}>
+          <Grid item xs={12} sm={4} md={3} lg={3}>
             <select
               onChange={onSearchProduct}
               defaultValue={searchProductByCategoryId}
@@ -238,16 +238,6 @@ export default function AdminProducts() {
                 </option>
               ))}
             </select>
-          </Grid>
-          <Grid item xs={4} sm={4} md={2} lg={1}>
-            <Button
-              sx={{ width: "100%", fontSize: 13 }}
-              variant="contained"
-              type="submit"
-              color="primary"
-            >
-              SEARCH
-            </Button>
           </Grid>
         </Grid>
       </form>
