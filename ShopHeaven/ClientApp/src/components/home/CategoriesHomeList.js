@@ -125,10 +125,10 @@ export default function CategoriesHomeList(props) {
     paddingBottom: theme.spacing(1.75),
     paddingTop: theme.spacing(1.75),
     backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.white.main,
     display: categories.length > categoriesToShow ? "block" : "none",
     "&:hover": {},
     [theme.breakpoints.down("md")]: {
-      color: theme.palette.white.main,
       backgroundColor: theme.palette.primary.main,
       "&:hover": {
         //backgroundColor: theme.palette.secondary.main,
@@ -342,7 +342,6 @@ export default function CategoriesHomeList(props) {
               to="/categories"
               onClick={() => isLowerOrEqualThanMd ? props.handleShowMobileMenu(false) : ""}
               style={{
-                color: theme.palette.white.main,
                 textDecoration: "none",
                 width: "100%",
               }}
