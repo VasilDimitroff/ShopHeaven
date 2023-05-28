@@ -327,7 +327,7 @@ export default function CategoriesHomeList(props) {
                     onMouseEnter={() => setSubCategoriesData(category.id)}
                   >
                     {/* onClick={() => setSubCategoriesData(category.id)} */}
-                    <CategoryItem sx={{ paddingTop: 3, paddingBottom: 3}}>
+                    <CategoryItem sx={{ paddingTop: 2, paddingBottom: 2}}>
                       <RadioButtonChecked />
                       <CategoryName>{category.name}</CategoryName>
                       <KeyboardArrowRight />
