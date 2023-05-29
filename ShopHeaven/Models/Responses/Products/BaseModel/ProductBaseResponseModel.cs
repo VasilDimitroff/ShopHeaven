@@ -1,4 +1,4 @@
-﻿namespace ShopHeaven.Models.Responses.Products
+﻿namespace ShopHeaven.Models.Responses.Products.BaseModel
 {
     public class ProductBaseResponseModel
     {

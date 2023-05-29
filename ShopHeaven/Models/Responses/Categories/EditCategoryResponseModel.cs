@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ShopHeaven.Models.Responses.Categories.BaseModel;
 
 namespace ShopHeaven.Models.Responses.Categories
 {
-    public class EditCategoryResponseModel
+    public class EditCategoryResponseModel : CategoryBaseResponseModel
     {
-        [Required]
-        public string Id { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
         public string Description { get; set; }
 
         public string Image { get; set; }

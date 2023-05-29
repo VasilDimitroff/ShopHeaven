@@ -1,5 +1,6 @@
 ﻿using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Responses.Products;
+using ShopHeaven.Models.Responses.Products.BaseModel;
 
 namespace ShopHeaven.Data.Services.Contracts
 {

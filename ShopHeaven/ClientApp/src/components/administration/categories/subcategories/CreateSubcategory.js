@@ -14,6 +14,7 @@ import { AddCircle, PhotoCamera } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
+import { noPermissionsForOperationMessage } from "../../../../constants";
 
 export default function CreateSubcategory(props) {
   let { auth } = useAuth();
@@ -80,13 +81,13 @@ export default function CreateSubcategory(props) {
         "Subcategory" + formData.get["name"] + "successfully created!"
       );
       props.subcategoriesUpdated(response?.data);
-      console.log("RESP MESS: " + createSubcategoryResponseMessage);
+      console.log("CREATE SUBCATEGORY RESPONSE: " + response?.data);
     } catch (error) {
       setCreateSubcategoryResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setCreateSubcategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setCreateSubcategoryErrorMessage(
@@ -186,7 +187,7 @@ export default function CreateSubcategory(props) {
       )}
       {createSubcategoryErrorMessage ? (
         <Zoom in={createSubcategoryErrorMessage.length > 0 ? true : false}>
-          <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+          <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="error">
             {createSubcategoryErrorMessage}
           </Alert>
         </Zoom>

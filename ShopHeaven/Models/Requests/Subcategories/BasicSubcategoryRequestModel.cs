@@ -2,9 +2,9 @@
 
 namespace ShopHeaven.Models.Requests.Subcategories
 {
-    public class DeleteSubcategoryRequestModel
+    public class BasicSubcategoryRequestModel
     {
         [Required]
-        public string SubcategoryId { get; set; }
+        public string Id { get; set; }
     }
 }

@@ -43,7 +43,7 @@ export default function DeleteSubcategoryForm(props) {
 
       const response = await axiosPrivate.post(
         ApiEndpoints.subcategories.deleteSubcategory,
-        JSON.stringify({ subcategoryId: subcategoryId }),
+        JSON.stringify({ id: subcategoryId }),
         {
           signal: controller.signal,
         }
@@ -85,7 +85,7 @@ export default function DeleteSubcategoryForm(props) {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
         ApiEndpoints.subcategories.undeleteSubcategory,
-        JSON.stringify({ subcategoryId: subcategoryId }),
+        JSON.stringify({ id: subcategoryId }),
         {
           signal: controller.signal,
         }

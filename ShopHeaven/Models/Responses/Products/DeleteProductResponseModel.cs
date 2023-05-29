@@ -1,4 +1,6 @@
-﻿namespace ShopHeaven.Models.Responses.Products
+﻿using ShopHeaven.Models.Responses.Products.BaseModel;
+
+namespace ShopHeaven.Models.Responses.Products
 {
     public class DeleteProductResponseModel : ProductBaseResponseModel
     {

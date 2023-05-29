@@ -82,7 +82,6 @@ export default function EditSubcategoryForm(props) {
       setEditSubcategoryResponseMessage(
         "Subcategory now has name " + formData.get("name")
       );
-      console.log("MSG: " + editSubcategoryResponseMessage);
       setSubcategory(response?.data);
       props.subcategoryUpdated(response?.data);
     } catch (error) {

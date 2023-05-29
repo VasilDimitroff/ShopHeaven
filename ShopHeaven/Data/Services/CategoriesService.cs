@@ -5,7 +5,9 @@ using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
+using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
 namespace ShopHeaven.Data.Services
 {
@@ -106,17 +108,17 @@ namespace ShopHeaven.Data.Services
                Description = newCategory.Description,
                CreatedBy = user.Email,
                Image = categoryImageUrl,
-               Subcategories = new HashSet<SubcategoriesResponseModel>(),
+               Subcategories = new HashSet<SubcategoryResponseModel>(),
             };
 
             return returnedCategory;
         }
 
         //this method works for delete and undelete dependent of delete parameter
-        public async Task<CategoryBaseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
+        public async Task<CategoryBaseResponseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete)
         {
             var categoryToDelete = await this.db.MainCategories
-                .FirstOrDefaultAsync(x => x.Id == model.CategoryId && x.IsDeleted != delete);
+                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != delete);
 
             if (categoryToDelete == null)
             {
@@ -135,7 +137,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var productsToDelete = await this.db.Products
-                .Where(x => x.SubCategory.MainCategory.Id == model.CategoryId && x.IsDeleted != delete)
+                .Where(x => x.SubCategory.MainCategory.Id == model.Id && x.IsDeleted != delete)
                 .Include(x => x.Reviews
                      .Where(x => x.IsDeleted != delete))
                 .Include(x => x.Tags
@@ -156,7 +158,7 @@ namespace ShopHeaven.Data.Services
 
 
             var subcategoriesToDelete = await this.db.SubCategories
-                .Where(x => x.MainCategoryId == model.CategoryId && x.IsDeleted != delete)
+                .Where(x => x.MainCategoryId == model.Id && x.IsDeleted != delete)
                 .ToListAsync();
 
             var deletedSubcategories = 0;
@@ -248,7 +250,7 @@ namespace ShopHeaven.Data.Services
             {
                 var responseModel = new DeleteCategoryResponseModel()
                 {
-                    CategoryId = categoryToDelete.Id,
+                    Id = categoryToDelete.Id,
                     Name = categoryToDelete.Name,
                     DeletedSubcategories = deletedSubcategories,
                     DeletedCarts = deletedCarts,
@@ -269,7 +271,7 @@ namespace ShopHeaven.Data.Services
             {
                 var responseModel = new UndeleteCategoryResponseModel()
                 {
-                    CategoryId = categoryToDelete.Id,
+                    Id = categoryToDelete.Id,
                     Name = categoryToDelete.Name,
                     RevealedSubcategories = deletedSubcategories,
                     RevealedCarts = deletedCarts,
@@ -363,7 +365,7 @@ namespace ShopHeaven.Data.Services
                     CreatedBy = x.CreatedBy.Email,
                     Subcategories = x.SubCategories
                     .Where(s => s.IsDeleted != true)
-                    .Select(x => new SubcategoriesResponseModel
+                    .Select(x => new SubcategoryResponseModel
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -379,7 +381,7 @@ namespace ShopHeaven.Data.Services
             return allCategories;
         }
 
-        public async Task<List<CategoryNamesResponseModel>> GetAllCategoryNamesAsync()
+        public async Task<List<CategoryWithSubcategoriesResponseModel>> GetAllCategoryNamesAsync()
         {
             var categories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
@@ -387,13 +389,14 @@ namespace ShopHeaven.Data.Services
                         .SelectMany(subcategory => subcategory.Products.Where(p => p.IsDeleted != true))
                         .Count())
                 .ThenByDescending(category => category.SubCategories.Count())
-                .Select(x => new CategoryNamesResponseModel
+                .Select(x => new CategoryWithSubcategoriesResponseModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Subcategories = x.SubCategories
                     .Where(x => x.IsDeleted != true)
-                    .Select(s => new SubcategoryNamesResponseModel {
+                    .Select(s => new SubcategoryBaseResponseModel
+                    {
                         Id = s.Id,
                         Name = s.Name,
                     })
@@ -415,7 +418,7 @@ namespace ShopHeaven.Data.Services
                     Description = x.Description,
                     Image = x.Image.Url,
                     CreatedBy = x.CreatedBy.Email,
-                    Subcategories = x.SubCategories.Select(s => new SubcategoriesResponseModel
+                    Subcategories = x.SubCategories.Select(s => new SubcategoryResponseModel
                     {
                         Id = s.Id,
                         Name= s.Name,

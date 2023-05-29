@@ -1,8 +1,9 @@
-﻿namespace ShopHeaven.Models.Responses.Subcategories
+﻿using ShopHeaven.Models.Responses.Subcategories.BaseModel;
+
+namespace ShopHeaven.Models.Responses.Subcategories
 {
     public class DeleteSubcategoryResponseModel : SubcategoryBaseResponseModel
     { 
-
         public int DeletedProducts { get; set; }
 
         public int DeletedReviews { get; set; }

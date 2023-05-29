@@ -2,7 +2,9 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
 namespace ShopHeaven.Data.Services
 {
@@ -16,7 +18,44 @@ namespace ShopHeaven.Data.Services
             this.db = db;
             this.storageService = storageService;
         }
-        public async Task<SubcategoriesResponseModel> CreateSubcategoryAsync(CreateSubcategoryRequestModel model)
+
+        public async Task<SubcategoriesByCategoryIdResponseModel> GetSubcategoriesByCategoryId(SubcategorySummaryRequestModel model)
+        {
+            var category = await this.db.MainCategories
+                .FirstOrDefaultAsync(x => x.Id == model.CategoryId && x.IsDeleted != true);
+
+            if (category == null)
+            {
+                throw new ArgumentException(GlobalConstants.CategoryWithThisIdDoesntExist);
+            }
+
+            var subcategories = await this.db.SubCategories
+                .Where(x => x.MainCategoryId == model.CategoryId && x.IsDeleted != true)
+                .Select(x => new SubcategoryMainInfoResponseModel
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Name = x.Name,
+                    Image = x.Image.Url,
+                    ProductsCount = x.Products.Count(),
+                })
+                .ToListAsync();
+
+            var subcategoriesByCategoryId = new SubcategoriesByCategoryIdResponseModel
+            {
+                Category = new CategoryBaseResponseModel
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                },
+                Subcategories = subcategories,
+                ProductsCount = subcategories.Sum(x => x.ProductsCount)
+            };
+
+            return subcategoriesByCategoryId;
+        }
+
+        public async Task<SubcategoryResponseModel> CreateSubcategoryAsync(CreateSubcategoryRequestModel model)
         {
             User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
         
@@ -64,7 +103,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SubCategories.AddAsync(subcategory);
             await this.db.SaveChangesAsync();
 
-            var newSubcategoryResponseModel = new SubcategoriesResponseModel()
+            var newSubcategoryResponseModel = new SubcategoryResponseModel()
             {
                 Id = subcategory.Id,
                 Description = subcategory.Description,
@@ -78,10 +117,10 @@ namespace ShopHeaven.Data.Services
         }
 
         //this method is used for undelete too dependent of bool parameter
-        public async Task<SubcategoryBaseResponseModel> DeleteSubcategoryAsync(DeleteSubcategoryRequestModel model, bool delete)
+        public async Task<SubcategoryBaseResponseModel> DeleteSubcategoryAsync(BasicSubcategoryRequestModel model, bool delete)
         {
             var subcategoryToDelete = await this.db.SubCategories
-              .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != delete);
+              .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != delete);
 
             if (subcategoryToDelete == null)
             {
@@ -100,7 +139,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var productsToDelete = await this.db.Products
-                .Where(x => x.SubCategoryId == model.SubcategoryId && x.IsDeleted != delete)
+                .Where(x => x.SubCategoryId == model.Id && x.IsDeleted != delete)
                 .Include(x => x.Reviews
                      .Where(x => x.IsDeleted != delete))
                 .Include(x => x.Tags
@@ -193,7 +232,7 @@ namespace ShopHeaven.Data.Services
             {
                 var responseModel = new DeleteSubcategoryResponseModel()
                 {
-                    SubcategoryId = subcategoryToDelete.Id,
+                    Id = subcategoryToDelete.Id,
                     Name = subcategoryToDelete.Name,
                     DeletedCarts = deletedCarts,
                     DeletedImages = deletedImages,
@@ -212,7 +251,7 @@ namespace ShopHeaven.Data.Services
             {
                 var responseModel = new UndeleteSubcategoryResponseModel()
                 {
-                    SubcategoryId = subcategoryToDelete.Id,
+                    Id = subcategoryToDelete.Id,
                     Name = subcategoryToDelete.Name,
                     RevealedCarts = deletedCarts,
                     RevealedImages = deletedImages,
@@ -230,7 +269,7 @@ namespace ShopHeaven.Data.Services
 
         }
 
-        public async Task<SubcategoriesResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model)
+        public async Task<SubcategoryResponseModel> EditSubcategoryAsync(EditSubcategoryRequestModel model)
         {
             var searchedSubcategory = await this.db.SubCategories
                 .Include(x => x.Image)
@@ -275,7 +314,7 @@ namespace ShopHeaven.Data.Services
             searchedSubcategory.CreatedBy = user;
             searchedSubcategory.ModifiedOn = DateTime.UtcNow;
 
-            var returnedSubcategory = new SubcategoriesResponseModel()
+            var returnedSubcategory = new SubcategoryResponseModel()
             {
                 Id = searchedSubcategory.Id,
                 Name = searchedSubcategory.Name,

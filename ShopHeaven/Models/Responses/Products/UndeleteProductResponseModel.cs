@@ -1,8 +1,9 @@
-﻿namespace ShopHeaven.Models.Responses.Products
+﻿using ShopHeaven.Models.Responses.Products.BaseModel;
+
+namespace ShopHeaven.Models.Responses.Products
 {
     public class UndeleteProductResponseModel : ProductBaseResponseModel
     {
-
         public int RevealedReviews { get; set; }
 
         public int RevealedTags { get; set; }

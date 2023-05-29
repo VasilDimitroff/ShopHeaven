@@ -126,15 +126,6 @@ export default function AdminCategoriesRow(props) {
     },
   });
 
-  const CategoryInfoHolder = styled(Box)({
-    marginTop: theme.spacing(1),
-    [theme.breakpoints.up("lg")]: {
-      display: "flex",
-      alignItems: "center",
-      gap: 15,
-    },
-  });
-
   function renderCategoryProductsCount() {
     return subcategories?.reduce((a, b) => a + b?.productsCount, 0);
   }

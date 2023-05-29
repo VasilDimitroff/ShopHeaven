@@ -5,6 +5,6 @@ namespace ShopHeaven.Models.Requests
     public class DeleteCategoryRequestModel
     {
         [Required]
-        public string CategoryId { get; set; }
+        public string Id { get; set; }
     }
 }

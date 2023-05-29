@@ -148,7 +148,6 @@ export default function CreateCategory(props) {
         <InputBox>
           <ProductInfoInput
             inputRef={categoryDescriptionRef}
-            id="123"
             label="Category Description"
             defaultValue={categoryDescription}
             multiline

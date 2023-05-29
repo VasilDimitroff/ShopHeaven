@@ -5,11 +5,15 @@ using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
+using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images;
+using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products;
+using ShopHeaven.Models.Responses.Products.BaseModel;
 using ShopHeaven.Models.Responses.Specifications;
 using ShopHeaven.Models.Responses.Subcategories;
+using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
 namespace ShopHeaven.Data.Services
 {
@@ -398,7 +402,7 @@ namespace ShopHeaven.Data.Services
         {
             List<AdminProductResponseModel> products = await this.GetAllAsync(model) as List<AdminProductResponseModel>;
 
-            List<CategoryNamesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
+            List<CategoryWithSubcategoriesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
 
             List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
 
@@ -430,12 +434,11 @@ namespace ShopHeaven.Data.Services
         public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model)
         {
             var products = await this.db.Products
-            .Where(p => (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+            .Where(p => p.IsDeleted != true && (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
              || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
                             ? p.SubCategory.MainCategoryId != null
-                            : p.SubCategory.MainCategoryId == model.CategoryId)
-                    && p.IsDeleted != true)
+                            : p.SubCategory.MainCategoryId == model.CategoryId))
             .OrderByDescending(p => p.CreatedOn)
             .Skip((model.Page - 1) * model.RecordsPerPage)
             .Take(model.RecordsPerPage)
@@ -552,14 +555,14 @@ namespace ShopHeaven.Data.Services
                         IsThumbnail = x.IsThumbnail
                     })
                     .FirstOrDefault(x => x.IsThumbnail) ?? new BasicImageResponseModel(),
-                    Category = new CategoryBaseModel
+                    Category = new CategoryBaseResponseModel
                     {
-                        CategoryId = product.SubCategory.MainCategoryId,
+                        Id = product.SubCategory.MainCategoryId,
                         Name = product.SubCategory.MainCategory.Name,
                     },
                     Subcategory = new SubcategoryBaseResponseModel
                     {
-                        SubcategoryId = product.SubCategoryId,
+                        Id = product.SubCategoryId,
                         Name = product.SubCategory.Name
                     }
                 })

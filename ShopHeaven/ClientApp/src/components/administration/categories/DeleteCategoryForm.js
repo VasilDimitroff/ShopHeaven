@@ -14,6 +14,7 @@ import { Delete, Cancel, Refresh, Undo } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function DeleteCategoryForm(props) {
   let axiosPrivate = useAxiosPrivate();
@@ -41,7 +42,7 @@ export default function DeleteCategoryForm(props) {
 
       const response = await axiosPrivate.post(
         ApiEndpoints.categories.deleteCategory,
-        JSON.stringify({ categoryId: categoryId }),
+        JSON.stringify({ id: categoryId }),
         {
           signal: controller.signal,
         }
@@ -62,7 +63,7 @@ export default function DeleteCategoryForm(props) {
       setDeleteCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteCategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setDeleteCategoryErrorMessage("Error!");
@@ -80,7 +81,7 @@ export default function DeleteCategoryForm(props) {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
         ApiEndpoints.categories.undeleteCategory,
-        JSON.stringify({ categoryId: categoryId }),
+        JSON.stringify({ id: categoryId }),
         {
           signal: controller.signal,
         }
@@ -102,7 +103,7 @@ export default function DeleteCategoryForm(props) {
       setDeleteCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteCategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setDeleteCategoryErrorMessage("Error!");

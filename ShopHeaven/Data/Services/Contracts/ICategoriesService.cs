@@ -2,6 +2,7 @@
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Categories;
 using ShopHeaven.Models.Responses.Categories;
+using ShopHeaven.Models.Responses.Categories.BaseModel;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
@@ -17,8 +18,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<List<GetCategoriesResponseModel>> GetAllCategoriesAsync();
 
-        Task<List<CategoryNamesResponseModel>> GetAllCategoryNamesAsync();
+        Task<List<CategoryWithSubcategoriesResponseModel>> GetAllCategoryNamesAsync();
 
-        Task<CategoryBaseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete);
+        Task<CategoryBaseResponseModel> DeleteCategoryAsync(DeleteCategoryRequestModel model, bool delete);
     }
 }

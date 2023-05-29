@@ -1,4 +1,4 @@
-﻿namespace ShopHeaven.Models.Responses.Images
+﻿namespace ShopHeaven.Models.Responses.Images.BaseModel
 {
     public class BasicImageResponseModel
     {

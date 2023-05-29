@@ -1,4 +1,6 @@
-﻿namespace ShopHeaven.Models.Responses.Subcategories
+﻿using ShopHeaven.Models.Responses.Subcategories.BaseModel;
+
+namespace ShopHeaven.Models.Responses.Subcategories
 {
     public class UndeleteSubcategoryResponseModel : SubcategoryBaseResponseModel
     { 

@@ -725,9 +725,9 @@ export default function CreateProduct(props) {
                 defaultValue={productCategoryId}
                 onChange={loadSubcategories}
               >
-                {categories?.map((option) => (
-                  <option key={option?.id} value={option?.id}>
-                    {option?.name}
+                {categories?.map((category) => (
+                  <option key={category?.id} value={category?.id}>
+                    {category?.name}
                   </option>
                 ))}
               </select>
@@ -754,9 +754,9 @@ export default function CreateProduct(props) {
                 ref={productSubcategoryRef}
                 onChange={setValuesToStates}
               >
-                {subcategories?.map((option) => (
-                  <option key={option?.id} value={option?.id}>
-                    {option?.name}
+                {subcategories?.map((subcategory) => (
+                  <option key={subcategory?.id} value={subcategory?.id}>
+                    {subcategory?.name}
                   </option>
                 ))}
               </select>

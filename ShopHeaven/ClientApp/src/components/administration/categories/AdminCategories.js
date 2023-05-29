@@ -97,10 +97,10 @@ export default function AdminCategories() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories?.map((category, index) => {
+            {categories?.map((category) => {
               return (
                 <AdminCategoriesRow
-                  key={index}
+                  key={category.id}
                   category={category}
                   subcategories={category?.subcategories}
                 />

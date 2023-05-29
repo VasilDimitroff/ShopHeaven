@@ -30,8 +30,8 @@ export default function CategorySubcategoriesRow(props) {
     setIsDeleted(false);
   }
 
-  function subcategoryUpdated(newCategory) {
-    setSubcategory(newCategory);
+  function subcategoryUpdated(newSubcategory) {
+    setSubcategory(newSubcategory);
   }
 
   function onCancelButtonClicked() {
