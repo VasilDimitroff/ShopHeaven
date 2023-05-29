@@ -50,8 +50,26 @@ function CarouselItem(props) {
     },
   });
 
+  const ProductDescription = styled(Typography)({
+    marginTop: theme.spacing(1),
+    paddingBottom: theme.spacing(3),
+    textShadow: "1px 1px 0px #373737;",
+    [theme.breakpoints.down("md")]: {
+      fontSize: "12px",
+    },
+  })
+
+  const ProductName = styled(Typography)({
+    marginTop: theme.spacing(2),
+    textTransform: "uppercase",
+    textShadow: "2px 2px 1px #373737;",
+    [theme.breakpoints.down("md")]: {
+      fontSize: "20px",
+    },
+  })
+
   return (
-    <Paper sx={{ position: "relative"}}>
+    <Paper sx={{ position: "relative", marginTop: theme.spacing(1)}}>
       <SliderImage src={product.image} />
       <ContentWrapper>
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -62,35 +80,16 @@ function CarouselItem(props) {
             label={product.subcategory.name}
           />
         </Box>
-        <Typography
-          variant="h4"
-          sx={{
-            marginTop: theme.spacing(2),
-            textTransform: "uppercase",
-            textShadow: "2px 2px 1px #373737;",
-            [theme.breakpoints.down("md")]: {
-              fontSize: "20px",
-            },
-          }}
-        >
+        <ProductName variant="h4">
            {product.name.length > 70
             ? `${product.name.slice(0, 70)}...`
             : `${product.name}`}
-        </Typography>
-        <Typography
-          sx={{
-            marginTop: theme.spacing(1),
-            paddingBottom: theme.spacing(3),
-            textShadow: "1px 1px 0px #373737;",
-            [theme.breakpoints.down("md")]: {
-              fontSize: "12px",
-            },
-          }}
-        >
+        </ProductName>
+        <ProductDescription>
           {product.description.length > 200
             ? `${product.description.slice(0, 200)}...`
             : `${product.description}`}
-        </Typography>
+        </ProductDescription>
         <Box sx={{ marginBottom: theme.spacing(7) }}>
           <Button variant="contained" size="small">
             VIEW PRODUCT

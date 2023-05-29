@@ -14,7 +14,13 @@ import {
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Close, AddCircle, RemoveCircle, Edit } from "@mui/icons-material";
+import {
+  Close,
+  AddCircle,
+  RemoveCircle,
+  Edit,
+  Photo,
+} from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -261,7 +267,7 @@ export default function EditProduct(props) {
     editProduct(formData);
   }
 
-  function handleUpdateProduct(product){
+  function handleUpdateProduct(product) {
     setProductImages(product.images);
   }
 
@@ -285,7 +291,7 @@ export default function EditProduct(props) {
       setEditProductResponseMessage(
         `${formData.get("name")} successfully updated`
       );
-      
+
       handleUpdateProduct(response?.data);
 
       props.updateProduct(response?.data);
@@ -304,18 +310,19 @@ export default function EditProduct(props) {
   }
 
   function onDeleteImage(imageUrl) {
-
     //5
     setValuesToStates();
 
     if (productImages.length < 2) {
       setDeleteProductImageResponseMessage("");
-      setDeleteProductImageErrorMessage("Product must contain at least 1 image");
+      setDeleteProductImageErrorMessage(
+        "Product must contain at least 1 image"
+      );
       return;
     } else {
       setDeleteProductImageErrorMessage("");
     }
-    
+
     deleteImage(imageUrl, product.id);
   }
 
@@ -739,6 +746,24 @@ export default function EditProduct(props) {
   const ErrorAlert = styled(Alert)({
     fontWeight: 500,
     color: theme.palette.error.main,
+  });
+
+  const IconHolder = styled(Box)({
+    background:
+      "linear-gradient(to right, rgba(0,0,0,0.0) 0%, " +
+      "rgba(0,0,0,0.1) 70%, rgba(0,0,0,0.2) 100%)",
+    position: "absolute",
+    width: "70%",
+    height: "100%",
+    right: 0,
+    top: 0,
+  });
+
+  const ActionIconButton = styled(IconButton)({
+    right: -115,
+    display: "block",
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
   });
 
   return (
@@ -1238,7 +1263,7 @@ export default function EditProduct(props) {
               xs={6}
               sm={4}
               md={3}
-              lg={3}
+              lg={2}
               sx={{
                 position: "relative",
                 cursor: "pointer",
@@ -1250,42 +1275,47 @@ export default function EditProduct(props) {
                 },
               }}
             >
-              <IconButton
-                onClick={() => onDeleteImage(item)}
-                sx={{ position: "absolute", right: 5, top: -0.5 }}
-              >
-                <Close color="error" />
-              </IconButton>
+              <IconHolder>
+                <ActionIconButton onClick={() => onDeleteImage(item)}>
+                  <Close color="error" />
+                </ActionIconButton>
+                <ActionIconButton>
+                  <Photo color="info" />
+                </ActionIconButton>
+              </IconHolder>
               <img
                 src={`${item}`}
                 width={150}
                 height={140}
                 alt={productName}
                 loading="lazy"
+                sx={{ objectFit: "cover" }}
               />
             </Grid>
           ))}
         </Grid>
         <Box>
-        {deleteProductImageResponseMessage ? (
-          <Zoom in={deleteProductImageResponseMessage.length > 0 ? true : false}>
-            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
-              {deleteProductImageResponseMessage}
-            </Alert>
-          </Zoom>
-        ) : (
-          ""
-        )}
-        {deleteProductImageErrorMessage ? (
-          <Zoom in={deleteProductImageErrorMessage.length > 0 ? true : false}>
-            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
-              {deleteProductImageErrorMessage}
-            </ErrorAlert>
-          </Zoom>
-        ) : (
-          ""
-        )}
-      </Box>
+          {deleteProductImageResponseMessage ? (
+            <Zoom
+              in={deleteProductImageResponseMessage.length > 0 ? true : false}
+            >
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+                {deleteProductImageResponseMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+          {deleteProductImageErrorMessage ? (
+            <Zoom in={deleteProductImageErrorMessage.length > 0 ? true : false}>
+              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+                {deleteProductImageErrorMessage}
+              </ErrorAlert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+        </Box>
         <InputBox>
           <ProductInfoInput
             accept=".jpg, .png, .jpeg, .webp"
@@ -1307,7 +1337,13 @@ export default function EditProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <EditProductButton color="secondary" startIcon={<Edit />} type="submit" size="big" variant="contained">
+        <EditProductButton
+          color="secondary"
+          startIcon={<Edit />}
+          type="submit"
+          size="big"
+          variant="contained"
+        >
           EDIT PRODUCT
         </EditProductButton>
       </form>
