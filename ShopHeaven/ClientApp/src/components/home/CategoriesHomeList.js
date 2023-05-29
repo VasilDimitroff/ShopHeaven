@@ -26,6 +26,8 @@ import { theme } from "./../../theme";
 import {
   loadSubcategoriesInMainMenuTimerMilliseconds,
   hideSubmenuWhenUserIsOutsideTimerMilliseconds,
+  categoriesToShowInMainMenuIfScreenIsSm,
+  categoriesToShowInMainMenuIfScreenIsMd
 } from "../../constants";
 import { ApiEndpoints } from "../../api/endpoints";
 import axios from "../../api/axios";
@@ -45,7 +47,7 @@ export default function CategoriesHomeList(props) {
   );
 
   let categoriesToShow =
-    useMediaQuery(theme.breakpoints.down("sm")) === true ? 8 : 10;
+    useMediaQuery(theme.breakpoints.down("sm")) === true ? categoriesToShowInMainMenuIfScreenIsSm : categoriesToShowInMainMenuIfScreenIsMd;
   let subCategoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true
       ? categoriesToShow + 1
