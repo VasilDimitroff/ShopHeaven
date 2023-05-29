@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   List,
@@ -13,6 +13,7 @@ import {
   Zoom,
   Tooltip,
   Grid,
+  Collapse,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
@@ -22,19 +23,24 @@ import {
   KeyboardArrowRight,
   ArrowBackIos,
 } from "@mui/icons-material";
-import { theme } from "./../../theme";
+import { theme } from "../../theme";
 import {
   loadSubcategoriesInMainMenuTimerMilliseconds,
   hideSubmenuWhenUserIsOutsideTimerMilliseconds,
   categoriesToShowInMainMenuIfScreenIsSm,
-  categoriesToShowInMainMenuIfScreenIsMd
+  categoriesToShowInMainMenuIfScreenIsMd,
+  allCategoriesUrl,
+  subcategoriesOfMainCategoryBaseUrl,
+  subcategoryProductsBaseUrl,
 } from "../../constants";
 import { ApiEndpoints } from "../../api/endpoints";
 import axios from "../../api/axios";
 
 let mainCategoryOfSubcategoriesName;
 
-export default function CategoriesHomeList(props) {
+export default function MainMenu(props) {
+  const navigate = useNavigate();
+
   let switchCategorySubcategoriesTimer;
 
   let hideSubmenuTimer = useRef(null);
@@ -42,12 +48,15 @@ export default function CategoriesHomeList(props) {
   const [showSubmenu, setShowSubmenu] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+  const [currentCategoryId, setCurrentCategoryId] = useState(null);
   const [isLowerOrEqualThanMd, setIsLowerOrEqualThanMd] = useState(
     useMediaQuery(theme.breakpoints.down("md"))
   );
 
   let categoriesToShow =
-    useMediaQuery(theme.breakpoints.down("sm")) === true ? categoriesToShowInMainMenuIfScreenIsSm : categoriesToShowInMainMenuIfScreenIsMd;
+    useMediaQuery(theme.breakpoints.down("sm")) === true
+      ? categoriesToShowInMainMenuIfScreenIsSm
+      : categoriesToShowInMainMenuIfScreenIsMd;
   let subCategoriesToShow =
     useMediaQuery(theme.breakpoints.down("sm")) === true
       ? categoriesToShow + 1
@@ -84,8 +93,31 @@ export default function CategoriesHomeList(props) {
     };
   }, []);
 
-  function handleShowSubmenu(show) {
 
+  function setSubCategoriesData(mainCategoryId) {
+    clearTimeout(switchCategorySubcategoriesTimer);
+
+    setCurrentCategoryId(mainCategoryId);
+
+    handleShowSubmenu(true);
+
+    //if something dont work as expected, look at this!!!!! may be this if is not needed
+    if(!isLowerOrEqualThanMd){
+      switchCategorySubcategoriesTimer = setTimeout(
+        () => {
+          if (mainCategoryId === currentCategoryId) {
+            setSubmenuWithData(mainCategoryId)
+          }
+        },
+        !isLowerOrEqualThanMd ? loadSubcategoriesInMainMenuTimerMilliseconds : 0
+      );
+    } 
+    else {
+      setSubmenuWithData(mainCategoryId)
+    }
+  }
+
+  function handleShowSubmenu(show) {
     clearTimeout(hideSubmenuTimer.current);
 
     if (show == true || isLowerOrEqualThanMd) {
@@ -98,28 +130,28 @@ export default function CategoriesHomeList(props) {
     }, hideSubmenuWhenUserIsOutsideTimerMilliseconds);
   }
 
-  function setSubCategoriesData(mainCategoryId) {
-    clearTimeout(switchCategorySubcategoriesTimer);
 
-    handleShowSubmenu(true);
-
+  function setSubmenuWithData(mainCategoryId){
     const targetSubcategories = categories.find(
       (cat) => cat.id == mainCategoryId
     ).subcategories;
 
-    switchCategorySubcategoriesTimer = setTimeout(
-      () => {
-        setSubcategories(targetSubcategories);
-        mainCategoryOfSubcategoriesName = categories.find(
-          (cat) => cat.id == mainCategoryId
-        ).name;
-      },
-      !isLowerOrEqualThanMd ? loadSubcategoriesInMainMenuTimerMilliseconds : 0
-    );
+    setSubcategories(targetSubcategories);
+
+    mainCategoryOfSubcategoriesName = categories.find(
+      (cat) => cat.id == mainCategoryId
+    ).name;
   }
 
   function handleCategoryLeave() {
     clearTimeout(switchCategorySubcategoriesTimer);
+  }
+
+  function navigateTo(url){
+    if(isLowerOrEqualThanMd) {
+      props.handleShowMobileMenu(false)
+    }
+    navigate(url);
   }
 
   const ViewAllButton = styled(Button)({
@@ -251,7 +283,6 @@ export default function CategoriesHomeList(props) {
     fontWeight: "500",
     lineHeight: 1.2,
     textAlign: "center",
-
     fontSize: "20px",
   });
 
@@ -302,7 +333,7 @@ export default function CategoriesHomeList(props) {
     width: "100%",
     fontSize: 14,
     [theme.breakpoints.down("md")]: {
-      fontSize: 16
+      fontSize: 16,
     },
     fontWeight: "500",
   });
@@ -324,9 +355,10 @@ export default function CategoriesHomeList(props) {
                   TransitionComponent={Zoom}
                   title="Click to view subcategories"
                   arrow
-                >
+                >              
                   <Box
-                    sx={{ display: "flex" }}
+                    onClick={() => !isLowerOrEqualThanMd ? navigateTo(`${subcategoriesOfMainCategoryBaseUrl}${category.id}`) : ""}
+                    sx={{ display: "flex"}}
                     onMouseLeave={handleCategoryLeave}
                     onMouseEnter={() => setSubCategoriesData(category.id)}
                   >
@@ -344,13 +376,15 @@ export default function CategoriesHomeList(props) {
           <Divider />
           <ViewAllCategoriesButtonHolder>
             <Link
-              to="/categories"
-              onClick={() => isLowerOrEqualThanMd ? props.handleShowMobileMenu(false) : ""}
+              to={`${allCategoriesUrl}`}
+              onClick={() =>
+                isLowerOrEqualThanMd ? props.handleShowMobileMenu(false) : ""
+              }
               style={{
                 textDecoration: "none",
                 width: "100%",
               }}
-            >         
+            >
               <ViewAllButton variant="contained">
                 VIEW ALL CATEGORIES
               </ViewAllButton>
@@ -358,7 +392,7 @@ export default function CategoriesHomeList(props) {
           </ViewAllCategoriesButtonHolder>
         </MenuHolder>
 
-        <Fade in={showSubmenu} timeout={400} unmountOnExit>
+        <Collapse in={showSubmenu} timeout={400} unmountOnExit>
           <Submenu
             onMouseLeave={() => handleShowSubmenu(false)}
             onMouseEnter={() => handleShowSubmenu(true)}
@@ -382,14 +416,14 @@ export default function CategoriesHomeList(props) {
             </MainCategoryName>
             {subcategories.slice(0, subCategoriesToShow).map((subcategory) => {
               return (
-                <Box key={subcategory.id}>
+                <Box onClick={() => navigateTo(`${subcategoryProductsBaseUrl}${subcategory.id}`)} key={subcategory.id}>
                   <SubCategoryItem>
                     <Label sx={{ fontSize: "14px" }} />
                     <Typography
                       sx={{
                         marginLeft: theme.spacing(2),
                         fontSize: "16px",
-                        textTransform: "uppercase"
+                        textTransform: "uppercase",
                       }}
                     >
                       {subcategory.name}
@@ -401,12 +435,12 @@ export default function CategoriesHomeList(props) {
               );
             })}
             <ViewAllSubcategoriesButtonHolder>
-              <ViewAllSubcategoriesButton variant="contained">
+              <ViewAllSubcategoriesButton onClick={()=> navigateTo(`${subcategoriesOfMainCategoryBaseUrl}${currentCategoryId}`)} variant="contained">
                 VIEW ALL SUBCATEGORIES
               </ViewAllSubcategoriesButton>
             </ViewAllSubcategoriesButtonHolder>
           </Submenu>
-        </Fade>
+        </Collapse>
       </StyledList>
     </CategoriesWrapper>
   );

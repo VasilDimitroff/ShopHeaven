@@ -22,7 +22,7 @@ export const productsPerPageInAdminPanel = 5; // how many products to view per p
 
 //times for setTimer()
 export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
-export const loadSubcategoriesInMainMenuTimerMilliseconds = 500; // time waiting before start new request in main menu when user move the mouse
+export const loadSubcategoriesInMainMenuTimerMilliseconds = 0; // time waiting before start new request in main menu when user move the mouse
 export const hideSubmenuWhenUserIsOutsideTimerMilliseconds = 1000; // how much time to show submenu when user is outside of submenu
 
 //home main menu

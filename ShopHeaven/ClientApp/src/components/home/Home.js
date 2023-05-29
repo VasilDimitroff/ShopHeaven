@@ -1,11 +1,10 @@
 import { React, Fragment } from "react";
 import { theme } from "../../theme";
-import HomeSliderAndCategories from "./HomeSliderAndCategories";
+import HomeCarouselAndMainMenu from "./HomeCarouselAndMainMenu";
 import ProductsCarouselLine from "../products/ProductsCarouselLine";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import FullWidthBannerWithOverlay from "../banners/FullWidthBannerWithOverlay";
 import SubscribeForm from "../common/SubscribeForm";
-import { Link } from "react-router-dom";
 
 let products = [
   {
@@ -240,7 +239,7 @@ let products = [
 export default function Home() {
   return (
     <Fragment>
-      <HomeSliderAndCategories items={products}/>
+      <HomeCarouselAndMainMenu/>
       <ProductsCarouselLine products={products} headingName="Promotions" />
       <ProductsCarouselLine
         products={products}

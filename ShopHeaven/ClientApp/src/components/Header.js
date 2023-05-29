@@ -38,7 +38,7 @@ import {
 import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
-import CategoriesHomeList from "./home/CategoriesHomeList";
+import MainMenu from "./home/MainMenu";
 
 export default function Header() {
   const { auth } = useAuth();
@@ -434,7 +434,7 @@ export default function Header() {
 
       <Fade in={showMobileMenu} timeout={500} unmountOnExit>
         <MobileMenuWrapper>
-          <CategoriesHomeList handleShowMobileMenu={handleShowMobileMenu} />
+          <MainMenu handleShowMobileMenu={handleShowMobileMenu} />
         </MobileMenuWrapper>
       </Fade>
     </div>

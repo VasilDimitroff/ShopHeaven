@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Grid } from "@mui/material";
 import HomeCarousel from "./HomeCarousel";
-import CategoriesHomeList from "./CategoriesHomeList";
+import MainMenu from "./MainMenu";
 import { theme } from "../../theme";
 
-export default function HomeSliderAndCategories(props) {
+export default function HomeCarouselAndMainMenu() {
   return (
     <Box
       sx={{
@@ -36,7 +36,7 @@ export default function HomeSliderAndCategories(props) {
             },
           }}
         >
-          <CategoriesHomeList />
+          <MainMenu />
         </Grid>
         <Grid
           item
@@ -45,7 +45,7 @@ export default function HomeSliderAndCategories(props) {
           lg={7}
           xl={9}
         >
-          <HomeCarousel items={props.items} />
+          <HomeCarousel />
         </Grid>
       </Grid>
     </Box>
