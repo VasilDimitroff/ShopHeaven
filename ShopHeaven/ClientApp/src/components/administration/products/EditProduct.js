@@ -12,6 +12,7 @@ import {
   Divider,
   Alert,
   Zoom,
+  Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -20,11 +21,13 @@ import {
   RemoveCircle,
   Edit,
   Photo,
+  Cancel,
 } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { noPermissionsForOperationMessage } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
 
 export default function EditProduct(props) {
@@ -67,7 +70,7 @@ export default function EditProduct(props) {
   const [productPrice, setProductPrice] = useState(product.price);
   const [productDiscount, setProductDiscount] = useState(product.discount);
   const [productQuantity, setProductQuantity] = useState(product.quantity);
-  const [productImages, setProductImages] = useState(product.images); // array[string]
+  const [productImages, setProductImages] = useState(product.images); // array[{}]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
   const [productLabels, setProductLabels] = useState(product.labels); // array[string]
   let finalPriceInitialy =
@@ -117,6 +120,9 @@ export default function EditProduct(props) {
   ] = useState("");
   const [deleteProductImageErrorMessage, setDeleteProductImageErrorMessage] =
     useState("");
+
+  const [thumbnailResponseMessage, setThumbnailResponseMessage] = useState("");
+  const [thumbnailErrorMessage, setThumbnailErrorMessage] = useState("");
 
   useEffect(() => {}, [messages]);
   useEffect(() => {}, [productImages]);
@@ -263,7 +269,6 @@ export default function EditProduct(props) {
     formData.append("createdBy", auth.userId);
 
     console.log("FORM", newProduct);
-    console.log("IMAGE URLS", productImages);
     editProduct(formData);
   }
 
@@ -309,9 +314,65 @@ export default function EditProduct(props) {
     }
   }
 
-  function onDeleteImage(imageUrl) {
+  function onSetThumbnail(imageUrl) {
     //5
     setValuesToStates();
+
+    setDeleteProductImageErrorMessage("");
+    setDeleteProductImageResponseMessage("");
+
+    setThumbnail(imageUrl, product.id);
+  }
+
+  async function setThumbnail(imageUrl, productId) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.images.setThumbnail,
+        JSON.stringify({ productId: productId, imageUrl: imageUrl }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      handleSetThumbnail(imageUrl, true);
+
+      setThumbnailErrorMessage("");
+      setThumbnailResponseMessage("Image successfully set as thumbnail!");
+      console.log(response?.data);
+    } catch (error) {
+      setThumbnailResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setThumbnailErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setThumbnailErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
+
+  function handleSetThumbnail(imageUrl, isThumbnail) {
+    const updatedImages = productImages.map((img) => {
+      if (img.url === imageUrl) {
+        return { ...img, isThumbnail: isThumbnail };
+      } else {
+        return { ...img, isThumbnail: !isThumbnail };
+      }
+    });
+
+    setProductImages(updatedImages);
+  }
+
+  function onDeleteImage(imageUrl) {
+    //6
+    setValuesToStates();
+
+    setThumbnailResponseMessage("");
+    setThumbnailErrorMessage("");
 
     if (productImages.length < 2) {
       setDeleteProductImageResponseMessage("");
@@ -324,11 +385,6 @@ export default function EditProduct(props) {
     }
 
     deleteImage(imageUrl, product.id);
-  }
-
-  function handleDeleteImage(imageUrl) {
-    const updatedImages = productImages.filter((url) => url !== imageUrl);
-    setProductImages(updatedImages);
   }
 
   async function deleteImage(imageUrl, productId) {
@@ -353,14 +409,17 @@ export default function EditProduct(props) {
       setDeleteProductImageResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setDeleteProductImageErrorMessage(
-          "You have no permissions to perform the operation"
-        );
+        setDeleteProductImageErrorMessage(noPermissionsForOperationMessage);
       } else {
         setDeleteProductImageErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
+  }
+
+  function handleDeleteImage(imageUrl) {
+    const updatedImages = productImages.filter((img) => img.url !== imageUrl);
+    setProductImages(updatedImages);
   }
 
   function validateForm() {
@@ -748,22 +807,25 @@ export default function EditProduct(props) {
     color: theme.palette.error.main,
   });
 
-  const IconHolder = styled(Box)({
-    background:
-      "linear-gradient(to right, rgba(0,0,0,0.0) 0%, " +
-      "rgba(0,0,0,0.1) 70%, rgba(0,0,0,0.2) 100%)",
+  const ThumbnailOverlayHolder = styled(Box)({
+    "&:hover": {
+      opacity: "1.0",
+    },
     position: "absolute",
-    width: "70%",
-    height: "100%",
-    right: 0,
-    top: 0,
+    bottom: "30%",
+    top: "30%",
+    opacity: "0.8",
+    left: "30%",
+    right: "30%",
+    color: theme.palette.secondary.main,
+    display: "flex",
+    alignItems: "center"
   });
 
   const ActionIconButton = styled(IconButton)({
-    right: -115,
-    display: "block",
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
+    position: "absolute",
+    right: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
   });
 
   return (
@@ -1255,7 +1317,7 @@ export default function EditProduct(props) {
           />
         </Divider>
         <Grid container spacing={2} sx={{ marginBottom: theme.spacing(3) }}>
-          {productImages?.map((item, index) => (
+          {productImages?.map((image, index) => (
             <Grid
               key={index}
               id=""
@@ -1275,22 +1337,52 @@ export default function EditProduct(props) {
                 },
               }}
             >
-              <IconHolder>
-                <ActionIconButton onClick={() => onDeleteImage(item)}>
-                  <Close color="error" />
+              <Box>
+                <Tooltip arrow title="Delete image">
+                <ActionIconButton
+                  sx={{ top: 0 }}
+                  onClick={() => onDeleteImage(image.url)}
+                >
+                  <Cancel color="error" />
                 </ActionIconButton>
-                <ActionIconButton>
-                  <Photo color="info" />
-                </ActionIconButton>
-              </IconHolder>
+                </Tooltip>
+                {!image.isThumbnail ? (
+                  <Tooltip arrow title="Set image as thumbnail">
+                  <ActionIconButton
+                    sx={{ top: 60 }}
+                    onClick={() => onSetThumbnail(image.url)}
+                  >
+                    <Photo color="info" />
+                  </ActionIconButton>
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
+              </Box>
               <img
-                src={`${item}`}
+                src={`${image.url}`}
                 width={150}
                 height={140}
                 alt={productName}
                 loading="lazy"
                 sx={{ objectFit: "cover" }}
               />
+              {image.isThumbnail ? (
+                <Tooltip arrow title="Image is thumbnail of the product">
+                <ThumbnailOverlayHolder
+                  sx={{
+                    
+                  }}
+                >
+                  {" "}
+                  <Photo
+                    sx={{ fontSize: 50, width: "100%" }}
+                  />
+                </ThumbnailOverlayHolder>
+                </Tooltip>
+              ) : (
+                <></>
+              )}
             </Grid>
           ))}
         </Grid>
@@ -1314,6 +1406,26 @@ export default function EditProduct(props) {
             </Zoom>
           ) : (
             ""
+          )}
+        </Box>
+        <Box>
+          {thumbnailResponseMessage ? (
+            <Zoom in={thumbnailResponseMessage.length > 0 ? true : false}>
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+                {thumbnailResponseMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+          {thumbnailErrorMessage ? (
+            <Zoom in={thumbnailErrorMessage.length > 0 ? true : false}>
+              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+                {thumbnailErrorMessage}
+              </ErrorAlert>
+            </Zoom>
+          ) : (
+            <></>
           )}
         </Box>
         <InputBox>

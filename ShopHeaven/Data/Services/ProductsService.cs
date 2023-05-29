@@ -6,6 +6,7 @@ using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Currencies;
+using ShopHeaven.Models.Responses.Images;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Specifications;
 using ShopHeaven.Models.Responses.Subcategories;
@@ -123,19 +124,19 @@ namespace ShopHeaven.Data.Services
             var images = await CreateImagesAsync(model.Images, user.Id);
 
             //create productImage record for every image
-            await CreateProductImagesAsync(images, newProduct.Id);
+            var productImages = await CreateProductImagesAsync(images, newProduct.Id);
 
             List<Specification> specifications = model.Specifications.Select(x => new Specification
             {
                 ProductId = newProduct.Id,
-                Key = x.Key,
-                Value = x.Value,
+                Key = x.Key.Trim(),
+                Value = x.Value.Trim(),
             })
                 .ToList();
 
             newProduct.CreatedById = user.Id;
-            newProduct.Name = model.Name;
-            newProduct.Description = model.Description;
+            newProduct.Name = model.Name.Trim();
+            newProduct.Description = model.Description.Trim();
             newProduct.Brand = model.Brand != null ? model.Brand.Trim() : "";
             newProduct.Currency = currency;
             newProduct.SubCategoryId = subcategory.Id;
@@ -174,9 +175,13 @@ namespace ShopHeaven.Data.Services
                     .Where(x => x.IsDeleted != true)
                     .Count(),
                 CreatedBy = user.Email,
-                Images = images
+                Images = productImages
                     .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Url)
+                    .Select(x => new BasicImageResponseModel
+                    {
+                        Url = x.Image.Url,
+                        IsThumbnail = x.IsThumbnail
+                    })
                     .ToList(),
                 Labels = labels
                     .Where(x => x.IsDeleted != true)
@@ -306,20 +311,20 @@ namespace ShopHeaven.Data.Services
             var images = await CreateImagesAsync(model.Images, user.Id);
 
             //create productImage record for every image
-            await CreateProductImagesAsync(images, product.Id);
+            var productImages = await CreateProductImagesAsync(images, product.Id);
 
             List<Specification> specifications = model.Specifications.Select(x => new Specification
             {
                 ProductId = product.Id,
-                Key = x.Key,
-                Value = x.Value,
+                Key = x.Key.Trim(),
+                Value = x.Value.Trim(),
             })
                 .ToList();
 
             product.CreatedById = user.Id;
             product.ModifiedOn = DateTime.UtcNow;
-            product.Name = model.Name;
-            product.Description = model.Description;
+            product.Name = model.Name.Trim();
+            product.Description = model.Description.Trim();
             product.Brand = model.Brand != null ? model.Brand.Trim() : "";
             product.Currency = currency;
             product.SubCategoryId = subcategory.Id;
@@ -333,7 +338,11 @@ namespace ShopHeaven.Data.Services
 
             var allProductImages = await this.db.ProductsImages
                 .Where(x => x.ProductId == product.Id && x.IsDeleted != true)
-                .Select(x => x.Image.Url)
+                .Select(x => new BasicImageResponseModel
+                {
+                    Url = x.Image.Url,
+                    IsThumbnail = x.IsThumbnail
+                })
                 .ToListAsync();
 
             var updatedProduct = new AdminProductResponseModel()
@@ -458,7 +467,11 @@ namespace ShopHeaven.Data.Services
                     .Count(),
                 Images = p.Images
                     .Where(x => x.IsDeleted != true)
-                    .Select(x => x.Image.Url)
+                    .Select(x => new BasicImageResponseModel
+                    {
+                        Url = x.Image.Url,
+                        IsThumbnail = x.IsThumbnail,
+                    })
                     .ToList(),
                 Tags = p.Tags
                     .Where(x => x.IsDeleted != true)
@@ -515,16 +528,16 @@ namespace ShopHeaven.Data.Services
             foreach (var label in model.Labels)
             {
                 var productsByCurrentLabel = await this.db.Products
-                    .Include(x => x.Images)
+                    .Include(x => x.Images.Where(x => x.IsDeleted != true))
                     .ThenInclude(x => x.Image)
                     .Include(x => x.SubCategory)
                     .ThenInclude(x => x.MainCategory)
-                    .Where(product => product.Labels.Any(pl => pl.Label.Content.Trim().ToLower() == label))
+                    .Where(product => product.IsDeleted != true && product.Labels.Any(pl => pl.Label.Content.Trim().ToLower() == label))
                     .ToListAsync();
 
                 filteredProducts.AddRange(productsByCurrentLabel);
             }
-           
+
             List<GetProductByLabelsResponseModel> products = filteredProducts
                 .Take(model.ProductsCount)
                 .Select(product => new GetProductByLabelsResponseModel
@@ -532,7 +545,13 @@ namespace ShopHeaven.Data.Services
                     Id = product.Id,
                     Name = product.Name,
                     Description = product.Description,
-                    Image = product.Images.FirstOrDefault().Image.Url ?? "",
+                    Image = product.Images
+                    .Select(x => new BasicImageResponseModel
+                    {
+                        Url = x.Image.Url,
+                        IsThumbnail = x.IsThumbnail
+                    })
+                    .FirstOrDefault(x => x.IsThumbnail) ?? new BasicImageResponseModel(),
                     Category = new CategoryBaseModel
                     {
                         CategoryId = product.SubCategory.MainCategoryId,
@@ -818,15 +837,16 @@ namespace ShopHeaven.Data.Services
             return newImages;
         }
 
-        private async Task CreateProductImagesAsync(ICollection<Image> images, string productId)
+        private async Task<ICollection<ProductImage>> CreateProductImagesAsync(ICollection<Image> images, string productId)
         {
-            if (images.Count < 1) return;
+            if (images.Count < 1) return new List<ProductImage>();
 
             var productImages = new List<ProductImage>();
 
             foreach (var image in images)
             {
                 var productImage = await this.db.ProductsImages
+                    .Include(x => x.Image)
                     .FirstOrDefaultAsync(x => x.ProductId == productId && x.ImageId == image.Id && x.IsDeleted != true);
 
                 if (productImage == null)
@@ -842,6 +862,8 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.ProductsImages.AddRangeAsync(productImages);
+
+            return productImages;
         }
 
         private async Task<ICollection<Tag>> GetTagsAsync(ICollection<string> tags, string userId)

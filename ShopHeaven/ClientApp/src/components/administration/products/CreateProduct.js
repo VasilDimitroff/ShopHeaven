@@ -19,7 +19,7 @@ import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { error } from "jquery";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function CreateProduct(props) {
   // api requests
@@ -261,7 +261,7 @@ export default function CreateProduct(props) {
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setCreateProductErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setCreateProductErrorMessage(error?.response?.data);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using ShopHeaven.Models.Responses.Categories;
+using ShopHeaven.Models.Responses.Images;
 using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Models.Responses.Products
@@ -8,6 +9,6 @@ namespace ShopHeaven.Models.Responses.Products
     {
         public string Description { get; set; }
 
-        public string Image { get; set; }
+        public BasicImageResponseModel Image { get; set; }
     }
 }

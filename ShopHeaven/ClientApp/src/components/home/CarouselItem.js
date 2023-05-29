@@ -70,7 +70,7 @@ function CarouselItem(props) {
 
   return (
     <Paper sx={{ position: "relative", marginTop: theme.spacing(1)}}>
-      <SliderImage src={product.image} />
+      <SliderImage src={product.image.url} />
       <ContentWrapper>
         <Box sx={{ display: "flex", gap: 2 }}>
           <StyledChip variant="filled" color="primary" label={product.category.name} />

@@ -14,5 +14,7 @@ namespace ShopHeaven.Data.Models
         public string ImageId { get; set; }
 
         public Image Image { get; set; }
+
+        public bool IsThumbnail { get; set; }
     }
 }

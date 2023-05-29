@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Services.Contracts;
 
-namespace ShopHeaven.Data.Services.Contracts
+namespace ShopHeaven.Data.Services
 {
     public class AuthService : IAuthService
     {
@@ -14,9 +15,9 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public async Task<bool> ValidatePasswordAsync(string userId, string password)
         {
-            User user = await this.userManager.FindByIdAsync(userId);
+            User user = await userManager.FindByIdAsync(userId);
 
-            var passwordValid = await this.userManager.CheckPasswordAsync(user, password);
+            var passwordValid = await userManager.CheckPasswordAsync(user, password);
 
             return passwordValid;
         }

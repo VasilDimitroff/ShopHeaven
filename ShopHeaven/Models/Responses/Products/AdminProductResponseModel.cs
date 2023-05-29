@@ -1,5 +1,6 @@
 ﻿
 using ShopHeaven.Models.Responses.Currencies;
+using ShopHeaven.Models.Responses.Images;
 using ShopHeaven.Models.Responses.Specifications;
 
 namespace ShopHeaven.Models.Responses.Products
@@ -36,7 +37,7 @@ namespace ShopHeaven.Models.Responses.Products
 
         public double Rating { get; set; }
 
-        public ICollection<string> Images { get; set; }
+        public ICollection<BasicImageResponseModel> Images { get; set; }
 
         public ICollection<string> Tags { get; set; }
 

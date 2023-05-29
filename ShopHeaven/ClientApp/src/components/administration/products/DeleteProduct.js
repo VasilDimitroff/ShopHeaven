@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import { Delete, Cancel, Undo, Refresh } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { noPermissionsForOperationMessage } from "../../../constants";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function DeleteProduct(props) {
@@ -64,7 +65,7 @@ export default function DeleteProduct(props) {
       setDeleteProductResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteProductErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setDeleteProductErrorMessage(error?.response?.data);
@@ -110,7 +111,7 @@ export default function DeleteProduct(props) {
       setDeleteProductResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteProductErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setDeleteProductErrorMessage("Error!");

@@ -43,7 +43,8 @@ export const ApiEndpoints = {
         undeleteProduct: "api/products/undelete",
     },
     images: {
-        deleteProductImage: "api/images/delete"
+        deleteProductImage: "api/images/delete",
+        setThumbnail: "api/images/setThumbnail"
     }
 }
 

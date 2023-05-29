@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Images;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Responses.Images;
 using ShopHeaven.Models.Responses.Products;
 using System.Data;
 
@@ -27,6 +28,22 @@ namespace ShopHeaven.Controllers
             try
             {
                 await this.imagesService.DeleteProductImageAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(SetThumbnail))]
+        public async Task<IActionResult> SetThumbnail([FromBody] SetProductThumbnailRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                await this.imagesService.SetImageAsProductThumbnailAsync(model);
                 return Ok();
             }
             catch (Exception ex)
