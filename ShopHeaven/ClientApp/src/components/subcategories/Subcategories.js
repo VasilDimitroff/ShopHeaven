@@ -15,8 +15,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import axios from "../../api/axios";
 import { ApiEndpoints } from "../../api/endpoints";
-import { columnsWithSubcategoriesToShowIfScreenIsLg } from "../../constants";
-import { columnsWithSubcategoriesToShowIfScreenIsMd } from "../../constants";
+import { columnsWithSubcategoriesToShowIfScreenIsLg, columnsWithSubcategoriesToShowIfScreenIsMd, allCategoriesUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
 import { Link, useParams } from "react-router-dom";
 
 let colsToShow = 0;
@@ -42,11 +41,11 @@ export default function Subcategories() {
     },
     {
       name: "Categories",
-      uri: "/categories",
+      uri: `${allCategoriesUrl}`,
     },
     {
       name: `${mainCategory.name}`,
-      uri: `/categories/${mainCategory.id}`,
+      uri: `${subcategoriesOfMainCategoryBaseUrl}${mainCategory.id}`,
     },
   ];
 
@@ -124,15 +123,14 @@ export default function Subcategories() {
     display: "flex",
     justifyContent: "center",
     textTransform: "uppercase",
-    fontSize: 30,
+    fontSize: 35,
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(-2),
   });
 
   const TotalProductsCountText = styled(Typography)({
     display: "flex",
-    justifyContent: "center",
-    fontSize: 20
+    justifyContent: "center"
   })
 
   return (

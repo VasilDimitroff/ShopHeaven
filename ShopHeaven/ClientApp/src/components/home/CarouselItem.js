@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Paper, Box, Typography, Chip, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
+import { Link } from "react-router-dom";
+import { subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
 
 function CarouselItem(props) {
-
   const [product, setProduct] = useState(props.product);
 
   const StyledChip = styled(Chip)({
@@ -46,7 +47,7 @@ function CarouselItem(props) {
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
     [theme.breakpoints.down("md")]: {
-      textAlign: "center"
+      textAlign: "center",
     },
   });
 
@@ -57,7 +58,7 @@ function CarouselItem(props) {
     [theme.breakpoints.down("md")]: {
       fontSize: "12px",
     },
-  })
+  });
 
   const ProductName = styled(Typography)({
     marginTop: theme.spacing(2),
@@ -66,22 +67,30 @@ function CarouselItem(props) {
     [theme.breakpoints.down("md")]: {
       fontSize: "20px",
     },
-  })
+  });
 
   return (
-    <Paper sx={{ position: "relative", marginTop: theme.spacing(1)}}>
+    <Paper sx={{ position: "relative", marginTop: theme.spacing(1) }}>
       <SliderImage src={product.image.url} />
       <ContentWrapper>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <StyledChip variant="filled" color="primary" label={product.category.name} />
+          <Link to={`${subcategoriesOfMainCategoryBaseUrl}${product.category.id}`}>
+            <StyledChip
+              variant="filled"
+              color="primary"
+              label={product.category.name}
+            />
+          </Link>
+          <Link to={`${subcategoryProductsBaseUrl}${product.subcategory.id}`}>
           <StyledChip
             variant="filled"
             color="secondary"
             label={product.subcategory.name}
           />
+          </Link>
         </Box>
         <ProductName variant="h4">
-           {product.name.length > 70
+          {product.name.length > 70
             ? `${product.name.slice(0, 70)}...`
             : `${product.name}`}
         </ProductName>

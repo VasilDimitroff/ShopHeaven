@@ -7,7 +7,7 @@ import axios from "../../api/axios";
 import { theme } from "../../theme";
 import { Box } from "@mui/system";
 
-function HomeCarousel(props) {
+function HomeCarousel() {
   const [products, setProducts] = useState([]);
   const effectRun = useRef(false);
 

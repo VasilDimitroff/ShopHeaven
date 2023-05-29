@@ -1,4 +1,5 @@
 import { React, useState, Fragment, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -34,6 +35,9 @@ const breadcrumbs = [
 ];
 
 export default function SubcategoryProducts() {
+  const params = useParams();
+  const [subcategoryId, setSubcategoryId] = useState(params.subcategoryId);
+
   const [showSidebar, setShowSidebar] = useState(true);
   const [sortCriteria, setSortCriteria] = useState("Newest");
   const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -43,7 +47,9 @@ export default function SubcategoryProducts() {
   }, [isBiggerOrMd]);
 
   function handleOpenSidebar() {
-    setShowSidebar((prev) => !prev);
+    if (!isBiggerOrMd) {
+      setShowSidebar((prev) => !prev);
+    }
   }
 
   function handleSortCriteria(newCriteria) {
@@ -121,15 +127,19 @@ export default function SubcategoryProducts() {
                   </MenuItem>
                   <MenuItem value="% discount">% discount</MenuItem>
                 </TextField>
-                <FiltersButton>
-                  <Button
-                    size="large"
-                    variant="contained"
-                    onClick={handleOpenSidebar}
-                  >
-                    Filters
-                  </Button>
-                </FiltersButton>
+                {!isBiggerOrMd ? (
+                  <FiltersButton>
+                    <Button
+                      size="large"
+                      variant="contained"
+                      onClick={handleOpenSidebar}
+                    >
+                      Filters
+                    </Button>
+                  </FiltersButton>
+                ) : (
+                  <></>
+                )}
               </ButtonsHolder>
             </HeadingHolder>
           </Box>

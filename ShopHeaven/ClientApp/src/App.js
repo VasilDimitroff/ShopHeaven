@@ -21,7 +21,7 @@ import PersistLogin from './components/auth/PersistLogin';
 import Unauthorized from './components/auth/Unauthorized';
 import SubcategoryProducts from './components/products/products-gallery/SubcategoryProducts';
 import { coupons } from './components/coupons';
-import { adminRole } from './constants';
+import { adminRole, subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl, allCategoriesUrl, loginPath, registerPath } from './constants';
 
 export default function App() {
 
@@ -30,15 +30,14 @@ export default function App() {
       <Routes>
         {/* public routes */}
         <Route element={<PersistLogin/>}>
-          <Route path="/" element={<Layout/>}>
+          <Route exact path="/" element={<Layout/>}>
             <Route path="" element={<Home/>}/>
-            <Route path="categories" element={<Categories/>}/>
-            <Route path="categories/:categoryId" element={<Subcategories/>}/>
-            <Route path="categories/:categoryId/subcategories/:subcategoryId" element={<Categories/>}/>
-            <Route path="categories/subcategories/:subcategoryId/products" element={<SubcategoryProducts/>}/>
+            <Route path={`${allCategoriesUrl}`} element={<Categories/>}/>
+            <Route path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`} element={<Subcategories/>}/>
+            <Route path={`${subcategoryProductsBaseUrl}:subcategoryId`} element={<SubcategoryProducts/>}/>
             <Route path="products/:productId" element={<Product/>}/>
-            <Route path="login" element={<Login/>}/>
-            <Route path="register" element={<Register/>}/>
+            <Route path={loginPath} element={<Login/>}/>
+            <Route path={registerPath} element={<Register/>}/>
 
               {/* admin only routes */}          
               <Route element={<RequireAuth allowedRoles={adminRole} />}>

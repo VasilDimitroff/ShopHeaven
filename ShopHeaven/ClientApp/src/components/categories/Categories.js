@@ -15,9 +15,8 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import axios from "../../api/axios";
 import { ApiEndpoints } from "../../api/endpoints";
-import { columnsWithCategoriesToShowIfScreenIsLg } from "../../constants";
-import { columnsWithCategoriesToShowIfScreenIsMd } from "../../constants";
-import { Link } from "react-router-dom";
+import { columnsWithCategoriesToShowIfScreenIsLg, allCategoriesUrl, columnsWithCategoriesToShowIfScreenIsMd, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 const breadcrumbs = [
   {
@@ -26,13 +25,15 @@ const breadcrumbs = [
   },
   {
     name: "Categories",
-    uri: "/categories",
+    uri: `${allCategoriesUrl}`,
   },
 ];
 
 let colsToShow = 0;
 
 export default function Categories() {
+  const navigate = useNavigate()
+
   const [categories, setCategories] = useState([]); // array[{}]
 
   const effectRun = useRef(false);
@@ -70,6 +71,10 @@ export default function Categories() {
       controller.abort();
     };
   }, []);
+
+  function navigateTo(uri) {
+    navigate(uri)
+  }
 
   const ContentWrapper = styled(Box)({
     width: "80%",
@@ -125,8 +130,7 @@ export default function Categories() {
                 title={category.description}
                 arrow
               >
-                   <Link sx={{}} to={`/categories/${category.id}`}>
-                <StyledImageListItem>            
+                <StyledImageListItem onClick={() => navigateTo(`${subcategoriesOfMainCategoryBaseUrl}${category.id}`)}>        
                   <img
                     src={`${category.image}?w=248&fit=crop&auto=format`}
                     srcSet={`${category.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -139,9 +143,9 @@ export default function Categories() {
                       title={category.name}
                       subtitle={`${category.subcategoriesCount} subcategories, ${category.productsCount} products`}
                     />
-                  </Fade>  
+                  </Fade>
                 </StyledImageListItem>
-                </Link>
+              
               </Tooltip>
             </Fragment>
           ))}
