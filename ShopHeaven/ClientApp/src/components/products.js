@@ -48,6 +48,7 @@ export const products = [
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    labels: ["label 1", "label 2", "label 3"],
     subcategory:
       {
         id: "1-1",
@@ -105,6 +106,7 @@ export const products = [
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    labels: ["label 1", "label 2", "label 3"],
     subcategory:
     {
       id: "2-1",
@@ -161,6 +163,7 @@ export const products = [
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    labels: ["label 1", "label 2", "label 3"],
     subcategory:
       {
         id: "3-1",
@@ -217,6 +220,7 @@ export const products = [
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    labels: ["label 1", "label 2", "label 3"],
     subcategory:
       {
         id: "4-1",
@@ -273,6 +277,7 @@ export const products = [
       "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
       "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
     ],
+    labels: ["label 1", "label 2", "label 3"],
     subcategory:
       {
         id: "5-1",

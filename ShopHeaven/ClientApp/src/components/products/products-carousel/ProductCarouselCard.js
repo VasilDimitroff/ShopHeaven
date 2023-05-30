@@ -23,9 +23,10 @@ function ProductCarouselCard(props) {
     position: "relative",
   });
 
-  const ImageRibbon = styled(Chip)({
+  const LabelsHolder = styled(Box)({
     position: "absolute",
-    top: theme.spacing(2),
+    top: 10,
+    left: -12,
     borderTopLeftRadius: "0px",
     borderBottomLeftRadius: "0px",
     borderTopRightRadius: theme.shape.borderRadius,
@@ -88,14 +89,30 @@ function ProductCarouselCard(props) {
         : theme.palette.error.main,
   });
 
+  const ProductLabel = styled(Chip)({
+    fontSize: 11,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+    marginTop: theme.spacing(0.7),
+  });
+
   return (
     <StyledCard>
       <CardActionArea>
-        <ProductCardMedia
-          title={product.name}
-          image={product.thumbnail.url}
-        />
-        <ImageRibbon label="primary" color="secondary" variant="contained" />
+        <ProductCardMedia title={product.name} image={product.thumbnail.url} />
+        <LabelsHolder sx={{}}>
+          {product.labels.map((label) => {
+            return (
+              <Box key={label}>
+                <ProductLabel
+                  label={label}
+                  color="secondary"
+                  variant="filled"
+                />
+              </Box>
+            );
+          })}
+        </LabelsHolder>
       </CardActionArea>
       <CardContent>
         <Button variant="outlined" size="small">
@@ -120,13 +137,13 @@ function ProductCarouselCard(props) {
               readOnly
               size="small"
             />
-            <RatingText component="legend">
-              {product.rating} stars
-            </RatingText>
+            <RatingText component="legend">{product.rating} stars</RatingText>
           </RatingWrapper>
 
           <PriceAndActionsWrapper>
-            <PriceText variant="h5">{product.currency.code} {product.price.toFixed(2)}</PriceText>
+            <PriceText variant="h5">
+              {product.currency.code} {product.price.toFixed(2)}
+            </PriceText>
             <ActionsWrapper>
               <IconButton
                 size="large"
@@ -139,12 +156,15 @@ function ProductCarouselCard(props) {
               >
                 <Favorite sx={{ fontSize: "26px" }} />
               </IconButton>
-              <IconButton size="large" variant="contained"
-              sx={{
-                "&:hover": {
-                  color: theme.palette.primary.main,
-                },
-              }}>
+              <IconButton
+                size="large"
+                variant="contained"
+                sx={{
+                  "&:hover": {
+                    color: theme.palette.primary.main,
+                  },
+                }}
+              >
                 <ShoppingCart sx={{ fontSize: "26px" }} />
               </IconButton>
             </ActionsWrapper>

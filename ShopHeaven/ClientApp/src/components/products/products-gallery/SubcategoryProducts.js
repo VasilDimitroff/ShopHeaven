@@ -104,8 +104,6 @@ export default function SubcategoryProducts() {
     const lowestPrice = filters.priceRange.split(" -")[0];
     const highestPrice = filters.priceRange.split(" - ")[1]
 
-    console.log("TUKA GLEDASH - LOW", lowestPrice)
-    console.log("TUKA GLEDASH - HIGH", highestPrice)
     const getProducts = async () => {
       try {
         setIsLoading(true);
