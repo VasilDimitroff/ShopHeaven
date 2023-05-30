@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   Checkbox,
   Stack,
-  Collapse
+  Collapse,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
@@ -23,12 +23,16 @@ import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import AppPagination from "../../common/AppPagination";
 import SubcategoryProductsSidebar from "./SubcategoryProductsSidebar";
 import SubcategoryProductsMain from "./SubcategoryProductsMain";
-import { productsPerPageInSubCategoryPage, requestTimerMilliseconds, allCategoriesUrl, subcategoryProductsBaseUrl } from "../../../constants";
+import {
+  productsPerPageInSubCategoryPage,
+  requestTimerMilliseconds,
+  allCategoriesUrl,
+  subcategoryProductsBaseUrl,
+} from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
 
 export default function SubcategoryProducts() {
-
   //data states
   const params = useParams();
   const [products, setProducts] = useState();
@@ -58,16 +62,13 @@ export default function SubcategoryProducts() {
   //inputRefs
   const searchInputRef = useRef();
 
-  const inStockFilterRef = useRef();
-
   //filters
-  const [availabilityFilterChecked, setAvailabilityFilterChecked] = useState(false);
+  const [availabilityFilterChecked, setAvailabilityFilterChecked] =
+    useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const effectRun = useRef(false);
-
-
 
   const breadcrumbs = [
     {
@@ -86,7 +87,6 @@ export default function SubcategoryProducts() {
 
   useEffect(() => {
     let timeoutId;
-    console.log("RADIO IN EFFECT ", inStockFilterRef.current);
     const controller = new AbortController();
 
     const getProducts = async () => {
@@ -98,7 +98,7 @@ export default function SubcategoryProducts() {
           page: page,
           searchTerm: "",
           subcategoryId: subcategory.id,
-          inStock: availabilityFilterChecked
+          inStock: availabilityFilterChecked,
         };
 
         console.log("REQUIEST ", pagingModel);
@@ -117,10 +117,10 @@ export default function SubcategoryProducts() {
         setCategory(response?.data?.category);
         setSubcategory(response?.data?.subcategory);
         setNumberOfPages(response?.data?.pagesCount);
-        setTotalProductsCount(response?.data?.productsCount)  
+        setTotalProductsCount(response?.data?.productsCount);
 
         if (page > response?.data?.pagesCount) {
-          setPage(1)
+          setPage(1);
         }
 
         setIsLoading(false);
@@ -135,7 +135,7 @@ export default function SubcategoryProducts() {
         if (effectRun.current) {
           getProducts();
         }
-      }, timer); 
+      }, timer);
     };
 
     delayGetProductsRequest();
@@ -147,7 +147,6 @@ export default function SubcategoryProducts() {
       setTimer(0);
     };
   }, [page, searchTerm, availabilityFilterChecked]);
-
 
   function onSearchProduct(e) {
     e.preventDefault();
@@ -182,7 +181,7 @@ export default function SubcategoryProducts() {
   function applyFilters() {}
 
   function handleAvailabilityChecked(e) {
-    const availabilityValue = e.target.value === "true" ? true : false
+    const availabilityValue = e.target.value === "true" ? true : false;
     setAvailabilityFilterChecked(availabilityValue);
     console.log(e.target.value);
   }
@@ -295,24 +294,32 @@ export default function SubcategoryProducts() {
                   <StyledPaper>
                     <Typography variant="h6">In Stock</Typography>
                     <form>
-                      <input
-                        checked={availabilityFilterChecked === false}
-                        onChange={handleAvailabilityChecked}
-                        type="radio"
-                        id="all"
-                        name="availability"
-                        value={false}
-                      />
-                      <label for="all">All</label>
-                      <input
-                        checked={availabilityFilterChecked === true}
-                        onChange={handleAvailabilityChecked}
-                        type="radio"
-                        id="instock"
-                        name="availability"
-                        value={true}
-                      />
-                      <label for="instock">In Stock</label>
+                      <Grid>
+                        <Grid item xs={6} sm={6} md={6} lg={6}>
+                          <Checkbox 
+                            size="medium"
+                            checked={availabilityFilterChecked === false}
+                            onChange={handleAvailabilityChecked}
+                            type="checkbox"
+                            id="all"
+                            name="availability"
+                            value={false}
+                          />
+                          <label for="all">All</label>
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={6} lg={6}>
+                        <Checkbox 
+                          size="medium"
+                          checked={availabilityFilterChecked === true}
+                          onChange={handleAvailabilityChecked}
+                          type="checkbox"
+                          id="instock"
+                          name="availability"
+                          value={true}
+                        />
+                        <label for="instock">In Stock</label>
+                      </Grid>
+                      </Grid>
                     </form>
                   </StyledPaper>
                   <StyledPaper>
