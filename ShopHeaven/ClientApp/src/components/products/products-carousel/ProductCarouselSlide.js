@@ -1,6 +1,6 @@
 import { Box, Grid, Slide, } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import ProductCarouselCard from "./ProductCarouselCard";
 
 function ProductCarouselSlide(props) {

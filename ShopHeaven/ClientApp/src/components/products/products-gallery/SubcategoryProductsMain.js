@@ -1,7 +1,7 @@
 import { React, useState, Fragment } from "react";
 import { Box, Paper, Typography, Grid, Slide, } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ProductCarouselCard from "../ProductCarouselCard";
+import ProductCarouselCard from "../products-carousel/ProductCarouselCard";
 import { theme } from "../../../theme";
 
 export default function SubcategoryProductsMain(props) {

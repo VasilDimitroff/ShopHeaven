@@ -13,7 +13,7 @@ import {
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { passwordRequiredLength } from "../../constants";
-import BreadcrumbsBar from "../BreadcrumbsBar";
+import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import {
   validateEmail,

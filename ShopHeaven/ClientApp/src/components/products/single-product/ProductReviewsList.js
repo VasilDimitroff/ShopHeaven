@@ -1,7 +1,7 @@
 import { React, useState, Fragment } from "react";
 import { Box, Typography, Stack, Paper, Rating } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import { styled } from "@mui/material/styles";
 
 export default function ProductReviewsList(props) {

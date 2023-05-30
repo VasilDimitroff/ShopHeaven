@@ -1,4 +1,4 @@
-import BreadcrumbsBar from "../BreadcrumbsBar";
+import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import { React, useState, useRef, useEffect, Fragment } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {

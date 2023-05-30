@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Outlet, Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import BreadcrumbsBar from "../BreadcrumbsBar";
+import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import { theme } from "../../theme";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReviewsIcon from "@mui/icons-material/Reviews";

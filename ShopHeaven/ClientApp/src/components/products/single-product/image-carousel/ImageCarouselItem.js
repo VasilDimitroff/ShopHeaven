@@ -9,7 +9,7 @@ import {
 import { React, useState } from "react";
 import { Close } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../../theme";
 
 export default function ImageCarouselItem(props) {
   const [openModal, setOpenModal] = useState(false);

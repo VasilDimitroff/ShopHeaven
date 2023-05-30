@@ -16,7 +16,7 @@ import { styled } from "@mui/material/styles";
 import ProductReviewsList from "./ProductReviewsList";
 import AddReviewForm from "./AddReviewForm";
 import ProductSpecifications from "./ProductSpecifications";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 
 export default function ProductDetailInformation(props) {
 

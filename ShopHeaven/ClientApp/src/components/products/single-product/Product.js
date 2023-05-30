@@ -1,9 +1,9 @@
 import { React, useState, Fragment } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import BreadcrumbsBar from "../BreadcrumbsBar";
+import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
-import ProductsCarouselLine from "./ProductsCarouselLine";
+import ProductsCarousel from "../products-carousel/ProductsCarousel";
 import ProductDetailInformation from "./ProductDetailInformation";
 
 
@@ -334,7 +334,7 @@ export default function Product(props) {
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <ProductInfoWrapper product={product}/>
-      <ProductsCarouselLine products={products} headingName="Similar Products" />
+      <ProductsCarousel products={products} headingName="Similar Products" />
       <ProductDetailInformation product={product}/>
     </Fragment>
   );

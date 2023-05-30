@@ -1,7 +1,7 @@
   import {  Box, Chip, Typography, Rating } from "@mui/material";
   import useMediaQuery from "@mui/material/useMediaQuery";
   import { styled } from "@mui/material/styles";
-  import { theme } from "../../theme";
+  import { theme } from "../../../theme";
   
   export default function ProductDescription(props) {
 

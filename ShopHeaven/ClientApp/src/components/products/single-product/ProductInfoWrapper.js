@@ -1,8 +1,8 @@
 import { React } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
-import ImageCarousel from "./ImageCarousel";
+import { theme } from "../../../theme";
+import ImageCarousel from "./image-carousel/ImageCarousel";
 import ProductDescription from "./ProductDescription";
 import ProductActionButtons from "./ProductActionButtons";
 

@@ -22,7 +22,7 @@ import {
   Close
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 
 export default function ProductActionButtons(props) {
   const [showError, setShowError] = useState(false);

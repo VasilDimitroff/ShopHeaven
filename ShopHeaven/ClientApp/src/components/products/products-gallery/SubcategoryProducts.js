@@ -19,7 +19,7 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import BreadcrumbsBar from "../../BreadcrumbsBar";
+import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import AppPagination from "../../common/AppPagination";
 import SubcategoryProductsSidebar from "./SubcategoryProductsSidebar";
 import SubcategoryProductsMain from "./SubcategoryProductsMain";

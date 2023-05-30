@@ -2,10 +2,10 @@ import { React } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Box, Typography } from "@mui/material";
 import ProductCarouselSlide from "./ProductCarouselSlide";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import { products } from "../products";
+import { products } from "../../products";
 
 function ProductsCarousel(props) {
   function SetCardsNumber() {
@@ -56,6 +56,17 @@ function ProductsCarousel(props) {
     return slidesInfo;
   }
 
+  const CarouselWrapper = styled(Box)({
+    margin: "auto", width: "100%", display: "block", width: "80%",
+    display: "block",
+    margin: "auto",      
+    paddingTop: theme.spacing(2),
+    [theme.breakpoints.down("md")]: {
+      width: "95%",
+      paddingTop: theme.spacing(3),
+    },
+})
+
   const StyledHeading = styled(Typography)({
     [theme.breakpoints.down("md")]: {
       textAlign: "center",
@@ -64,6 +75,7 @@ function ProductsCarousel(props) {
 
   return (
     <Box>
+    <CarouselWrapper>
       <StyledHeading variant="h4">{props.headingName}</StyledHeading>
       <Carousel
         animation="slide"
@@ -102,6 +114,7 @@ function ProductsCarousel(props) {
           );
         })}
       </Carousel>
+      </CarouselWrapper>
     </Box>
   );
 }

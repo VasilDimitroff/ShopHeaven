@@ -1,6 +1,6 @@
 import { React, Fragment } from "react";
 import { Typography, InputBase, Rating, Button } from "@mui/material";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import { styled } from "@mui/material/styles";
 
 export default function AddReviewForm() {

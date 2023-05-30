@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ImageCarouselSlide from "./ImageCarouselSlide";
 import { Close } from "@mui/icons-material";
-import { theme } from "../../theme";
+import { theme } from "../../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import { GetBigImageIndex } from "./ImageCarouselSlide";

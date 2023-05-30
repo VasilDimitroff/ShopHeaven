@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
   const [product, setProduct] = useState(props.product);

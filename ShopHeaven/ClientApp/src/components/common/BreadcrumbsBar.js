@@ -1,6 +1,6 @@
 import { Breadcrumbs, Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../theme";
+import { theme } from "../../theme";
 import { Link } from "react-router-dom";
 
 export default function BreadcrumbsBar(props) {
