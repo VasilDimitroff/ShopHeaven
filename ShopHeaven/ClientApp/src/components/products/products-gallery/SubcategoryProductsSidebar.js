@@ -4,7 +4,6 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 
 export default function SubcategoryProductsSidebar() {
-  const [value, setValue] = useState(1);
 
   function applyFilters(){
     
