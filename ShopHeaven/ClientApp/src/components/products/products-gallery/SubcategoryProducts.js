@@ -28,6 +28,15 @@ import {
   requestTimerMilliseconds,
   allCategoriesUrl,
   subcategoryProductsBaseUrl,
+  maxProductPriceRangeGroup,
+  firstGroupProductPriceRange,
+  secondGroupProductPriceRange,
+  thirdGroupProductPriceRange,
+  forthGroupProductPriceRange,
+  fifthGroupProductPriceRange,
+  sixthGroupProductPriceRange,
+  seventhGroupProductPriceRange,
+  eighthGroupProductPriceRange
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -63,8 +72,11 @@ export default function SubcategoryProducts() {
   const searchInputRef = useRef();
 
   //filters
-  const [availabilityFilterChecked, setAvailabilityFilterChecked] =
-    useState(false);
+  const [filters, setFilters] = useState({
+    availabilityFilterChecked: false, // bool
+    priceRange: maxProductPriceRangeGroup, // "101-500"
+  });
+
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -88,7 +100,12 @@ export default function SubcategoryProducts() {
   useEffect(() => {
     let timeoutId;
     const controller = new AbortController();
+   
+    const lowestPrice = filters.priceRange.split(" -")[0];
+    const highestPrice = filters.priceRange.split(" - ")[1]
 
+    console.log("TUKA GLEDASH - LOW", lowestPrice)
+    console.log("TUKA GLEDASH - HIGH", highestPrice)
     const getProducts = async () => {
       try {
         setIsLoading(true);
@@ -98,7 +115,9 @@ export default function SubcategoryProducts() {
           page: page,
           searchTerm: "",
           subcategoryId: subcategory.id,
-          inStock: availabilityFilterChecked,
+          inStock: filters.availabilityFilterChecked,
+          lowestPrice: parseFloat(lowestPrice.trim()),
+          highestPrice: parseFloat(highestPrice.trim())
         };
 
         console.log("REQUIEST ", pagingModel);
@@ -146,7 +165,7 @@ export default function SubcategoryProducts() {
       clearTimeout(timeoutId);
       setTimer(0);
     };
-  }, [page, searchTerm, availabilityFilterChecked]);
+  }, [page, searchTerm, filters]);
 
   function onSearchProduct(e) {
     e.preventDefault();
@@ -178,12 +197,25 @@ export default function SubcategoryProducts() {
     setSortCriteria(newCriteria);
   }
 
-  function applyFilters() {}
-
   function handleAvailabilityChecked(e) {
     const availabilityValue = e.target.value === "true" ? true : false;
-    setAvailabilityFilterChecked(availabilityValue);
+    setFilters(prev => {
+      return {
+        ...prev,
+        availabilityFilterChecked: availabilityValue
+      }
+    });
     console.log(e.target.value);
+  }
+
+  function handlePriceRangeChanged(e) {
+    const priceRangeRawString = e.target.value;
+    setFilters(prev => {
+      return {
+        ...prev,
+        priceRange: priceRangeRawString
+      }
+    });
   }
 
   const PaginationHolder = styled(Box)({
@@ -293,62 +325,150 @@ export default function SubcategoryProducts() {
                 <Stack spacing={2}>
                   <StyledPaper>
                     <Typography variant="h6">In Stock</Typography>
+
                     <form>
                       <Grid>
-                        <Grid item xs={6} sm={6} md={6} lg={6}>
-                          <Checkbox 
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
                             size="medium"
-                            checked={availabilityFilterChecked === false}
+                            checked={filters.availabilityFilterChecked === false}
                             onChange={handleAvailabilityChecked}
                             type="checkbox"
                             id="all"
                             name="availability"
                             value={false}
                           />
-                          <label for="all">All</label>
+                          <label htmlFor="all">All</label>
                         </Grid>
-                        <Grid item xs={6} sm={6} md={6} lg={6}>
-                        <Checkbox 
-                          size="medium"
-                          checked={availabilityFilterChecked === true}
-                          onChange={handleAvailabilityChecked}
-                          type="checkbox"
-                          id="instock"
-                          name="availability"
-                          value={true}
-                        />
-                        <label for="instock">In Stock</label>
-                      </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.availabilityFilterChecked === true}
+                            onChange={handleAvailabilityChecked}
+                            type="checkbox"
+                            id="instock"
+                            name="availability"
+                            value={true}
+                          />
+                          <label htmlFor="instock">In Stock</label>
+                        </Grid>
                       </Grid>
                     </form>
                   </StyledPaper>
                   <StyledPaper>
                     <Typography variant="h6">Price Range</Typography>
-                    <FormGroup>
-                      <FormControlLabel control={<Checkbox />} label="1-50" />
-                      <FormControlLabel control={<Checkbox />} label="51-100" />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="100-200"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="200-500"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="500-1000"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="1000-1500"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        label="1500-2000"
-                      />
-                      <FormControlLabel control={<Checkbox />} label="2000+" />
-                    </FormGroup>
+                    <form>
+                      <Grid>
+                      <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === maxProductPriceRangeGroup}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-0"
+                            name="price-range"
+                            value={maxProductPriceRangeGroup}
+                          />
+                          <label htmlFor="price-range-0">All prices</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === firstGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-1"
+                            name="price-range"
+                            value={firstGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-1">{firstGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === secondGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-2"
+                            name="price-range"
+                            value={secondGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-2">{secondGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === thirdGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-3"
+                            name="price-range"
+                            value={thirdGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-3">{thirdGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === forthGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-4"
+                            name="price-range"
+                            value={forthGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-4">{forthGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === fifthGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-5"
+                            name="price-range"
+                            value={fifthGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-5">{fifthGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === sixthGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-6"
+                            name="price-range"
+                            value={sixthGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-6">{sixthGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === seventhGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-7"
+                            name="price-range"
+                            value={seventhGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-7">{seventhGroupProductPriceRange}</label>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.priceRange === eighthGroupProductPriceRange}
+                            onChange={handlePriceRangeChanged}
+                            type="checkbox"
+                            id="price-range-8"
+                            name="price-range"
+                            value={eighthGroupProductPriceRange}
+                          />
+                          <label htmlFor="price-range-8">{eighthGroupProductPriceRange}</label>
+                        </Grid>
+                      </Grid>
+                    </form>
                   </StyledPaper>
                   <StyledPaper>
                     <Typography variant="h6">Rating</Typography>
@@ -373,10 +493,7 @@ export default function SubcategoryProducts() {
                       <Rating readOnly value={1} size="small" />
                     </RatingHolder>
                   </StyledPaper>
-                  <ApplyFiltersButton
-                    onClick={applyFilters}
-                    variant="contained"
-                  >
+                  <ApplyFiltersButton variant="contained">
                     APPLY FILTERS
                   </ApplyFiltersButton>
                 </Stack>
