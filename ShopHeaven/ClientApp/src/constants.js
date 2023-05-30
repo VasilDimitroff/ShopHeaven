@@ -20,6 +20,9 @@ export const usernameRequiredLength = 2;
 export const usersPerPageInAdminPanel = 5; // how many users to view per page in admin panel
 export const productsPerPageInAdminPanel = 5; // how many products to view per page in admin panel
 
+//records count per page in single subcategory products page
+export const productsPerPageInSubCategoryPage = 20;
+
 //times for setTimer()
 export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
 export const loadSubcategoriesInMainMenuTimerMilliseconds = 0; // time waiting before start new request in main menu when user move the mouse

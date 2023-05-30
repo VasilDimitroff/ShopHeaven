@@ -3,9 +3,11 @@ import { Box, Paper, Typography, Grid, Slide, } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ProductCarouselCard from "../ProductCarouselCard";
 import { theme } from "../../../theme";
-import { products } from "../../products.js"
 
-export default function SubcategoryProductsMain() {
+export default function SubcategoryProductsMain(props) {
+
+  const [products, setProducts] = useState(props.products);
+  
   const ContentWrapper = styled(Box)({
     width: "100%",
     margin: "auto",
@@ -19,14 +21,13 @@ export default function SubcategoryProductsMain() {
         <ContentWrapper>
         <Grid
           container
-          columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
           sx={{
             display: "flex",
             alignItems: "flex-start",
             flexGrow: 1,
           }}
         >
-          {products.map(
+          {products?.map(
             (product, index) => (
               <Grid
                 item 

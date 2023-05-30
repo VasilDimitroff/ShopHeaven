@@ -7,12 +7,10 @@ using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Currencies;
-using ShopHeaven.Models.Responses.Images;
 using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Products.BaseModel;
 using ShopHeaven.Models.Responses.Specifications;
-using ShopHeaven.Models.Responses.Subcategories;
 using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
 namespace ShopHeaven.Data.Services
@@ -398,7 +396,7 @@ namespace ShopHeaven.Data.Services
             return updatedProduct;
         }
 
-        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync(ProductPaginationRequestModel model)
+        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync(AdminProductPaginationRequestModel model)
         {
             List<AdminProductResponseModel> products = await this.GetAllAsync(model) as List<AdminProductResponseModel>;
 
@@ -410,14 +408,16 @@ namespace ShopHeaven.Data.Services
             //also product is not deleted
             //and also if there is Category Id selected, filter products by this category
             //if categoryid is empty, dont filter by category
-            var productsCount = this.db.Products
+
+            //!!!! await
+            var productsCount = await this.db.Products
                  .Where(p => (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
                     || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
                             ? p.SubCategory.MainCategoryId != null
                             : p.SubCategory.MainCategoryId == model.CategoryId)
                     && p.IsDeleted != true)
-                .Count();
+                .CountAsync();
 
             var responseModel = new ProductsWithCreationInfoResponseModel
             {
@@ -431,7 +431,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(ProductPaginationRequestModel model)
+        public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(AdminProductPaginationRequestModel model)
         {
             var products = await this.db.Products
             .Where(p => p.IsDeleted != true && (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
@@ -498,6 +498,111 @@ namespace ShopHeaven.Data.Services
 
 
             return products;
+        }
+
+        public async Task<ProductsBySubcategoryResponseModel> GetAllBySubcategoryIdAsync(ProductPaginationRequestModel model)
+        {
+            var subcategory = await this.db.SubCategories
+                .Include(x => x.MainCategory)
+                .FirstOrDefaultAsync(x => x.Id == model.SubcategoryId && x.IsDeleted != true);
+
+            if (subcategory == null)
+            {
+                throw new ArgumentException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
+            }
+
+            var category = subcategory.MainCategory;
+
+            var paginatedProducts = await GetProductsBySubcategoryIdAsync(model);
+
+            var notPaginatedProducts = await this.db.Products
+                .Where(p => p.SubCategoryId == model.SubcategoryId
+                    && p.Price >= model.LowestPrice
+                    && p.Price <= model.HighestPrice
+                    && p.Rating >= model.Rating
+                    && p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                    && p.IsDeleted != true)
+                .ToListAsync();
+
+            var notPaginatedProductsCount = notPaginatedProducts.
+                Where(p =>
+                    model.InStock == true
+                    ? p.IsAvailable == true
+                    : (p.IsAvailable == true || p.IsAvailable == false))
+                .Count();
+   
+            var responseModel = new ProductsBySubcategoryResponseModel 
+            {
+                Products = paginatedProducts,
+                ProductsCount = notPaginatedProductsCount,
+                PagesCount = (int)Math.Ceiling((double)notPaginatedProductsCount / model.RecordsPerPage),
+                Category = new CategoryBaseResponseModel 
+                {
+                   Id = category.Id,
+                   Name = category.Name,
+                },
+                Subcategory = new SubcategoryBaseResponseModel 
+                { 
+                    Id = subcategory.Id,
+                    Name = subcategory.Name,
+                },
+            };
+
+            return responseModel;
+        }
+
+        private async Task<ICollection<ProductGalleryResponseModel>> GetProductsBySubcategoryIdAsync(ProductPaginationRequestModel model)
+        {
+            var products = await this.db.Products
+            .Where(p => p.SubCategoryId == model.SubcategoryId
+                && p.Price >= model.LowestPrice
+                && p.Price <= model.HighestPrice
+                && p.Rating >= model.Rating
+                && p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                && p.IsDeleted != true)
+            .OrderByDescending(p => p.CreatedOn)
+            .Skip((model.Page - 1) * model.RecordsPerPage)
+            .Take(model.RecordsPerPage)
+            .Select(product => new ProductGalleryResponseModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Brand = product.Brand,
+                Price = product.Price,
+                Discount = product.Discount,
+                IsAvailable = product.IsAvailable,
+                Rating = product.Rating,
+                Currency = new CurrencyResponseModel
+                {
+                    Id = product.Currency.Id,
+                    Name = product.Currency.Name,
+                    Code = product.Currency.Code
+                },
+                Thumbnail = new BasicImageResponseModel
+                {
+                    Url = product.Images
+                        .FirstOrDefault(x => x.IsThumbnail) != null
+                                ? product.Images.FirstOrDefault(x => x.IsThumbnail).Image.Url
+                                : "",
+                    IsThumbnail = product.Images
+                        .FirstOrDefault(x => x.IsThumbnail == true) != null
+                                ? product.Images.FirstOrDefault(x => x.IsThumbnail == true).IsThumbnail
+                                : false,
+                },
+                Labels = product.Labels
+                    .Select(x => x.Label.Content)
+                    .ToList()
+            })
+            .ToListAsync();
+
+            var productsFilteredByAvailability = products
+                .Where(p =>
+                    model.InStock == true 
+                    ? p.IsAvailable == true 
+                    : (p.IsAvailable == true || p.IsAvailable == false))
+                .ToList();
+
+            return productsFilteredByAvailability;
         }
 
         public async Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelsAsync(GetProductsByLabelRequestModel model)
@@ -567,7 +672,7 @@ namespace ShopHeaven.Data.Services
                     }
                 })
                 .ToList();
-            
+
             return products;
         }
 
@@ -845,6 +950,7 @@ namespace ShopHeaven.Data.Services
             if (images.Count < 1) return new List<ProductImage>();
 
             var productImages = new List<ProductImage>();
+            bool hasThumbnail = false;
 
             foreach (var image in images)
             {
@@ -862,6 +968,16 @@ namespace ShopHeaven.Data.Services
 
                     productImages.Add(productImage);
                 }
+
+                if (productImage.IsThumbnail)
+                {
+                    hasThumbnail = true;
+                }
+            }
+
+            if (productImages.Count > 0 && hasThumbnail == false)
+            {
+                productImages[0].IsThumbnail = true;
             }
 
             await this.db.ProductsImages.AddRangeAsync(productImages);
@@ -988,6 +1104,6 @@ namespace ShopHeaven.Data.Services
             await this.db.ProductsLabels.AddRangeAsync(productLabels);
 
             return productLabels;
-        } 
+        }
     }
 }

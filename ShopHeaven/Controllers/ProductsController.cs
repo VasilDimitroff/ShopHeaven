@@ -53,7 +53,7 @@ namespace ShopHeaven.Controllers
 
         
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAllWithCreationInfo))]
-        public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo([FromBody]ProductPaginationRequestModel model)
+        public async Task<ActionResult<ProductsWithCreationInfoResponseModel>> GetAllWithCreationInfo([FromBody]AdminProductPaginationRequestModel model)
         {
             try
             {
@@ -70,6 +70,24 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost, Route(nameof(GetBySubcategoryId))]
+        public async Task<ActionResult<ProductsBySubcategoryResponseModel>> GetBySubcategoryId([FromBody] ProductPaginationRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var productsBySubcategoryId = await this.productsService.GetAllBySubcategoryIdAsync(model);
+                return Ok(productsBySubcategoryId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost, Route(nameof(GetByLabels))]
         public async Task<ActionResult<List<GetProductByLabelsResponseModel>>> GetByLabels([FromBody] GetProductsByLabelRequestModel model)
@@ -103,7 +121,7 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+      
         
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
         public async Task<ActionResult<DeleteProductResponseModel>> Undelete([FromBody] UndeleteProductRequestModel model)

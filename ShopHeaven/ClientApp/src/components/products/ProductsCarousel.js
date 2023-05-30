@@ -5,6 +5,7 @@ import ProductCarouselSlide from "./ProductCarouselSlide";
 import { theme } from "../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
+import { products } from "../products";
 
 function ProductsCarousel(props) {
   function SetCardsNumber() {
@@ -37,7 +38,7 @@ function ProductsCarousel(props) {
 
   function ReturnSlidesInfo() {
     let cardsCountPerSlide = SetCardsNumber();
-    let slidesCount = Math.ceil(props.products.length / cardsCountPerSlide);
+    let slidesCount = Math.ceil(products.length / cardsCountPerSlide);
 
     let slidesInfo = [];
 
@@ -93,7 +94,7 @@ function ProductsCarousel(props) {
           return (
             <ProductCarouselSlide
               key={index}
-              products={props.products.slice(
+              products={products.slice(
                 rowInfo.startIndex,
                 rowInfo.startIndex + rowInfo.cardsPerSlide
               )}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Rating,
   Box,
@@ -15,6 +16,8 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 
 function ProductCarouselCard(props) {
+  const [product, setProduct] = useState(props.product);
+
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
     position: "relative",
@@ -80,7 +83,7 @@ function ProductCarouselCard(props) {
   const InStockState = styled(Box)({
     fontWeight: 500,
     color:
-      props.product.isAvailable === true
+      product.isAvailable === true
         ? theme.palette.success.main
         : theme.palette.error.main,
   });
@@ -89,8 +92,8 @@ function ProductCarouselCard(props) {
     <StyledCard>
       <CardActionArea>
         <ProductCardMedia
-          title={props.product.name}
-          image={props.product.image}
+          title={product.name}
+          image={product.thumbnail.url}
         />
         <ImageRibbon label="primary" color="secondary" variant="contained" />
       </CardActionArea>
@@ -100,30 +103,30 @@ function ProductCarouselCard(props) {
         </Button>
         <StyledCardActionArea>
           <ProductName>
-            {props.product.name.slice(0, 60) > 60
-              ? props.product.name.slice(0, 60) + "..."
-              : props.product.name.slice(0, 60)}
+            {product.name.length > 60
+              ? product.name.slice(0, 60) + "..."
+              : product.name.slice(0, 60)}
           </ProductName>
         </StyledCardActionArea>
         <InStockState>
-          {props.product.isAvailable === true ? "In Stock" : "Out of stock"}
+          {product.isAvailable === true ? "In Stock" : "Out of stock"}
         </InStockState>
         <Box>
           <RatingWrapper>
             <Rating
               name="half-rating-read"
-              defaultValue={2.5}
+              defaultValue={product.rating}
               precision={0.5}
               readOnly
               size="small"
             />
-            <RatingText component="legend" sx={{}}>
-              {props.product.rating} stars
+            <RatingText component="legend">
+              {product.rating} stars
             </RatingText>
           </RatingWrapper>
 
           <PriceAndActionsWrapper>
-            <PriceText variant="h5">{props.product.currency.code} {props.product.price}</PriceText>
+            <PriceText variant="h5">{product.currency.code} {product.price.toFixed(2)}</PriceText>
             <ActionsWrapper>
               <IconButton
                 size="large"

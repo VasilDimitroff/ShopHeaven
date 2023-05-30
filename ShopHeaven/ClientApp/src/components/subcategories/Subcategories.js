@@ -15,8 +15,8 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import axios from "../../api/axios";
 import { ApiEndpoints } from "../../api/endpoints";
-import { columnsWithSubcategoriesToShowIfScreenIsLg, columnsWithSubcategoriesToShowIfScreenIsMd, allCategoriesUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
-import { Link, useParams } from "react-router-dom";
+import { columnsWithSubcategoriesToShowIfScreenIsLg, subcategoryProductsBaseUrl, columnsWithSubcategoriesToShowIfScreenIsMd, allCategoriesUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
+import { useNavigate, useParams } from "react-router-dom";
 
 let colsToShow = 0;
 
@@ -25,6 +25,8 @@ export default function Subcategories() {
   const [mainCategory, setMainCategory] = useState({
     id: categoryId,
   });
+
+  const navigate = useNavigate();
 
   const [subcategories, setSubcategories] = useState([]); // array[{}]
 
@@ -148,7 +150,7 @@ export default function Subcategories() {
                 title={subcategory.description}
                 arrow
               >
-                <StyledImageListItem>
+                <StyledImageListItem onClick={() => navigate(`${subcategoryProductsBaseUrl}${subcategory.id}`)}>
                   <img
                     src={`${subcategory.image}?w=248&fit=crop&auto=format`}
                     srcSet={`${subcategory.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -156,13 +158,11 @@ export default function Subcategories() {
                     loading="lazy"
                   />
                   <Fade in={true} direction="up" timeout={900}>
-                    <Link to="/">
                       <StyledImageListItemBar
                         position="top"
                         title={subcategory.name}
                         subtitle={`${subcategory.productsCount} products`}
                       />
-                    </Link>
                   </Fade>
                 </StyledImageListItem>
               </Tooltip>

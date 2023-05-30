@@ -72,7 +72,7 @@
 
         public const string ProductMustContainAtLeast1Tag = "Product must contain at least 1 tag";
 
-        public const string ProductWithThisIdDoesNotExist = "Product with this Id does not exist!";
+        public const string ProductWithThisIdDoesNotExist = "Product with given Id does not exist!";
 
         public const string ImageWithGivenUrlDoesntExist = "Image with given Url does not exist!";
 
@@ -86,7 +86,7 @@
 
         public const string CannotRemoveUserFromUserRole = $"Cannot remove user from {UserRoleName} role";
 
-        public const string RoleWithThisIdDoesNotExist = "Role with this Id does not exist!";
+        public const string RoleWithThisIdDoesNotExist = "Role with given Id does not exist!";
 
         public const string FileTypeNotAllowed 
             = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";

@@ -23,7 +23,7 @@ function ProductCarouselSlide(props) {
             flexGrow: 1,
           }}
         >
-          {Array.from(props.products.slice(0, props.cardsPerSlide)).map(
+          {Array.from(props.products?.slice(0, props.cardsPerSlide)).map(
             (product, index) => (
               <Slide in={true} direction="up" key={index}>
               <Grid

@@ -37,7 +37,7 @@ namespace ShopHeaven.Data.Services
                     Description = x.Description,
                     Name = x.Name,
                     Image = x.Image.Url,
-                    ProductsCount = x.Products.Count(),
+                    ProductsCount = x.Products.Where(x => x.IsDeleted != true).Count(),
                 })
                 .ToListAsync();
 

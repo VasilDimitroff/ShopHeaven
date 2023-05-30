@@ -240,14 +240,12 @@ export default function Home() {
   return (
     <Fragment>
       <HomeCarouselAndMainMenu/>
-      <ProductsCarouselLine products={products} headingName="Promotions" />
+      <ProductsCarouselLine headingName="Promotions" />
       <ProductsCarouselLine
-        products={products}
         headingName="Similar to {subcategoryName} (You may also like)"
       />
 
       <ProductsCarouselLine
-        products={products}
         headingName="Frequently Purchased"
       />
 
