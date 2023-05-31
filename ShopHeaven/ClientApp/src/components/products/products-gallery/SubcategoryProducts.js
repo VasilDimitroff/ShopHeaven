@@ -50,6 +50,7 @@ import {
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
 
+
 export default function SubcategoryProducts() {
   //time during user type data
   const [timer, setTimer] = useState(0);
@@ -244,19 +245,10 @@ export default function SubcategoryProducts() {
   function handlePriceRangeChanged(e) {
     let priceRangeRawString = e.target.value;
 
-    if (
-      filters.priceRange === firstGroupProductPriceRange ||
-      filters.priceRange === secondGroupProductPriceRange ||
-      filters.priceRange === thirdGroupProductPriceRange ||
-      filters.priceRange === forthGroupProductPriceRange ||
-      filters.priceRange === fifthGroupProductPriceRange ||
-      filters.priceRange === sixthGroupProductPriceRange ||
-      filters.priceRange === seventhGroupProductPriceRange ||
-      filters.priceRange === eighthGroupProductPriceRange
-    ) {
+    if(priceRangeRawString === filters.priceRange) {
       priceRangeRawString = maxProductPriceRangeGroup;
     }
-
+    
     setFilters((prev) => {
       return {
         ...prev,
@@ -268,13 +260,7 @@ export default function SubcategoryProducts() {
   function handleRatingFilterChanged(e) {
     let ratingFilterValue = parseInt(e.target.value);
 
-    if (
-      filters.rating === oneStarRatingValue ||
-      filters.rating === twoStarsRatingValue ||
-      filters.rating === threeStarsRatingValue ||
-      filters.rating === fourStarsRatingValue ||
-      filters.rating === fiveStarsRatingValue
-    ) {
+    if(ratingFilterValue == filters.rating) {
       ratingFilterValue = initialRatingFilterValue;
     }
 
@@ -388,6 +374,7 @@ export default function SubcategoryProducts() {
     position: "absolute",
     zIndex: 1,
   });
+
 
   return (
     <Fragment>
@@ -777,10 +764,10 @@ export default function SubcategoryProducts() {
                     filters.rating != initialRatingFilterValue ? (
                       <Alert severity="info" variant="filled">
                         <Typography>
-                          <b>{totalProductsCount} results</b> for{" "}
-                          <b>
-                            "{filters.searchTerm ? filters.searchTerm : <></>}"
-                          </b>{" "}
+                          <b>{totalProductsCount} results</b>{" "}
+                          <b>{filters.searchTerm ? `for "${filters.searchTerm}"` : <></>}</b>{" "}
+                          <b>in price range {filters.priceRange ? filters.priceRange : <></>}</b>{" "}
+                          <b>with rating {filters.rating !== fiveStarsRatingValue ? "above or equals to " : <></>}{filters.rating}</b>{" "}
                           - <b>Page {page}</b>
                         </Typography>
                       </Alert>
