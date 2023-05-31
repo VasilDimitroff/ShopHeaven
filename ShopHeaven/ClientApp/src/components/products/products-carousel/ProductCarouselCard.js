@@ -23,7 +23,7 @@ function ProductCarouselCard(props) {
     position: "relative",
   });
 
-  const LabelsHolder = styled(Box)({
+  const RibbonHolder = styled(Box)({
     position: "absolute",
     top: 10,
     left: -12,
@@ -31,6 +31,27 @@ function ProductCarouselCard(props) {
     borderBottomLeftRadius: "0px",
     borderTopRightRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
+  });
+  
+  const ProductRibbon = styled(Chip)({
+    fontSize: 11,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+    marginTop: theme.spacing(0.7),
+  });
+
+  const LabelsHolder = styled(Box)({
+    position: "absolute",
+    bottom: 5,
+    left: 5,
+    display: "flex",
+    gap: 5,
+    justifyContent: "center"
+  });
+
+  const ProductLabel = styled(Chip)({
+    fontSize: 11,
+    borderRadius: 6,
   });
 
   const StyledCardActionArea = styled(CardActionArea)({
@@ -89,30 +110,30 @@ function ProductCarouselCard(props) {
         : theme.palette.error.main,
   });
 
-  const ProductLabel = styled(Chip)({
-    fontSize: 11,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    marginTop: theme.spacing(0.7),
-  });
-
   return (
     <StyledCard>
       <CardActionArea>
         <ProductCardMedia title={product.name} image={product.thumbnail.url} />
-        <LabelsHolder sx={{}}>
-          {product.labels.map((label) => {
-            return (
-              <Box key={label}>
-                <ProductLabel
-                  label={label}
-                  color="secondary"
+        <RibbonHolder>
+          {product.discount > 0 ? (
+              <Box>
+                <ProductRibbon
+                  label={`- ${product.discount}%`}
+                  color="error"
                   variant="filled"
                 />
               </Box>
+            ) : (
+              <></>
+            )}
+        </RibbonHolder>
+        <LabelsHolder>
+        {product.labels.map((label) => {
+            return (
+                <ProductLabel key={label} label={label} color="primary" size="small" variant="filled" />
             );
           })}
-        </LabelsHolder>
+          </LabelsHolder>
       </CardActionArea>
       <CardContent>
         <Button variant="outlined" size="small">
