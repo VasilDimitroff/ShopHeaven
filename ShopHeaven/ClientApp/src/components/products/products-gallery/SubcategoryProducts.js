@@ -4,14 +4,13 @@ import {
   Box,
   Grid,
   Button,
-  Alert,
-  Typography,
   Paper,
   Rating,
   Checkbox,
-  Collapse,
   Chip,
   Divider,
+  Stack,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { Cancel, Search } from "@mui/icons-material";
@@ -49,7 +48,6 @@ import {
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
-
 
 export default function SubcategoryProducts() {
   //time during user type data
@@ -135,7 +133,7 @@ export default function SubcategoryProducts() {
           highestPrice: parseFloat(highestPrice.trim()),
         };
 
-        console.log("REQUIEST ", pagingModel);
+        //console.log("REQUIEST ", pagingModel);
 
         const response = await axios.post(
           ApiEndpoints.products.getBySubcategoryId,
@@ -145,7 +143,7 @@ export default function SubcategoryProducts() {
           }
         );
 
-        console.log(response?.data);
+        //console.log(response?.data);
 
         setProducts(response?.data?.products);
         setCategory(response?.data?.category);
@@ -245,10 +243,10 @@ export default function SubcategoryProducts() {
   function handlePriceRangeChanged(e) {
     let priceRangeRawString = e.target.value;
 
-    if(priceRangeRawString === filters.priceRange) {
+    if (priceRangeRawString === filters.priceRange) {
       priceRangeRawString = maxProductPriceRangeGroup;
     }
-    
+
     setFilters((prev) => {
       return {
         ...prev,
@@ -260,7 +258,7 @@ export default function SubcategoryProducts() {
   function handleRatingFilterChanged(e) {
     let ratingFilterValue = parseInt(e.target.value);
 
-    if(ratingFilterValue == filters.rating) {
+    if (ratingFilterValue == filters.rating) {
       ratingFilterValue = initialRatingFilterValue;
     }
 
@@ -268,6 +266,42 @@ export default function SubcategoryProducts() {
       return {
         ...prev,
         rating: ratingFilterValue,
+      };
+    });
+  }
+
+  function handleDeleteInStockFilter() {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        availabilityFilterChecked: false,
+      };
+    });
+  }
+
+  function handleDeletePriceRangeFilter() {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        priceRange: maxProductPriceRangeGroup,
+      };
+    });
+  }
+
+  function handleDeleteRatingFilter() {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        rating: initialRatingFilterValue,
+      };
+    });
+  }
+
+  function handleDeleteSearchTerm() {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        searchTerm: "",
       };
     });
   }
@@ -288,10 +322,11 @@ export default function SubcategoryProducts() {
     marginBottom: theme.spacing(1),
   });
 
-  const MainWrapper = styled(Box)({
+  const ContentWrapper = styled(Box)({
     width: "80%",
     margin: "auto",
-    marginTop: theme.spacing(2),
+    display: "block",
+    marginTop: theme.spacing(5),
     [theme.breakpoints.down("md")]: {
       width: "95%",
     },
@@ -375,11 +410,23 @@ export default function SubcategoryProducts() {
     zIndex: 1,
   });
 
+  const Heading = styled(Typography)({
+    display: "flex",
+    justifyContent: "center",
+    textAlign: "center",
+    textTransform: "uppercase",
+    fontSize: 30,
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(-2),
+  });
 
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      <MainWrapper>
+      <ContentWrapper>
+        <Heading>
+          {subcategory.name} - {totalProductsCount} PRODUCTS
+        </Heading>
         <Box>
           <Box>
             <HeadingHolder>
@@ -466,7 +513,7 @@ export default function SubcategoryProducts() {
           </Box>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={3} lg={3}>
-              <Collapse appear={!isBiggerOrMd} in={showSidebar} unmountOnExit>
+              <Box sx={{ display: showSidebar ? "block" : "none" }}>
                 <StyledPaper>
                   <Divider>
                     <SubheadingChip
@@ -743,7 +790,7 @@ export default function SubcategoryProducts() {
                     </Grid>
                   </form>
                 </StyledPaper>
-              </Collapse>
+              </Box>
             </Grid>
             <Grid
               item
@@ -757,23 +804,75 @@ export default function SubcategoryProducts() {
                 <CircleLoader />
               ) : (
                 <Fragment>
-                  <ProductsWrapper>
-                    {filters.searchTerm ||
-                    filters.availabilityFilterChecked ||
-                    filters.priceRange !== maxProductPriceRangeGroup ||
-                    filters.rating != initialRatingFilterValue ? (
-                      <Alert severity="info" variant="filled">
-                        <Typography>
-                          <b>{totalProductsCount} results</b>{" "}
-                          <b>{filters.searchTerm ? `for "${filters.searchTerm}"` : <></>}</b>{" "}
-                          <b>in price range {filters.priceRange ? filters.priceRange : <></>}</b>{" "}
-                          <b>with rating {filters.rating !== fiveStarsRatingValue ? "above or equals to " : <></>}{filters.rating}</b>{" "}
-                          - <b>Page {page}</b>
+                  <Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                      {filters.searchTerm ||
+                      filters.availabilityFilterChecked ||
+                      filters.priceRange !== maxProductPriceRangeGroup ||
+                      filters.rating != initialRatingFilterValue ? (
+                        <Typography
+                          sx={{
+                            mr: 1,
+                            mb: 1,
+                            display: isBiggerOrMd ? "inline" : "block",
+                          }}
+                        >
+                          Filters applied:
                         </Typography>
-                      </Alert>
-                    ) : (
-                      <></>
-                    )}
+                      ) : (
+                        <></>
+                      )}
+                      {filters.searchTerm ? (
+                        <Chip
+                          sx={{ fontWeight: 500, mr: 1, mb: 1 }}
+                          label={`Keyword: ${filters.searchTerm.toUpperCase()}`}
+                          color="secondary"
+                          variant="outlined"
+                          onDelete={handleDeleteSearchTerm}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {filters.availabilityFilterChecked ? (
+                        <Chip
+                          sx={{ fontWeight: 500, mr: 1, mb: 1 }}
+                          label="IN STOCK"
+                          color="secondary"
+                          variant="outlined"
+                          onDelete={handleDeleteInStockFilter}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {filters.priceRange != maxProductPriceRangeGroup ? (
+                        <Chip
+                          sx={{ fontWeight: 500, mr: 1, mb: 1 }}
+                          label={`PRICE RANGE: ${filters.priceRange}`}
+                          color="secondary"
+                          variant="outlined"
+                          onDelete={handleDeletePriceRangeFilter}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {filters.rating ? (
+                        <Chip
+                          sx={{ fontWeight: 500, mr: 1, mb: 1 }}
+                          label={`RATING: ${
+                            filters.rating !== fiveStarsRatingValue
+                              ? `ABOVE ${filters.rating}`
+                              : `${filters.rating}`
+                          }`}
+                          color="secondary"
+                          variant="outlined"
+                          onDelete={handleDeleteRatingFilter}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </Grid>
+                  </Grid>
+                  <ProductsWrapper>
                     <Grid
                       container
                       sx={{
@@ -813,7 +912,7 @@ export default function SubcategoryProducts() {
             </Grid>
           </Grid>
         </Box>
-      </MainWrapper>
+      </ContentWrapper>
     </Fragment>
   );
 }

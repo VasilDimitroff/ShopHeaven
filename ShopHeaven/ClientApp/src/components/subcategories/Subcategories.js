@@ -125,7 +125,8 @@ export default function Subcategories() {
     display: "flex",
     justifyContent: "center",
     textTransform: "uppercase",
-    fontSize: 35,
+    fontSize: 30,
+    textAlign: "center",
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(-2),
   });

@@ -113,6 +113,7 @@ export default function Categories() {
     display: "flex",
     justifyContent: "center",
     fontSize: 30,
+    textAlign: "center",
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(-2),
   });
