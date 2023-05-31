@@ -64,7 +64,7 @@ function ProductCarouselCard(props) {
 
   const StyledCardActionArea = styled(Box)({
     marginTop: theme.spacing(1.5),
-    marginBottom: theme.spacing(1.5),
+    marginBottom: theme.spacing(1),
   });
 
   const ProductName = styled(Typography)({
@@ -112,14 +112,6 @@ function ProductCarouselCard(props) {
     minHeight: 400,
   });
 
-  const InStockState = styled(Box)({
-    fontWeight: 500,
-    color:
-      product.isAvailable === true
-        ? theme.palette.success.main
-        : theme.palette.error.main,
-  });
-
   return (
     <StyledCard>
       <CardActionArea>
@@ -158,7 +150,7 @@ function ProductCarouselCard(props) {
       <CardContent>
         {subcategory?.name ? (
           <Button variant="outlined" size="small">
-            KUR{subcategory?.name}
+            {subcategory?.name}
           </Button>
         ) : (
           <></>
@@ -183,9 +175,28 @@ function ProductCarouselCard(props) {
             />
             <RatingText component="legend">{product.rating} stars</RatingText>
           </RatingWrapper>
+          {product?.discount > 0 ? (
+            <Box
+              sx={{
+                height: 25,
+                color: "gray",
+                textDecoration: "line-through",
+              }}
+            >
+              {product.currency.code} {product.price.toFixed(2)}
+            </Box>
+          ) : (
+            <Box sx={{ height: 25 }}></Box>
+          )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {product.currency.code} {product.price.toFixed(2)}
+              {product.currency.code}{" "}
+              {(
+                Math.round(
+                  (product.price - (product.price * product.discount) / 100) *
+                    100
+                ) / 100
+              ).toFixed(2)}
             </PriceText>
             <ActionsWrapper>
               <IconButton
