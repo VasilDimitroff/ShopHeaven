@@ -2,6 +2,7 @@
 using NuGet.Packaging;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
@@ -557,53 +558,63 @@ namespace ShopHeaven.Data.Services
 
         private async Task<ICollection<ProductGalleryResponseModel>> GetProductsBySubcategoryIdAsync(ProductPaginationRequestModel model)
         {
-            var products = await this.db.Products
-            .Where(p => p.SubCategoryId == model.SubcategoryId
-                && p.Price >= model.LowestPrice
-                && p.Price <= model.HighestPrice
-                && p.Rating >= model.Rating
-                && (p.Name.ToLower()
-                              .Contains(model.SearchTerm.Trim().ToLower())
-                            || p.Brand.ToLower()
-                               .Contains(model.SearchTerm.Trim()
-                               .ToLower()))
-                && p.IsDeleted != true)
-            .OrderByDescending(p => p.CreatedOn)
-            .Skip((model.Page - 1) * model.RecordsPerPage)
-            .Take(model.RecordsPerPage)
-            .Select(product => new ProductGalleryResponseModel
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Brand = product.Brand,
-                Price = product.Price,
-                Discount = product.Discount,
-                IsAvailable = product.IsAvailable,
-                Rating = product.Rating,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = product.Currency.Id,
-                    Name = product.Currency.Name,
-                    Code = product.Currency.Code
-                },
-                Thumbnail = new BasicImageResponseModel
-                {
-                    Url = product.Images
-                        .FirstOrDefault(x => x.IsThumbnail) != null
-                                ? product.Images.FirstOrDefault(x => x.IsThumbnail).Image.Url
-                                : "",
-                    IsThumbnail = product.Images
-                        .FirstOrDefault(x => x.IsThumbnail == true) != null
-                                ? product.Images.FirstOrDefault(x => x.IsThumbnail == true).IsThumbnail
-                                : false,
-                },
-                Labels = product.Labels
-                    .Select(x => x.Label.Content)
-                    .ToList()
-            })
-            .ToListAsync();
+            //get requested sort criteria as enumeration
+            SortingCriteria sortingCriteria = ParseSortingCriteria(model.SortingCriteria);
 
-            var productsFilteredByAvailability = products
+            //get filtered products
+            IQueryable<Product> products = this.db.Products
+                .Where(p => p.SubCategoryId == model.SubcategoryId
+                    && p.Price >= model.LowestPrice
+                    && p.Price <= model.HighestPrice
+                    && p.Rating >= model.Rating
+                    && (p.Name.ToLower()
+                                  .Contains(model.SearchTerm.Trim().ToLower())
+                                || p.Brand.ToLower()
+                                   .Contains(model.SearchTerm.Trim()
+                                   .ToLower()))
+                    && p.IsDeleted != true);
+
+            //apply custom sorting on filtered product, it is still IQueryable
+            products = OrderBy(products, sortingCriteria);
+
+            //get 1 page with products and transform them into response model
+            List<ProductGalleryResponseModel> orderedProducts = await products
+                .Skip((model.Page - 1) * model.RecordsPerPage)
+                .Take(model.RecordsPerPage)
+                .Select(product => new ProductGalleryResponseModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    IsAvailable = product.IsAvailable,
+                    Rating = product.Rating,
+                    Currency = new CurrencyResponseModel
+                    {
+                        Id = product.Currency.Id,
+                        Name = product.Currency.Name,
+                        Code = product.Currency.Code
+                    },
+                    Thumbnail = new BasicImageResponseModel
+                    {
+                        Url = product.Images
+                            .FirstOrDefault(x => x.IsThumbnail) != null
+                                    ? product.Images.FirstOrDefault(x => x.IsThumbnail).Image.Url
+                                    : "",
+                        IsThumbnail = product.Images
+                            .FirstOrDefault(x => x.IsThumbnail == true) != null
+                                    ? product.Images.FirstOrDefault(x => x.IsThumbnail == true).IsThumbnail
+                                    : false,
+                    },
+                    Labels = product.Labels
+                        .Select(x => x.Label.Content)
+                        .ToList()
+                })
+                .ToListAsync();
+
+            // if filter by availability is true, then get only available products, else availability no matter
+            var productsFilteredByAvailability = orderedProducts
                 .Where(p =>
                     model.InStock == true 
                     ? p.IsAvailable == true 
@@ -611,6 +622,37 @@ namespace ShopHeaven.Data.Services
                 .ToList();
 
             return productsFilteredByAvailability;
+        }
+
+        private SortingCriteria ParseSortingCriteria(string sortingCriteria)
+        {
+            bool isSortCriteriaParsed = Enum.TryParse<SortingCriteria>(sortingCriteria, out SortingCriteria criteria);
+
+            if (!isSortCriteriaParsed)
+            {
+                return SortingCriteria.DateDescending;
+            }
+
+            return criteria;
+        }
+
+        private IQueryable<Product> OrderBy(IQueryable<Product> productsCollection, SortingCriteria sortingCriteria)
+        {
+            switch (sortingCriteria)
+            {
+                case SortingCriteria.DateDescending:
+                    return productsCollection.OrderByDescending(e => e.CreatedOn);
+                case SortingCriteria.PriceAscending:
+                    return productsCollection.OrderBy(e => e.Price);
+                case SortingCriteria.PriceDescending:
+                    return productsCollection.OrderByDescending(e => e.Price);
+                case SortingCriteria.PercentDiscountDescending:
+                    return productsCollection.OrderByDescending(e => e.Discount);
+                case SortingCriteria.Rating:
+                    return productsCollection.OrderByDescending(e => e.Rating);
+                default:
+                    return productsCollection.OrderByDescending(e => e.CreatedOn);
+            }
         }
 
         public async Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelsAsync(GetProductsByLabelRequestModel model)

@@ -1,4 +1,6 @@
-﻿namespace ShopHeaven.Models.Requests.Products
+﻿using ShopHeaven.Models.Requests.Enumerations;
+
+namespace ShopHeaven.Models.Requests.Products
 {
     public class ProductPaginationRequestModel : PaginationRequestModel
     {
@@ -11,6 +13,8 @@
         public decimal? LowestPrice { get; set; } = 0;
 
         public decimal? HighestPrice { get; set; } = 5000000;
+
+        public string SortingCriteria { get; set; }
 
     }
 }

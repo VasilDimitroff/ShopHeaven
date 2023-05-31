@@ -41,6 +41,11 @@ import {
   threeStarsRatingValue,
   fourStarsRatingValue,
   fiveStarsRatingValue,
+  sortByNewest,
+  sortByPriceAscending,
+  sortByPriceDescending,
+  sortByDiscountPercentDescending,
+  sortByRating,
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -60,7 +65,7 @@ export default function SubcategoryProducts() {
   const [showSidebar, setShowSidebar] = useState(true);
 
   //sort products by criteria
-  const [sortCriteria, setSortCriteria] = useState("Newest");
+  const [sortCriteria, setSortCriteria] = useState(""); // string
 
   //is screen size bigger than or middle
   const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -86,6 +91,9 @@ export default function SubcategoryProducts() {
 
   //inputRefs
   const searchInputRef = useRef();
+  const sortingRef = useRef();
+
+  //for request
   const effectRun = useRef(false);
 
   const breadcrumbs = [
@@ -118,6 +126,7 @@ export default function SubcategoryProducts() {
           recordsPerPage: productsPerPageInSubCategoryPage,
           page: page,
           searchTerm: filters.searchTerm,
+          sortingCriteria: sortCriteria,
           subcategoryId: subcategory.id,
           inStock: filters.availabilityFilterChecked,
           rating: filters.rating,
@@ -170,7 +179,7 @@ export default function SubcategoryProducts() {
       clearTimeout(timeoutId);
       setTimer(0);
     };
-  }, [page, filters]);
+  }, [page, filters, sortCriteria]);
 
   function onSearchProduct(e) {
     e.preventDefault();
@@ -216,7 +225,8 @@ export default function SubcategoryProducts() {
   }
 
   function handleSortCriteria(newCriteria) {
-    setSortCriteria(newCriteria);
+    let sortingCriteria = sortingRef.current.value;
+    setSortCriteria(sortingCriteria);
   }
 
   function handleAvailabilityChecked(e) {
@@ -278,6 +288,17 @@ export default function SubcategoryProducts() {
     });
   }
 
+  const StyledSelect = {
+    cursor: "pointer",
+    width: "100%",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    fontSize: 14,
+    backgroundColor: "rgb(255,249,249)",
+  };
+
   const PaginationHolder = styled(Box)({
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
@@ -293,6 +314,7 @@ export default function SubcategoryProducts() {
   });
 
   const FiltersButton = styled(Box)({
+    marginTop: theme.spacing(1),
     [theme.breakpoints.up("md")]: {
       display: "block",
     },
@@ -375,7 +397,7 @@ export default function SubcategoryProducts() {
       <MainWrapper>
         <Box>
           <Box>
-            <HeadingHolder sx={{ border: "1px solid black" }}>
+            <HeadingHolder>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={12} md={3} lg={3}>
                   <FiltersHeading>
@@ -395,42 +417,80 @@ export default function SubcategoryProducts() {
                   sx={{ position: "relative" }}
                 >
                   <ButtonsHolder>
-                    <StyledSearchIcon />
-      
-                    <input
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        border: "1px solid #C6BFBE",
-                        backgroundColor: "rgb(255,249,249)",
-                        padding: theme.spacing(0.65),
-                        paddingLeft: theme.spacing(5),
-                        borderRadius: theme.shape.borderRadius,
-                      }}
-                      onChange={(e) => onSearchProduct(e)}
-                      defaultValue={filters.searchTerm}
-                      ref={searchInputRef}
-                      id="search-product"
-                      autoFocus={isSearchFieldOnFocus}
-                      placeholder="Search product by name..."
-                    />
-
-                    <CancelButton onClick={clearSearchValues} />
-
-                    {!isBiggerOrMd ? (
-                      <FiltersButton>
-                        <Button
-                          size="large"
-                          variant="contained"
-                          onClick={handleOpenSidebar}
+                    <Grid container spacing={1}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={8}
+                        lg={8}
+                      >
+                        <StyledSearchIcon />
+                        <input
+                          style={{
+                            width: "100%",
+                            border: "1px solid #C6BFBE",
+                            backgroundColor: "rgb(255,249,249)",
+                            padding: theme.spacing(0.65),
+                            paddingLeft: theme.spacing(5),
+                            borderRadius: theme.shape.borderRadius,
+                          }}
+                          onChange={(e) => onSearchProduct(e)}
+                          defaultValue={filters.searchTerm}
+                          ref={searchInputRef}
+                          id="search-product"
+                          autoFocus={isSearchFieldOnFocus}
+                          placeholder="Search product by name or brand..."
+                        />
+                      </Grid>
+                      <CancelButton onClick={clearSearchValues} />
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={4}
+                        lg={4}
+                      >
+                        <select
+                          onChange={handleSortCriteria}
+                          defaultValue={sortCriteria}
+                          style={StyledSelect}
+                          ref={sortingRef}
+                          id="sort-products"
+                          name="sortCriteria"
                         >
-                          Filters
-                        </Button>
-                      </FiltersButton>
-                    ) : (
-                      <></>
-                    )}
+                          <option value="">{"--- SORT ---"}</option>
+                          <option value={sortByNewest}>{"NEWEST"}</option>
+                          <option value={sortByPriceAscending}>
+                            {"PRICE: LOWEST FIRST"}
+                          </option>
+                          <option value={sortByPriceDescending}>
+                            {"PRICE: HIGHEST FIRST"}
+                          </option>
+                          <option value={sortByDiscountPercentDescending}>
+                            {"% DISCOUNT"}
+                          </option>
+                          <option value={sortByRating}>{"RATING"}</option>
+                        </select>
+                      </Grid>
+                    </Grid>
                   </ButtonsHolder>
+
+                  {!isBiggerOrMd ? (
+                    <FiltersButton>
+                      <Button
+                        sx={{width: "100%",}}
+                        size="small"
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleOpenSidebar}
+                      >
+                       { showSidebar ? "HIDE FILTERS" : "SHOW FILTERS"} 
+                      </Button>
+                    </FiltersButton>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
               </Grid>
             </HeadingHolder>
@@ -439,7 +499,7 @@ export default function SubcategoryProducts() {
             <Grid item xs={12} sm={12} md={3} lg={3}>
               <Collapse appear={!isBiggerOrMd} in={showSidebar} unmountOnExit>
                 <StyledPaper>
-                  <Divider textAlign="left">
+                  <Divider>
                     <SubheadingChip
                       label="IN STOCK"
                       variant="filled"
@@ -462,7 +522,7 @@ export default function SubcategoryProducts() {
                       </Grid>
                     </Grid>
                   </form>
-                  <Divider textAlign="left">
+                  <Divider>
                     <SubheadingChip
                       label="PRICE RANGE"
                       variant="filled"
@@ -602,7 +662,7 @@ export default function SubcategoryProducts() {
                     </Grid>
                   </form>
 
-                  <Divider textAlign="left">
+                  <Divider>
                     <SubheadingChip
                       label="RATING"
                       variant="filled"
@@ -725,11 +785,10 @@ export default function SubcategoryProducts() {
               sx={{ position: "relative" }}
             >
               <ProductsWrapper>
-                {filters.searchTerm
-                  || filters.availabilityFilterChecked
-                  || filters.priceRange !== maxProductPriceRangeGroup
-                  || filters.rating != initialRatingFilterValue
-                ? (
+                {filters.searchTerm ||
+                filters.availabilityFilterChecked ||
+                filters.priceRange !== maxProductPriceRangeGroup ||
+                filters.rating != initialRatingFilterValue ? (
                   <Alert severity="info" variant="filled">
                     <Typography>
                       <b>{totalProductsCount} results</b> for{" "}

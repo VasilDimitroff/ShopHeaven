@@ -20,10 +20,10 @@ export const usernameRequiredLength = 2;
 export const usersPerPageInAdminPanel = 5; // how many users to view per page in admin panel
 export const productsPerPageInAdminPanel = 5; // how many products to view per page in admin panel
 
-//records count per page in single subcategory products page
+//records count per page in single subcategory products page - for product gallery
 export const productsPerPageInSubCategoryPage = 20;
 
-//price range filters 
+//price range filters - for product gallery
 export const maxProductPriceRangeGroup = "0 - 5000000"; // it will not apply price filter
 export const firstGroupProductPriceRange = "0 - 50";
 export const secondGroupProductPriceRange = "51 - 100";
@@ -34,13 +34,20 @@ export const sixthGroupProductPriceRange = "1001 - 1500";
 export const seventhGroupProductPriceRange = "1501 - 2000";
 export const eighthGroupProductPriceRange = "2001 - 5000000";
 
-// rating filters
+// rating filters - for product gallery
 export const initialRatingFilterValue = 0; // it will not apply rating filter
 export const oneStarRatingValue = 1;
 export const twoStarsRatingValue = 2;
 export const threeStarsRatingValue = 3;
 export const fourStarsRatingValue = 4;
 export const fiveStarsRatingValue = 5;
+
+// sorting products criterias values - for product gallery
+export const sortByNewest = "DateDescending";
+export const sortByPriceDescending = "PriceDescending";
+export const sortByPriceAscending = "PriceAscending";
+export const sortByDiscountPercentDescending = "PercentDiscountDescending";
+export const sortByRating = "Rating";
 
 //times for setTimer()
 export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
