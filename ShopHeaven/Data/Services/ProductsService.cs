@@ -520,7 +520,11 @@ namespace ShopHeaven.Data.Services
                     && p.Price >= model.LowestPrice
                     && p.Price <= model.HighestPrice
                     && p.Rating >= model.Rating
-                    && p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                    && (p.Name.ToLower()
+                              .Contains(model.SearchTerm.Trim().ToLower()) 
+                            || p.Brand.ToLower()
+                               .Contains(model.SearchTerm.Trim()
+                               .ToLower()))
                     && p.IsDeleted != true)
                 .ToListAsync();
 
@@ -558,7 +562,11 @@ namespace ShopHeaven.Data.Services
                 && p.Price >= model.LowestPrice
                 && p.Price <= model.HighestPrice
                 && p.Rating >= model.Rating
-                && p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
+                && (p.Name.ToLower()
+                              .Contains(model.SearchTerm.Trim().ToLower())
+                            || p.Brand.ToLower()
+                               .Contains(model.SearchTerm.Trim()
+                               .ToLower()))
                 && p.IsDeleted != true)
             .OrderByDescending(p => p.CreatedOn)
             .Skip((model.Page - 1) * model.RecordsPerPage)

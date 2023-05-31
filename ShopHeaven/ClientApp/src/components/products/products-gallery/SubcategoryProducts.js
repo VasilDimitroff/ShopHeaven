@@ -725,7 +725,11 @@ export default function SubcategoryProducts() {
               sx={{ position: "relative" }}
             >
               <ProductsWrapper>
-                {filters.searchTerm ? (
+                {filters.searchTerm
+                  || filters.availabilityFilterChecked
+                  || filters.priceRange !== maxProductPriceRangeGroup
+                  || filters.rating != initialRatingFilterValue
+                ? (
                   <Alert severity="info" variant="filled">
                     <Typography>
                       <b>{totalProductsCount} results</b> for{" "}
