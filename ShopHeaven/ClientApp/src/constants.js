@@ -32,7 +32,10 @@ export const forthGroupProductPriceRange = "201 - 500";
 export const fifthGroupProductPriceRange = "501 - 1000";
 export const sixthGroupProductPriceRange = "1001 - 1500";
 export const seventhGroupProductPriceRange = "1501 - 2000";
-export const eighthGroupProductPriceRange = "2001 - 5000000";
+export const eighthGroupProductPriceRange = "2001 - MAX";
+//max price in the app - look and in the backend
+// if you want to change eighthGroupProductPriceRange Max to something else, look at this and in SubcategoryProducts request
+export const maxApplicationPrice = "5000000"; 
 
 // rating filters - for product gallery
 export const initialRatingFilterValue = 0; // it will not apply rating filter

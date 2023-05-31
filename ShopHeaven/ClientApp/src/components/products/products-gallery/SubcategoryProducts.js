@@ -45,6 +45,7 @@ import {
   sortByPriceDescending,
   sortByDiscountPercentDescending,
   sortByRating,
+  maxApplicationPrice
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -118,9 +119,18 @@ export default function SubcategoryProducts() {
       try {
         setIsLoading(true);
 
-        const lowestPrice = filters.priceRange.split(" -")[0];
-        const highestPrice = filters.priceRange.split(" - ")[1];
+        let pricesArray = filters.priceRange.split(" - ");
+        let lowestPrice = parseFloat(pricesArray[0].trim());
+        let highestPrice = null;
 
+        console.log("PRICE E ", pricesArray)
+
+        if(filters.priceRange === eighthGroupProductPriceRange) {
+          highestPrice = parseFloat(maxApplicationPrice.trim());
+        } else {
+          highestPrice = parseFloat(pricesArray[1].trim());
+        }
+        
         let pagingModel = {
           recordsPerPage: productsPerPageInSubCategoryPage,
           page: page,
@@ -129,11 +139,11 @@ export default function SubcategoryProducts() {
           subcategoryId: subcategory.id,
           inStock: filters.availabilityFilterChecked,
           rating: filters.rating,
-          lowestPrice: parseFloat(lowestPrice.trim()),
-          highestPrice: parseFloat(highestPrice.trim()),
+          lowestPrice: lowestPrice,
+          highestPrice: highestPrice,
         };
 
-        //console.log("REQUIEST ", pagingModel);
+        console.log("REQUIEST ", pagingModel);
 
         const response = await axios.post(
           ApiEndpoints.products.getBySubcategoryId,
