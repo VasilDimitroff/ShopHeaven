@@ -561,17 +561,15 @@ namespace ShopHeaven.Data.Services
             //get requested sort criteria as enumeration
             SortingCriteria sortingCriteria = ParseSortingCriteria(model.SortingCriteria);
 
+            var searchTerm = model.SearchTerm.Trim().ToLower();
+
             //get filtered products
             IQueryable<Product> products = this.db.Products
                 .Where(p => p.SubCategoryId == model.SubcategoryId
                     && p.Price >= model.LowestPrice
                     && p.Price <= model.HighestPrice
                     && p.Rating >= model.Rating
-                    && (p.Name.ToLower()
-                                  .Contains(model.SearchTerm.Trim().ToLower())
-                                || p.Brand.ToLower()
-                                   .Contains(model.SearchTerm.Trim()
-                                   .ToLower()))
+                    && (p.Name.ToLower().Contains(searchTerm) || p.Brand.ToLower().Contains(searchTerm))
                     && p.IsDeleted != true);
 
             //apply custom sorting on filtered product, it is still IQueryable

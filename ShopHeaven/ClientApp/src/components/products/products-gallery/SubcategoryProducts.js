@@ -799,7 +799,7 @@ export default function SubcategoryProducts() {
                         <Grid
                           item
                           xs={12}
-                          sm={6}
+                          sm={4}
                           md={6}
                           lg={4}
                           xl={3}

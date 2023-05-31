@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import { maxNameLengthInProductCard } from "../../../constants";
 import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
   const [product, setProduct] = useState(props.product);
+  const [subcategory, setSubcategory] = useState(props.subcategory);
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
@@ -34,7 +36,7 @@ function ProductCarouselCard(props) {
   });
   
   const ProductRibbon = styled(Chip)({
-    fontSize: 11,
+    fontSize: 14,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
     marginTop: theme.spacing(0.7),
@@ -43,14 +45,14 @@ function ProductCarouselCard(props) {
   const LabelsHolder = styled(Box)({
     position: "absolute",
     bottom: 5,
-    left: 5,
+    left: 8,
     display: "flex",
     gap: 5,
     justifyContent: "center"
   });
 
   const ProductLabel = styled(Chip)({
-    fontSize: 11,
+    fontSize: 14,
     borderRadius: 6,
   });
 
@@ -136,14 +138,15 @@ function ProductCarouselCard(props) {
           </LabelsHolder>
       </CardActionArea>
       <CardContent>
-        <Button variant="outlined" size="small">
-          Category
-        </Button>
+          {subcategory?.name
+            ?  <Button variant="outlined" size="small">{subcategory?.name}</Button>
+            : <></>
+          }
         <StyledCardActionArea>
           <ProductName>
-            {product.name.length > 60
-              ? product.name.slice(0, 60) + "..."
-              : product.name.slice(0, 60)}
+            {product.name.length > maxNameLengthInProductCard
+              ? product.name.slice(0, maxNameLengthInProductCard) + "..."
+              : product.name.slice(0, maxNameLengthInProductCard)}
           </ProductName>
         </StyledCardActionArea>
         <InStockState>

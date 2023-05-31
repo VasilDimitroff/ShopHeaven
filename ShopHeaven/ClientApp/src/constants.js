@@ -69,3 +69,6 @@ export const columnsWithCategoriesToShowIfScreenIsLg = 4;
 //subcategories page
 export const columnsWithSubcategoriesToShowIfScreenIsMd = 2;
 export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
+
+//product card
+export const maxNameLengthInProductCard = 60;
