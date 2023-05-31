@@ -5,7 +5,6 @@ import {
   Grid,
   Button,
   Alert,
-  MenuItem,
   Typography,
   Paper,
   Rating,
@@ -20,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import AppPagination from "../../common/AppPagination";
+import CircleLoader from "../../common/CircleLoader";
 import ProductCarouselCard from "../products-carousel/ProductCarouselCard";
 import {
   productsPerPageInSubCategoryPage,
@@ -201,9 +201,7 @@ export default function SubcategoryProducts() {
   }
 
   function clearSearchValues() {
-    //clear inputs refs
     searchInputRef.current.value = "";
-
     setFilters((prev) => {
       return {
         ...prev,
@@ -375,7 +373,7 @@ export default function SubcategoryProducts() {
   const CancelButton = styled(Cancel)({
     position: "absolute",
     right: 5,
-    top: 30,
+    top: -30,
     zIndex: 1,
     "&:hover": {
       color: theme.palette.primary.main,
@@ -408,23 +406,10 @@ export default function SubcategoryProducts() {
                     />
                   </FiltersHeading>
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={9}
-                  lg={9}
-                  sx={{ position: "relative" }}
-                >
+                <Grid item xs={12} sm={12} md={9} lg={9}>
                   <ButtonsHolder>
                     <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={12}
-                        sm={12}
-                        md={8}
-                        lg={8}
-                      >
+                      <Grid item xs={12} sm={12} md={8} lg={8}>
                         <StyledSearchIcon />
                         <input
                           style={{
@@ -442,15 +427,12 @@ export default function SubcategoryProducts() {
                           autoFocus={isSearchFieldOnFocus}
                           placeholder="Search product by name or brand..."
                         />
+                        <Box sx={{ position: "relative" }}>
+                          <CancelButton onClick={clearSearchValues} />
+                        </Box>
                       </Grid>
-                      <CancelButton onClick={clearSearchValues} />
-                      <Grid
-                        item
-                        xs={12}
-                        sm={12}
-                        md={4}
-                        lg={4}
-                      >
+
+                      <Grid item xs={12} sm={12} md={4} lg={4}>
                         <select
                           onChange={handleSortCriteria}
                           defaultValue={sortCriteria}
@@ -479,13 +461,13 @@ export default function SubcategoryProducts() {
                   {!isBiggerOrMd ? (
                     <FiltersButton>
                       <Button
-                        sx={{width: "100%",}}
+                        sx={{ width: "100%" }}
                         size="small"
                         color="secondary"
                         variant="contained"
                         onClick={handleOpenSidebar}
                       >
-                       { showSidebar ? "HIDE FILTERS" : "SHOW FILTERS"} 
+                        {showSidebar ? "HIDE FILTERS" : "SHOW FILTERS"}
                       </Button>
                     </FiltersButton>
                   ) : (
@@ -784,52 +766,63 @@ export default function SubcategoryProducts() {
               lg={9}
               sx={{ position: "relative" }}
             >
-              <ProductsWrapper>
-                {filters.searchTerm ||
-                filters.availabilityFilterChecked ||
-                filters.priceRange !== maxProductPriceRangeGroup ||
-                filters.rating != initialRatingFilterValue ? (
-                  <Alert severity="info" variant="filled">
-                    <Typography>
-                      <b>{totalProductsCount} results</b> for{" "}
-                      <b>"{filters.searchTerm ? filters.searchTerm : <></>}"</b>{" "}
-                      - <b>Page {page}</b>
-                    </Typography>
-                  </Alert>
-                ) : (
-                  <></>
-                )}
-                <Grid
-                  container
-                  sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    flexGrow: 1,
-                  }}
-                >
-                  {products?.map((product, index) => (
+              {isLoading ? (
+                <CircleLoader />
+              ) : (
+                <Fragment>
+                  <ProductsWrapper>
+                    {filters.searchTerm ||
+                    filters.availabilityFilterChecked ||
+                    filters.priceRange !== maxProductPriceRangeGroup ||
+                    filters.rating != initialRatingFilterValue ? (
+                      <Alert severity="info" variant="filled">
+                        <Typography>
+                          <b>{totalProductsCount} results</b> for{" "}
+                          <b>
+                            "{filters.searchTerm ? filters.searchTerm : <></>}"
+                          </b>{" "}
+                          - <b>Page {page}</b>
+                        </Typography>
+                      </Alert>
+                    ) : (
+                      <></>
+                    )}
                     <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={6}
-                      lg={4}
-                      xl={3}
-                      sx={{ display: "block", marginBottom: theme.spacing(2) }}
-                      key={index}
+                      container
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        flexGrow: 1,
+                      }}
                     >
-                      <ProductCarouselCard product={product} />
+                      {products?.map((product, index) => (
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={6}
+                          lg={4}
+                          xl={3}
+                          sx={{
+                            display: "block",
+                            marginBottom: theme.spacing(2),
+                          }}
+                          key={index}
+                        >
+                          <ProductCarouselCard product={product} />
+                        </Grid>
+                      ))}
                     </Grid>
-                  ))}
-                </Grid>
-              </ProductsWrapper>
-              <PaginationHolder>
-                <AppPagination
-                  setPage={setPage}
-                  page={page}
-                  numberOfPages={numberOfPages}
-                />
-              </PaginationHolder>
+                  </ProductsWrapper>
+                  <PaginationHolder>
+                    <AppPagination
+                      setPage={setPage}
+                      page={page}
+                      numberOfPages={numberOfPages}
+                    />
+                  </PaginationHolder>
+                </Fragment>
+              )}
             </Grid>
           </Grid>
         </Box>

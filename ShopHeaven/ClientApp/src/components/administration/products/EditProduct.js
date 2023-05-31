@@ -305,7 +305,7 @@ export default function EditProduct(props) {
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setEditProductErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
         setEditProductErrorMessage(error?.response?.data);

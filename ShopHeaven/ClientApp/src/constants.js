@@ -42,7 +42,7 @@ export const threeStarsRatingValue = 3;
 export const fourStarsRatingValue = 4;
 export const fiveStarsRatingValue = 5;
 
-// sorting products criterias values - for product gallery
+// sorting products criterias values - for product gallery! Important to be same as backend enum
 export const sortByNewest = "DateDescending";
 export const sortByPriceDescending = "PriceDescending";
 export const sortByPriceAscending = "PriceAscending";
@@ -60,7 +60,6 @@ export const categoriesToShowInMainMenuIfScreenIsMd = 10;
 
 //home slider
 export const labelCriteriaForProductsInHomeSlider = ["new", "hot"]; // filter main slider products by these labels
-export const tagsCriteriaForProductsInHomeSlider = ["samsung", "indesit"]; // filter main slider products by these tags
 export const productsCountInHomeSlider = 5; // how many product to show in main slider
 
 //categories page
