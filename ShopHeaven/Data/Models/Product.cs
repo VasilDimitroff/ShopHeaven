@@ -11,6 +11,7 @@ namespace ShopHeaven.Data.Models
 
         public Product()
         {
+            _rating = 3.5;
             Reviews = new HashSet<Review>();
             Images = new HashSet<ProductImage>();
             Tags = new HashSet<ProductTag>();
@@ -56,7 +57,7 @@ namespace ShopHeaven.Data.Models
         {
             get
             {
-                if (Reviews != null && Reviews.Where(x => x.IsDeleted != true).Any())
+                if (Reviews.Where(x => x.IsDeleted != true).Any())
                 {
                     return Math.Round(this.Reviews.Where(x => x.IsDeleted != true).Average(r => r.RatingValue), 2);
                 }

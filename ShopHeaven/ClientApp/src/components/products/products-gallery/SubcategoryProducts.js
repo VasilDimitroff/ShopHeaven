@@ -21,8 +21,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import AppPagination from "../../common/AppPagination";
-import SubcategoryProductsSidebar from "./SubcategoryProductsSidebar";
-import SubcategoryProductsMain from "./SubcategoryProductsMain";
+import ProductCarouselCard from "../products-carousel/ProductCarouselCard";
 import {
   productsPerPageInSubCategoryPage,
   requestTimerMilliseconds,
@@ -36,7 +35,13 @@ import {
   fifthGroupProductPriceRange,
   sixthGroupProductPriceRange,
   seventhGroupProductPriceRange,
-  eighthGroupProductPriceRange
+  eighthGroupProductPriceRange,
+  initialRatingFilterValue,
+  oneStarRatingValue,
+  twoStarsRatingValue,
+  threeStarsRatingValue,
+  fourStarsRatingValue,
+  fiveStarsRatingValue
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -74,9 +79,9 @@ export default function SubcategoryProducts() {
   //filters
   const [filters, setFilters] = useState({
     availabilityFilterChecked: false, // bool
-    priceRange: maxProductPriceRangeGroup, // "101-500"
+    priceRange: maxProductPriceRangeGroup, // "0-5000000"
+    rating: initialRatingFilterValue,
   });
-
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -100,9 +105,9 @@ export default function SubcategoryProducts() {
   useEffect(() => {
     let timeoutId;
     const controller = new AbortController();
-   
+
     const lowestPrice = filters.priceRange.split(" -")[0];
-    const highestPrice = filters.priceRange.split(" - ")[1]
+    const highestPrice = filters.priceRange.split(" - ")[1];
 
     const getProducts = async () => {
       try {
@@ -114,8 +119,9 @@ export default function SubcategoryProducts() {
           searchTerm: "",
           subcategoryId: subcategory.id,
           inStock: filters.availabilityFilterChecked,
+          rating: filters.rating,
           lowestPrice: parseFloat(lowestPrice.trim()),
-          highestPrice: parseFloat(highestPrice.trim())
+          highestPrice: parseFloat(highestPrice.trim()),
         };
 
         console.log("REQUIEST ", pagingModel);
@@ -196,23 +202,59 @@ export default function SubcategoryProducts() {
   }
 
   function handleAvailabilityChecked(e) {
-    const availabilityValue = e.target.value === "true" ? true : false;
-    setFilters(prev => {
+    let availabilityValue = e.target.value === "true" ? true : false;
+
+    if(filters.availabilityFilterChecked) {
+      availabilityValue = false;
+    }
+    setFilters((prev) => {
       return {
         ...prev,
-        availabilityFilterChecked: availabilityValue
-      }
+        availabilityFilterChecked: availabilityValue,
+      };
     });
-    console.log(e.target.value);
   }
 
   function handlePriceRangeChanged(e) {
-    const priceRangeRawString = e.target.value;
-    setFilters(prev => {
+    
+    let priceRangeRawString = e.target.value; 
+
+    if (filters.priceRange === firstGroupProductPriceRange
+        || filters.priceRange === secondGroupProductPriceRange
+        || filters.priceRange === thirdGroupProductPriceRange
+        || filters.priceRange === forthGroupProductPriceRange
+        || filters.priceRange === fifthGroupProductPriceRange
+        || filters.priceRange === sixthGroupProductPriceRange
+        || filters.priceRange === seventhGroupProductPriceRange
+        || filters.priceRange === eighthGroupProductPriceRange) {
+      priceRangeRawString = maxProductPriceRangeGroup
+    }
+
+    setFilters((prev) => {
       return {
         ...prev,
-        priceRange: priceRangeRawString
-      }
+        priceRange: priceRangeRawString,
+      };
+    });
+  }
+
+  function handleRatingFilterChanged(e) {
+    
+    let ratingFilterValue = parseInt(e.target.value); 
+
+    if (filters.rating === oneStarRatingValue
+        || filters.rating === twoStarsRatingValue
+        || filters.rating === threeStarsRatingValue
+        || filters.rating === fourStarsRatingValue
+        || filters.rating === fiveStarsRatingValue) {
+          ratingFilterValue = initialRatingFilterValue
+    }
+
+    setFilters((prev) => {
+      return {
+        ...prev,
+        rating: ratingFilterValue,
+      };
     });
   }
 
@@ -262,13 +304,16 @@ export default function SubcategoryProducts() {
     padding: theme.spacing(2),
   });
 
-  const RatingHolder = styled(Box)({
-    display: "flex",
-    alignItems: "center",
-  });
-
   const ApplyFiltersButton = styled(Button)({
     width: "100%",
+  });
+
+  const ProductsWrapper = styled(Box)({
+    width: "100%",
+    margin: "auto",
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+    },
   });
 
   return (
@@ -323,21 +368,8 @@ export default function SubcategoryProducts() {
                 <Stack spacing={2}>
                   <StyledPaper>
                     <Typography variant="h6">In Stock</Typography>
-
                     <form>
                       <Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}>
-                          <Checkbox
-                            size="medium"
-                            checked={filters.availabilityFilterChecked === false}
-                            onChange={handleAvailabilityChecked}
-                            type="checkbox"
-                            id="all"
-                            name="availability"
-                            value={false}
-                          />
-                          <label htmlFor="all">All</label>
-                        </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
@@ -348,7 +380,7 @@ export default function SubcategoryProducts() {
                             name="availability"
                             value={true}
                           />
-                          <label htmlFor="instock">In Stock</label>
+                          <label htmlFor="instock">In Stock only</label>
                         </Grid>
                       </Grid>
                     </form>
@@ -357,139 +389,207 @@ export default function SubcategoryProducts() {
                     <Typography variant="h6">Price Range</Typography>
                     <form>
                       <Grid>
-                      <Grid item xs={12} sm={12} md={12} lg={12}>
-                          <Checkbox
-                            size="medium"
-                            checked={filters.priceRange === maxProductPriceRangeGroup}
-                            onChange={handlePriceRangeChanged}
-                            type="checkbox"
-                            id="price-range-0"
-                            name="price-range"
-                            value={maxProductPriceRangeGroup}
-                          />
-                          <label htmlFor="price-range-0">All prices</label>
-                        </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === firstGroupProductPriceRange}
+                            checked={
+                              filters.priceRange === firstGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-1"
                             name="price-range"
                             value={firstGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-1">{firstGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-1">
+                            {firstGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === secondGroupProductPriceRange}
+                            checked={
+                              filters.priceRange ===
+                              secondGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-2"
                             name="price-range"
                             value={secondGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-2">{secondGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-2">
+                            {secondGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === thirdGroupProductPriceRange}
+                            checked={
+                              filters.priceRange === thirdGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-3"
                             name="price-range"
                             value={thirdGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-3">{thirdGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-3">
+                            {thirdGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === forthGroupProductPriceRange}
+                            checked={
+                              filters.priceRange === forthGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-4"
                             name="price-range"
                             value={forthGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-4">{forthGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-4">
+                            {forthGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === fifthGroupProductPriceRange}
+                            checked={
+                              filters.priceRange === fifthGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-5"
                             name="price-range"
                             value={fifthGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-5">{fifthGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-5">
+                            {fifthGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === sixthGroupProductPriceRange}
+                            checked={
+                              filters.priceRange === sixthGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-6"
                             name="price-range"
                             value={sixthGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-6">{sixthGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-6">
+                            {sixthGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === seventhGroupProductPriceRange}
+                            checked={
+                              filters.priceRange ===
+                              seventhGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-7"
                             name="price-range"
                             value={seventhGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-7">{seventhGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-7">
+                            {seventhGroupProductPriceRange}
+                          </label>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                           <Checkbox
                             size="medium"
-                            checked={filters.priceRange === eighthGroupProductPriceRange}
+                            checked={
+                              filters.priceRange ===
+                              eighthGroupProductPriceRange
+                            }
                             onChange={handlePriceRangeChanged}
                             type="checkbox"
                             id="price-range-8"
                             name="price-range"
                             value={eighthGroupProductPriceRange}
                           />
-                          <label htmlFor="price-range-8">{eighthGroupProductPriceRange}</label>
+                          <label htmlFor="price-range-8">
+                            {eighthGroupProductPriceRange}
+                          </label>
                         </Grid>
                       </Grid>
                     </form>
                   </StyledPaper>
                   <StyledPaper>
                     <Typography variant="h6">Rating</Typography>
-                    <RatingHolder>
-                      <FormControlLabel label="5" control={<Checkbox />} />
-                      <Rating readOnly value={5} size="small" />
-                    </RatingHolder>
-                    <RatingHolder>
-                      <FormControlLabel label="4" control={<Checkbox />} />
-                      <Rating readOnly value={4} size="small" />
-                    </RatingHolder>
-                    <RatingHolder>
-                      <FormControlLabel label="3" control={<Checkbox />} />
-                      <Rating readOnly value={3} size="small" />
-                    </RatingHolder>
-                    <RatingHolder>
-                      <FormControlLabel label="2" control={<Checkbox />} />
-                      <Rating readOnly value={2} size="small" />
-                    </RatingHolder>
-                    <RatingHolder>
-                      <FormControlLabel label="1" control={<Checkbox />} />
-                      <Rating readOnly value={1} size="small" />
-                    </RatingHolder>
+
+                    <form>
+                      <Grid>
+                        <Grid sx={{display:"flex", alignItems:"center"}} item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.rating === fiveStarsRatingValue}
+                            onChange={handleRatingFilterChanged}
+                            type="checkbox"
+                            id="rating-5"
+                            name="rating-filter"
+                            value={fiveStarsRatingValue}
+                          />
+                           <Rating readOnly value={5} size="small" />(5)
+                        </Grid>
+                        <Grid sx={{display:"flex", alignItems:"center"}} item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.rating === fourStarsRatingValue}
+                            onChange={handleRatingFilterChanged}
+                            type="checkbox"
+                            id="rating-4"
+                            name="rating-filter"
+                            value={fourStarsRatingValue}
+                          />
+                           <Rating readOnly value={4} size="small" />(4)
+                        </Grid>
+                        <Grid sx={{display:"flex", alignItems:"center"}} item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.rating === threeStarsRatingValue}
+                            onChange={handleRatingFilterChanged}
+                            type="checkbox"
+                            id="rating-3"
+                            name="rating-filter"
+                            value={threeStarsRatingValue}
+                          />
+                           <Rating readOnly value={3} size="small" />(3)
+                        </Grid>
+                        <Grid sx={{display:"flex", alignItems:"center"}} item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.rating === twoStarsRatingValue}
+                            onChange={handleRatingFilterChanged}
+                            type="checkbox"
+                            id="rating-2"
+                            name="rating-filter"
+                            value={twoStarsRatingValue}
+                          />
+                           <Rating readOnly value={2} size="small" />(2)
+                        </Grid>
+                        <Grid sx={{display:"flex", alignItems:"center"}} item xs={12} sm={12} md={12} lg={12}>
+                          <Checkbox
+                            size="medium"
+                            checked={filters.rating === oneStarRatingValue}
+                            onChange={handleRatingFilterChanged}
+                            type="checkbox"
+                            id="rating-1"
+                            name="rating-filter"
+                            value={oneStarRatingValue}
+                          />
+                           <Rating readOnly value={1} size="small" />(1)
+                        </Grid>
+                      </Grid>
+                    </form>
                   </StyledPaper>
                   <ApplyFiltersButton variant="contained">
                     APPLY FILTERS
@@ -505,7 +605,31 @@ export default function SubcategoryProducts() {
               lg={9}
               sx={{ position: "relative" }}
             >
-              <SubcategoryProductsMain products={products} />
+              <ProductsWrapper>
+                <Grid
+                  container
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    flexGrow: 1,
+                  }}
+                >
+                  {products?.map((product, index) => (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={4}
+                      xl={3}
+                      sx={{ display: "block", marginBottom: theme.spacing(2) }}
+                      key={index}
+                    >
+                      <ProductCarouselCard product={product} />
+                    </Grid>
+                  ))}
+                </Grid>
+              </ProductsWrapper>
               <PaginationHolder>
                 <AppPagination
                   setPage={setPage}
