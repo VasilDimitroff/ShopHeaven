@@ -1,5 +1,5 @@
 import { React, useState, Fragment, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -45,7 +45,7 @@ import {
   sortByPriceDescending,
   sortByDiscountPercentDescending,
   sortByRating,
-  maxApplicationPrice
+  maxApplicationPrice,
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -111,9 +111,7 @@ export default function SubcategoryProducts() {
     },
   ];
 
-
   useEffect(() => {
-
     let timeoutId;
     const controller = new AbortController();
 
@@ -125,12 +123,12 @@ export default function SubcategoryProducts() {
         let lowestPrice = parseFloat(pricesArray[0].trim());
         let highestPrice = null;
 
-        if(filters.priceRange === eighthGroupProductPriceRange) {
+        if (filters.priceRange === eighthGroupProductPriceRange) {
           highestPrice = parseFloat(maxApplicationPrice.trim());
         } else {
           highestPrice = parseFloat(pricesArray[1].trim());
         }
-        
+
         let pagingModel = {
           recordsPerPage: productsPerPageInSubCategoryPage,
           page: page,
@@ -165,7 +163,6 @@ export default function SubcategoryProducts() {
           setPage(1);
         }
 
-        console.log(response?.data)
         setIsLoading(false);
       } catch (error) {
         console.log(error);

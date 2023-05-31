@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Rating,
   Box,
@@ -13,10 +14,15 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { maxNameLengthInProductCard } from "../../../constants";
+import {
+  maxNameLengthInProductCard,
+  singleProductBasePath,
+} from "../../../constants";
 import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
+  const navigate = useNavigate();
+
   const [product, setProduct] = useState(props.product);
   const [subcategory, setSubcategory] = useState(props.subcategory);
 
@@ -34,7 +40,7 @@ function ProductCarouselCard(props) {
     borderTopRightRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
   });
-  
+
   const ProductRibbon = styled(Chip)({
     fontSize: 14,
     paddingLeft: theme.spacing(2),
@@ -48,7 +54,7 @@ function ProductCarouselCard(props) {
     left: 8,
     display: "flex",
     gap: 5,
-    justifyContent: "center"
+    justifyContent: "center",
   });
 
   const ProductLabel = styled(Chip)({
@@ -56,17 +62,19 @@ function ProductCarouselCard(props) {
     borderRadius: 6,
   });
 
-  const StyledCardActionArea = styled(CardActionArea)({
-    height: 95,
-    minHeight: 95,
-    maxHeight: 95,
-    display: "block",
+  const StyledCardActionArea = styled(Box)({
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
   });
 
   const ProductName = styled(Typography)({
-    fontWeight: "600",
+    fontWeight: 500,
     fontSize: "120%",
     lineHeight: 1.1,
+    cursor: "pointer",
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   });
 
   const RatingWrapper = styled(Box)({
@@ -95,7 +103,7 @@ function ProductCarouselCard(props) {
 
   const PriceText = styled(Typography)({
     color: theme.palette.secondary.main,
-    fontWeight: "600",
+    fontWeight: 500,
   });
 
   const StyledCard = styled(Card)({
@@ -115,43 +123,55 @@ function ProductCarouselCard(props) {
   return (
     <StyledCard>
       <CardActionArea>
-        <ProductCardMedia title={product.name} image={product.thumbnail.url} />
+        <ProductCardMedia
+          onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
+          title={product.name}
+          image={product.thumbnail.url}
+        />
         <RibbonHolder>
           {product.discount > 0 ? (
-              <Box>
-                <ProductRibbon
-                  label={`- ${product.discount}%`}
-                  color="error"
-                  variant="filled"
-                />
-              </Box>
-            ) : (
-              <></>
-            )}
+            <Box>
+              <ProductRibbon
+                label={`- ${product.discount}%`}
+                color="error"
+                variant="filled"
+              />
+            </Box>
+          ) : (
+            <></>
+          )}
         </RibbonHolder>
         <LabelsHolder>
-        {product.labels.map((label) => {
+          {product.labels.map((label) => {
             return (
-                <ProductLabel key={label} label={label} color="primary" size="small" variant="filled" />
+              <ProductLabel
+                key={label}
+                label={label}
+                color="primary"
+                size="small"
+                variant="filled"
+              />
             );
           })}
-          </LabelsHolder>
+        </LabelsHolder>
       </CardActionArea>
       <CardContent>
-          {subcategory?.name
-            ?  <Button variant="outlined" size="small">{subcategory?.name}</Button>
-            : <></>
-          }
+        {subcategory?.name ? (
+          <Button variant="outlined" size="small">
+            KUR{subcategory?.name}
+          </Button>
+        ) : (
+          <></>
+        )}
         <StyledCardActionArea>
-          <ProductName>
+          <ProductName
+            onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
+          >
             {product.name.length > maxNameLengthInProductCard
               ? product.name.slice(0, maxNameLengthInProductCard) + "..."
               : product.name.slice(0, maxNameLengthInProductCard)}
           </ProductName>
         </StyledCardActionArea>
-        <InStockState>
-          {product.isAvailable === true ? "In Stock" : "Out of stock"}
-        </InStockState>
         <Box>
           <RatingWrapper>
             <Rating
@@ -163,9 +183,8 @@ function ProductCarouselCard(props) {
             />
             <RatingText component="legend">{product.rating} stars</RatingText>
           </RatingWrapper>
-
           <PriceAndActionsWrapper>
-            <PriceText variant="h5">
+            <PriceText variant="h6">
               {product.currency.code} {product.price.toFixed(2)}
             </PriceText>
             <ActionsWrapper>

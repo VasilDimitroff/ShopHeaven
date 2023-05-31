@@ -7,7 +7,8 @@ export const loginPath = `/login`;
 export const registerPath = `/register`;
 export const allCategoriesUrl = `/categories`;
 export const subcategoriesOfMainCategoryBaseUrl =`/categories/`;
-export const subcategoryProductsBaseUrl =`/categories/subcategories/products/`;
+export const subcategoryProductsBaseUrl =`/subcategories/`;
+export const singleProductBasePath =`/products/`;
 
 //unautorized message
 export const noPermissionsForOperationMessage = "You have no permissions to perform the operation";
