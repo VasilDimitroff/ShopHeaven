@@ -111,7 +111,9 @@ export default function SubcategoryProducts() {
     },
   ];
 
+
   useEffect(() => {
+
     let timeoutId;
     const controller = new AbortController();
 
@@ -122,8 +124,6 @@ export default function SubcategoryProducts() {
         let pricesArray = filters.priceRange.split(" - ");
         let lowestPrice = parseFloat(pricesArray[0].trim());
         let highestPrice = null;
-
-        console.log("PRICE E ", pricesArray)
 
         if(filters.priceRange === eighthGroupProductPriceRange) {
           highestPrice = parseFloat(maxApplicationPrice.trim());
@@ -136,7 +136,7 @@ export default function SubcategoryProducts() {
           page: page,
           searchTerm: filters.searchTerm,
           sortingCriteria: sortCriteria,
-          subcategoryId: subcategory.id,
+          subcategoryId: params.subcategoryId,
           inStock: filters.availabilityFilterChecked,
           rating: filters.rating,
           lowestPrice: lowestPrice,
@@ -165,6 +165,7 @@ export default function SubcategoryProducts() {
           setPage(1);
         }
 
+        console.log(response?.data)
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -188,7 +189,7 @@ export default function SubcategoryProducts() {
       clearTimeout(timeoutId);
       setTimer(0);
     };
-  }, [page, filters, sortCriteria]);
+  }, [page, filters, sortCriteria, params]);
 
   function onSearchProduct(e) {
     e.preventDefault();
@@ -399,6 +400,7 @@ export default function SubcategoryProducts() {
     padding: theme.spacing(2.2),
     fontWeight: 500,
     width: "100%",
+    borderRadius: theme.shape.borderRadius,
   });
 
   const CancelButton = styled(Cancel)({
