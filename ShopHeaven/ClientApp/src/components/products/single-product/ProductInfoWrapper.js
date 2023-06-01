@@ -40,22 +40,23 @@ export default function ProductInfoWrapper(props) {
               <Box>
                 {
                   // first important part of the page
+                  <ImageCarousel product={product} />
                 }
-                <ImageCarousel product={product} />
               </Box>
             </Grid>
             <Grid item xs={12} md={6} lg={5} sx={{ position: "relative" }}>
               {
                 // second important part of the page
+                <ProductDescription product={product} />
               }
-              <ProductDescription product={product} />
+
             </Grid>
 
             <Grid item xs={12} md={12} lg={3}>
               {
                 // third important part of the page
+                <ProductActionButtons product={product} />
               }
-              <ProductActionButtons product={product} />
             </Grid>
           </Grid>
         </StyledPaper>

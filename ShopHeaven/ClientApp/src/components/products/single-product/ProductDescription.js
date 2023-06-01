@@ -1,4 +1,4 @@
-import { Box, Chip, Typography, Rating } from "@mui/material";
+import { Box, Chip, Typography, Rating, Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -129,12 +129,30 @@ export default function ProductDescription(props) {
         <DescriptionWrapper>{renderDescription()}</DescriptionWrapper>
       </Box>
       <Box>
-        <TagsWrapper>
-          Tags:
+      <b>TAGS: </b>
+        <Grid
+          spacing={1}
+          direction="row"
+          columns={product.tags.length}
+          container
+        >
           {product.tags.map((tag, index) => (
-            <StyledChip key={index} label={tag} color="secondary"></StyledChip>
+            <Grid
+              key={tag}
+              item
+              xs={1}
+              sm={1}
+              md={1}
+              lg={1}
+            >
+              <StyledChip
+                key={index}
+                label={tag}
+                color="secondary"
+              ></StyledChip>
+            </Grid>
           ))}
-        </TagsWrapper>
+        </Grid>
       </Box>
     </div>
   );

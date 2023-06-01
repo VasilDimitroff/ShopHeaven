@@ -14,7 +14,7 @@ import { theme } from "../../../../theme";
 export default function ImageCarouselItem(props) {
   const [image, setImage] = useState(props.image);
   const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(prev => !prev);
+  const handleOpenModal = () => setOpenModal((prev) => !prev);
 
   const ProductCardMedia = styled(CardMedia)({
     height: 80,
@@ -82,11 +82,7 @@ export default function ImageCarouselItem(props) {
 
   return (
     <StyledCard>
-      <StyledModal
-        keepMounted
-        open={openModal}
-        onClose={handleOpenModal}
-      >
+      <StyledModal keepMounted open={openModal} onClose={handleOpenModal}>
         <ModalHolder>
           <CloseButtonHolder onClick={handleOpenModal}>
             <IconButton sx={{ color: theme.palette.white.main }}>
