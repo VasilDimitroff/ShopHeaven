@@ -1,8 +1,10 @@
-import { React} from "react";
+import { React, useState} from "react";
 import { TableRow, TableCell } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 export default function ProductSpecifications(props) {
+
+  const [specifications, setSpecifications] = useState(props.specifications)
   
   const KeyTableCell = styled(TableCell)({
     minWidth: "10%",
@@ -28,7 +30,7 @@ export default function ProductSpecifications(props) {
     },
   }));
   
-  return props.specifications.map((spec, index) => {
+  return specifications?.map((spec, index) => {
     return (
       <StyledTableRow key={index}>
         <KeyTableCell component="th" scope="row">

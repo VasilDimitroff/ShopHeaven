@@ -107,10 +107,6 @@ import { useState } from "react";
     );
   }
 
-  function renderGuarantee() {
-    return `${product.hasGuarantee ? "Yes" : "No" }`
-  }
-
     return (
         <div>
                <Box>
@@ -124,14 +120,14 @@ import { useState } from "react";
                 />
                 <RatingText>{`${
                   product.rating
-                } (${1} reviews)`}</RatingText>
+                } (${product.reviews.length} reviews)`}</RatingText>
               </RatingWrapper>
               <BrandWrapper>
                 <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
               </BrandWrapper>
               <DescriptionWrapper>
                 <GuaranteeText>Guarantee:</GuaranteeText>
-                <InStockInfo>{ renderGuarantee() }</InStockInfo>
+                <InStockInfo>{product.hasGuarantee ? "Yes" : "No" }</InStockInfo>
               </DescriptionWrapper>
               <DescriptionWrapper>
                 {renderDescription() }

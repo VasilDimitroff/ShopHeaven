@@ -6,7 +6,7 @@ import {
   Box,
 } from "@mui/material";
 
-export default function Loader() {
+export default function CircleLoader() {
   return (
     <Box>
     <CircularProgress

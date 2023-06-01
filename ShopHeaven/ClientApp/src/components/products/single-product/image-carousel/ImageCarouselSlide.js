@@ -1,12 +1,11 @@
-import { React } from "react";
+import { React, useState } from "react";
 import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
 import ImageCarouselItem from "./ImageCarouselItem";
 
 export default function ImageCarouselSlide(props) {
-  const StyledProductCarouselCard = styled(ImageCarouselItem)({});
-
+  const [images, setImages] = useState(props.images);
   const SlideWrapper = styled(Box)({
     marginTop: theme.spacing(2.5),
     display: "flex",
@@ -25,7 +24,7 @@ export default function ImageCarouselSlide(props) {
             flexGrow: 1,
           }}
         >
-          {Array.from(props.images.slice(0, props.cardsPerSlide)).map(
+          {Array.from(images?.slice(0, props.cardsPerSlide)).map(
             (image, index) => (
               <Grid
                 item
@@ -38,7 +37,7 @@ export default function ImageCarouselSlide(props) {
                 sx={{ display: "block" }}
                 onMouseEnter={() => props.setIndex(index, props.slideIndex)}
               >
-                <StyledProductCarouselCard image={image} />
+                <ImageCarouselItem image={image} />
               </Grid>
             )
           )}

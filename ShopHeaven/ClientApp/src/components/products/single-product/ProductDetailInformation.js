@@ -20,6 +20,8 @@ import { theme } from "../../../theme";
 
 export default function ProductDetailInformation(props) {
 
+  const [product, setProduct] = useState(props.product);
+
   function TabPanel(props) {
     const { children, value, index } = props;
 
@@ -89,7 +91,7 @@ export default function ProductDetailInformation(props) {
         <Box>
           <TabPanel value={value} index={0}>
             <HeadingDescription>PRODUCT DESCRIPTION</HeadingDescription>
-            <p>{props.product.description}</p>
+            <p>{product.description}</p>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <TableContainer>
@@ -101,14 +103,14 @@ export default function ProductDetailInformation(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <ProductSpecifications specifications={props.product.specifications}/>
+                  <ProductSpecifications specifications={product?.specifications}/>
                 </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={value} index={2}>
             <AddReviewForm/>
-            <ProductReviewsList reviews={props.product.reviews}/>
+            <ProductReviewsList reviews={product?.reviews}/>
           </TabPanel>
         </Box>
       </Paper>

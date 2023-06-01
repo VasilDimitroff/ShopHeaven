@@ -5,6 +5,7 @@ import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
 import ProductsCarousel from "../products-carousel/ProductsCarousel";
 import ProductDetailInformation from "./ProductDetailInformation";
+import CircleLoader from "../../common/CircleLoader";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
 import { singleProductBasePath, allCategoriesUrl, subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl } from "../../../constants";
@@ -14,8 +15,7 @@ export default function Product() {
   const params  = useParams();
   const effectRun = useRef(false);
   const {auth} = useAuth();
-  const [singleProduct, setSingleProduct] = useState(null)
-
+  const [product, setProduct] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController();
@@ -31,7 +31,7 @@ export default function Product() {
         );
         console.log(response?.data);
 
-        setSingleProduct(response?.data);
+        setProduct(response?.data);
       } catch (error) {
         console.log(error);
       }
@@ -283,96 +283,32 @@ export default function Product() {
       uri: "/",
     },
     {
-      name: "Category Name",
-      uri: `${allCategoriesUrl}`,
+      name: `${product?.category?.name ?? ""}`,
+      uri: `${subcategoriesOfMainCategoryBaseUrl}${product?.category?.id}`,
     },
     {
-      name: "Subcategory Name",
-      uri: `"/subcategories"`,
+      name: `${product?.subcategory?.name ?? ""}`,
+      uri: `${subcategoryProductsBaseUrl}${product?.subcategory?.id}`,
     },
     {
-      name: "Product",
+      name: `${product?.name.length > 25 ? product?.name.slice(0, 25) + "..." :  product?.name ?? ""}`,
       uri: `${singleProductBasePath}${params}`,
     },
   ];
 
-  const product = {
-    name: "iPhone compatible with your desktop computer",
-    isAvailable: true,
-    description:
-      "Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users. Probably the most random thing you have ever seen! It is very possible to get married if you buy some products from this category. If you don't do it, you will have no sex within next 5 years. If you don't believe, you can ask some other users.",
-    id: 1,
-    currency: "$",
-    rating: 2.3,
-    price: 20.50,
-    discount: 10,
-    quantity: 12,
-    brand: "Apple Inc",
-    hasGuarantee: true,
-    tags: ["auto", "home", "pets"],
-    specifications: [
-      {
-        key: "Material",
-        value: "Rubber",
-      },
-      {
-        key: "Year",
-        value: "1991",
-      },
-      {
-        key: "Age",
-        value: "18+",
-      },
-    ],
-    images: [
-      "https://levvvel.com/wp-content/uploads/2560-x-1440-vs-1920-x-1080-resolution.jpg",
-      "https://images.hdqwalls.com/download/winter-snow-trees-mountains-landscape-hdr-4k-aj-1920x1080.jpg",
-      "https://static.timesofisrael.com/www/uploads/2021/10/%D7%9E%D7%A2%D7%91%D7%93-%D7%90%D7%9C%D7%93%D7%A8-%D7%9C%D7%99%D7%99%D7%A7-%D7%A7%D7%A8%D7%93%D7%99%D7%98-%D7%90%D7%95%D7%94%D7%93-%D7%A4%D7%90%D7%9C%D7%99%D7%A7.jpg",
-      "https://www.ibanez.com/common/product_artist_file/file/pc_main_electric_guitars_na.jpg",
-      "https://www.hansetextil.com/media/catalog/category/HANSE_pillows.jpg",
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWN8ZW58MHx8MHx8&w=1000&q=80",
-      "https://cdn.mos.cms.futurecdn.net/xjGinGFYRvmcog5cX92WYk.jpg",
-      "https://assets.epicurious.com/photos/5e38ae1259e5e50008b35cc6/16:9/w_2560%2Cc_limit/DemitasseSpoons_HERO_012920_082_VOG_final.jpg",
-      "https://www.philips.com/c-dam/b2c/master/experience/consistency-campaign/airfryer/EU7/philips-airfryer-uk-thumbnail.jpg",
-      "https://cdn.thewirecutter.com/wp-content/media/2022/01/nintendo-switch-2048px-1011437-3x2-1.jpg?auto=webp&quality=60&crop=1.91:1&width=1200",
-    ],
-    reviews: [
-      {
-        id: 1,
-        author: "Vasko",
-        email: "vasko@abv.bg",
-        content: "This product is awesome! Recommend it!",
-        ratingValue: 5,
-        createdBy: 10,
-        createdOn: "25-03-2023"
-      },
-      {
-        id: 2,
-        author: "Pecata",
-        email: "pecata@abv.bg",
-        content: "This product is bad! It is shit!",
-        ratingValue: 1,
-        createdBy: 20,
-        createdOn: "20-10-2021"
-      },
-      {
-        id: 3,
-        author: "Tombata",
-        email: "tombata@abv.bg",
-        content: "This product is not bad for the price but it can be better.",
-        ratingValue: 3,
-        createdBy: 30,
-        createdOn: "30-01-2022"
-      }
-    ]
-  };
-
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      {singleProduct ?  <ProductInfoWrapper product={singleProduct}/> : "Loading data..."}
-      {singleProduct ?  <ProductsCarousel products={products} headingName="Similar Products" /> : "Loading data..."}
-      {singleProduct ?  <ProductDetailInformation product={product}/> : "Loading data..."}    
+      {product 
+        ? 
+          (<>
+          <ProductInfoWrapper product={product}/>
+          <ProductsCarousel products={products} headingName="Similar Products" />
+          <ProductDetailInformation product={product}/>
+          </>)
+        :
+        <CircleLoader/>
+      }
     </Fragment>
   );
 }

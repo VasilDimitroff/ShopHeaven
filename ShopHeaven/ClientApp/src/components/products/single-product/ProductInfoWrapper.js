@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -7,10 +7,8 @@ import ProductDescription from "./ProductDescription";
 import ProductActionButtons from "./ProductActionButtons";
 
 export default function ProductInfoWrapper(props) {
-  const [product, setProduct] = useState(props.product)
-  useEffect(() => {
-    console.log("PROUCT INFO WARER", props.singleProduct)
-  }, [])
+  const [product, setProduct] = useState(props.product);
+
   const ContentWrapper = styled(Box)({
     display: "flex",
   });
@@ -57,7 +55,7 @@ export default function ProductInfoWrapper(props) {
               {
                 // third important part of the page
               }
-              <ProductActionButtons product={product}/>
+              <ProductActionButtons product={product} />
             </Grid>
           </Grid>
         </StyledPaper>

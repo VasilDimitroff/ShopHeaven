@@ -2,7 +2,6 @@ import { React, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import {
   Box,
-  Typography,
   Card,
   CardActionArea,
   Modal,
@@ -15,13 +14,17 @@ import { theme } from "../../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
-
 function ImageCarousel(props) {
-  const [images, setImages] = useState(props.images.map(x => x.url));
+  const [images, setImages] = useState(props.images.map((x) => x.url));
 
-  const indexOfThumbnail = props.images.findIndex(x => x.isThumbnail === true)
+  const indexOfThumbnail = props.images.findIndex((x) => x.isThumbnail === true);
   const [bigImageIndex, setBigImageIndex] = useState(indexOfThumbnail);
+
   const [slideIndex, setSlideIndex] = useState(0);
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal( prev => !prev);
 
   function SetCardsNumber() {
     let cardsPerSlide;
@@ -78,12 +81,6 @@ function ImageCarousel(props) {
 
   let finalIndex = bigImageIndex + slideIndex * SetCardsNumber();
 
-  const StyledHeading = styled(Typography)({
-    [theme.breakpoints.down("md")]: {
-      textAlign: "center",
-    },
-  });
-
   const ProductCardMedia = styled(CardMedia)({
     height: 350,
     position: "relative",
@@ -91,10 +88,6 @@ function ImageCarousel(props) {
       height: 350,
     },
   });
-
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
 
   const ModalCardMedia = styled(CardMedia)({
     height: 800,
@@ -152,7 +145,7 @@ function ImageCarousel(props) {
   const StyledModal = styled(Modal)({
     display: "block",
     [theme.breakpoints.down("md")]: {
-      display: "none",
+      display: "block",
     },
   });
 
@@ -162,11 +155,11 @@ function ImageCarousel(props) {
         <StyledModal
           keepMounted
           open={openModal}
-          onClose={handleCloseModal}
+          onClose={handleOpenModal}
           sx={{}}
         >
           <ModalHolder>
-            <CloseButtonHolder onClick={handleCloseModal}>
+            <CloseButtonHolder onClick={handleOpenModal}>
               <IconButton sx={{ color: theme.palette.white.main }}>
                 <Close sx={{ fontSize: 50 }} />
               </IconButton>
@@ -176,13 +169,12 @@ function ImageCarousel(props) {
             </ImageHolder>
           </ModalHolder>
         </StyledModal>
-        <StyledCard onClick={() => handleOpenModal()}>
+        <StyledCard onClick={handleOpenModal}>
           <CardActionArea>
             <ProductCardMedia image={images[finalIndex]} />
           </CardActionArea>
         </StyledCard>
       </Box>
-      <StyledHeading variant="h4">{props.headingName}</StyledHeading>
       <Carousel
         animation="slide"
         swipe={false}

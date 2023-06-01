@@ -6,6 +6,8 @@ import { styled } from "@mui/material/styles";
 
 export default function ProductReviewsList(props) {
 
+  const [reviews, setReviews] = useState(props.reviews);
+
     const StyledPaper = styled(Paper)({
         padding: theme.spacing(3)
     });
@@ -34,7 +36,7 @@ export default function ProductReviewsList(props) {
   return (
     <Fragment>
       <Stack spacing={2} sx={{mt: theme.spacing(4)}}>
-        {props.reviews.map((review) => {
+        {reviews?.map((review) => {
           return (
             <StyledPaper key={review.id} variant="elevation" elevation={1}>
               <InfoHolder>

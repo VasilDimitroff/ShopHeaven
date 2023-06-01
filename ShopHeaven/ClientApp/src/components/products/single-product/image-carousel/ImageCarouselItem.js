@@ -12,9 +12,9 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
 
 export default function ImageCarouselItem(props) {
+  const [image, setImage] = useState(props.image);
   const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenModal = () => setOpenModal(prev => !prev);
 
   const ProductCardMedia = styled(CardMedia)({
     height: 80,
@@ -85,23 +85,22 @@ export default function ImageCarouselItem(props) {
       <StyledModal
         keepMounted
         open={openModal}
-        onClose={handleCloseModal}
-        sx={{}}
+        onClose={handleOpenModal}
       >
         <ModalHolder>
-          <CloseButtonHolder onClick={handleCloseModal}>
+          <CloseButtonHolder onClick={handleOpenModal}>
             <IconButton sx={{ color: theme.palette.white.main }}>
               <Close sx={{ fontSize: 50 }} />
             </IconButton>
           </CloseButtonHolder>
           <ImageHolder>
-            <ModalCardMedia image={props.image} />
+            <ModalCardMedia image={image} />
           </ImageHolder>
         </ModalHolder>
       </StyledModal>
 
       <CardActionArea>
-        <ProductCardMedia image={props.image} onClick={handleOpenModal} />
+        <ProductCardMedia image={image} onClick={handleOpenModal} />
       </CardActionArea>
     </StyledCard>
   );
