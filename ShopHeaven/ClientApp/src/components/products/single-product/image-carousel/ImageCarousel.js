@@ -23,17 +23,17 @@ function ImageCarousel(props) {
   const [slideIndex, setSlideIndex] = useState(0);
 
   const [openModal, setOpenModal] = useState(false);
+  
+  const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
+  const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
+  const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
+  const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
   const handleOpenModal = () => setOpenModal( prev => !prev);
 
   function SetCardsNumber() {
     let cardsPerSlide;
-
-    const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
-    const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
-    const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
-    const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
-    const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
     if (isBiggerOrXs === true) {
       cardsPerSlide = 4;

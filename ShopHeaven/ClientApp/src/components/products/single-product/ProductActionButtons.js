@@ -11,6 +11,7 @@ import {
   InputBase,
   Stack,
   IconButton,
+  Grid,
 } from "@mui/material";
 import {
   Favorite,
@@ -195,6 +196,7 @@ export default function ProductActionButtons(props) {
           <Discount gutterBottom variant="h5">
             {priceWithNoDiscountToRender}
           </Discount>
+          
           <PriceHolder>
             <MainPriceChip
               component="div"

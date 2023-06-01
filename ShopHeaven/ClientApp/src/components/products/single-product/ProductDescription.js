@@ -1,21 +1,20 @@
-  import {  Box, Chip, Typography, Rating } from "@mui/material";
-  import useMediaQuery from "@mui/material/useMediaQuery";
-  import { styled } from "@mui/material/styles";
-  import { theme } from "../../../theme";
+import { Box, Chip, Typography, Rating } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { styled } from "@mui/material/styles";
+import { theme } from "../../../theme";
 import { useState } from "react";
-  
-  export default function ProductDescription(props) {
 
-    const [product, setProduct] = useState(props.product);
+export default function ProductDescription(props) {
+  const [product, setProduct] = useState(props.product);
+
+  const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
+  const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
+  const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
+  const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
   function DescriptionLength() {
     let charactersToShowForDescription = 100;
-
-    const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
-    const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
-    const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
-    const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
-    const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
     if (isBiggerOrXs === true) {
       charactersToShowForDescription = 1000;
@@ -27,13 +26,23 @@ import { useState } from "react";
       charactersToShowForDescription = 570;
     }
     if (isBiggerOrLg === true) {
-      charactersToShowForDescription = 600;
+      charactersToShowForDescription = 550;
     }
     if (isBiggerOrXl === true) {
       charactersToShowForDescription = 650;
     }
 
     return charactersToShowForDescription;
+  }
+
+  function renderDescription() {
+    return (
+      <Typography>
+        {product.description.length > DescriptionLength()
+          ? `${product.description.slice(0, DescriptionLength())}...`
+          : product.description}
+      </Typography>
+    );
   }
 
   const RatingWrapper = styled(Box)({
@@ -95,53 +104,38 @@ import { useState } from "react";
     "&:hover": {
       backgroundColor: theme.palette.primary.main,
     },
-  })
+  });
 
-  function renderDescription(){
-    return (
-      <Typography>
-        {product.description.length > DescriptionLength()
-          ? `${product.description.slice(0, DescriptionLength())}...`
-          : product.description}
-      </Typography>
-    );
-  }
-
-    return (
-        <div>
-               <Box>
-              <RatingWrapper>
-                <Rating
-                  readOnly
-                  size="medium"
-                  label="stars"
-                  defaultValue={product.rating}
-                  precision={0.5}
-                />
-                <RatingText>{`${
-                  product.rating
-                } (${product.reviews.length} reviews)`}</RatingText>
-              </RatingWrapper>
-              <BrandWrapper>
-                <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
-              </BrandWrapper>
-              <DescriptionWrapper>
-                <GuaranteeText>Guarantee:</GuaranteeText>
-                <InStockInfo>{product.hasGuarantee ? "Yes" : "No" }</InStockInfo>
-              </DescriptionWrapper>
-              <DescriptionWrapper>
-                {renderDescription() }
-              </DescriptionWrapper>
-              </Box>
-              <Box>
-              <TagsWrapper>
-                Tags:
-                {product.tags.map((tag, index) => (
-                  <StyledChip key={index} label={tag} color="secondary"></StyledChip>
-                ))}
-              </TagsWrapper>
-              </Box>
-        </div>
-    );
-  }
-  
+  return (
+    <div>
+      <Box>
+        <RatingWrapper>
+          <Rating
+            readOnly
+            size="medium"
+            label="stars"
+            defaultValue={product.rating}
+            precision={0.5}
+          />
+          <RatingText>{`${product.rating} (${product.reviews.length} reviews)`}</RatingText>
+        </RatingWrapper>
+        <BrandWrapper>
+          <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
+        </BrandWrapper>
+        <DescriptionWrapper>
+          <GuaranteeText>Guarantee:</GuaranteeText>
+          <InStockInfo>{product.hasGuarantee ? "Yes" : "No"}</InStockInfo>
+        </DescriptionWrapper>
+        <DescriptionWrapper>{renderDescription()}</DescriptionWrapper>
+      </Box>
+      <Box>
+        <TagsWrapper>
+          Tags:
+          {product.tags.map((tag, index) => (
+            <StyledChip key={index} label={tag} color="secondary"></StyledChip>
+          ))}
+        </TagsWrapper>
+      </Box>
+    </div>
+  );
+}
