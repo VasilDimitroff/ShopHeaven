@@ -827,7 +827,8 @@ namespace ShopHeaven.Data.Services
                             Author = r.Author,
                             Email = r.Email,
                             Content = r.Content,
-                            RatingValue = r.RatingValue
+                            RatingValue = r.RatingValue,
+                            CreatedOn = r.CreatedOn.ToString()
                         })
                         .ToList(),
                     Specifications = p.Specifications

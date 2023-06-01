@@ -9,5 +9,7 @@
         public string Email { get; set; }
 
         public int RatingValue { get; set; }
+
+        public string CreatedOn { get; set; }
     }
 }

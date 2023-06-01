@@ -1,6 +1,6 @@
-import { React, useState, useEffect, useRef, Fragment } from "react";
+import { React, useState, useRef, useEffect, Fragment } from "react";
 import { useParams } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
+import  useAuth  from "./../../../hooks/useAuth"
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
 import ProductsCarousel from "../products-carousel/ProductsCarousel";
@@ -14,8 +14,8 @@ export default function Product() {
   const params  = useParams();
   const effectRun = useRef(false);
   const {auth} = useAuth();
-  const [singleProduct, setSingleProduct] = useState({id: params.productId})
-  
+  const {singleProduct, setSingleProduct} = useState({id: params.productId})
+
 
   useEffect(() => {
     const controller = new AbortController();
