@@ -25,6 +25,8 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 
 export default function ProductActionButtons(props) {
+  const [product, setProduct] = useState(props.product)
+
   const [showError, setShowError] = useState(false);
   const [addToCart, setAddToCart] = useState(false);
   const [addToCartContent, setAddToCartContent] = useState("Add to cart");
@@ -46,7 +48,7 @@ export default function ProductActionButtons(props) {
       value = 0;
     }
 
-    if (result > props.product.quantity) {
+    if (result > product.quantity) {
       handleShowError();
     } else {
       setProductsQuantity((prev) => (prev += value));
@@ -138,7 +140,7 @@ export default function ProductActionButtons(props) {
   const InStockInfo = styled(Typography)({
     fontWeight: 500,
     fontSize: 18,
-    color: props.product.isAvailable
+    color: product.isAvailable
       ? theme.palette.success.main
       : theme.palette.error.main,
   });
@@ -171,23 +173,23 @@ export default function ProductActionButtons(props) {
   }
 
   function renderAvailability(){
-    return `${  props.product.isAvailable ? "In Stock" : "Out of Stock" }`
+    return `${product.isAvailable ? "In Stock" : "Out of Stock" }`
   }
 
   function renderPrice() {
     const price =
-      props.product.price -
-      props.product.price * (props.product.discount / 100);
+      product.price -
+      product.price * (product.discount / 100);
     let finalPrice;
     let priceWithNoDiscountToRender;
 
-    finalPrice = `${props.product.currency} ${price.toFixed(2)}`;
+    finalPrice = `${product.currency.code} ${price.toFixed(2)}`;
     priceWithNoDiscountToRender = `${
-      props.product.currency
-    } ${props.product.price.toFixed(2)}`;
+      product.currency.code
+    } ${product.price.toFixed(2)}`;
     let renderResult;
 
-    if (props.product.discount > 0) {
+    if (product.discount > 0) {
       renderResult = (
         <Box>
           <Discount gutterBottom variant="h5">
@@ -203,7 +205,7 @@ export default function ProductActionButtons(props) {
             <StyledChip
               size="small"
               variant="filled"
-              label={`Save ${props.product.discount}%`}
+              label={`Save ${product.discount}%`}
             ></StyledChip>
           </PriceHolder>
         </Box>
@@ -246,7 +248,7 @@ export default function ProductActionButtons(props) {
             <IconButton onClick={() => handleSetProductsQuantity(1)}>
               <AddCircle />
             </IconButton>
-            {`(${props.product.quantity} left)`}
+            {`(${product.quantity} left)`}
           </QuantityHolder>
           <Snackbar onClick={() => handleCloseError()}
             ContentProps={{
@@ -261,7 +263,7 @@ export default function ProductActionButtons(props) {
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             open={showError}
             TransitionComponent={Slide}
-            message={`In stock are ${props.product.quantity} items only! It is the maximum quantity you can purchase. X`}
+            message={`In stock are ${product.quantity} items only! It is the maximum quantity you can purchase. X`}
           >
        </Snackbar>
           <ActionButtons spacing={1.5}>

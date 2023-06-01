@@ -14,10 +14,13 @@ import { Close } from "@mui/icons-material";
 import { theme } from "../../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import { GetBigImageIndex } from "./ImageCarouselSlide";
+
 
 function ImageCarousel(props) {
-  const [bigImageIndex, setBigImageIndex] = useState(0);
+  const [images, setImages] = useState(props.images.map(x => x.url));
+
+  const indexOfThumbnail = props.images.findIndex(x => x.isThumbnail === true)
+  const [bigImageIndex, setBigImageIndex] = useState(indexOfThumbnail);
   const [slideIndex, setSlideIndex] = useState(0);
 
   function SetCardsNumber() {
@@ -50,7 +53,7 @@ function ImageCarousel(props) {
 
   function ReturnSlidesInfo() {
     let cardsCountPerSlide = SetCardsNumber();
-    let slidesCount = Math.ceil(props.images.length / cardsCountPerSlide);
+    let slidesCount = Math.ceil(images.length / cardsCountPerSlide);
 
     let slidesInfo = [];
 
@@ -169,13 +172,13 @@ function ImageCarousel(props) {
               </IconButton>
             </CloseButtonHolder>
             <ImageHolder>
-              <ModalCardMedia image={props.images[finalIndex]} />
+              <ModalCardMedia image={images[finalIndex]} />
             </ImageHolder>
           </ModalHolder>
         </StyledModal>
         <StyledCard onClick={() => handleOpenModal()}>
           <CardActionArea>
-            <ProductCardMedia image={props.images[finalIndex]} />
+            <ProductCardMedia image={images[finalIndex]} />
           </CardActionArea>
         </StyledCard>
       </Box>
@@ -211,7 +214,7 @@ function ImageCarousel(props) {
               slideIndex={index}
               setIndex={setIndex}
               key={index}
-              images={props.images.slice(
+              images={images.slice(
                 rowInfo.startIndex,
                 rowInfo.startIndex + rowInfo.cardsPerSlide
               )}

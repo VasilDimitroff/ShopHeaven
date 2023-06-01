@@ -2,8 +2,11 @@
   import useMediaQuery from "@mui/material/useMediaQuery";
   import { styled } from "@mui/material/styles";
   import { theme } from "../../../theme";
+import { useState } from "react";
   
   export default function ProductDescription(props) {
+
+    const [product, setProduct] = useState(props.product);
 
   function DescriptionLength() {
     let charactersToShowForDescription = 100;
@@ -70,7 +73,7 @@
   const InStockInfo = styled(Typography)({
     fontWeight: 500,
     fontSize: 18,
-    color: props.product.isAvailable
+    color: product.isAvailable
       ? theme.palette.success.main
       : theme.palette.error.main,
   });
@@ -97,15 +100,15 @@
   function renderDescription(){
     return (
       <Typography>
-        {props.product.description.length > DescriptionLength()
-          ? `${props.product.description.slice(0, DescriptionLength())}...`
-          : props.product.description}
+        {product.description.length > DescriptionLength()
+          ? `${product.description.slice(0, DescriptionLength())}...`
+          : product.description}
       </Typography>
     );
   }
 
   function renderGuarantee() {
-    return `${ props.product.hasGuarantee ? "Yes" : "No" }`
+    return `${product.hasGuarantee ? "Yes" : "No" }`
   }
 
     return (
@@ -116,15 +119,15 @@
                   readOnly
                   size="medium"
                   label="stars"
-                  defaultValue={props.product.rating}
+                  defaultValue={product.rating}
                   precision={0.5}
                 />
                 <RatingText>{`${
-                  props.product.rating
+                  product.rating
                 } (${1} reviews)`}</RatingText>
               </RatingWrapper>
               <BrandWrapper>
-                <BrandInfo>{`Brand: ${props.product.brand}`}</BrandInfo>
+                <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
               </BrandWrapper>
               <DescriptionWrapper>
                 <GuaranteeText>Guarantee:</GuaranteeText>
@@ -137,7 +140,7 @@
               <Box>
               <TagsWrapper>
                 Tags:
-                {props.product.tags.map((tag, index) => (
+                {product.tags.map((tag, index) => (
                   <StyledChip key={index} label={tag} color="secondary"></StyledChip>
                 ))}
               </TagsWrapper>

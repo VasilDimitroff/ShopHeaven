@@ -14,7 +14,7 @@ export default function Product() {
   const params  = useParams();
   const effectRun = useRef(false);
   const {auth} = useAuth();
-  const {singleProduct, setSingleProduct} = useState({id: params.productId})
+  const [singleProduct, setSingleProduct] = useState(null)
 
 
   useEffect(() => {
@@ -370,9 +370,9 @@ export default function Product() {
   return (
     <Fragment>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      <ProductInfoWrapper product={product}/>
-      <ProductsCarousel products={products} headingName="Similar Products" />
-      <ProductDetailInformation product={product}/>
+      {singleProduct ?  <ProductInfoWrapper product={singleProduct}/> : "Loading data..."}
+      {singleProduct ?  <ProductsCarousel products={products} headingName="Similar Products" /> : "Loading data..."}
+      {singleProduct ?  <ProductDetailInformation product={product}/> : "Loading data..."}    
     </Fragment>
   );
 }
