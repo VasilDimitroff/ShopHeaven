@@ -30,12 +30,10 @@ export default function ProductSpecifications(props) {
     },
   }));
   
-  return specifications?.map((spec, index) => {
+  return specifications?.map((spec) => {
     return (
-      <StyledTableRow key={index}>
-        <KeyTableCell component="th" scope="row">
-          {spec.key}
-        </KeyTableCell>
+      <StyledTableRow key={spec.id}>
+        <KeyTableCell component="th" scope="row">{spec.key}</KeyTableCell>
         <ValueTableCell align="left">{spec.value}</ValueTableCell>
       </StyledTableRow>
     );

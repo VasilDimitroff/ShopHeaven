@@ -6,12 +6,8 @@ import ImageCarousel from "./image-carousel/ImageCarousel";
 import ProductDescription from "./ProductDescription";
 import ProductActionButtons from "./ProductActionButtons";
 
-export default function ProductInfoWrapper(props) {
+export default function ProductMainInfo(props) {
   const [product, setProduct] = useState(props.product);
-
-  const ContentWrapper = styled(Box)({
-    display: "flex",
-  });
 
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),
@@ -27,14 +23,16 @@ export default function ProductInfoWrapper(props) {
   });
 
   const ProductName = styled(Typography)({
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(4),
+    marginLeft: 0,
+    lineHeight: 1.15,
+    fontSize: 24
   });
 
   return (
     <MainWrapper>
-      <ContentWrapper>
         <StyledPaper>
-          <ProductName variant="h4">{product.name}</ProductName>
+          <ProductName>{product.name}</ProductName>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
               <Box>
@@ -58,7 +56,6 @@ export default function ProductInfoWrapper(props) {
             </Grid>
           </Grid>
         </StyledPaper>
-      </ContentWrapper>
     </MainWrapper>
   );
 }

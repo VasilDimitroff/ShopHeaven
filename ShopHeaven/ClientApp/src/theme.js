@@ -1,7 +1,13 @@
 import { createTheme } from '@mui/material';
 
 export const theme  = createTheme({
+    typography: {
+        fontFamily: "Helvetica",
+        fontWeightRegular: 400,
+        fontSize: 14
+      },
     palette: {
+        mode: 'light',
         primary: {
             main: "#4083e2",
         },
@@ -19,15 +25,12 @@ export const theme  = createTheme({
             color: "#000",
             boxShadow: "1px 4px 6px 4px rgba(0,0,0,0.42)",     
         },
-        appBackground: {
-            main: "#f2f2f7",
+        background: {
+            default: "#f2f2f7",
         },
         white: {
             main: "#ffffff",
         },
-        onHoverButtonColor: {
-            main: "#d7edfd",
-        },        
     },
     shape: {
         borderRadius: "7px",

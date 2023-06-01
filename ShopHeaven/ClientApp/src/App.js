@@ -33,7 +33,7 @@ import {
 
 export default function App() {
   return (
-    <div style={{ backgroundColor: theme.palette.appBackground.main }}>
+    <div style={{ backgroundColor: theme.palette.background.default }}>
       <Routes>
         {/* public routes */}
         <Route element={<PersistLogin />}>

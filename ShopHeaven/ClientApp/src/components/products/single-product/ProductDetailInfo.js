@@ -1,10 +1,11 @@
 import { React, useState } from "react";
 import {
   Box,
-  Typography,
   Tabs,
   Tab,
   Paper,
+  Chip,
+  Divider,
   Table,
   TableHead,
   TableCell,
@@ -18,8 +19,7 @@ import AddReviewForm from "./AddReviewForm";
 import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../../theme";
 
-export default function ProductDetailInformation(props) {
-
+export default function ProductDetailInfo(props) {
   const [product, setProduct] = useState(props.product);
 
   function TabPanel(props) {
@@ -27,11 +27,7 @@ export default function ProductDetailInformation(props) {
 
     return (
       <div hidden={value !== index}>
-        {value === index && (
-          <StyledTabContent>
-            {children}
-          </StyledTabContent>
-        )}
+        {value === index && <StyledTabContent>{children}</StyledTabContent>}
       </div>
     );
   }
@@ -55,20 +51,20 @@ export default function ProductDetailInformation(props) {
     },
   });
 
-  const HeadingTableCell = styled(TableCell)({
-    textTransform: "uppercase",
-    fontWeight: 600,
-    fontSize: 24,
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+  const DetailsHeading = styled(Box)({
+    textAlign: "center",
+    marginTop: theme.spacing(1.9),
+    marginBottom: theme.spacing(3),
   });
 
-  const HeadingDescription = styled(Typography)({
+  const HeadingChip = styled(Chip)({
     textTransform: "uppercase",
-    fontWeight: 600,
-    fontSize: 24,
-    paddingTop: theme.spacing(1.9),
-    paddingBottom: theme.spacing(3),
+    fontWeight: 500,
+    fontSize: 20,
+    paddingTop: theme.spacing(2.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2.5),
   });
 
   return (
@@ -90,27 +86,48 @@ export default function ProductDetailInformation(props) {
         </Box>
         <Box>
           <TabPanel value={value} index={0}>
-            <HeadingDescription>PRODUCT DESCRIPTION</HeadingDescription>
+            <DetailsHeading>
+              <Divider>
+                <HeadingChip
+                  color="primary"
+                  label={"PRODUCT DESCRIPTION"}
+                ></HeadingChip>
+              </Divider>
+            </DetailsHeading>
             <p>{product.description}</p>
           </TabPanel>
           <TabPanel value={value} index={1}>
+            <DetailsHeading>
+              <Divider>
+                <HeadingChip
+                  color="primary"
+                  label={"SPECIFICATIONS"}
+                ></HeadingChip>
+              </Divider>
+            </DetailsHeading>
             <TableContainer>
               <Table aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <HeadingTableCell>SPECIFICATIONS</HeadingTableCell>
-                    <TableCell align="right"></TableCell>
+                    <TableCell align="left"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <ProductSpecifications specifications={product?.specifications}/>
+                  <ProductSpecifications
+                    specifications={product?.specifications}
+                  />
                 </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <AddReviewForm/>
-            <ProductReviewsList reviews={product?.reviews}/>
+            <DetailsHeading>
+              <Divider>
+                <HeadingChip color="primary" label={"REVIEWS"}></HeadingChip>
+              </Divider>
+            </DetailsHeading>
+            <AddReviewForm />
+            <ProductReviewsList reviews={product?.reviews} />
           </TabPanel>
         </Box>
       </Paper>

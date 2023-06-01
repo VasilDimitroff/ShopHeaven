@@ -1,6 +1,12 @@
 import { Box, Chip, Typography, Rating, Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { VerifiedUser, GppBad, PrecisionManufacturing, AssignmentTurnedIn, AssignmentLate } from "@mui/icons-material";
+import {
+  VerifiedUser,
+  GppBad,
+  PrecisionManufacturing,
+  AssignmentTurnedIn,
+  AssignmentLate,
+} from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { useState } from "react";
@@ -46,8 +52,8 @@ export default function ProductDescription(props) {
     );
   }
 
-    function renderAvailability(){
-    return `${product.isAvailable ? "In Stock" : "Out of Stock" }`
+  function renderAvailability() {
+    return `${product.isAvailable ? "In Stock" : "Out of Stock"}`;
   }
 
   const RatingWrapper = styled(Box)({
@@ -67,9 +73,9 @@ export default function ProductDescription(props) {
   const SubheadingInfoWrapper = styled(Box)({
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(2),
-    display:"flex",
+    display: "flex",
     justifyContent: "space-between",
-    gap: 1
+    gap: 1,
   });
 
   const InStockInfo = styled(Typography)({
@@ -79,7 +85,7 @@ export default function ProductDescription(props) {
 
   const BrandInfo = styled(Typography)({
     fontWeight: 500,
-    fontSize:18,
+    fontSize: 18,
   });
 
   const WarrantyText = styled(Typography)({
@@ -125,12 +131,11 @@ export default function ProductDescription(props) {
             <InStockInfo>{renderAvailability()}</InStockInfo>
           </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
-            {
-              product.hasGuarantee
-              ?
+            {product.hasGuarantee ? (
               <VerifiedUser sx={{ color: theme.palette.success.main }} />
-              :  <GppBad sx={{ color: theme.palette.error.main }} />
-            }   
+            ) : (
+              <GppBad sx={{ color: theme.palette.error.main }} />
+            )}
             <WarrantyText>
               {product.hasGuarantee ? "Has Warranty" : "No Warranty"}
             </WarrantyText>

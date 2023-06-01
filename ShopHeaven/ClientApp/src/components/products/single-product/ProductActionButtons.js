@@ -21,7 +21,7 @@ import {
   AddCircle,
   RemoveCircle,
   Close,
-  Cancel
+  Cancel,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -158,6 +158,17 @@ export default function ProductActionButtons(props) {
       "&:disabled": {},
     },
   }));
+
+  const GoToCartButton = styled(Typography)({
+    textAlign: "center",
+    cursor: "pointer",
+    marginTop: theme.spacing(1.5),
+    fontSize: 14,
+    color: theme.palette.primary.main,
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  });
   function renderFavoriteIcon() {
     return addToFavorites ? <Favorite /> : <FavoriteBorder />;
   }
@@ -188,9 +199,7 @@ export default function ProductActionButtons(props) {
                 label={`Save ${product.discount}%`}
               ></StyledChip>
             </Box>
-            <Discount gutterBottom>
-              {priceWithNoDiscountToRender}
-            </Discount>
+            <Discount gutterBottom>{priceWithNoDiscountToRender}</Discount>
           </Box>
           <PriceHolder>
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
@@ -253,9 +262,20 @@ export default function ProductActionButtons(props) {
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             open={showError}
             TransitionComponent={Slide}
-            message={product.isAvailable 
-              ? <>(In stock are {product.quantity} items only! It is the maximum quantity you can purchase.)<Cancel sx={{ml: 3}}/></> 
-              : <>Product is out of stock!<Cancel sx={{ml: 3, right: 0}}/></>}
+            message={
+              product.isAvailable ? (
+                <>
+                  (In stock are {product.quantity} items only! It is the maximum
+                  quantity you can purchase.)
+                  <Cancel sx={{ ml: 3 }} />
+                </>
+              ) : (
+                <>
+                  Product is out of stock! You cannot purchase it!
+                  <Cancel sx={{ ml: 3, right: 0 }} />
+                </>
+              )
+            }
           ></Snackbar>
           <ActionButtons spacing={1.5}>
             <ActionButton
@@ -275,6 +295,7 @@ export default function ProductActionButtons(props) {
               {addToFavoritesContent}
             </ActionButton>
           </ActionButtons>
+          <GoToCartButton>Go to cart</GoToCartButton>
         </CardContent>
       </Card>
     </Box>

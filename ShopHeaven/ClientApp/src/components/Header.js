@@ -141,8 +141,8 @@ export default function Header() {
     zIndex: "100",
     width: "100%",
     maxWidth: 250,
-    backgroundColor: theme.palette.dropdown.main,
-    color: theme.palette.dropdown.main.color,
+   // backgroundColor: theme.palette.dropdown.main,
+    //color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(6),
     paddingTop: theme.spacing(2),
     right: "8%",
@@ -222,7 +222,7 @@ export default function Header() {
   const DropDownMenuListItemButton = styled(ListItemButton)({
     backgroundColor: theme.palette.dropdown.main,
     "&:hover": {
-      backgroundColor: theme.palette.onHoverButtonColor.main,
+      backgroundColor: "#d7edfd",
     },
   });
 
@@ -232,7 +232,7 @@ export default function Header() {
     justifyContent: "center",
     backgroundColor: theme.palette.dropdown.main,
     "&:hover": {
-      backgroundColor: theme.palette.onHoverButtonColor.main,
+      backgroundColor: "#d7edfd",
     },
   });
 
