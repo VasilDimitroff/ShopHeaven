@@ -33,7 +33,23 @@ namespace ShopHeaven.Controllers
             }
         }
 
-       
+        [HttpPost, Route(nameof(GetById))]
+        public async Task<ActionResult<ProductResponseModel>> GetById([FromBody] ProductRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var product = await this.productsService.GetProductAsync(model);
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<ActionResult<AdminProductResponseModel>> Edit([FromForm] EditProductRequestModel model)
         {

@@ -1,13 +1,13 @@
 import { React, useState, Fragment } from "react";
 import { useParams } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
 import ProductsCarousel from "../products-carousel/ProductsCarousel";
 import ProductDetailInformation from "./ProductDetailInformation";
+import { singleProductBasePath, allCategoriesUrl, subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl } from "../../../constants";
 
 
-export default function Product(props) {
+export default function Product() {
   const { productId } = useParams();
 
   let products = [
@@ -246,16 +246,16 @@ export default function Product(props) {
       uri: "/",
     },
     {
-      name: "Categories",
-      uri: "/categories",
+      name: "Category Name",
+      uri: `${allCategoriesUrl}`,
     },
     {
-      name: "Subcategory",
-      uri: "/subcategories",
+      name: "Subcategory Name",
+      uri: `"/subcategories"`,
     },
     {
       name: "Product",
-      uri: "/product",
+      uri: `${singleProductBasePath}${productId}`,
     },
   ];
 
