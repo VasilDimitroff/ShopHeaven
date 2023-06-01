@@ -49,9 +49,7 @@ export default function ProductInfoWrapper(props) {
                 // second important part of the page
                 <ProductDescription product={product} />
               }
-
             </Grid>
-
             <Grid item xs={12} md={12} lg={3}>
               {
                 // third important part of the page

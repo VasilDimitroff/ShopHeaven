@@ -14,7 +14,6 @@ import { Close } from "@mui/icons-material";
 import { theme } from "../../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import { style } from "@mui/system";
 
 function ImageCarousel(props) {
   const [product, setProduct] = useState(props.product)

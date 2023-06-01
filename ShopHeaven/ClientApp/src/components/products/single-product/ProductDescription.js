@@ -1,5 +1,6 @@
 import { Box, Chip, Typography, Rating, Grid } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { VerifiedUser, GppBad, PrecisionManufacturing, AssignmentTurnedIn, AssignmentLate } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { useState } from "react";
@@ -45,6 +46,10 @@ export default function ProductDescription(props) {
     );
   }
 
+    function renderAvailability(){
+    return `${product.isAvailable ? "In Stock" : "Out of Stock" }`
+  }
+
   const RatingWrapper = styled(Box)({
     display: "flex",
   });
@@ -54,45 +59,30 @@ export default function ProductDescription(props) {
     fontWeight: 500,
   });
 
-  const TagsWrapper = styled(Box)({
-    display: "flex",
-    justifyContent: "flex-start",
-    gap: 8,
-    bottom: 0,
-    fontWeight: 500,
-    position: "absolute",
-    alignItems: "center",
-    [theme.breakpoints.down("lg")]: {
-      position: "relative",
-    },
-  });
-
   const DescriptionWrapper = styled(Box)({
-    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     display: "flex",
   });
 
-  const BrandWrapper = styled(Box)({
-    marginTop: theme.spacing(2),
+  const SubheadingInfoWrapper = styled(Box)({
+    marginTop: theme.spacing(3),
     marginBottom: theme.spacing(2),
-    display: "flex",
+    display:"flex",
+    justifyContent: "space-between",
+    gap: 1
   });
 
   const InStockInfo = styled(Typography)({
     fontWeight: 500,
     fontSize: 18,
-    color: product.isAvailable
-      ? theme.palette.success.main
-      : theme.palette.error.main,
   });
 
   const BrandInfo = styled(Typography)({
     fontWeight: 500,
-    fontSize: 18,
+    fontSize:18,
   });
 
-  const GuaranteeText = styled(Typography)({
+  const WarrantyText = styled(Typography)({
     fontWeight: 500,
     fontSize: 18,
     marginRight: theme.spacing(1),
@@ -119,17 +109,37 @@ export default function ProductDescription(props) {
           />
           <RatingText>{`${product.rating} (${product.reviews.length} reviews)`}</RatingText>
         </RatingWrapper>
-        <BrandWrapper>
-          <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
-        </BrandWrapper>
-        <DescriptionWrapper>
-          <GuaranteeText>Guarantee:</GuaranteeText>
-          <InStockInfo>{product.hasGuarantee ? "Yes" : "No"}</InStockInfo>
-        </DescriptionWrapper>
+        <SubheadingInfoWrapper>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <PrecisionManufacturing
+              sx={{ color: theme.palette.primary.main }}
+            />
+            <BrandInfo>{`Brand: ${product.brand}`}</BrandInfo>
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            {product.isAvailable ? (
+              <AssignmentTurnedIn sx={{ color: theme.palette.success.main }} />
+            ) : (
+              <AssignmentLate sx={{ color: theme.palette.error.main }} />
+            )}
+            <InStockInfo>{renderAvailability()}</InStockInfo>
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            {
+              product.hasGuarantee
+              ?
+              <VerifiedUser sx={{ color: theme.palette.success.main }} />
+              :  <GppBad sx={{ color: theme.palette.error.main }} />
+            }   
+            <WarrantyText>
+              {product.hasGuarantee ? "Has Warranty" : "No Warranty"}
+            </WarrantyText>
+          </Box>
+        </SubheadingInfoWrapper>
         <DescriptionWrapper>{renderDescription()}</DescriptionWrapper>
       </Box>
       <Box>
-      <b>TAGS: </b>
+        <b>TAGS: </b>
         <Grid
           spacing={1}
           direction="row"
@@ -137,16 +147,9 @@ export default function ProductDescription(props) {
           container
         >
           {product.tags.map((tag, index) => (
-            <Grid
-              key={tag}
-              item
-              xs={1}
-              sm={1}
-              md={1}
-              lg={1}
-            >
+            <Grid key={tag} item xs={1} sm={1} md={1} lg={1}>
               <StyledChip
-                key={index}
+                size="small"
                 label={tag}
                 color="secondary"
               ></StyledChip>

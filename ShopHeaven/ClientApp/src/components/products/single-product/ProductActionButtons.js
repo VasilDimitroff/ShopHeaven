@@ -112,14 +112,10 @@ export default function ProductActionButtons(props) {
 
   const MainPriceChip = styled(Chip)({
     letterSpacing: -1,
-    color: theme.palette.error.main,
-    fontSize: 28,
+    fontSize: 25,
     paddingTop: theme.spacing(2.8),
     paddingBottom: theme.spacing(2.8),
-    paddingLeft: theme.spacing(0.3),
-    paddingRight: theme.spacing(0.3),
     fontWeight: 600,
-    backgroundColor: "#fff8f7",
     borderRadius: theme.shape.borderRadius,
   });
 
@@ -136,14 +132,6 @@ export default function ProductActionButtons(props) {
   const ActionButton = styled(Button)({
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
-  });
-
-  const InStockInfo = styled(Typography)({
-    fontWeight: 500,
-    fontSize: 18,
-    color: product.isAvailable
-      ? theme.palette.success.main
-      : theme.palette.error.main,
   });
 
   const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -173,10 +161,6 @@ export default function ProductActionButtons(props) {
     return addToCart ? <RemoveShoppingCart /> : <AddShoppingCart />
   }
 
-  function renderAvailability(){
-    return `${product.isAvailable ? "In Stock" : "Out of Stock" }`
-  }
-
   function renderPrice() {
     const price =
       product.price -
@@ -196,12 +180,11 @@ export default function ProductActionButtons(props) {
           <Discount gutterBottom variant="h5">
             {priceWithNoDiscountToRender}
           </Discount>
-          
           <PriceHolder>
             <MainPriceChip
-              component="div"
               size="medium"
-              variant="filled"
+              variant="outlined"
+              color="secondary"
               label={finalPrice}
             ></MainPriceChip>
             <StyledChip
@@ -217,7 +200,8 @@ export default function ProductActionButtons(props) {
         <PriceHolder>
           <MainPriceChip
             size="medium"
-            variant="filled"
+            variant="outlined"
+            color="secondary"
             label={finalPrice}
           ></MainPriceChip>
         </PriceHolder>
@@ -232,7 +216,6 @@ export default function ProductActionButtons(props) {
       <Card>
         <CardContent>
           {renderPrice()}
-          <InStockInfo>{ renderAvailability() }</InStockInfo>
           <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>
             Quantity:
           </Typography>
