@@ -138,7 +138,7 @@ export default function Header() {
 
   const UserMenu = styled(Box)({
     position: "fixed",
-    zIndex: "100",
+    zIndex: 5,
     width: "100%",
     maxWidth: 250,
    // backgroundColor: theme.palette.dropdown.main,
@@ -375,7 +375,9 @@ export default function Header() {
           >
             <List>
               <ListItem disablePadding>
+              <DropDownMenuListItemButton >
                 <UserNameText component="h4">{auth.email}</UserNameText>
+                </DropDownMenuListItemButton>
               </ListItem>
               <Divider />
              {

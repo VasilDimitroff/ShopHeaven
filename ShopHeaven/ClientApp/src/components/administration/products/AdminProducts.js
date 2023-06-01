@@ -273,7 +273,6 @@ export default function AdminProducts() {
         <Table>
           <TableHead>
             <TableRow>
-
               <MainCategoryTableCell></MainCategoryTableCell>
               <MainCategoryTableCell align="center"></MainCategoryTableCell>
             </TableRow>

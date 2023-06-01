@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material';
 
 export const theme  = createTheme({
     typography: {
-        fontFamily: "Helvetica",
+        fontFamily: "Segoe UI",
         fontWeightRegular: 400,
         fontSize: 14
       },
