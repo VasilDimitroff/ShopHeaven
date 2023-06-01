@@ -1,14 +1,51 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, useEffect, useRef, Fragment } from "react";
 import { useParams } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import ProductInfoWrapper from "./ProductInfoWrapper";
 import ProductsCarousel from "../products-carousel/ProductsCarousel";
 import ProductDetailInformation from "./ProductDetailInformation";
+import { ApiEndpoints } from "../../../api/endpoints";
+import axios from "../../../api/axios";
 import { singleProductBasePath, allCategoriesUrl, subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl } from "../../../constants";
 
 
 export default function Product() {
-  const { productId } = useParams();
+  const params  = useParams();
+  const effectRun = useRef(false);
+  const {auth} = useAuth();
+  const [singleProduct, setSingleProduct] = useState({id: params.productId})
+  
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getProduct = async () => {
+      try {
+        const response = await axios.post(
+          ApiEndpoints.products.getById,
+          { id: params.productId, userId: auth.userId },
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response?.data);
+
+        setSingleProduct(response?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getProduct();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, []);
 
   let products = [
     {
@@ -255,7 +292,7 @@ export default function Product() {
     },
     {
       name: "Product",
-      uri: `${singleProductBasePath}${productId}`,
+      uri: `${singleProductBasePath}${params}`,
     },
   ];
 

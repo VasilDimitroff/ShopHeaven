@@ -9,7 +9,6 @@ import {
   Checkbox,
   Chip,
   Divider,
-  Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
