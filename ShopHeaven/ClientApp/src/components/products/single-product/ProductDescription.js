@@ -146,7 +146,7 @@ export default function ProductDescription(props) {
           columns={product.tags.length}
           container
         >
-          {product.tags.map((tag, index) => (
+          {product.tags.map((tag) => (
             <Grid key={tag} item xs={1} sm={1} md={1} lg={1}>
               <StyledChip
                 size="small"

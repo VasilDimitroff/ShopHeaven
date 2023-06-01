@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, Fragment } from "react";
 import {
   Box,
   Chip,
@@ -20,13 +20,14 @@ import {
   RemoveShoppingCart,
   AddCircle,
   RemoveCircle,
-  Close
+  Close,
+  Cancel
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 
 export default function ProductActionButtons(props) {
-  const [product, setProduct] = useState(props.product)
+  const [product, setProduct] = useState(props.product);
 
   const [showError, setShowError] = useState(false);
   const [addToCart, setAddToCart] = useState(false);
@@ -36,9 +37,7 @@ export default function ProductActionButtons(props) {
     useState("Add to favorites");
   let [productsQuantity, setProductsQuantity] = useState(1);
 
-  useEffect(() => {
-
-  }, [productsQuantity]);
+  useEffect(() => {}, [productsQuantity]);
 
   function handleSetProductsQuantity(value) {
     value = parseInt(value);
@@ -94,12 +93,15 @@ export default function ProductActionButtons(props) {
     fontWeight: 400,
     letterSpacing: -1,
     textDecoration: "line-through",
-    fontSize: 20,
+    fontSize: 16,
+    textAlign: "center",
   });
 
   const PriceHolder = styled(Box)({
+    color: theme.palette.error.main,
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: 10,
   });
 
@@ -122,13 +124,16 @@ export default function ProductActionButtons(props) {
   const QuantityHolder = styled(Box)({
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: 10,
     fontSize: 17,
+    marginTop: theme.spacing(1.5),
   });
 
   const ActionButtons = styled(Stack)({
     marginTop: theme.spacing(3),
   });
+
   const ActionButton = styled(Button)({
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(1.5),
@@ -153,18 +158,16 @@ export default function ProductActionButtons(props) {
       "&:disabled": {},
     },
   }));
-  function renderFavoriteIcon(){
-    return addToFavorites ? <Favorite /> : <FavoriteBorder />
+  function renderFavoriteIcon() {
+    return addToFavorites ? <Favorite /> : <FavoriteBorder />;
   }
 
-  function renderCartIcon(){
-    return addToCart ? <RemoveShoppingCart /> : <AddShoppingCart />
+  function renderCartIcon() {
+    return addToCart ? <RemoveShoppingCart /> : <AddShoppingCart />;
   }
 
   function renderPrice() {
-    const price =
-      product.price -
-      product.price * (product.discount / 100);
+    const price = product.price - product.price * (product.discount / 100);
     let finalPrice;
     let priceWithNoDiscountToRender;
 
@@ -177,33 +180,31 @@ export default function ProductActionButtons(props) {
     if (product.discount > 0) {
       renderResult = (
         <Box>
-          <Discount gutterBottom variant="h5">
-            {priceWithNoDiscountToRender}
-          </Discount>
+          <Box>
+            <Box sx={{ justifyContent: "center", display: "flex", mb: 1 }}>
+              <StyledChip
+                size="small"
+                variant="filled"
+                label={`Save ${product.discount}%`}
+              ></StyledChip>
+            </Box>
+            <Discount gutterBottom>
+              {priceWithNoDiscountToRender}
+            </Discount>
+          </Box>
           <PriceHolder>
-            <MainPriceChip
-              size="medium"
-              variant="outlined"
-              color="secondary"
-              label={finalPrice}
-            ></MainPriceChip>
-            <StyledChip
-              size="small"
-              variant="filled"
-              label={`Save ${product.discount}%`}
-            ></StyledChip>
+            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              {finalPrice}
+            </Typography>
           </PriceHolder>
         </Box>
       );
     } else {
       renderResult = (
         <PriceHolder>
-          <MainPriceChip
-            size="medium"
-            variant="outlined"
-            color="secondary"
-            label={finalPrice}
-          ></MainPriceChip>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            {finalPrice}
+          </Typography>
         </PriceHolder>
       );
     }
@@ -216,9 +217,10 @@ export default function ProductActionButtons(props) {
       <Card>
         <CardContent>
           {renderPrice()}
-          <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>
+          {/* <Typography mb={theme.spacing(1)} mt={theme.spacing(1)}>
             Quantity:
-          </Typography>
+          </Typography> */}
+
           <QuantityHolder>
             <IconButton onClick={() => handleSetProductsQuantity(-1)}>
               {" "}
@@ -233,30 +235,35 @@ export default function ProductActionButtons(props) {
             <IconButton onClick={() => handleSetProductsQuantity(1)}>
               <AddCircle />
             </IconButton>
-            {`(${product.quantity} left)`}
           </QuantityHolder>
-          <Snackbar onClick={() => handleCloseError()}
+          <Typography sx={{ textAlign: "center", mt: 1 }}>
+            {`${product.quantity} items left`}
+          </Typography>
+          <Snackbar
+            onClick={() => handleCloseError()}
             ContentProps={{
               style: {
                 backgroundColor: theme.palette.error.main,
                 textAlign: "center",
                 fontWeight: 500,
                 fontSize: 18,
-                cursor: "pointer"
+                cursor: "pointer",
               },
             }}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             open={showError}
             TransitionComponent={Slide}
-            message={`In stock are ${product.quantity} items only! It is the maximum quantity you can purchase. X`}
-          >
-       </Snackbar>
+            message={product.isAvailable 
+              ? <>(In stock are {product.quantity} items only! It is the maximum quantity you can purchase.)<Cancel sx={{ml: 3}}/></> 
+              : <>Product is out of stock!<Cancel sx={{ml: 3, right: 0}}/></>}
+          ></Snackbar>
           <ActionButtons spacing={1.5}>
             <ActionButton
               onClick={() => handleAddToCart(!addToCart)}
               variant="contained"
               size="large"
-              startIcon={ renderCartIcon() }>
+              startIcon={renderCartIcon()}
+            >
               {addToCartContent}
             </ActionButton>
             <ActionButton
