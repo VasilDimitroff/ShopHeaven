@@ -41,7 +41,7 @@ export default function ProductInfoWrapper(props) {
                 {
                   // first important part of the page
                 }
-                <ImageCarousel images={product.images} />
+                <ImageCarousel product={product} />
               </Box>
             </Grid>
             <Grid item xs={12} md={6} lg={5} sx={{ position: "relative" }}>

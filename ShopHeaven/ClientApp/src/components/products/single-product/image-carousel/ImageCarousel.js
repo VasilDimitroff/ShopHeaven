@@ -7,33 +7,36 @@ import {
   Modal,
   CardMedia,
   IconButton,
+  Chip,
 } from "@mui/material";
 import ImageCarouselSlide from "./ImageCarouselSlide";
 import { Close } from "@mui/icons-material";
 import { theme } from "../../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
+import { style } from "@mui/system";
 
 function ImageCarousel(props) {
-  const [images, setImages] = useState(props.images.map((x) => x.url));
+  const [product, setProduct] = useState(props.product)
+  const [images, setImages] = useState(props.product.images.map((x) => x.url));
 
-  const indexOfThumbnail = props.images.findIndex((x) => x.isThumbnail === true);
+  const indexOfThumbnail = props.product.images.findIndex((x) => x.isThumbnail === true);
   const [bigImageIndex, setBigImageIndex] = useState(indexOfThumbnail);
 
   const [slideIndex, setSlideIndex] = useState(0);
 
   const [openModal, setOpenModal] = useState(false);
-  
-  const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
-  const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
-  const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
-  const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
-  const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
   const handleOpenModal = () => setOpenModal( prev => !prev);
 
   function SetCardsNumber() {
     let cardsPerSlide;
+
+    const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
+    const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
+    const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
+    const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
+    const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
     if (isBiggerOrXs === true) {
       cardsPerSlide = 4;
@@ -114,6 +117,7 @@ function ImageCarousel(props) {
   const StyledCard = styled(Card)({
     marginLeft: theme.spacing(0.7),
     marginRight: theme.spacing(0.7),
+    position: "relative",
     "&:hover": {
       outlineColor: theme.palette.primary.main,
       outlineStyle: "solid",
@@ -149,6 +153,15 @@ function ImageCarousel(props) {
     },
   });
 
+  const LabelsHolder = styled(Box)({
+    display: "flex",
+    gap: 7,
+    position: "absolute",
+    zIndex: 1,
+    bottom: 10,
+    left: 10
+  })
+
   return (
     <Box>
       <Box>
@@ -170,6 +183,13 @@ function ImageCarousel(props) {
           </ModalHolder>
         </StyledModal>
         <StyledCard onClick={handleOpenModal}>
+          <LabelsHolder>
+           {
+            product?.labels?.map(label => {
+              return <Chip key={label} size="small" variant="filled" color="primary" label={label}></Chip>
+            })
+           }
+          </LabelsHolder>
           <CardActionArea>
             <ProductCardMedia image={images[finalIndex]} />
           </CardActionArea>
