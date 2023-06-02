@@ -15,7 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { AddCircle, RemoveCircle } from "@mui/icons-material";
+import { AddCircle, RemoveCircle, AddPhotoAlternate } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
@@ -1154,7 +1154,7 @@ export default function CreateProduct(props) {
             borderRadius: theme.shape.borderRadius.main,
           }}
         >
-          <Typography variant="h6" sx={{pt: 4, color: theme.palette.primary.main}}>UPLOAD PRODUCT IMAGES</Typography>
+          <Typography variant="h6" sx={{pt: 4, color: theme.palette.primary.main}}><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />UPLOAD IMAGES</Typography>
           <TextField
             sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
             accept=".jpg, .png, .jpeg, .webp"

@@ -22,6 +22,7 @@ import {
   Edit,
   Photo,
   Cancel,
+  AddPhotoAlternate
 } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
@@ -1435,8 +1436,8 @@ export default function EditProduct(props) {
           <Typography
             variant="h6"
             sx={{ pt: 4, color: theme.palette.primary.main }}
-          >
-            UPLOAD PRODUCT IMAGES
+          ><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />
+            ADD MORE IMAGES
           </Typography>
           <TextField
             sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
