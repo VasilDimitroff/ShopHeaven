@@ -765,7 +765,7 @@ namespace ShopHeaven.Data.Services
             }
         }
 
-        public async Task<ProductResponseModel> GetProductAsync(ProductRequestModel model)
+        public async Task<ProductWithSimilarProductsResponseModel> GetProductWithSimilarProductsAsync(ProductRequestModel model)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
 
@@ -774,80 +774,113 @@ namespace ShopHeaven.Data.Services
                 model.UserId = "";
             }
 
-            var product = await this.db.Products
-                .Where(x => x.Id == model.Id && x.IsDeleted != true)
-                .Select(p => new ProductResponseModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Brand = p.Brand,
-                    Description = p.Description,
-                    HasGuarantee = p.HasGuarantee,
-                    isAvailable = p.IsAvailable,
-                    Price = p.Price,
-                    Discount = p.Discount,
-                    Quantity = p.Quantity,
-                    Rating = p.Rating,
-                    IsInUserCart = p.Carts
-                        .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
-                    IsInUserWishlist = p.Wishlists
-                        .FirstOrDefault(x => x.ProductId == model.Id && x.Wishlist.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
-                    Category = new CategoryBaseResponseModel
-                    {
-                        Id = p.SubCategory.MainCategoryId,
-                        Name = p.SubCategory.MainCategory.Name
-                    },
-                    Subcategory = new SubcategoryBaseResponseModel
-                    {
-                        Id = p.SubCategoryId,
-                        Name = p.SubCategory.Name
-                    },
-                    Currency = new CurrencyResponseModel
-                    {
-                        Id = p.CurrencyId,
-                        Code = p.Currency.Code,
-                        Name = p.Currency.Name
-                    },
-                    Images = p.Images
-                        .Select(i => new BasicImageResponseModel
-                        {
-                            Url = i.Image.Url,
-                            IsThumbnail = i.IsThumbnail
-                        })
-                        .ToList(),
-                    Labels = p.Labels
-                        .Select(l => l.Label.Content)
-                        .ToList(),
-                    Tags = p.Tags
-                        .Select(t => t.Tag.Name)
-                        .ToList(),
-                    Reviews = p.Reviews
-                        .Select(r => new ReviewResponseModel
-                        {
-                            Author = r.Author,
-                            Email = r.Email,
-                            Content = r.Content,
-                            RatingValue = r.RatingValue,
-                            CreatedOn = r.CreatedOn.ToString()
-                        })
-                        .ToList(),
-                    Specifications = p.Specifications
-                        .Select(s => new SpecificationResponseModel
-                        {
-                            Id = s.Id,
-                            Key = s.Key,
-                            Value = s.Value,  
-                        })
-                        .ToList()  
-                })
-                .FirstOrDefaultAsync();
+            ProductResponseModel? product = await GetProductByIdAsync(model);
 
             if (product == null)
             {
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
-            return product;
+            //to do: implement WHERE clause in GetSimilarProducts to fill with right products
+            List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductByProductIdAsync(model);
+
+            var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel
+            {
+                Product = product,
+                SimilarProducts = similarProducts
+            };
+
+            return productWithSimilarProductResponseModel;
+        }
+
+        private async Task<List<ProductGalleryResponseModel>> GetSimilarProductByProductIdAsync(ProductRequestModel model)
+        {
+            return await this.db.Products
+                .Where(p => p.IsDeleted != true)
+                .Take(model.SimilarProductsCount)
+                .Select(p => new ProductGalleryResponseModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Discount = p.Discount,
+                    Brand = p.Brand,
+                    Currency = p.Currency.Code,
+                    IsAvailable = p.IsAvailable,
+                    Price = p.Price,
+                    Rating = p.Rating,
+                    Labels = p.Labels
+                        .Select(x => x.Label.Content)
+                        .ToList(),
+                    Image = p.Images
+                            .FirstOrDefault(x => x.IsDeleted != true && x.IsThumbnail).Image.Url ?? p.Images.FirstOrDefault(x => x.IsDeleted != true).Image.Url
+                })
+                .ToListAsync();
+        }
+
+        private async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
+        {
+            return await this.db.Products
+                            .Where(x => x.Id == model.Id && x.IsDeleted != true)
+                            .Select(p => new ProductResponseModel
+                            {
+                                Id = p.Id,
+                                Name = p.Name,
+                                Brand = p.Brand,
+                                Description = p.Description,
+                                HasGuarantee = p.HasGuarantee,
+                                isAvailable = p.IsAvailable,
+                                Currency = p.Currency.Code,
+                                Price = p.Price,
+                                Discount = p.Discount,
+                                Quantity = p.Quantity,
+                                Rating = p.Rating,
+                                IsInUserCart = p.Carts
+                                    .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
+                                IsInUserWishlist = p.Wishlists
+                                    .FirstOrDefault(x => x.ProductId == model.Id && x.Wishlist.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
+                                Category = new CategoryBaseResponseModel
+                                {
+                                    Id = p.SubCategory.MainCategoryId,
+                                    Name = p.SubCategory.MainCategory.Name
+                                },
+                                Subcategory = new SubcategoryBaseResponseModel
+                                {
+                                    Id = p.SubCategoryId,
+                                    Name = p.SubCategory.Name
+                                },
+                                Images = p.Images
+                                    .Select(i => new BasicImageResponseModel
+                                    {
+                                        Url = i.Image.Url,
+                                        IsThumbnail = i.IsThumbnail
+                                    })
+                                    .ToList(),
+                                Labels = p.Labels
+                                    .Select(l => l.Label.Content)
+                                    .ToList(),
+                                Tags = p.Tags
+                                    .Select(t => t.Tag.Name)
+                                    .ToList(),
+                                Reviews = p.Reviews
+                                    .Select(r => new ReviewResponseModel
+                                    {
+                                        Author = r.Author,
+                                        Email = r.Email,
+                                        Content = r.Content,
+                                        RatingValue = r.RatingValue,
+                                        CreatedOn = r.CreatedOn.ToString()
+                                    })
+                                    .ToList(),
+                                Specifications = p.Specifications
+                                    .Select(s => new SpecificationResponseModel
+                                    {
+                                        Id = s.Id,
+                                        Key = s.Key,
+                                        Value = s.Value,
+                                    })
+                                    .ToList()
+                            })
+                            .FirstOrDefaultAsync();
         }
 
         private void ConfigureDeletionInfo(Product product, bool forDelete)
@@ -1175,23 +1208,9 @@ namespace ShopHeaven.Data.Services
                     Discount = product.Discount,
                     IsAvailable = product.IsAvailable,
                     Rating = product.Rating,
-                    Currency = new CurrencyResponseModel
-                    {
-                        Id = product.Currency.Id,
-                        Name = product.Currency.Name,
-                        Code = product.Currency.Code
-                    },
-                    Thumbnail = new BasicImageResponseModel
-                    {
-                        Url = product.Images
-                            .FirstOrDefault(x => x.IsThumbnail) != null
-                                    ? product.Images.FirstOrDefault(x => x.IsThumbnail).Image.Url
-                                    : "",
-                        IsThumbnail = product.Images
-                            .FirstOrDefault(x => x.IsThumbnail == true) != null
-                                    ? product.Images.FirstOrDefault(x => x.IsThumbnail == true).IsThumbnail
-                                    : false,
-                    },
+                    Currency = product.Currency.Code,
+                    Image = product.Images
+                            .FirstOrDefault(x => x.IsThumbnail && x.IsDeleted != true).Image.Url ?? product.Images.FirstOrDefault(x => x.IsDeleted != true).Image.Url,
                     Labels = product.Labels
                         .Select(x => x.Label.Content)
                         .ToList()

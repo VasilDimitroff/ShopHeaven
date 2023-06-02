@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Rating,
@@ -23,8 +23,11 @@ import { theme } from "../../../theme";
 function ProductCarouselCard(props) {
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState(props.product);
   const [subcategory, setSubcategory] = useState(props.subcategory);
+
+  useEffect(() => {
+    console.log("3. IN CAROUSEL CARD", props.product)
+  }, [props.products])
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
@@ -113,18 +116,18 @@ function ProductCarouselCard(props) {
   });
 
   return (
-    <StyledCard>
+   props.product ?  <StyledCard>
       <CardActionArea>
         <ProductCardMedia
-          onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
-          title={product.name}
-          image={product.thumbnail.url}
+          onClick={() => navigate(`${singleProductBasePath}${props.product.id}`)}
+          title={props.product.name}
+          image={props.image}
         />
         <RibbonHolder>
-          {product.discount > 0 ? (
+          {props.product.discount > 0 ? (
             <Box>
               <ProductRibbon
-                label={`- ${product.discount}%`}
+                label={`- ${props.product.discount}%`}
                 color="error"
                 variant="filled"
               />
@@ -134,7 +137,7 @@ function ProductCarouselCard(props) {
           )}
         </RibbonHolder>
         <LabelsHolder>
-          {product.labels.map((label) => {
+          {props.product.labels.map((label) => {
             return (
               <ProductLabel
                 key={label}
@@ -157,25 +160,25 @@ function ProductCarouselCard(props) {
         )}
         <StyledCardActionArea>
           <ProductName
-            onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
+            onClick={() => navigate(`${singleProductBasePath}${props.product.id}`)}
           >
-            {product.name.length > maxNameLengthInProductCard
-              ? product.name.slice(0, maxNameLengthInProductCard) + "..."
-              : product.name.slice(0, maxNameLengthInProductCard)}
+            {props.product.name.length > maxNameLengthInProductCard
+              ? props.product.name.slice(0, maxNameLengthInProductCard) + "..."
+              : props.product.name.slice(0, maxNameLengthInProductCard)}
           </ProductName>
         </StyledCardActionArea>
         <Box>
           <RatingWrapper>
             <Rating
               name="half-rating-read"
-              defaultValue={product.rating}
+              defaultValue={props.product.rating}
               precision={0.5}
               readOnly
               size="small"
             />
-            <RatingText component="legend">{product.rating} stars</RatingText>
+            <RatingText component="legend">{props.product.rating} stars</RatingText>
           </RatingWrapper>
-          {product?.discount > 0 ? (
+          {props.product?.discount > 0 ? (
             <Box
               sx={{
                 height: 25,
@@ -183,17 +186,17 @@ function ProductCarouselCard(props) {
                 textDecoration: "line-through",
               }}
             >
-              {product.currency.code} {product.price.toFixed(2)}
+              {props.product.currency} {props.product.price.toFixed(2)}
             </Box>
           ) : (
             <Box sx={{ height: 25 }}></Box>
           )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {product.currency.code}{" "}
+              {props.product.currency}{" "}
               {(
                 Math.round(
-                  (product.price - (product.price * product.discount) / 100) *
+                  (props.product.price - (props.product.price * props.product.discount) / 100) *
                     100
                 ) / 100
               ).toFixed(2)}
@@ -225,7 +228,7 @@ function ProductCarouselCard(props) {
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
-    </StyledCard>
+    </StyledCard> : ""
   );
 }
 

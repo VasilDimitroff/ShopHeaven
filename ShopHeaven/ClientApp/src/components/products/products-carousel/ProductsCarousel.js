@@ -1,13 +1,18 @@
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Box, Typography } from "@mui/material";
 import ProductCarouselSlide from "./ProductCarouselSlide";
 import { theme } from "../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import { products } from "../../products";
 
 function ProductsCarousel(props) {
+
+useEffect(() => {
+  console.log("1. IN PRODUCT CAORUSEL", props.products);
+}, [props.products])
+
+
   function SetCardsNumber() {
     let cardsPerSlide;
 
@@ -38,7 +43,7 @@ function ProductsCarousel(props) {
 
   function ReturnSlidesInfo() {
     let cardsCountPerSlide = SetCardsNumber();
-    let slidesCount = Math.ceil(products.length / cardsCountPerSlide);
+    let slidesCount = Math.ceil(props.products.length / cardsCountPerSlide);
 
     let slidesInfo = [];
 
@@ -74,48 +79,48 @@ function ProductsCarousel(props) {
   });
 
   return (
-    <Box>
-    <CarouselWrapper>
-      <StyledHeading variant="h4">{props.headingName}</StyledHeading>
-      <Carousel
-        animation="slide"
-        swipe={false}
-        navButtonsAlwaysVisible={true}
-        indicators={true}
-        interval={12000}
-        cycleNavigation={false}
-        indicatorIconButtonProps={{
-          style: {
-            marginTop: theme.spacing(3),
-          },
-        }}
-        activeIndicatorIconButtonProps={{
-          style: {
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.main,
-          },
-        }}
-        navButtonsProps={{
-          style: {
-            opacity: "0.8",
-            backgroundColor: theme.palette.primary.main,
-          },
-        }}
-      >
-        {ReturnSlidesInfo().map((rowInfo, index) => {
-          return (
-            <ProductCarouselSlide
-              key={index}
-              products={products.slice(
-                rowInfo.startIndex,
-                rowInfo.startIndex + rowInfo.cardsPerSlide
-              )}
-            />
-          );
-        })}
-      </Carousel>
-      </CarouselWrapper>
-    </Box>
+    props.products ? (<Box>
+      <CarouselWrapper>
+        <StyledHeading variant="h4">{props.headingName}</StyledHeading>
+        <Carousel
+          animation="slide"
+          swipe={false}
+          navButtonsAlwaysVisible={true}
+          indicators={true}
+          interval={12000}
+          cycleNavigation={false}
+          indicatorIconButtonProps={{
+            style: {
+              marginTop: theme.spacing(3),
+            },
+          }}
+          activeIndicatorIconButtonProps={{
+            style: {
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.main,
+            },
+          }}
+          navButtonsProps={{
+            style: {
+              opacity: "0.8",
+              backgroundColor: theme.palette.primary.main,
+            },
+          }}
+        >
+          {ReturnSlidesInfo().map((rowInfo) => {
+            return (
+              <ProductCarouselSlide  
+                key={rowInfo.startIndex}
+                products={props.products?.slice(
+                  rowInfo.startIndex,
+                  rowInfo.startIndex + rowInfo.cardsPerSlide
+                )}
+              />
+            );
+          })}
+        </Carousel>
+        </CarouselWrapper>
+      </Box>) : ""
   );
 }
 

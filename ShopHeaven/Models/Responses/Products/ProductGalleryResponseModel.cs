@@ -8,7 +8,7 @@ namespace ShopHeaven.Models.Responses.Products
     {
         public string Brand { get; set; }
 
-        public CurrencyResponseModel Currency { get; set; }
+        public string Currency { get; set; }
 
         public decimal Price { get; set; }
 
@@ -18,7 +18,7 @@ namespace ShopHeaven.Models.Responses.Products
 
         public double Rating { get; set; }
 
-        public BasicImageResponseModel Thumbnail { get; set; }
+        public string Image { get; set; } //this is thumbnail
 
         public ICollection<string> Labels { get; set; }
     }

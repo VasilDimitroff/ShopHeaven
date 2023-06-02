@@ -40,7 +40,7 @@ namespace ShopHeaven.Controllers
 
             try
             {
-                var product = await this.productsService.GetProductAsync(model);
+                var product = await this.productsService.GetProductWithSimilarProductsAsync(model);
                 return Ok(product);
             }
             catch (Exception ex)

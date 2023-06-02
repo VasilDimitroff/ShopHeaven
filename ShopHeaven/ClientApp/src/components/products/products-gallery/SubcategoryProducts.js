@@ -150,7 +150,7 @@ export default function SubcategoryProducts() {
           }
         );
 
-        //console.log(response?.data);
+        console.log(response?.data);
 
         setProducts(response?.data?.products);
         setCategory(response?.data?.category);
@@ -903,7 +903,7 @@ export default function SubcategoryProducts() {
                           }}
                           key={index}
                         >
-                          <ProductCarouselCard product={product} />
+                          <ProductCarouselCard product={product} image={product.image} />
                         </Grid>
                       ))}
                     </Grid>

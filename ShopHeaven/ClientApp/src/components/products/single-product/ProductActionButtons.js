@@ -182,9 +182,9 @@ export default function ProductActionButtons(props) {
     let finalPrice;
     let priceWithNoDiscountToRender;
 
-    finalPrice = `${product.currency.code} ${price.toFixed(2)}`;
+    finalPrice = `${product.currency} ${price.toFixed(2)}`;
     priceWithNoDiscountToRender = `${
-      product.currency.code
+      product.currency
     } ${product.price.toFixed(2)}`;
     let renderResult;
 

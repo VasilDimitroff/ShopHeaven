@@ -34,7 +34,7 @@ namespace ShopHeaven.Models.Responses.Products
 
         public SubcategoryBaseResponseModel Subcategory { get; set; }
 
-        public CurrencyResponseModel Currency { get; set; }
+        public string Currency { get; set; }
 
         public ICollection<string> Tags { get; set; }
 
