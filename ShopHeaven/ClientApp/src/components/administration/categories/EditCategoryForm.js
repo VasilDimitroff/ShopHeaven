@@ -2,7 +2,6 @@ import { React, useState, useRef } from "react";
 import {
   Box,
   Button,
-  InputAdornment,
   Typography,
   TextField,
   Paper,
@@ -11,7 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { PhotoCamera, Edit, Forward } from "@mui/icons-material";
+import { AddPhotoAlternate, Edit, Forward } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
@@ -27,8 +26,7 @@ export default function EditCategoryForm(props) {
 
   const [editCategoryResponseMessage, setEditCategoryResponseMessage] =
     useState("");
-  const [editCategoryErrorMessage, setEditCategoryErrorMessage] =
-    useState("");
+  const [editCategoryErrorMessage, setEditCategoryErrorMessage] = useState("");
 
   function onEditCategory(e) {
     e.preventDefault();
@@ -141,48 +139,50 @@ export default function EditCategoryForm(props) {
       <form onSubmit={onEditCategory}>
         <InputBox>
           <StyledInput
-            required
             inputRef={categoryNameRef}
             label="Category name"
-            variant="standard"
+            variant="outlined"
             defaultValue={category.name}
           />
         </InputBox>
-        <ImageHolder>
-          <img
-            style={{ objectFit: "cover" }}
-            width="250px"
-            height="150px"
-            src={category.image}
-            alt={category.name}
-          />
-        </ImageHolder>
-        <InputBox>
-          <StyledInput
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <PhotoCamera />
-                </InputAdornment>
-              ),
-            }}
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+            marginTop: theme.spacing(2),
+          }}
+        >
+          <ImageHolder>
+            <img
+              style={{ objectFit: "cover" }}
+              width="200px"
+              height="140px"
+              src={category.image}
+              alt={category.name}
+            />
+          </ImageHolder>
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
+            CHANGE IMAGE
+          </Typography>
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            .jpg, .jpeg, .png and .webp file formats are allowed
+          </Typography>
+          <TextField
+            sx={{ m: theme.spacing(3, 0, 7, 0) }}
             accept=".jpg, .png, .jpeg, .webp"
             type="file"
-            variant="standard"
+            variant="outlined"
             id="edit-category-image"
           />
-          <ul
-            style={{
-              color: theme.palette.warning.main,
-              marginTop: theme.spacing(2),
-              listStyle: "none"
-            }}
-          >
-            <li>
-            <Forward/> Warning! If you submit a new image, the old one will be deleted
-            </li>
-            <li><Forward/>.jpg, .jpeg, .png and .webp file formats are allowed</li>
-          </ul>
         </InputBox>
         <InputBox>
           <StyledInput
@@ -195,19 +195,35 @@ export default function EditCategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton  color="secondary"  startIcon={<Edit />} type="submit" size="large" variant="contained">
+          <CreateCategoryButton
+            color="secondary"
+            startIcon={<Edit />}
+            type="submit"
+            size="large"
+            variant="contained"
+          >
             Edit category
           </CreateCategoryButton>
         </InputBox>
       </form>
-      { editCategoryResponseMessage
-         ? <Zoom in={editCategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{editCategoryResponseMessage}</Alert></Zoom>
-         : ""
-      }
-        { editCategoryErrorMessage
-         ? <Zoom in={editCategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{editCategoryErrorMessage}</Alert></Zoom>
-         : ""
-      }
+      {editCategoryResponseMessage ? (
+        <Zoom in={editCategoryResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {editCategoryResponseMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+      {editCategoryErrorMessage ? (
+        <Zoom in={editCategoryErrorMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            {editCategoryErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
     </Paper>
   );
 }

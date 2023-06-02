@@ -7,11 +7,11 @@ import {
   TextField,
   Paper,
   Alert,
-  Zoom
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { PhotoCamera, AddCircle } from "@mui/icons-material";
+import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
@@ -47,8 +47,11 @@ export default function CreateCategory(props) {
       return;
     }
 
-    setCategoryName(formCategoryName);
-    setCategoryDescription(formCategoryDescription);
+    if (!formCategoryImage) {
+      setCreateCategoryResponseMessage("");
+      setCreateCategoryErrorMessage("Category must contain almost 1 image");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -122,28 +125,52 @@ export default function CreateCategory(props) {
       <form onSubmit={onCreateCategory}>
         <InputBox>
           <ProductInfoInput
-            required
             inputRef={categoryNameRef}
             label="Category name"
             defaultValue={categoryName}
-            variant="standard"
+            variant="outlined"
           />
         </InputBox>
-        <InputBox>
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+            marginTop: theme.spacing(2),
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
+            UPLOAD IMAGE
+          </Typography>
+          <Typography
+            sx={{ pt: 2, color: theme.palette.warning.main }}
+          >
+           .jpg, .jpeg, .png and .webp file formats are allowed
+          </Typography>
+          <TextField
+            sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
+            accept=".jpg, .png, .jpeg, .webp"
+            type="file"
+            variant="outlined"
+            id="category-image"
+          />
+
+          {/* 
           <ProductInfoInput
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <PhotoCamera />
-                </InputAdornment>
-              ),
-            }}
             accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="standard"
             id="category-image"
           />
+*/}
         </InputBox>
         <InputBox>
           <ProductInfoInput
@@ -152,23 +179,39 @@ export default function CreateCategory(props) {
             defaultValue={categoryDescription}
             multiline
             rows={5}
-            variant="standard"
+            variant="outlined"
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton color="secondary" startIcon={<AddCircle />} type="submit" size="large" variant="contained">
+          <CreateCategoryButton
+            color="secondary"
+            startIcon={<AddCircle />}
+            type="submit"
+            size="large"
+            variant="contained"
+          >
             Create category
           </CreateCategoryButton>
         </InputBox>
       </form>
-      { createCategoryResponseMessage
-         ? <Zoom in={createCategoryResponseMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="success">{createCategoryResponseMessage}</Alert></Zoom>
-         : ""
-      }
-        { createCategoryErrorMessage
-         ? <Zoom in={createCategoryErrorMessage.length > 0 ? true : false}><Alert sx={{marginTop: theme.spacing(1)}} severity="error">{createCategoryErrorMessage}</Alert></Zoom>
-         : ""
-      }
+      {createCategoryResponseMessage ? (
+        <Zoom in={createCategoryResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {createCategoryResponseMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+      {createCategoryErrorMessage ? (
+        <Zoom in={createCategoryErrorMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            {createCategoryErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
     </Paper>
   );
 }
