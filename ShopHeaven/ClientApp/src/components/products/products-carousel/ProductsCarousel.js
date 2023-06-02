@@ -7,7 +7,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
-
   function SetCardsNumber() {
     let cardsPerSlide;
 
@@ -57,15 +56,18 @@ function ProductsCarousel(props) {
   }
 
   const CarouselWrapper = styled(Box)({
-    margin: "auto", width: "100%", display: "block", width: "80%",
+    margin: "auto",
+    width: "100%",
     display: "block",
-    margin: "auto",      
+    width: "80%",
+    display: "block",
+    margin: "auto",
     paddingTop: theme.spacing(2),
     [theme.breakpoints.down("md")]: {
       width: "95%",
       paddingTop: theme.spacing(3),
     },
-})
+  });
 
   const StyledHeading = styled(Typography)({
     [theme.breakpoints.down("md")]: {
@@ -74,7 +76,7 @@ function ProductsCarousel(props) {
   });
 
   return (
-   <Box>
+    <Box>
       <CarouselWrapper>
         <StyledHeading variant="h4">{props.headingName}</StyledHeading>
         <Carousel
@@ -104,7 +106,7 @@ function ProductsCarousel(props) {
         >
           {ReturnSlidesInfo().map((rowInfo) => {
             return (
-              <ProductCarouselSlide  
+              <ProductCarouselSlide
                 key={rowInfo.startIndex}
                 products={props.products?.slice(
                   rowInfo.startIndex,
@@ -114,8 +116,8 @@ function ProductsCarousel(props) {
             );
           })}
         </Carousel>
-        </CarouselWrapper>
-      </Box>
+      </CarouselWrapper>
+    </Box>
   );
 }
 

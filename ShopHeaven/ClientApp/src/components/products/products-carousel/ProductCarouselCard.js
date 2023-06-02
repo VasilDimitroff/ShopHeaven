@@ -64,6 +64,13 @@ function ProductCarouselCard(props) {
   const StyledCardActionArea = styled(Box)({
     marginTop: theme.spacing(1.5),
     marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+     
+    },
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
   });
 
   const ProductName = styled(Typography)({
@@ -156,7 +163,7 @@ function ProductCarouselCard(props) {
         ) : (
           <></>
         )}
-        <StyledCardActionArea>
+        <StyledCardActionArea sx={{border: "2px solid black"}}>
           <ProductName
             onClick={() =>
               navigate(`${singleProductBasePath}${props.product.id}`)

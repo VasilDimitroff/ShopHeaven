@@ -15,12 +15,19 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { AddCircle, RemoveCircle, AddPhotoAlternate } from "@mui/icons-material";
+import {
+  AddCircle,
+  RemoveCircle,
+  AddPhotoAlternate,
+} from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { noPermissionsForOperationMessage, allowedFileFormats } from "../../../constants";
+import {
+  noPermissionsForOperationMessage,
+  allowedFileFormats,
+} from "../../../constants";
 
 export default function CreateProduct(props) {
   // api requests
@@ -171,7 +178,7 @@ export default function CreateProduct(props) {
 
     let isFormValid = validateForm();
 
-   if (!isFormValid) {
+    if (!isFormValid) {
       return;
     }
 
@@ -261,9 +268,7 @@ export default function CreateProduct(props) {
       setCreateProductResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setCreateProductErrorMessage(
-          noPermissionsForOperationMessage
-        );
+        setCreateProductErrorMessage(noPermissionsForOperationMessage);
       } else {
         setCreateProductErrorMessage(error?.response?.data);
       }
@@ -276,8 +281,8 @@ export default function CreateProduct(props) {
     let errors = [];
 
     if (productNameRef.current.value.length < 2) {
-      let msg = "Product name must contain at least 2 characters"
-      errors.push(msg)
+      let msg = "Product name must contain at least 2 characters";
+      errors.push(msg);
 
       setMessages((prev) => {
         return {
@@ -297,8 +302,8 @@ export default function CreateProduct(props) {
     }
 
     if (productDescriptionRef.current.value.length < 5) {
-      let msg = "Product description must contain at least 5 characters"
-      errors.push(msg)
+      let msg = "Product description must contain at least 5 characters";
+      errors.push(msg);
 
       setMessages((prev) => {
         return {
@@ -318,8 +323,8 @@ export default function CreateProduct(props) {
     }
 
     if (!productCategoryRef.current.value) {
-      let msg = "Please select a valid category"
-      errors.push(msg)
+      let msg = "Please select a valid category";
+      errors.push(msg);
 
       setMessages((prev) => {
         return {
@@ -474,7 +479,8 @@ export default function CreateProduct(props) {
     }
 
     if (productTagsRef.current.value.trim().length < 1) {
-      let msg = "Product must contain at least 1 tag! (Be sure you saved the tags)";
+      let msg =
+        "Product must contain at least 1 tag! (Be sure you saved the tags)";
       errors.push(msg);
 
       setMessages((prev) => {
@@ -515,17 +521,18 @@ export default function CreateProduct(props) {
       });
     }
 
-    if(!isValid) {
-      let final = 'The next validation errors occurs. Please resolve them and try again: \r\n';
+    if (!isValid) {
+      let final =
+        "The next validation errors occurs. Please resolve them and try again: \r\n";
       for (let i = 0; i < errors.length; i++) {
-         final += ` (${i + 1}). ${errors[i]} \r\n`;
+        final += ` (${i + 1}). ${errors[i]} \r\n`;
       }
-  
-      console.log("CREATION ERRORS",final);
+
+      console.log("CREATION ERRORS", final);
       setCreateProductResponseMessage("");
       setCreateProductErrorMessage(final);
     }
-   
+
     return isValid;
   }
 
@@ -725,9 +732,9 @@ export default function CreateProduct(props) {
                 name="category"
                 defaultValue={productCategoryId}
                 onChange={loadSubcategories}
-              > <option value={""}>
-                 {"--- CHOOSE MAIN CATEGORY ---"}
-              </option>
+              >
+                {" "}
+                <option value={""}>{"--- CHOOSE MAIN CATEGORY ---"}</option>
                 {categories?.map((category) => (
                   <option key={category?.id} value={category?.id}>
                     {category?.name}
@@ -1154,7 +1161,13 @@ export default function CreateProduct(props) {
             borderRadius: theme.shape.borderRadius.main,
           }}
         >
-          <Typography variant="h6" sx={{pt: 4, color: theme.palette.primary.main}}><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />UPLOAD IMAGES</Typography>
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
+            UPLOAD IMAGES
+          </Typography>
           <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
             {allowedFileFormats} file formats are allowed
           </Typography>

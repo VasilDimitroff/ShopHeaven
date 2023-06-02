@@ -25,7 +25,11 @@ export const productsPerPageInAdminPanel = 5; // how many products to view per p
 export const productsPerPageInSubCategoryPage = 20;
 
 //price range filters - for product gallery
-export const maxProductPriceRangeGroup = "0 - 5000000"; // it will not apply price filter
+
+//max price in the app - look and in the backend
+// if you want to change eighthGroupProductPriceRange Max to something else, look at this and in SubcategoryProducts request
+export const maxApplicationPrice = "5000000"; 
+export const maxProductPriceRangeGroup = `0 - ${maxApplicationPrice}`; // it will not apply price filter
 export const firstGroupProductPriceRange = "0 - 50";
 export const secondGroupProductPriceRange = "51 - 100";
 export const thirdGroupProductPriceRange = "101 - 200";
@@ -34,9 +38,6 @@ export const fifthGroupProductPriceRange = "501 - 1000";
 export const sixthGroupProductPriceRange = "1001 - 1500";
 export const seventhGroupProductPriceRange = "1501 - 2000";
 export const eighthGroupProductPriceRange = "2001 - MAX";
-//max price in the app - look and in the backend
-// if you want to change eighthGroupProductPriceRange Max to something else, look at this and in SubcategoryProducts request
-export const maxApplicationPrice = "5000000"; 
 
 // rating filters - for product gallery
 export const initialRatingFilterValue = 0; // it will not apply rating filter

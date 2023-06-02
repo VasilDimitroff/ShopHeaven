@@ -122,6 +122,7 @@ export default function SubcategoryProducts() {
         let lowestPrice = parseFloat(pricesArray[0].trim());
         let highestPrice = null;
 
+        //if selected price range is the last, then second element in the array is MAX, so must to proceed it
         if (filters.priceRange === eighthGroupProductPriceRange) {
           highestPrice = parseFloat(maxApplicationPrice.trim());
         } else {

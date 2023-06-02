@@ -12,7 +12,7 @@ import {
   singleProductBasePath,
   subcategoryProductsBaseUrl,
   subcategoriesOfMainCategoryBaseUrl,
-  similarProductsForSingleProductPageSlider
+  similarProductsForSingleProductPageSlider,
 } from "../../../constants";
 
 export default function Product() {
@@ -29,7 +29,11 @@ export default function Product() {
       try {
         const response = await axios.post(
           ApiEndpoints.products.getById,
-          { id: params.productId, userId: auth.userId, similarProductsCount: similarProductsForSingleProductPageSlider },
+          {
+            id: params.productId,
+            userId: auth.userId,
+            similarProductsCount: similarProductsForSingleProductPageSlider,
+          },
           {
             signal: controller.signal,
           }
@@ -86,7 +90,6 @@ export default function Product() {
             products={similarProducts}
             headingName="Similar Products"
           />
-          
           <ProductDetailInfo product={product} />
         </>
       ) : (
