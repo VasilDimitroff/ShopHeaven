@@ -107,7 +107,7 @@ export default function CreateProduct(props) {
 
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
-    console.log(checkedCategoryId);
+    console.log("CATEOGRY:", checkedCategoryId);
 
     //3
     setValuesToStates();
@@ -714,7 +714,7 @@ export default function CreateProduct(props) {
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <Divider>
                 <SubheadingChip
-                  label="CHANGE CATEGORY"
+                  label="SELECT CATEGORY"
                   variant="outlined"
                   color="primary"
                 />
@@ -725,7 +725,9 @@ export default function CreateProduct(props) {
                 name="category"
                 defaultValue={productCategoryId}
                 onChange={loadSubcategories}
-              >
+              > <option value={""}>
+                 {"--- CHOOSE MAIN CATEGORY ---"}
+              </option>
                 {categories?.map((category) => (
                   <option key={category?.id} value={category?.id}>
                     {category?.name}
@@ -743,7 +745,7 @@ export default function CreateProduct(props) {
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <Divider>
                 <SubheadingChip
-                  label="CHANGE SUBCATEGORY"
+                  label="SELECT SUBCATEGORY"
                   variant="outlined"
                   color="primary"
                 />
