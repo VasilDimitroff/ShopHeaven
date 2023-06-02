@@ -20,7 +20,7 @@ import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { noPermissionsForOperationMessage } from "../../../constants";
+import { noPermissionsForOperationMessage, allowedFileFormats } from "../../../constants";
 
 export default function CreateProduct(props) {
   // api requests
@@ -1155,9 +1155,12 @@ export default function CreateProduct(props) {
           }}
         >
           <Typography variant="h6" sx={{pt: 4, color: theme.palette.primary.main}}><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />UPLOAD IMAGES</Typography>
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            {allowedFileFormats} file formats are allowed
+          </Typography>
           <TextField
             sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
-            accept=".jpg, .png, .jpeg, .webp"
+            accept={allowedFileFormats}
             type="file"
             variant="outlined"
             id="create-product-photos-image"

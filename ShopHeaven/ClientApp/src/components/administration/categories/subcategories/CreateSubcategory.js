@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { AddCircle, PhotoCamera } from "@mui/icons-material";
+import { AddCircle, AddPhotoAlternate } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
-import { noPermissionsForOperationMessage } from "../../../../constants";
+import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../../constants";
 
 export default function CreateSubcategory(props) {
   let { auth } = useAuth();
@@ -46,6 +46,12 @@ export default function CreateSubcategory(props) {
       setCreateSubcategoryErrorMessage(
         "Subcategory name must contain almost 1 character"
       );
+      return;
+    }
+ 
+    if (!formSubCategoryImage) {
+      setCreateSubcategoryResponseMessage("");
+      setCreateSubcategoryErrorMessage("Subcategory must contain almost 1 image");
       return;
     }
 
@@ -130,45 +136,57 @@ export default function CreateSubcategory(props) {
       <form onSubmit={onCreateSubcategory}>
         <InputBox>
           <StyledInput
-            required
             inputRef={subcategoryNameRef}
             label="Subcategory name"
             defaultValue={subcategoryName}
-            variant="standard"
+            variant="outlined"
           />
         </InputBox>
-        <InputBox>
-          <StyledInput
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <PhotoCamera />
-                </InputAdornment>
-              ),
-            }}
-            accept=".jpg, .png, .jpeg, .webp"
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+            marginTop: theme.spacing(2),
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
+            UPLOAD IMAGE
+          </Typography>
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            {allowedFileFormats} file formats are allowed
+          </Typography>
+          <TextField
+            sx={{ p: theme.spacing(3, 0, 7, 0) }}
+            accept={allowedFileFormats}
             type="file"
-            variant="standard"
+            variant="outlined"
             id="subcategory-image"
           />
         </InputBox>
         <InputBox>
           <StyledInput
             inputRef={subcategoryDescriptionRef}
-            id="123"
             label="Subcategory Description"
             defaultValue={subcategoryDescription}
             multiline
             rows={5}
-            variant="standard"
+            variant="outlined"
           />
         </InputBox>
         <InputBox>
           <CreateSubCategoryButton
             type="submit"
             size="large"
-            color="secondary"  
+            color="secondary"
             variant="contained"
             startIcon={<AddCircle />}
           >
@@ -187,7 +205,11 @@ export default function CreateSubcategory(props) {
       )}
       {createSubcategoryErrorMessage ? (
         <Zoom in={createSubcategoryErrorMessage.length > 0 ? true : false}>
-          <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="error">
+          <Alert
+            sx={{ marginTop: theme.spacing(1) }}
+            variant="filled"
+            severity="error"
+          >
             {createSubcategoryErrorMessage}
           </Alert>
         </Zoom>

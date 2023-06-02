@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { AddPhotoAlternate, Edit, Forward } from "@mui/icons-material";
+import { AddPhotoAlternate, Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
+import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 
@@ -92,9 +93,7 @@ export default function EditCategoryForm(props) {
     } catch (error) {
       setEditCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setEditCategoryErrorMessage(
-          "You have no permissions to perform the operation"
-        );
+        setEditCategoryErrorMessage(noPermissionsForOperationMessage);
       } else {
         setEditCategoryErrorMessage("Error!");
       }
@@ -174,11 +173,11 @@ export default function EditCategoryForm(props) {
             CHANGE IMAGE
           </Typography>
           <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
-            .jpg, .jpeg, .png and .webp file formats are allowed
+            {allowedFileFormats} file formats are allowed
           </Typography>
           <TextField
             sx={{ m: theme.spacing(3, 0, 7, 0) }}
-            accept=".jpg, .png, .jpeg, .webp"
+            accept={allowedFileFormats}
             type="file"
             variant="outlined"
             id="edit-category-image"

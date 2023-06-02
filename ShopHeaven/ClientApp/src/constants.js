@@ -76,3 +76,6 @@ export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
 
 //product card
 export const maxNameLengthInProductCard = 60;
+
+//allowed file formats in upload image functionality
+export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"

@@ -28,7 +28,7 @@ import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { noPermissionsForOperationMessage } from "../../../constants";
+import { noPermissionsForOperationMessage, allowedFileFormats } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
 
 export default function EditProduct(props) {
@@ -1439,9 +1439,12 @@ export default function EditProduct(props) {
           ><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />
             ADD MORE IMAGES
           </Typography>
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            {allowedFileFormats} file formats are allowed
+          </Typography>
           <TextField
             sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
-            accept=".jpg, .png, .jpeg, .webp"
+            accept={allowedFileFormats}
             type="file"
             variant="outlined"
             id="edit-product-photos-image"
@@ -1451,7 +1454,7 @@ export default function EditProduct(props) {
           />
           {/*
           <ProductInfoInput
-            accept=".jpg, .png, .jpeg, .webp"
+            accept={allowedFileFormats}
             type="file"
             variant="outlined"
             id="edit-product-photos-image"

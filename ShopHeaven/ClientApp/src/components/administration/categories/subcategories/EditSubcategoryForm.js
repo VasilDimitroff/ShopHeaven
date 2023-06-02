@@ -11,10 +11,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { PhotoCamera, Edit, Forward } from "@mui/icons-material";
+import { Edit, AddPhotoAlternate } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../../hooks/useAuth";
+import { allowedFileFormats } from "../../../../constants";
 
 export default function EditSubcategoryForm(props) {
   let { auth } = useAuth();
@@ -122,7 +123,9 @@ export default function EditSubcategoryForm(props) {
   });
 
   return (
-    <Paper sx={{ paddingTop: 2, paddingBottom: 2, marginTop: theme.spacing(2)}}>
+    <Paper
+      sx={{ paddingTop: 2, paddingBottom: 2, marginTop: theme.spacing(2) }}
+    >
       <Typography
         sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
         id="transition-modal-title"
@@ -142,49 +145,44 @@ export default function EditSubcategoryForm(props) {
             defaultValue={subcategory.name}
           />
         </InputBox>
-        <ImageHolder>
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+            marginTop: theme.spacing(2),
+          }}
+        >
+                  <ImageHolder>
           <img
-            style={{
-              maxWidth: "750px",
-              maxHeight: "450px",
-              display: "block",
-              width: "100%",
-              margin: "auto",
-            }}
+            style={{ objectFit: "cover" }}
+            width="200px"
+            height="140px"
             src={subcategory.image}
             alt={subcategory.name}
           />
         </ImageHolder>
-        <InputBox>
-          <StyledInput
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <PhotoCamera />
-                </InputAdornment>
-              ),
-            }}
-            accept=".jpg, .png, .jpeg, .webp"
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
+            CHANGE IMAGE
+          </Typography>
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            {allowedFileFormats} file formats are allowed
+          </Typography>
+          <TextField
+            sx={{ p: theme.spacing(3, 0, 7, 0) }}
+            accept={allowedFileFormats}
             type="file"
             variant="standard"
             id="edit-subcategory-image"
           />
-          <ul
-            style={{
-              color: theme.palette.warning.main,
-              marginTop: theme.spacing(2),
-              listStyle: "none",
-            }}
-          >
-            <li>
-              <Forward />
-              Warning! If you submit a new image, the old one will be deleted
-            </li>
-            <li>
-              {" "}
-              <Forward /> .jpg, .jpeg, .png and .webp file formats are allowed
-            </li>
-          </ul>
         </InputBox>
         <InputBox>
           <StyledInput

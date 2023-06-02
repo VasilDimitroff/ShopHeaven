@@ -14,6 +14,10 @@ import { theme } from "../../../theme";
 import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
+import {
+  allowedFileFormats,
+  noPermissionsForOperationMessage,
+} from "../../../constants";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 
 export default function CreateCategory(props) {
@@ -84,9 +88,7 @@ export default function CreateCategory(props) {
     } catch (error) {
       setCreateCategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setCreateCategoryErrorMessage(
-          "You have no permissions to perform the operation"
-        );
+        setCreateCategoryErrorMessage(noPermissionsForOperationMessage);
       } else {
         setCreateCategoryErrorMessage("Error! Check if all fields are filled");
       }
@@ -150,14 +152,12 @@ export default function CreateCategory(props) {
             <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
             UPLOAD IMAGE
           </Typography>
-          <Typography
-            sx={{ pt: 2, color: theme.palette.warning.main }}
-          >
-           .jpg, .jpeg, .png and .webp file formats are allowed
+          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+            {allowedFileFormats} file formats are allowed
           </Typography>
           <TextField
-            sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
-            accept=".jpg, .png, .jpeg, .webp"
+            sx={{ p: theme.spacing(3, 0, 7, 0) }}
+            accept={allowedFileFormats}
             type="file"
             variant="outlined"
             id="category-image"
@@ -165,7 +165,7 @@ export default function CreateCategory(props) {
 
           {/* 
           <ProductInfoInput
-            accept=".jpg, .png, .jpeg, .webp"
+            accept={allowedFileFormats}
             type="file"
             variant="standard"
             id="category-image"
