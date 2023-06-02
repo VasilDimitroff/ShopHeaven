@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Box, Typography } from "@mui/material";
 import ProductCarouselSlide from "./ProductCarouselSlide";
@@ -7,11 +7,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
-
-useEffect(() => {
-  console.log("1. IN PRODUCT CAORUSEL", props.products);
-}, [props.products])
-
 
   function SetCardsNumber() {
     let cardsPerSlide;
@@ -79,7 +74,7 @@ useEffect(() => {
   });
 
   return (
-    props.products ? (<Box>
+   <Box>
       <CarouselWrapper>
         <StyledHeading variant="h4">{props.headingName}</StyledHeading>
         <Carousel
@@ -120,7 +115,7 @@ useEffect(() => {
           })}
         </Carousel>
         </CarouselWrapper>
-      </Box>) : ""
+      </Box>
   );
 }
 

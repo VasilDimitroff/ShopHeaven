@@ -903,7 +903,7 @@ export default function SubcategoryProducts() {
                           }}
                           key={index}
                         >
-                          <ProductCarouselCard product={product} image={product.image} />
+                          <ProductCarouselCard product={product} image={product.image} subcategory={product.subcategory} />
                         </Grid>
                       ))}
                     </Grid>

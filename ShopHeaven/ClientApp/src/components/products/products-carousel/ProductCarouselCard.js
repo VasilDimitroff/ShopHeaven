@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Rating,
@@ -24,10 +24,6 @@ function ProductCarouselCard(props) {
   const navigate = useNavigate();
 
   const [subcategory, setSubcategory] = useState(props.subcategory);
-
-  useEffect(() => {
-    console.log("3. IN CAROUSEL CARD", props.product)
-  }, [props.products])
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
@@ -115,11 +111,13 @@ function ProductCarouselCard(props) {
     minHeight: 400,
   });
 
-  return (
-   props.product ?  <StyledCard>
+  return  (
+    <StyledCard>
       <CardActionArea>
         <ProductCardMedia
-          onClick={() => navigate(`${singleProductBasePath}${props.product.id}`)}
+          onClick={() =>
+            navigate(`${singleProductBasePath}${props.product.id}`)
+          }
           title={props.product.name}
           image={props.image}
         />
@@ -160,7 +158,9 @@ function ProductCarouselCard(props) {
         )}
         <StyledCardActionArea>
           <ProductName
-            onClick={() => navigate(`${singleProductBasePath}${props.product.id}`)}
+            onClick={() =>
+              navigate(`${singleProductBasePath}${props.product.id}`)
+            }
           >
             {props.product.name.length > maxNameLengthInProductCard
               ? props.product.name.slice(0, maxNameLengthInProductCard) + "..."
@@ -176,7 +176,9 @@ function ProductCarouselCard(props) {
               readOnly
               size="small"
             />
-            <RatingText component="legend">{props.product.rating} stars</RatingText>
+            <RatingText component="legend">
+              {props.product.rating} stars
+            </RatingText>
           </RatingWrapper>
           {props.product?.discount > 0 ? (
             <Box
@@ -196,7 +198,8 @@ function ProductCarouselCard(props) {
               {props.product.currency}{" "}
               {(
                 Math.round(
-                  (props.product.price - (props.product.price * props.product.discount) / 100) *
+                  (props.product.price -
+                    (props.product.price * props.product.discount) / 100) *
                     100
                 ) / 100
               ).toFixed(2)}
@@ -228,8 +231,8 @@ function ProductCarouselCard(props) {
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
-    </StyledCard> : ""
-  );
+    </StyledCard>
+  ) 
 }
 
 export default ProductCarouselCard;
