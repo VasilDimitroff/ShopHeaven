@@ -141,7 +141,7 @@ export default function EditSubcategoryForm(props) {
             required
             inputRef={subcategoryNameRef}
             label="Subcategory name"
-            variant="standard"
+            variant="outlined"
             defaultValue={subcategory.name}
           />
         </InputBox>
@@ -180,7 +180,7 @@ export default function EditSubcategoryForm(props) {
             sx={{ p: theme.spacing(3, 0, 7, 0) }}
             accept={allowedFileFormats}
             type="file"
-            variant="standard"
+            variant="outlined"
             id="edit-subcategory-image"
           />
         </InputBox>
@@ -190,7 +190,7 @@ export default function EditSubcategoryForm(props) {
             label="Subcategory Description"
             multiline
             rows={5}
-            variant="standard"
+            variant="outlined"
             defaultValue={subcategory.description}
           />
         </InputBox>
