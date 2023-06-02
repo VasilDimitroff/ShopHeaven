@@ -13,10 +13,10 @@ import {
   Alert,
   Zoom,
   Tooltip,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
-  Close,
   AddCircle,
   RemoveCircle,
   Edit,
@@ -290,6 +290,8 @@ export default function EditProduct(props) {
 
       controller.abort();
 
+      setThumbnailErrorMessage("");
+      setThumbnailResponseMessage("");
       setDeleteProductImageErrorMessage("");
       setDeleteProductImageResponseMessage("");
       setEditProductErrorMessage("");
@@ -304,9 +306,7 @@ export default function EditProduct(props) {
       setEditProductResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setEditProductErrorMessage(
-          noPermissionsForOperationMessage
-        );
+        setEditProductErrorMessage(noPermissionsForOperationMessage);
       } else {
         setEditProductErrorMessage(error?.response?.data);
       }
@@ -819,7 +819,7 @@ export default function EditProduct(props) {
     right: "30%",
     color: theme.palette.secondary.main,
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   });
 
   const ActionIconButton = styled(IconButton)({
@@ -1308,7 +1308,6 @@ export default function EditProduct(props) {
             </Grid>
           </InputBox>
         </Collapse>
-
         <Divider>
           <HeadingChip
             label="PRODUCT IMAGES"
@@ -1339,21 +1338,21 @@ export default function EditProduct(props) {
             >
               <Box>
                 <Tooltip arrow title="Delete image">
-                <ActionIconButton
-                  sx={{ top: 0 }}
-                  onClick={() => onDeleteImage(image.url)}
-                >
-                  <Cancel color="error" />
-                </ActionIconButton>
+                  <ActionIconButton
+                    sx={{ top: 0 }}
+                    onClick={() => onDeleteImage(image.url)}
+                  >
+                    <Cancel color="error" />
+                  </ActionIconButton>
                 </Tooltip>
                 {!image.isThumbnail ? (
                   <Tooltip arrow title="Set image as thumbnail">
-                  <ActionIconButton
-                    sx={{ top: 60 }}
-                    onClick={() => onSetThumbnail(image.url)}
-                  >
-                    <Photo color="info" />
-                  </ActionIconButton>
+                    <ActionIconButton
+                      sx={{ top: 60 }}
+                      onClick={() => onSetThumbnail(image.url)}
+                    >
+                      <Photo color="info" />
+                    </ActionIconButton>
                   </Tooltip>
                 ) : (
                   <></>
@@ -1369,16 +1368,10 @@ export default function EditProduct(props) {
               />
               {image.isThumbnail ? (
                 <Tooltip arrow title="Image is thumbnail of the product">
-                <ThumbnailOverlayHolder
-                  sx={{
-                    
-                  }}
-                >
-                  {" "}
-                  <Photo
-                    sx={{ fontSize: 50, width: "100%" }}
-                  />
-                </ThumbnailOverlayHolder>
+                  <ThumbnailOverlayHolder sx={{}}>
+                    {" "}
+                    <Photo sx={{ fontSize: 50, width: "100%" }} />
+                  </ThumbnailOverlayHolder>
                 </Tooltip>
               ) : (
                 <></>
@@ -1428,7 +1421,34 @@ export default function EditProduct(props) {
             <></>
           )}
         </Box>
-        <InputBox>
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ pt: 4, color: theme.palette.primary.main }}
+          >
+            UPLOAD PRODUCT IMAGES
+          </Typography>
+          <TextField
+            sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
+            accept=".jpg, .png, .jpeg, .webp"
+            type="file"
+            variant="outlined"
+            id="edit-product-photos-image"
+            inputProps={{
+              multiple: true,
+            }}
+          />
+          {/*
           <ProductInfoInput
             accept=".jpg, .png, .jpeg, .webp"
             type="file"
@@ -1438,6 +1458,8 @@ export default function EditProduct(props) {
               multiple: true,
             }}
           />
+
+         */}
         </InputBox>
         <Typography
           sx={{
