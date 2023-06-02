@@ -12,6 +12,7 @@ import {
   Divider,
   Alert,
   Zoom,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { AddCircle, RemoveCircle } from "@mui/icons-material";
@@ -170,7 +171,7 @@ export default function CreateProduct(props) {
 
     let isFormValid = validateForm();
 
-    if (!isFormValid) {
+   if (!isFormValid) {
       return;
     }
 
@@ -1140,8 +1141,20 @@ export default function CreateProduct(props) {
             color="secondary"
           />
         </Divider>
-        <InputBox>
-          <ProductInfoInput
+        <InputBox
+          sx={{
+            borderStyle: "dashed",
+            borderColor: theme.palette.primary.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: theme.shape.borderRadius.main,
+          }}
+        >
+          <Typography variant="h6" sx={{pt: 4, color: theme.palette.primary.main}}>UPLOAD PRODUCT IMAGES</Typography>
+          <TextField
+            sx={{ p: theme.spacing(3, 0, 7, 0), color: "blue" }}
             accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="outlined"
@@ -1150,6 +1163,16 @@ export default function CreateProduct(props) {
               multiple: true,
             }}
           />
+          {/*           <ProductInfoInput
+            accept=".jpg, .png, .jpeg, .webp"
+            type="file"
+            variant="outlined"
+            id="create-product-photos-image"
+            inputProps={{
+              multiple: true,
+            }}
+          />*/}
+
           {messages.productImagesError ? (
             <ErrorAlert severity="error">
               {messages.productImagesError}
@@ -1168,8 +1191,14 @@ export default function CreateProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <CreateProductButton startIcon={<AddCircle/>} color="secondary" type="submit" size="big" variant="contained">
-           CREATE PRODUCT
+        <CreateProductButton
+          startIcon={<AddCircle />}
+          color="secondary"
+          type="submit"
+          size="big"
+          variant="contained"
+        >
+          CREATE PRODUCT
         </CreateProductButton>
       </form>
       <Box>
