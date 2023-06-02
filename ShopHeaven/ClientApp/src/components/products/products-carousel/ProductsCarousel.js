@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Box, Typography } from "@mui/material";
 import ProductCarouselSlide from "./ProductCarouselSlide";
@@ -7,6 +7,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
+  const [products, setProduct] = useState(props.products)
+
+  useEffect(()=> {
+    setProduct(props.products)
+  }, [props.products])
+
   function SetCardsNumber() {
     let cardsPerSlide;
 
@@ -37,7 +43,7 @@ function ProductsCarousel(props) {
 
   function ReturnSlidesInfo() {
     let cardsCountPerSlide = SetCardsNumber();
-    let slidesCount = Math.ceil(props.products.length / cardsCountPerSlide);
+    let slidesCount = Math.ceil(products.length / cardsCountPerSlide);
 
     let slidesInfo = [];
 
@@ -108,7 +114,7 @@ function ProductsCarousel(props) {
             return (
               <ProductCarouselSlide
                 key={rowInfo.startIndex}
-                products={props.products?.slice(
+                products={products?.slice(
                   rowInfo.startIndex,
                   rowInfo.startIndex + rowInfo.cardsPerSlide
                 )}

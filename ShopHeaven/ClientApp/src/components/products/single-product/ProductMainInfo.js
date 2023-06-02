@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -8,6 +8,10 @@ import ProductActionButtons from "./ProductActionButtons";
 
 export default function ProductMainInfo(props) {
   const [product, setProduct] = useState(props.product);
+
+  useEffect(()=> {
+    setProduct(props.product)
+  }, [props.product])
 
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),

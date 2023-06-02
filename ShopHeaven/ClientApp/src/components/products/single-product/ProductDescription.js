@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProductDescription(props) {
   const [product, setProduct] = useState(props.product);
@@ -151,8 +151,8 @@ export default function ProductDescription(props) {
           columns={product.tags.length}
           container
         >
-          {product.tags.map((tag) => (
-            <Grid key={tag} item xs={1} sm={1} md={1} lg={1}>
+          {product.tags.map((tag, index) => (
+            <Grid key={index} item xs={1} sm={1} md={1} lg={1}>
               <StyledChip
                 size="small"
                 label={tag}

@@ -82,4 +82,4 @@ export const maxNameLengthInProductCard = 50;
 export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
 // how many similar products to get for signle product page slider below main info
-export const similarProductsForSingleProductPageSlider = 12;
+export const similarProductsForSingleProductPageSlider = 6;

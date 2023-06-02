@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Rating,
@@ -22,6 +22,7 @@ import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
   const navigate = useNavigate();
+  const [product, setProduct] = useState(props.product)
 
   const [subcategory, setSubcategory] = useState(props.subcategory);
 
@@ -123,16 +124,16 @@ function ProductCarouselCard(props) {
       <CardActionArea>
         <ProductCardMedia
           onClick={() =>
-            navigate(`${singleProductBasePath}${props.product.id}`)
+            navigate(`${singleProductBasePath}${product.id}`)
           }
-          title={props.product.name}
+          title={product.name}
           image={props.image}
         />
         <RibbonHolder>
-          {props.product.discount > 0 ? (
+          {product.discount > 0 ? (
             <Box>
               <ProductRibbon
-                label={`- ${props.product.discount}%`}
+                label={`- ${product.discount}%`}
                 color="error"
                 variant="filled"
               />
@@ -142,7 +143,7 @@ function ProductCarouselCard(props) {
           )}
         </RibbonHolder>
         <LabelsHolder>
-          {props.product.labels.map((label) => {
+          {product.labels.map((label) => {
             return (
               <ProductLabel
                 key={label}
@@ -166,28 +167,28 @@ function ProductCarouselCard(props) {
         <StyledCardActionArea sx={{border: "2px solid black"}}>
           <ProductName
             onClick={() =>
-              navigate(`${singleProductBasePath}${props.product.id}`)
+              navigate(`${singleProductBasePath}${product.id}`)
             }
           >
-            {props.product.name.length > maxNameLengthInProductCard
-              ? props.product.name.slice(0, maxNameLengthInProductCard) + "..."
-              : props.product.name.slice(0, maxNameLengthInProductCard)}
+            {product.name.length > maxNameLengthInProductCard
+              ? product.name.slice(0, maxNameLengthInProductCard) + "..."
+              : product.name.slice(0, maxNameLengthInProductCard)}
           </ProductName>
         </StyledCardActionArea>
         <Box>
           <RatingWrapper>
             <Rating
               name="half-rating-read"
-              defaultValue={props.product.rating}
+              defaultValue={product.rating}
               precision={0.5}
               readOnly
               size="small"
             />
             <RatingText component="legend">
-              {props.product.rating} stars
+              {product.rating} stars
             </RatingText>
           </RatingWrapper>
-          {props.product?.discount > 0 ? (
+          {product?.discount > 0 ? (
             <Box
               sx={{
                 height: 25,
@@ -195,18 +196,18 @@ function ProductCarouselCard(props) {
                 textDecoration: "line-through",
               }}
             >
-              {props.product.currency} {props.product.price.toFixed(2)}
+              {product.currency} {product.price.toFixed(2)}
             </Box>
           ) : (
             <Box sx={{ height: 25 }}></Box>
           )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {props.product.currency}{" "}
+              {product.currency}{" "}
               {(
                 Math.round(
-                  (props.product.price -
-                    (props.product.price * props.product.discount) / 100) *
+                  (product.price -
+                    (product.price * product.discount) / 100) *
                     100
                 ) / 100
               ).toFixed(2)}

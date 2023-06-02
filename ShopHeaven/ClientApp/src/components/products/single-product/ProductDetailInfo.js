@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Box,
   Tabs,
@@ -21,6 +21,10 @@ import { theme } from "../../../theme";
 
 export default function ProductDetailInfo(props) {
   const [product, setProduct] = useState(props.product);
+
+  useEffect(()=> {
+    setProduct(props.product)
+  }, [props.product])
 
   function TabPanel(props) {
     const { children, value, index } = props;

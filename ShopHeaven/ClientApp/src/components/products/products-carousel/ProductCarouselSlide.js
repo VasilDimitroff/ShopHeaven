@@ -2,8 +2,10 @@ import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import ProductCarouselCard from "./ProductCarouselCard";
+import { useState } from "react";
 
 function ProductCarouselSlide(props) {
+  const [products, setProducts] = useState(props.products);
 
   const SlideWrapper = styled(Box)({
     marginTop: theme.spacing(2.5),
@@ -23,7 +25,7 @@ function ProductCarouselSlide(props) {
             flexGrow: 1,
           }}
         >
-          {props.products
+          {products
             ?.slice(0, props.cardsPerSlide)
             ?.map((product, index) => (
               <Grid

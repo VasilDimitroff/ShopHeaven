@@ -24,7 +24,6 @@ export default function Product() {
 
   useEffect(() => {
     const controller = new AbortController();
-
     const getProduct = async () => {
       try {
         const response = await axios.post(
@@ -38,10 +37,11 @@ export default function Product() {
             signal: controller.signal,
           }
         );
-        console.log(response?.data);
 
         setProduct(response?.data.product);
         setSimilarProducts(response?.data.similarProducts);
+
+        console.log(product);
       } catch (error) {
         console.log(error);
       }
@@ -55,7 +55,7 @@ export default function Product() {
       effectRun.current = true; // update the value of effectRun to true
       controller.abort();
     };
-  }, []);
+  }, [params]);
 
   const breadcrumbs = [
     {
