@@ -84,6 +84,9 @@ function ProductCarouselCard(props) {
     //lineHeight: '1.2em', // 1 row height
     height: "4.56em", // 3 rows
     overflow: "hidden",
+    display: '-webkit-box',
+    WebkitLineClamp: 3, // 3 rows
+    WebkitBoxOrient: 'vertical',
     marginBottom: theme.spacing(1),
   });
 
