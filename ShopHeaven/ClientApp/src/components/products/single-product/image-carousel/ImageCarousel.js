@@ -190,7 +190,6 @@ function ImageCarousel(props) {
           keepMounted
           open={openModal}
           onClose={handleOpenModal}
-          sx={{}}
         >
           <ModalHolder>
             <PositioningContainer>
@@ -250,6 +249,7 @@ function ImageCarousel(props) {
         }}
         navButtonsProps={{
           style: {
+            display: "none", // change this if you want to see navigate buttons at left/right of the carousel!!!!
             opacity: "0.8",
             backgroundColor: theme.palette.primary.main,
           },

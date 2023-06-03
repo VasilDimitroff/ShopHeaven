@@ -20,26 +20,43 @@ export default function ImageCarouselItem(props) {
     height: 80,
   });
 
-  const ModalCardMedia = styled(CardMedia)({
-    height: 800,
+  const ModalHolder = styled(Box)({
+    boxShadow: 24,
+    width: "100%",
+    height: " 100%",
+    //border: "10px solid red",
+    position: "relative",
+  });
+
+  const PositioningContainer = styled(Box)({
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     transform: "translate(-50%, -50%)",
-    [theme.breakpoints.down("lg")]: {
-      height: 550,
-    },
     [theme.breakpoints.down("md")]: {
-      height: 450,
+      top: "2%",
+      left: "2%",
+      right: "2%",
+      bottom: "2%",
+      transform: "translate(0%, 0%)",
     },
     [theme.breakpoints.down("sm")]: {
-      height: 330,
-    },
-    [theme.breakpoints.down("xs")]: {
-      height: 350,
+      top: "2%",
+      left: "2%",
+      right: "2%",
+      bottom: "2%",
+      transform: "translate(0%, 0%)",
     },
   });
 
-  const ModalHolder = styled(Box)({
-    boxShadow: 24,
-    paddingTop: theme.spacing(10),
+  const ImageHolder = styled(Box)({  
+    //border: "5px solid green", 
+    width: "100%",
+    height: " 100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    positon: "relative"
   });
 
   const StyledCard = styled(Card)({
@@ -53,24 +70,10 @@ export default function ImageCarouselItem(props) {
     },
   });
 
-  const ImageHolder = styled(Box)({
-    width: "85%",
-    position: "absolute",
-    top: "45%",
-    bottom: "50%",
-    left: "50%",
-    right: "50%",
-  });
-
   const CloseButtonHolder = styled(Box)({
     position: "absolute",
-    top: "9%",
-    bottom: "90%",
-    right: "9%",
-    zIndex: 1,
-    [theme.breakpoints.down("lg")]: {
-      top: "20%",
-    },
+    top: "2%",
+    right: "3%",
   });
 
   const StyledModal = styled(Modal)({
@@ -83,16 +86,24 @@ export default function ImageCarouselItem(props) {
   return (
     <StyledCard>
       <StyledModal keepMounted open={openModal} onClose={handleOpenModal}>
-        <ModalHolder>
-          <CloseButtonHolder onClick={handleOpenModal}>
-            <IconButton sx={{ color: theme.palette.white.main }}>
-              <Close sx={{ fontSize: 50 }} />
-            </IconButton>
-          </CloseButtonHolder>
-          <ImageHolder>
-            <ModalCardMedia image={image} />
-          </ImageHolder>
-        </ModalHolder>
+      <ModalHolder>
+            <PositioningContainer>
+              <ImageHolder>
+                <img
+                  src={image}
+                  style={{
+                    objectFit: "contain",
+                    width: "95%",
+                  }}
+                />
+              <CloseButtonHolder onClick={handleOpenModal}>
+                  <IconButton sx={{ color: theme.palette.error.main }}>
+                    <Close sx={{ fontSize: 50 }} />
+                  </IconButton>
+              </CloseButtonHolder>
+              </ImageHolder>
+            </PositioningContainer>
+          </ModalHolder>
       </StyledModal>
 
       <CardActionArea>
