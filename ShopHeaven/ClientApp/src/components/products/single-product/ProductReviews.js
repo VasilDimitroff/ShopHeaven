@@ -202,7 +202,7 @@ export default function ProductReviews(props) {
 
   const Author = styled(Typography)({
     fontWeight: 500,
-    fontSize: 17,
+    fontSize: 18,
   });
 
   const Date = styled(Typography)({
@@ -218,11 +218,8 @@ export default function ProductReviews(props) {
           <Box sx={{ mt: 4 }}>
             <InfoHolder>
               <Avatar
-                size="small"
                 sx={{
                   bgcolor: theme.palette.secondary.main,
-                  width: 30,
-                  height: 30,
                 }}
               >
                 {auth?.email ? auth?.email[0].toUpperCase() : "?"}
@@ -299,7 +296,15 @@ export default function ProductReviews(props) {
           return (
             <StyledPaper key={review.id} variant="elevation" elevation={1}>
               <InfoHolder>
-                <AccountCircle />
+              <Avatar
+                sx={{
+                  bgcolor: theme.palette.primary.main,
+                  width: 30,
+                  height: 30,
+                }}
+              >
+                {review.email[0].toUpperCase()}
+              </Avatar>
                 <Author>{review.email}</Author>
                 <Date>on: {review.createdOn}</Date>
               </InfoHolder>
