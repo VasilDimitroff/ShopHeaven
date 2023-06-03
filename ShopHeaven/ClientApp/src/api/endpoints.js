@@ -47,6 +47,9 @@ export const ApiEndpoints = {
     images: {
         deleteProductImage: "api/images/delete",
         setThumbnail: "api/images/setThumbnail"
+    },
+    reviews: {
+        createReview: "api/reviews/create",
     }
 }
 

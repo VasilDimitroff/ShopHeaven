@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230603161220_reviewStatusColumnAdded")]
+    partial class reviewStatusColumnAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,7 +335,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Coupon", b =>
@@ -362,7 +365,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Currency", b =>
@@ -392,7 +395,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Image", b =>
@@ -424,7 +427,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Label", b =>
@@ -450,7 +453,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Labels", (string)null);
+                    b.ToTable("Labels");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.MainCategory", b =>
@@ -492,7 +495,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("MainCategories", (string)null);
+                    b.ToTable("MainCategories");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Order", b =>
@@ -556,7 +559,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
@@ -591,7 +594,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
@@ -658,7 +661,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductCart", b =>
@@ -691,7 +694,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsCarts", (string)null);
+                    b.ToTable("ProductsCarts");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductImage", b =>
@@ -724,7 +727,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("ProductsImages", (string)null);
+                    b.ToTable("ProductsImages");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductLabel", b =>
@@ -754,7 +757,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsLabels", (string)null);
+                    b.ToTable("ProductsLabels");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductOrder", b =>
@@ -787,7 +790,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsOrders", (string)null);
+                    b.ToTable("ProductsOrders");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductTag", b =>
@@ -817,7 +820,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsTags", (string)null);
+                    b.ToTable("ProductsTags");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductWishlist", b =>
@@ -847,7 +850,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsWishlists", (string)null);
+                    b.ToTable("ProductsWishlists");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Review", b =>
@@ -899,7 +902,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Specification", b =>
@@ -935,7 +938,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Specifications", (string)null);
+                    b.ToTable("Specifications");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.SubCategory", b =>
@@ -983,7 +986,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("MainCategoryId");
 
-                    b.ToTable("SubCategories", (string)null);
+                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Tag", b =>
@@ -1015,7 +1018,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.User", b =>
@@ -1139,7 +1142,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

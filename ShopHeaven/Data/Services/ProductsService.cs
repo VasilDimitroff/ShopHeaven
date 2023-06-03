@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
@@ -849,6 +850,7 @@ namespace ShopHeaven.Data.Services
                                     Name = p.SubCategory.Name
                                 },
                                 Images = p.Images
+                                    .Where(i => i.IsDeleted != true)
                                     .Select(i => new BasicImageResponseModel
                                     {
                                         Url = i.Image.Url,
@@ -856,12 +858,15 @@ namespace ShopHeaven.Data.Services
                                     })
                                     .ToList(),
                                 Labels = p.Labels
+                                    .Where(l => l.IsDeleted != true)
                                     .Select(l => l.Label.Content)
                                     .ToList(),
                                 Tags = p.Tags
+                                    .Where(t => t.IsDeleted != true)
                                     .Select(t => t.Tag.Name)
                                     .ToList(),
                                 Reviews = p.Reviews
+                                    .Where(r => r.IsDeleted != true && r.Status == ReviewStatus.Approved)
                                     .Select(r => new ReviewResponseModel
                                     {
                                         Author = r.Author,
@@ -872,6 +877,7 @@ namespace ShopHeaven.Data.Services
                                     })
                                     .ToList(),
                                 Specifications = p.Specifications
+                                    .Where(s => s.IsDeleted != true)
                                     .Select(s => new SpecificationResponseModel
                                     {
                                         Id = s.Id,

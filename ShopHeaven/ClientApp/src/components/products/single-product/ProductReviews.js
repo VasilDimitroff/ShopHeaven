@@ -6,14 +6,22 @@ import {
   Paper,
   Rating,
   Button,
-  InputBase,
+  Alert,
   TextField,
+  Zoom
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { styled } from "@mui/material/styles";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
+import useAuth from "../../../hooks/useAuth";
 
 export default function ProductReviews(props) {
+  let { auth } = useAuth();
+  let axiosPrivate = useAxiosPrivate()
+
   const [reviews, setReviews] = useState(props.reviews);
   const [isReviewCreated, setIsReviewCreated] = useState(false);
 
@@ -24,6 +32,11 @@ export default function ProductReviews(props) {
     comment: "",
     ratingValue: null
   });
+
+  const [messages, setMessages] = useState({
+    createReviewResponseMessage: "",
+    createReviewErrorMessage: ""
+  })
 
   const nameRef = useRef();
   const emailRef = useRef();
@@ -46,8 +59,9 @@ export default function ProductReviews(props) {
     setInputFieldsValues()
 
     const review = {
+      userId: auth.userId,
       productId: newReview.productId,
-      username: newReview.name,
+      author: newReview.name,
       email: newReview.email,
       comment: newReview.comment,
       ratingValue: newReview.ratingValue
@@ -56,8 +70,52 @@ export default function ProductReviews(props) {
     createReview(review);
   }
 
-  async function createReview(newReview) {
-    console.log("V ZAQVKATA ", newReview)
+  async function createReview(review) {
+    try {
+      console.log("DANNITE", review)
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.reviews.createReview,
+        review,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setMessages(prev => {
+        return {
+          ...prev,
+          createReviewErrorMessage: "",
+          createReviewResponseMessage:  `Review successfully created!`
+        }
+      })
+      setIsReviewCreated(true);
+      console.log("RESPONSE REVIEW ", response?.data);
+      //props.categoriesListChanged(response?.data);
+    } catch (error) {
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setMessages(prev => {
+          return {
+            ...prev,
+            createReviewErrorMessage: noPermissionsForOperationMessage,
+            createReviewResponseMessage:  ``
+          }
+        })
+      } else {
+        setMessages(prev => {
+          return {
+            ...prev,
+            createReviewErrorMessage: "Error! Check if all fields are filled",
+            createReviewResponseMessage:  ``
+          }
+        })
+      }
+      console.log(error.message);
+    }
   }
 
   function setInputFieldsValues() {
@@ -75,7 +133,7 @@ export default function ProductReviews(props) {
     });
   }
 
-  const ProductInfoInput = styled(TextField)({
+  const CustomInput = styled(TextField)({
     background: "rgb(255,249,249)",
     width: "100%",
     marginTop: theme.spacing(1),
@@ -113,18 +171,18 @@ export default function ProductReviews(props) {
       <Box>
         <Typography variant="h6">LEAVE REVIEW</Typography>
         <form onSubmit={onCreateReview}>
-          <ProductInfoInput inputRef={nameRef} defaultValue={newReview.name} label="Your name" variant="outlined" />
-          <ProductInfoInput inputRef={emailRef} defaultValue={newReview.email} label="Your E-mail" variant="outlined" />
+          <CustomInput inputRef={nameRef} defaultValue={newReview.name} label="Your name" variant="outlined" />
+          <CustomInput inputRef={emailRef} defaultValue={newReview.email} label="Your E-mail" variant="outlined" />
           <Typography>Your rating:</Typography>
           <Rating
             onChange={(event, newValue) => handleChangeRating(event, newValue)}
             name="size-small"
             variant="outlined"
             size="medium"
-            sx={{ display: "inline", border: "1px solid black" }}
+            sx={{ display: "inline"}}
             value={newReview.ratingValue}
           /> {newReview.ratingValue ? `${newReview.ratingValue} stars` : <></> }
-          <ProductInfoInput
+          <CustomInput
             inputRef={commentRef}
             multiline
             label="Type your comment..."
@@ -141,6 +199,24 @@ export default function ProductReviews(props) {
             SEND REVIEW
           </Button>
         </form>
+        {messages.createReviewResponseMessage ? (
+        <Zoom in={messages.createReviewResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {messages.createReviewResponseMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+      {messages.createReviewErrorMessage ? (
+        <Zoom in={messages.createReviewErrorMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="error">
+            {messages.createReviewErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
       </Box>
       <Stack spacing={2} sx={{ mt: theme.spacing(4) }}>
         {reviews?.map((review) => {
