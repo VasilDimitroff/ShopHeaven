@@ -16,17 +16,19 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ImageCarousel(props) {
-  const [product, setProduct] = useState(props.product)
+  const [product, setProduct] = useState(props.product);
   const [images, setImages] = useState(props.product.images.map((x) => x.url));
 
-  const indexOfThumbnail = props.product.images.findIndex((x) => x.isThumbnail === true);
+  const indexOfThumbnail = props.product.images.findIndex(
+    (x) => x.isThumbnail === true
+  );
   const [bigImageIndex, setBigImageIndex] = useState(indexOfThumbnail);
 
   const [slideIndex, setSlideIndex] = useState(0);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = () => setOpenModal( prev => !prev);
+  const handleOpenModal = () => setOpenModal((prev) => !prev);
 
   function SetCardsNumber() {
     let cardsPerSlide;
@@ -91,8 +93,9 @@ function ImageCarousel(props) {
     },
   });
 
-  const ModalCardMedia = styled(CardMedia)({
+  const ModalCardMedia = styled(Box)({
     height: 800,
+
     transform: "translate(-50%, -50%)",
     [theme.breakpoints.down("lg")]: {
       height: 550,
@@ -110,13 +113,46 @@ function ImageCarousel(props) {
 
   const ModalHolder = styled(Box)({
     boxShadow: 24,
-    paddingTop: theme.spacing(10),
+    width: "100%",
+    height: " 100%",
+    //border: "10px solid red",
+    position: "relative",
+  });
+
+  const PositioningContainer = styled(Box)({
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    [theme.breakpoints.down("md")]: {
+      top: "2%",
+      left: "2%",
+      right: "2%",
+      bottom: "2%",
+      transform: "translate(0%, 0%)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      top: "2%",
+      left: "2%",
+      right: "2%",
+      bottom: "2%",
+      transform: "translate(0%, 0%)",
+    },
+  });
+
+  const ImageHolder = styled(Box)({  
+    //border: "5px solid green", 
+    width: "100%",
+    height: " 100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    positon: "relative"
   });
 
   const StyledCard = styled(Card)({
     marginLeft: theme.spacing(0.7),
     marginRight: theme.spacing(0.7),
-    position: "relative",
     "&:hover": {
       outlineColor: theme.palette.primary.main,
       outlineStyle: "solid",
@@ -125,24 +161,10 @@ function ImageCarousel(props) {
     },
   });
 
-  const ImageHolder = styled(Box)({
-    width: "85%",
-    position: "absolute",
-    top: "45%",
-    bottom: "50%",
-    left: "50%",
-    right: "50%",
-  });
-
   const CloseButtonHolder = styled(Box)({
     position: "absolute",
-    top: "9%",
-    bottom: "90%",
-    right: "9%",
-    zIndex: 1,
-    [theme.breakpoints.down("lg")]: {
-      top: "20%",
-    },
+    top: "2%",
+    right: "3%",
   });
 
   const StyledModal = styled(Modal)({
@@ -157,12 +179,12 @@ function ImageCarousel(props) {
     gap: 7,
     position: "absolute",
     zIndex: 1,
-    bottom: 10,
-    left: 10
-  })
+    bottom: 150,
+    left: 15,
+  });
 
   return (
-    <Box>
+    <Box sx={{ position: "relative" }}>
       <Box>
         <StyledModal
           keepMounted
@@ -171,23 +193,37 @@ function ImageCarousel(props) {
           sx={{}}
         >
           <ModalHolder>
-            <CloseButtonHolder onClick={handleOpenModal}>
-              <IconButton sx={{ color: theme.palette.white.main }}>
-                <Close sx={{ fontSize: 50 }} />
-              </IconButton>
-            </CloseButtonHolder>
-            <ImageHolder>
-              <ModalCardMedia image={images[finalIndex]} />
-            </ImageHolder>
+            <PositioningContainer>
+              <ImageHolder>
+                <img
+                  src={images[finalIndex]}
+                  style={{
+                    objectFit: "contain",
+                    width: "95%",
+                  }}
+                />
+              <CloseButtonHolder onClick={handleOpenModal}>
+                  <IconButton sx={{ color: theme.palette.error.main }}>
+                    <Close sx={{ fontSize: 50 }} />
+                  </IconButton>
+              </CloseButtonHolder>
+              </ImageHolder>
+            </PositioningContainer>
           </ModalHolder>
         </StyledModal>
         <StyledCard onClick={handleOpenModal}>
           <LabelsHolder>
-           {
-            product?.labels?.map(label => {
-              return <Chip key={label} size="small" variant="filled" color="primary" label={label}></Chip>
-            })
-           }
+            {product?.labels?.map((label) => {
+              return (
+                <Chip
+                  key={label}
+                  size="small"
+                  variant="filled"
+                  color="primary"
+                  label={label}
+                ></Chip>
+              );
+            })}
           </LabelsHolder>
           <CardActionArea>
             <ProductCardMedia image={images[finalIndex]} />
