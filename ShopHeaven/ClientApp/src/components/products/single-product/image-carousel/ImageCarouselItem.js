@@ -20,6 +20,23 @@ export default function ImageCarouselItem(props) {
     height: 80,
   });
 
+  const ModalCardMedia = styled(CardMedia)({
+    height: 800,
+    transform: "translate(-50%, -50%)",
+    [theme.breakpoints.down("lg")]: {
+      height: 550,
+    },
+    [theme.breakpoints.down("md")]: {
+      height: 450,
+    },
+    [theme.breakpoints.down("sm")]: {
+      height: 330,
+    },
+    [theme.breakpoints.down("xs")]: {
+      height: 350,
+    },
+  });
+
   const ModalHolder = styled(Box)({
     boxShadow: 24,
     width: "100%",
@@ -49,14 +66,14 @@ export default function ImageCarouselItem(props) {
     },
   });
 
-  const ImageHolder = styled(Box)({  
-    //border: "5px solid green", 
+  const ImageHolder = styled(Box)({
+    //border: "5px solid green",
     width: "100%",
     height: " 100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    positon: "relative"
+    positon: "relative",
   });
 
   const StyledCard = styled(Card)({
@@ -86,26 +103,25 @@ export default function ImageCarouselItem(props) {
   return (
     <StyledCard>
       <StyledModal keepMounted open={openModal} onClose={handleOpenModal}>
-      <ModalHolder>
-            <PositioningContainer>
-              <ImageHolder>
-                <img
-                  src={image}
-                  style={{
-                    objectFit: "contain",
-                    width: "95%",
-                  }}
-                />
+        <ModalHolder>
+          <PositioningContainer>
+            <ImageHolder>
+              <img
+                src={image}
+                style={{
+                  objectFit: "contain",
+                  width: "95%",
+                }}
+              />
               <CloseButtonHolder onClick={handleOpenModal}>
-                  <IconButton sx={{ color: theme.palette.error.main }}>
-                    <Close sx={{ fontSize: 50 }} />
-                  </IconButton>
+                <IconButton sx={{ color: theme.palette.error.main }}>
+                  <Close sx={{ fontSize: 50 }} />
+                </IconButton>
               </CloseButtonHolder>
-              </ImageHolder>
-            </PositioningContainer>
-          </ModalHolder>
+            </ImageHolder>
+          </PositioningContainer>
+        </ModalHolder>
       </StyledModal>
-
       <CardActionArea>
         <ProductCardMedia image={image} onClick={handleOpenModal} />
       </CardActionArea>

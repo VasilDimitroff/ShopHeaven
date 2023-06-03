@@ -140,14 +140,14 @@ function ImageCarousel(props) {
     },
   });
 
-  const ImageHolder = styled(Box)({  
-    //border: "5px solid green", 
+  const ImageHolder = styled(Box)({
+    //border: "5px solid green",
     width: "100%",
     height: " 100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    positon: "relative"
+    positon: "relative",
   });
 
   const StyledCard = styled(Card)({
@@ -186,11 +186,7 @@ function ImageCarousel(props) {
   return (
     <Box sx={{ position: "relative" }}>
       <Box>
-        <StyledModal
-          keepMounted
-          open={openModal}
-          onClose={handleOpenModal}
-        >
+        <StyledModal keepMounted open={openModal} onClose={handleOpenModal}>
           <ModalHolder>
             <PositioningContainer>
               <ImageHolder>
@@ -201,11 +197,11 @@ function ImageCarousel(props) {
                     width: "95%",
                   }}
                 />
-              <CloseButtonHolder onClick={handleOpenModal}>
+                <CloseButtonHolder onClick={handleOpenModal}>
                   <IconButton sx={{ color: theme.palette.error.main }}>
                     <Close sx={{ fontSize: 50 }} />
                   </IconButton>
-              </CloseButtonHolder>
+                </CloseButtonHolder>
               </ImageHolder>
             </PositioningContainer>
           </ModalHolder>
@@ -249,7 +245,7 @@ function ImageCarousel(props) {
         }}
         navButtonsProps={{
           style: {
-            display: "none", // change this if you want to see navigate buttons at left/right of the carousel!!!!
+            display: "none", // change this if you
             opacity: "0.8",
             backgroundColor: theme.palette.primary.main,
           },
