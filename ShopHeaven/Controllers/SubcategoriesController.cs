@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
-using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Subcategories;
 
 namespace ShopHeaven.Controllers

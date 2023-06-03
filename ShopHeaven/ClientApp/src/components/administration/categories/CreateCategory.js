@@ -90,7 +90,7 @@ export default function CreateCategory(props) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setCreateCategoryErrorMessage(noPermissionsForOperationMessage);
       } else {
-        setCreateCategoryErrorMessage("Error! Check if all fields are filled");
+        setCreateCategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }

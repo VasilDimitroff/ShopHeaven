@@ -14,7 +14,10 @@ import { AddCircle, AddPhotoAlternate } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
-import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../../constants";
+import {
+  allowedFileFormats,
+  noPermissionsForOperationMessage,
+} from "../../../../constants";
 
 export default function CreateSubcategory(props) {
   let { auth } = useAuth();
@@ -48,10 +51,12 @@ export default function CreateSubcategory(props) {
       );
       return;
     }
- 
+
     if (!formSubCategoryImage) {
       setCreateSubcategoryResponseMessage("");
-      setCreateSubcategoryErrorMessage("Subcategory must contain almost 1 image");
+      setCreateSubcategoryErrorMessage(
+        "Subcategory must contain almost 1 image"
+      );
       return;
     }
 
@@ -87,18 +92,13 @@ export default function CreateSubcategory(props) {
         "Subcategory" + formData.get["name"] + "successfully created!"
       );
       props.subcategoriesUpdated(response?.data);
-      console.log("CREATE SUBCATEGORY RESPONSE: " + response?.data);
     } catch (error) {
       setCreateSubcategoryResponseMessage("");
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setCreateSubcategoryErrorMessage(
-          noPermissionsForOperationMessage
-        );
+        setCreateSubcategoryErrorMessage(noPermissionsForOperationMessage);
       } else {
-        setCreateSubcategoryErrorMessage(
-          "Error! Check if all fields are filled"
-        );
+        setCreateSubcategoryErrorMessage(error?.response?.data);
       }
 
       console.log(error.message);

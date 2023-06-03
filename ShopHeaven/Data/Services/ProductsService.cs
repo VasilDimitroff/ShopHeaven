@@ -24,14 +24,17 @@ namespace ShopHeaven.Data.Services
         private readonly IStorageService storageService;
         private readonly ICategoriesService categoriesService;
         private readonly ICurrencyService currencyService;
+        private readonly IReviewsService reviewsService;
 
         public ProductsService(
             ShopDbContext db,
             IStorageService storageService,
             ICategoriesService categoriesService,
+            IReviewsService reviewsService,
             ICurrencyService currencyService)
         {
             this.db = db;
+            this.reviewsService = reviewsService;
             this.storageService = storageService;
             this.categoriesService = categoriesService;
             this.currencyService = currencyService;
@@ -783,7 +786,7 @@ namespace ShopHeaven.Data.Services
             }
 
             //to do: implement WHERE clause in GetSimilarProducts to fill with right products
-            List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductByProductIdAsync(model);
+            List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductsByProductIdAsync(model);
 
             var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel
             {
@@ -794,7 +797,7 @@ namespace ShopHeaven.Data.Services
             return productWithSimilarProductResponseModel;
         }
 
-        private async Task<List<ProductGalleryResponseModel>> GetSimilarProductByProductIdAsync(ProductRequestModel model)
+        private async Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model)
         {
             return await this.db.Products
                 .Where(p => p.IsDeleted != true)
@@ -820,8 +823,9 @@ namespace ShopHeaven.Data.Services
 
         private async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
         {
-            return await this.db.Products
+            var product = await this.db.Products
                             .Where(x => x.Id == model.Id && x.IsDeleted != true)
+                            .Include(x => x.Reviews)
                             .Select(p => new ProductResponseModel
                             {
                                 Id = p.Id,
@@ -865,17 +869,6 @@ namespace ShopHeaven.Data.Services
                                     .Where(t => t.IsDeleted != true)
                                     .Select(t => t.Tag.Name)
                                     .ToList(),
-                                Reviews = p.Reviews
-                                    .Where(r => r.IsDeleted != true && r.Status == ReviewStatus.Approved)
-                                    .Select(r => new ReviewResponseModel
-                                    {
-                                        Author = r.CreatedBy.UserName,
-                                        Email = r.CreatedBy.Email,
-                                        Content = r.Content,
-                                        RatingValue = r.RatingValue,
-                                        CreatedOn = r.CreatedOn.ToString()
-                                    })
-                                    .ToList(),
                                 Specifications = p.Specifications
                                     .Where(s => s.IsDeleted != true)
                                     .Select(s => new SpecificationResponseModel
@@ -887,6 +880,13 @@ namespace ShopHeaven.Data.Services
                                     .ToList()
                             })
                             .FirstOrDefaultAsync();
+
+            if (product != null)
+            {
+                product.Reviews = await this.reviewsService.GetReviewsByProductIdAsync(product.Id, ReviewStatus.Approved);
+            }
+
+            return product;
         }
 
         private void ConfigureDeletionInfo(Product product, bool forDelete)

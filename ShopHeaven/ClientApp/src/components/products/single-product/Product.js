@@ -41,7 +41,7 @@ export default function Product() {
         setProduct(response?.data.product);
         setSimilarProducts(response?.data.similarProducts);
 
-        console.log(product);
+        console.log("TUK",response?.data.product);
       } catch (error) {
         console.log(error);
       }

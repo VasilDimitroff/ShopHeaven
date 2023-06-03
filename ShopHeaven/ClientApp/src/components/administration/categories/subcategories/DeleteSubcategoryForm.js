@@ -14,6 +14,7 @@ import { Delete, Cancel, Undo, Refresh } from "@mui/icons-material";
 import { theme } from "../../../../theme";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../../constants";
 
 export default function DeleteSubcategoryForm(props) {
   let axiosPrivate = useAxiosPrivate();
@@ -67,10 +68,10 @@ export default function DeleteSubcategoryForm(props) {
       setDeleteSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteSubcategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
-        setDeleteSubcategoryErrorMessage("Error!");
+        setDeleteSubcategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
@@ -108,10 +109,10 @@ export default function DeleteSubcategoryForm(props) {
       setDeleteSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteSubcategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
-        setDeleteSubcategoryErrorMessage("Error!");
+        setDeleteSubcategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }

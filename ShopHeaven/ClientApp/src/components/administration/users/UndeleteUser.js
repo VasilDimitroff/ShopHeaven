@@ -55,7 +55,7 @@ export default function UndeleteUser(props) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setUndeleteUserErrorMessage(noPermissionsForOperationMessage);
       } else {
-        setUndeleteUserErrorMessage("Error!");
+        setUndeleteUserErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }

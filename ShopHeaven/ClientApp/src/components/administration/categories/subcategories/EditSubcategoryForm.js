@@ -15,7 +15,7 @@ import { Edit, AddPhotoAlternate } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../../hooks/useAuth";
-import { allowedFileFormats } from "../../../../constants";
+import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../../constants";
 
 export default function EditSubcategoryForm(props) {
   let { auth } = useAuth();
@@ -89,10 +89,10 @@ export default function EditSubcategoryForm(props) {
       setEditSubcategoryResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setEditSubcategoryErrorMessage(
-          "You have no permissions to perform the operation"
+          noPermissionsForOperationMessage
         );
       } else {
-        setEditSubcategoryErrorMessage("Error! Check if all fields are filled");
+        setEditSubcategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }

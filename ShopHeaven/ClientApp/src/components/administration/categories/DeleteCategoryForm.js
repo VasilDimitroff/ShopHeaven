@@ -66,7 +66,7 @@ export default function DeleteCategoryForm(props) {
           noPermissionsForOperationMessage
         );
       } else {
-        setDeleteCategoryErrorMessage("Error!");
+        setDeleteCategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
@@ -106,7 +106,7 @@ export default function DeleteCategoryForm(props) {
           noPermissionsForOperationMessage
         );
       } else {
-        setDeleteCategoryErrorMessage("Error!");
+        setDeleteCategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }

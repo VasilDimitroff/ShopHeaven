@@ -7,7 +7,13 @@ namespace ShopHeaven.Data.Models
 {
     public class Review : BaseModel, ICreatableModel
     {
-        public string? Content { get; set; }
+        public Review()
+        {
+            this.Status = ReviewStatus.Approved;
+        }
+
+        [Required(ErrorMessage = "Review content must contain at least 2 characters")]
+        public string Content { get; set; }
 
         [Required]
         public string ProductId { get; set; }

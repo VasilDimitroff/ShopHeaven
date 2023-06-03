@@ -86,6 +86,8 @@
 
         public const string CannotRemoveUserFromUserRole = $"Cannot remove user from {UserRoleName} role";
 
+        public const string RatingContentCannotBeEmpty = $"Rating Content must contain at least 2 characters";
+
         public const string RoleWithThisIdDoesNotExist = "Role with given Id does not exist!";
 
         public const string FileTypeNotAllowed 

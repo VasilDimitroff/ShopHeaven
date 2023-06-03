@@ -332,7 +332,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Coupon", b =>
@@ -362,7 +362,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Currency", b =>
@@ -392,7 +392,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Image", b =>
@@ -424,7 +424,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Label", b =>
@@ -450,7 +450,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Labels");
+                    b.ToTable("Labels", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.MainCategory", b =>
@@ -492,7 +492,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("MainCategories");
+                    b.ToTable("MainCategories", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Order", b =>
@@ -556,7 +556,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
@@ -591,7 +591,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
@@ -658,7 +658,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductCart", b =>
@@ -691,7 +691,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsCarts");
+                    b.ToTable("ProductsCarts", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductImage", b =>
@@ -724,7 +724,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("ProductsImages");
+                    b.ToTable("ProductsImages", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductLabel", b =>
@@ -754,7 +754,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsLabels");
+                    b.ToTable("ProductsLabels", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductOrder", b =>
@@ -787,7 +787,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsOrders");
+                    b.ToTable("ProductsOrders", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductTag", b =>
@@ -817,7 +817,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsTags");
+                    b.ToTable("ProductsTags", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.ProductWishlist", b =>
@@ -847,7 +847,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsWishlists");
+                    b.ToTable("ProductsWishlists", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Review", b =>
@@ -890,7 +890,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Specification", b =>
@@ -926,7 +926,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Specifications");
+                    b.ToTable("Specifications", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.SubCategory", b =>
@@ -974,7 +974,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("MainCategoryId");
 
-                    b.ToTable("SubCategories");
+                    b.ToTable("SubCategories", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Tag", b =>
@@ -1006,7 +1006,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.User", b =>
@@ -1130,7 +1130,7 @@ namespace ShopHeaven.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

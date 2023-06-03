@@ -10,7 +10,7 @@ import {
   TextField,
   Zoom,
   Avatar,
-  Chip
+  Chip,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
@@ -22,45 +22,52 @@ import useAuth from "../../../hooks/useAuth";
 
 export default function ProductReviews(props) {
   let { auth } = useAuth();
-  let axiosPrivate = useAxiosPrivate()
+  let axiosPrivate = useAxiosPrivate();
 
+  const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
   const [isReviewCreated, setIsReviewCreated] = useState(false);
 
   const [newReview, setNewReview] = useState({
-    productId: props.productId,
+    productId: productId,
     comment: "",
-    ratingValue: null
+    ratingValue: null,
   });
 
   const [messages, setMessages] = useState({
     createReviewResponseMessage: "",
-    createReviewErrorMessage: ""
-  })
+    createReviewErrorMessage: "",
+  });
 
   const commentRef = useRef();
 
   function handleChangeRating(event, newValue) {
-    setInputFieldsValues()
+    setInputFieldsValues();
 
-    setNewReview(prev => {
+    setNewReview((prev) => {
       return {
         ...prev,
-        ratingValue: parseInt(newValue)
-      }
+        ratingValue: parseInt(newValue),
+      };
     });
   }
 
-  function onCreateReview (e){
+  function onCreateReview(e) {
     e.preventDefault();
 
-    setInputFieldsValues()
+    setInputFieldsValues();
+
+    const isFormValid = validateForm();
+
+    if (!isFormValid) {
+      return;
+    }
 
     const review = {
-      createdBy: auth.userId,
+      userId: auth.userId,
       productId: newReview.productId,
-      comment: commentRef.current.value,
-      ratingValue: newReview.ratingValue
+      content: commentRef.current.value,
+      ratingValue: newReview.ratingValue,
     };
 
     createReview(review);
@@ -68,7 +75,7 @@ export default function ProductReviews(props) {
 
   async function createReview(review) {
     try {
-      console.log("DANNITE", review)
+      console.log("DANNITE", review);
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
@@ -81,34 +88,43 @@ export default function ProductReviews(props) {
 
       controller.abort();
 
-      setMessages(prev => {
+      setMessages((prev) => {
         return {
           ...prev,
           createReviewErrorMessage: "",
-          createReviewResponseMessage:  `Review successfully created!`
-        }
-      })
-      setIsReviewCreated(true);
-      console.log("RESPONSE REVIEW ", response?.data);
-      //props.categoriesListChanged(response?.data);
-    } catch (error) {
+          createReviewResponseMessage: `Review successfully created!`,
+        };
+      });
 
+      setIsReviewCreated(true);
+
+      setNewReview((prev) => {
+        return {
+          productId: productId,
+          comment: "",
+          ratingValue: null,
+        };
+      });
+
+      setReviews(prev => [...prev, response?.data])
+
+    } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setMessages(prev => {
+        setMessages((prev) => {
           return {
             ...prev,
             createReviewErrorMessage: noPermissionsForOperationMessage,
-            createReviewResponseMessage:  ``
-          }
-        })
+            createReviewResponseMessage: ``,
+          };
+        });
       } else {
-        setMessages(prev => {
+        setMessages((prev) => {
           return {
             ...prev,
-            createReviewErrorMessage: "Error! Check if all fields are filled",
-            createReviewResponseMessage:  ``
-          }
-        })
+            createReviewErrorMessage: error?.response?.data,
+            createReviewResponseMessage: ``,
+          };
+        });
       }
       console.log(error.message);
     }
@@ -117,12 +133,49 @@ export default function ProductReviews(props) {
   function setInputFieldsValues() {
     const comment = commentRef.current.value;
 
-    setNewReview(prev => {
+    setNewReview((prev) => {
       return {
         ...prev,
         comment: comment,
-      }
+      };
     });
+  }
+
+  function validateForm() {
+    let isValid = true;
+
+    if (!commentRef.current.value || newReview.comment.length < 2) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          createReviewErrorMessage: "Rating comment must be at least 2 characters",
+        };
+      });
+
+      isValid = false;
+
+      return isValid;
+    }
+
+    if (!newReview.ratingValue || newReview.ratingValue < 1) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          createReviewErrorMessage: "Rating star value must be at least 1",
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          createReviewErrorMessage: "",
+        };
+      });
+    }
+
+    return isValid;
   }
 
   const CustomInput = styled(TextField)({
@@ -161,24 +214,42 @@ export default function ProductReviews(props) {
   return (
     <Fragment>
       <Box>
-        <Chip variant="outlined" label="LEAVE REVIEW:"/>
+        <Chip variant="outlined" label="LEAVE REVIEW:" />
         <form onSubmit={onCreateReview}>
-          <Box sx={{mt:4}}>
-              <InfoHolder>
-                <Avatar size="small" sx={{ bgcolor: theme.palette.secondary.main, width: 30, height: 30 }}>{auth.email[0].toUpperCase()}</Avatar>
-                <Author>{auth.email}</Author>
-              </InfoHolder>
-            </Box>
-            <Box sx={{display: "flex", gap: 1}}>
-          <Typography>Rate:</Typography>
-          <Rating
-            onChange={(event, newValue) => handleChangeRating(event, newValue)}
-            name="size-small"
-            variant="outlined"
-            size="medium"
-            sx={{ display: "inline"}}
-            value={newReview.ratingValue}
-          /> <Typography>{newReview.ratingValue ? `(${newReview.ratingValue} stars)` : <></> }</Typography>
+          <Box sx={{ mt: 4 }}>
+            <InfoHolder>
+              <Avatar
+                size="small"
+                sx={{
+                  bgcolor: theme.palette.secondary.main,
+                  width: 30,
+                  height: 30,
+                }}
+              >
+                {auth?.email ? auth?.email[0].toUpperCase() : "?"}
+              </Avatar>
+              <Author>{auth.email}</Author>
+            </InfoHolder>
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Typography>Rate:</Typography>
+            <Rating
+              onChange={(event, newValue) =>
+                handleChangeRating(event, newValue)
+              }
+              name="size-small"
+              variant="outlined"
+              size="medium"
+              sx={{ display: "inline" }}
+              value={newReview.ratingValue}
+            />{" "}
+            <Typography>
+              {newReview.ratingValue ? (
+                `(${newReview.ratingValue} stars)`
+              ) : (
+                <></>
+              )}
+            </Typography>
           </Box>
           <CustomInput
             inputRef={commentRef}
@@ -198,23 +269,31 @@ export default function ProductReviews(props) {
           </Button>
         </form>
         {messages.createReviewResponseMessage ? (
-        <Zoom in={messages.createReviewResponseMessage.length > 0 ? true : false}>
-          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
-            {messages.createReviewResponseMessage}
-          </Alert>
-        </Zoom>
-      ) : (
-        ""
-      )}
-      {messages.createReviewErrorMessage ? (
-        <Zoom in={messages.createReviewErrorMessage.length > 0 ? true : false}>
-          <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="error">
-            {messages.createReviewErrorMessage}
-          </Alert>
-        </Zoom>
-      ) : (
-        ""
-      )}
+          <Zoom
+            in={messages.createReviewResponseMessage.length > 0 ? true : false}
+          >
+            <Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
+              {messages.createReviewResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {messages.createReviewErrorMessage ? (
+          <Zoom
+            in={messages.createReviewErrorMessage.length > 0 ? true : false}
+          >
+            <Alert
+              sx={{ marginTop: theme.spacing(2) }}
+              variant="filled"
+              severity="error"
+            >
+              {messages.createReviewErrorMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
       </Box>
       <Stack spacing={2} sx={{ mt: theme.spacing(4) }}>
         {reviews?.map((review) => {
@@ -222,7 +301,7 @@ export default function ProductReviews(props) {
             <StyledPaper key={review.id} variant="elevation" elevation={1}>
               <InfoHolder>
                 <AccountCircle />
-                <Author>{review.author}</Author>
+                <Author>{review.email}</Author>
                 <Date>on: {review.createdOn}</Date>
               </InfoHolder>
               <InfoHolder>
@@ -233,7 +312,7 @@ export default function ProductReviews(props) {
                   max={5}
                   readOnly
                 />
-                <Typography>({review.ratingValue})</Typography>
+                <Typography>({review.ratingValue} stars)</Typography>
               </InfoHolder>
               <ContentHolder>
                 <Typography>{review.content}</Typography>

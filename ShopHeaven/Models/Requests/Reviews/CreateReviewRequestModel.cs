@@ -2,11 +2,7 @@
 {
     public class CreateReviewRequestModel
     {
-        public string Username { get; set; }
-
-        public string Email { get; set; }
-
-        public string Comment { get; set; }
+        public string Content { get; set; }
 
         public string ProductId { get; set; }
 

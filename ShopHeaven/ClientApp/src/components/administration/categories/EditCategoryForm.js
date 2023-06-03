@@ -95,7 +95,7 @@ export default function EditCategoryForm(props) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setEditCategoryErrorMessage(noPermissionsForOperationMessage);
       } else {
-        setEditCategoryErrorMessage("Error!");
+        setEditCategoryErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
