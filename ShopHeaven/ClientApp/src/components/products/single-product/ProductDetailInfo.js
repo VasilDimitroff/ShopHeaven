@@ -130,7 +130,7 @@ export default function ProductDetailInfo(props) {
                 <HeadingChip color="primary" label={"REVIEWS"}></HeadingChip>
               </Divider>
             </DetailsHeading>
-            <ProductReviews reviews={product?.reviews} productId={product?.id} />
+            <ProductReviews reviews={product?.reviews} productId={product?.id}/>
           </TabPanel>
         </Box>
       </Paper>

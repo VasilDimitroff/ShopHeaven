@@ -41,7 +41,7 @@ export default function Product() {
         setProduct(response?.data.product);
         setSimilarProducts(response?.data.similarProducts);
 
-        console.log("TUK",response?.data.product);
+        console.log(response?.data.product);
       } catch (error) {
         console.log(error);
       }
@@ -90,7 +90,7 @@ export default function Product() {
             products={similarProducts}
             headingName="Similar Products"
           />
-          <ProductDetailInfo product={product} />
+          <ProductDetailInfo product={product}/>
         </>
       ) : (
         <CircleLoader />

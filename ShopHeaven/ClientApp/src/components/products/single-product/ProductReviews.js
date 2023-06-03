@@ -107,7 +107,6 @@ export default function ProductReviews(props) {
       });
 
       setReviews(prev => [...prev, response?.data])
-
     } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setMessages((prev) => {

@@ -111,9 +111,8 @@ export default function ProductDescription(props) {
             size="medium"
             label="stars"
             defaultValue={product.rating}
-            precision={0.5}
           />
-          <RatingText>{`${product.rating} (${product.reviews.length} reviews)`}</RatingText>
+          <RatingText>{`${product.rating.toFixed(2)} (${product.reviews.length} reviews)`}</RatingText>
         </RatingWrapper>
         <SubheadingInfoWrapper>
           <Box sx={{ display: "flex", gap: 1 }}>

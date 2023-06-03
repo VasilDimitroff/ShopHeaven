@@ -201,7 +201,7 @@ function ProductCarouselCard(props) {
               readOnly
               size="small"
             />
-            <RatingText component="legend">{product.rating} stars</RatingText>
+            <RatingText component="legend">{product.rating.toFixed(2)} stars</RatingText>
           </RatingWrapper>
           {product?.discount > 0 ? (
             <Box
