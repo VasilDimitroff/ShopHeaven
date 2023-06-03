@@ -14,7 +14,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ProductReviewsList from "./ProductReviewsList";
+import ProductReviews from "./ProductReviews";
 import AddReviewForm from "./AddReviewForm";
 import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../../theme";
@@ -130,8 +130,7 @@ export default function ProductDetailInfo(props) {
                 <HeadingChip color="primary" label={"REVIEWS"}></HeadingChip>
               </Divider>
             </DetailsHeading>
-            <AddReviewForm />
-            <ProductReviewsList reviews={product?.reviews} />
+            <ProductReviews reviews={product?.reviews} productId={product?.id} />
           </TabPanel>
         </Box>
       </Paper>
