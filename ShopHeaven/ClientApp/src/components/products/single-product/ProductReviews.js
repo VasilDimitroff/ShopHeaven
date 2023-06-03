@@ -8,7 +8,9 @@ import {
   Button,
   Alert,
   TextField,
-  Zoom
+  Zoom,
+  Avatar,
+  Chip
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
@@ -27,8 +29,6 @@ export default function ProductReviews(props) {
 
   const [newReview, setNewReview] = useState({
     productId: props.productId,
-    name: "",
-    email: "",
     comment: "",
     ratingValue: null
   });
@@ -38,8 +38,6 @@ export default function ProductReviews(props) {
     createReviewErrorMessage: ""
   })
 
-  const nameRef = useRef();
-  const emailRef = useRef();
   const commentRef = useRef();
 
   function handleChangeRating(event, newValue) {
@@ -59,11 +57,9 @@ export default function ProductReviews(props) {
     setInputFieldsValues()
 
     const review = {
-      userId: auth.userId,
+      createdBy: auth.userId,
       productId: newReview.productId,
-      author: newReview.name,
-      email: newReview.email,
-      comment: newReview.comment,
+      comment: commentRef.current.value,
       ratingValue: newReview.ratingValue
     };
 
@@ -119,15 +115,11 @@ export default function ProductReviews(props) {
   }
 
   function setInputFieldsValues() {
-    const name = nameRef.current.value;
-    const email = emailRef.current.value;
     const comment = commentRef.current.value;
 
     setNewReview(prev => {
       return {
         ...prev,
-        name: name,
-        email: email,
         comment: comment,
       }
     });
@@ -147,7 +139,7 @@ export default function ProductReviews(props) {
 
   const InfoHolder = styled(Box)({
     display: "flex",
-    gap: 5,
+    gap: 10,
     alignItems: "center",
     marginBottom: theme.spacing(1),
   });
@@ -169,11 +161,16 @@ export default function ProductReviews(props) {
   return (
     <Fragment>
       <Box>
-        <Typography variant="h6">LEAVE REVIEW</Typography>
+        <Chip variant="outlined" label="LEAVE REVIEW:"/>
         <form onSubmit={onCreateReview}>
-          <CustomInput inputRef={nameRef} defaultValue={newReview.name} label="Your name" variant="outlined" />
-          <CustomInput inputRef={emailRef} defaultValue={newReview.email} label="Your E-mail" variant="outlined" />
-          <Typography>Your rating:</Typography>
+          <Box sx={{mt:4}}>
+              <InfoHolder>
+                <Avatar size="small" sx={{ bgcolor: theme.palette.secondary.main, width: 30, height: 30 }}>{auth.email[0].toUpperCase()}</Avatar>
+                <Author>{auth.email}</Author>
+              </InfoHolder>
+            </Box>
+            <Box sx={{display: "flex", gap: 1}}>
+          <Typography>Rate:</Typography>
           <Rating
             onChange={(event, newValue) => handleChangeRating(event, newValue)}
             name="size-small"
@@ -181,7 +178,8 @@ export default function ProductReviews(props) {
             size="medium"
             sx={{ display: "inline"}}
             value={newReview.ratingValue}
-          /> {newReview.ratingValue ? `${newReview.ratingValue} stars` : <></> }
+          /> <Typography>{newReview.ratingValue ? `(${newReview.ratingValue} stars)` : <></> }</Typography>
+          </Box>
           <CustomInput
             inputRef={commentRef}
             multiline

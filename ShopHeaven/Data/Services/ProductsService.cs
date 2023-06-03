@@ -869,8 +869,8 @@ namespace ShopHeaven.Data.Services
                                     .Where(r => r.IsDeleted != true && r.Status == ReviewStatus.Approved)
                                     .Select(r => new ReviewResponseModel
                                     {
-                                        Author = r.Author,
-                                        Email = r.Email,
+                                        Author = r.CreatedBy.UserName,
+                                        Email = r.CreatedBy.Email,
                                         Content = r.Content,
                                         RatingValue = r.RatingValue,
                                         CreatedOn = r.CreatedOn.ToString()

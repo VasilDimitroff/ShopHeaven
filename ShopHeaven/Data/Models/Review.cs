@@ -7,10 +7,7 @@ namespace ShopHeaven.Data.Models
 {
     public class Review : BaseModel, ICreatableModel
     {
-
-        [Required(ErrorMessage = "Review content cannot be empty or null")]
-        [MinLength(3)]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         [Required]
         public string ProductId { get; set; }
