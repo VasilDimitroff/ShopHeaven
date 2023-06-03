@@ -107,6 +107,7 @@ function ProductsCarousel(props) {
             style: {
               opacity: "0.8",
               backgroundColor: theme.palette.primary.main,
+              border: "2px solid black"
             },
           }}
         >

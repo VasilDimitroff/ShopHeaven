@@ -14,9 +14,7 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import {
-  singleProductBasePath,
-} from "../../../constants";
+import { singleProductBasePath } from "../../../constants";
 import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
@@ -30,15 +28,24 @@ function ProductCarouselCard(props) {
     position: "relative",
   });
 
-  const FavoriteHolder = styled(Box)({
-    position: "absolute",
-    top: 10,
-    right: 12,
-    backgroundColor: "rgba(0, 0, 0, 0.0)",
-    borderRadius: "50%",
-    padding: theme.spacing(0.8),
+  const FavoriteIconHolder = styled(Box)({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgba(255, 255, 255, 0.8)",
     "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, 0.15)",
+      color: theme.palette.error.main,
+    },
+  })
+
+  const FavoriteIcon = styled(Box)({
+    position: "absolute",
+    top: "35%",
+    backgroundColor: "rgba(0, 0, 0, 0.00)",
+    borderRadius: "50%",
+    padding: theme.spacing(1.5),
+    "&:hover": {
+      backgroundColor: "rgba(0, 0, 0, 0.2)",
     },
   });
 
@@ -106,12 +113,12 @@ function ProductCarouselCard(props) {
 
   const RatingText = styled(Typography)({
     marginLeft: theme.spacing(1),
-    whiteSpace: 'nowrap'
+    whiteSpace: "nowrap",
   });
 
   const PriceText = styled(Typography)({
     color: theme.palette.secondary.main,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
     fontWeight: 500,
   });
 
@@ -129,18 +136,17 @@ function ProductCarouselCard(props) {
           title={product.name}
           image={props.image}
         />
-        <FavoriteHolder>
-          <Box>
-            <Favorite
-              sx={{
-                fontSize: "26px",
-                "&:hover": {
-                  color: theme.palette.error.main,
-                },
-              }}
-            />
-          </Box>
-        </FavoriteHolder>
+        <FavoriteIconHolder>
+          <FavoriteIcon>
+            <Box>
+              <Favorite
+                sx={{
+                  fontSize: "30px",
+                }}
+              />
+            </Box>
+          </FavoriteIcon>
+        </FavoriteIconHolder>
         <RibbonHolder>
           {product.discount > 0 ? (
             <Box>
@@ -209,7 +215,12 @@ function ProductCarouselCard(props) {
           )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {`${product.currency} ${(Math.round((product.price - (product.price * product.discount) / 100) *100) / 100).toFixed(2)}`}
+              {`${product.currency} ${(
+                Math.round(
+                  (product.price - (product.price * product.discount) / 100) *
+                    100
+                ) / 100
+              ).toFixed(2)}`}
             </PriceText>
             <Box>
               <IconButton
