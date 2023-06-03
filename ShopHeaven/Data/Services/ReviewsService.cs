@@ -25,7 +25,9 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UserDoesNotExist);
             }
 
-            var product = await this.db.Products.FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
+            var product = await this.db.Products
+                .Include(x => x.Reviews)
+                .FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
 
             if (product == null)
             {
@@ -49,6 +51,9 @@ namespace ShopHeaven.Data.Services
                 RatingValue = model.RatingValue,
                 Product = product, 
             };
+
+            product.Reviews.Add(newReview);
+            product.Rating = Math.Round(product.Reviews.Average(r => r.RatingValue), 2);
 
             await this.db.Reviews.AddAsync(newReview);
             await this.db.SaveChangesAsync();

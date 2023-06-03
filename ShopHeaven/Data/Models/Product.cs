@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ShopHeaven.Data.Models.Common;
+using System.Linq;
 
 namespace ShopHeaven.Data.Models
 {
     public class Product : BaseModel, ICreatableModel
     {
         private double _rating;
-        private bool _isAvailable;
 
         public Product()
         {
@@ -57,7 +57,7 @@ namespace ShopHeaven.Data.Models
         {
             get
             {
-                if (Reviews.Where(x => x.IsDeleted != true).Any())
+                if (this.Reviews.Where(x => x.IsDeleted != true).Any())
                 {
                     return Math.Round(this.Reviews.Where(x => x.IsDeleted != true).Average(r => r.RatingValue), 2);
                 }

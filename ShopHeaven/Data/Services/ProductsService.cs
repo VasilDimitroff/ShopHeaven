@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Models.Enums;
@@ -822,10 +823,9 @@ namespace ShopHeaven.Data.Services
         }
 
         private async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
-        {
+        { 
             var product = await this.db.Products
                             .Where(x => x.Id == model.Id && x.IsDeleted != true)
-                            .Include(x => x.Reviews)
                             .Select(p => new ProductResponseModel
                             {
                                 Id = p.Id,
@@ -861,7 +861,17 @@ namespace ShopHeaven.Data.Services
                                         IsThumbnail = i.IsThumbnail
                                     })
                                     .ToList(),
-                                Labels = p.Labels
+                                Reviews =  p.Reviews.Where(r => r.IsDeleted != true && r.Status == ReviewStatus.Approved)
+                                    .Select(r => new ReviewResponseModel
+                                    {
+                                        Id = r.Id,
+                                        Email = r.CreatedBy.Email,
+                                        Content = r.Content,
+                                        RatingValue = r.RatingValue,
+                                        CreatedOn = r.CreatedOn.ToString()
+                                    })
+                                    .ToList(),
+                                    Labels = p.Labels
                                     .Where(l => l.IsDeleted != true)
                                     .Select(l => l.Label.Content)
                                     .ToList(),
@@ -880,11 +890,6 @@ namespace ShopHeaven.Data.Services
                                     .ToList()
                             })
                             .FirstOrDefaultAsync();
-
-            if (product != null)
-            {
-                product.Reviews = await this.reviewsService.GetReviewsByProductIdAsync(product.Id, ReviewStatus.Approved);
-            }
 
             return product;
         }
