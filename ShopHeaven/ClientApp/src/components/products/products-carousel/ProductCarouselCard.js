@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Rating,
@@ -11,36 +11,36 @@ import {
   CardContent,
   CardMedia,
   Chip,
-  Skeleton
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import {
-  maxNameLengthInProductCard,
   singleProductBasePath,
+  carouselCardProductNameRowsCount,
 } from "../../../constants";
 import { theme } from "../../../theme";
 
 function ProductCarouselCard(props) {
   const navigate = useNavigate();
-  const [product, setProduct] = useState(props.product)
-  const [isLoading, setIsLoading] = useState(true)
+  const [product, setProduct] = useState(props.product);
 
   const [subcategory, setSubcategory] = useState(props.subcategory);
-
-
-  useEffect(() => {
-    // Симулиране на зареждането на снимките
-    setTimeout(() => {
-      setProduct(product)
-      setIsLoading(false);
-    }, 0);
-  }, []);
-
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
     position: "relative",
+  });
+
+  const FavoriteHolder = styled(Box)({
+    position: "absolute",
+    top: 10,
+    right: 12,
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
+    borderRadius: "50%",
+    padding: theme.spacing(0.8),
+    "&:hover": {
+      backgroundColor: "rgba(0, 0, 0, 0.15)",
+    },
   });
 
   const RibbonHolder = styled(Box)({
@@ -74,22 +74,20 @@ function ProductCarouselCard(props) {
     borderRadius: 6,
   });
 
-  const StyledCardActionArea = styled(Box)({
-    marginTop: theme.spacing(1.5),
+  const StyledCardActionArea = styled("div")({
+    //lineHeight: '1.2em', // 1 row height
+    height: "4.56em", // 3 rows
+    overflow: "hidden",
+    display: "-webkit-box",
+    WebkitLineClamp: carouselCardProductNameRowsCount,
+    WebkitBoxOrient: "vertical",
     marginBottom: theme.spacing(1),
-    [theme.breakpoints.down("sm")]: {
-     
-    },
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
   });
 
   const ProductName = styled(Typography)({
+    lineHeight: 1.2,
     fontWeight: 500,
     fontSize: "120%",
-    lineHeight: 1.1,
     cursor: "pointer",
     "&:hover": {
       color: theme.palette.primary.main,
@@ -131,16 +129,26 @@ function ProductCarouselCard(props) {
     minHeight: 400,
   });
 
-  return  (
-    !isLoading ? (<StyledCard>
+  return (
+    <StyledCard>
       <CardActionArea>
         <ProductCardMedia
-          onClick={() =>
-            navigate(`${singleProductBasePath}${product.id}`)
-          }
+          onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
           title={product.name}
           image={props.image}
         />
+        <FavoriteHolder>
+          <Box>
+            <Favorite
+              sx={{
+                fontSize: "26px",
+                "&:hover": {
+                  color: theme.palette.error.main,
+                },
+              }}
+            />
+          </Box>
+        </FavoriteHolder>
         <RibbonHolder>
           {product.discount > 0 ? (
             <Box>
@@ -176,15 +184,11 @@ function ProductCarouselCard(props) {
         ) : (
           <></>
         )}
-        <StyledCardActionArea sx={{border: "2px solid black"}}>
+        <StyledCardActionArea>
           <ProductName
-            onClick={() =>
-              navigate(`${singleProductBasePath}${product.id}`)
-            }
+            onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
           >
-            {product.name.length > maxNameLengthInProductCard
-              ? product.name.slice(0, maxNameLengthInProductCard) + "..."
-              : product.name.slice(0, maxNameLengthInProductCard)}
+            {product.name}
           </ProductName>
         </StyledCardActionArea>
         <Box>
@@ -196,9 +200,7 @@ function ProductCarouselCard(props) {
               readOnly
               size="small"
             />
-            <RatingText component="legend">
-              {product.rating} stars
-            </RatingText>
+            <RatingText component="legend">{product.rating} stars</RatingText>
           </RatingWrapper>
           {product?.discount > 0 ? (
             <Box
@@ -218,24 +220,12 @@ function ProductCarouselCard(props) {
               {product.currency}{" "}
               {(
                 Math.round(
-                  (product.price -
-                    (product.price * product.discount) / 100) *
+                  (product.price - (product.price * product.discount) / 100) *
                     100
                 ) / 100
               ).toFixed(2)}
             </PriceText>
             <ActionsWrapper>
-              <IconButton
-                size="large"
-                variant="contained"
-                sx={{
-                  "&:hover": {
-                    color: theme.palette.error.main,
-                  },
-                }}
-              >
-                <Favorite sx={{ fontSize: "26px" }} />
-              </IconButton>
               <IconButton
                 size="large"
                 variant="contained"
@@ -251,11 +241,8 @@ function ProductCarouselCard(props) {
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
-    </StyledCard>) 
-    
-    
-    : ( <StyledCard><Skeleton  variant="rounded" height={484} /></StyledCard>)
-  ) 
+    </StyledCard>
+  );
 }
 
 export default ProductCarouselCard;

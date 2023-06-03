@@ -75,11 +75,11 @@ export const columnsWithCategoriesToShowIfScreenIsLg = 4;
 export const columnsWithSubcategoriesToShowIfScreenIsMd = 2;
 export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
 
-//product card name max length
-export const maxNameLengthInProductCard = 50;
-
 //allowed file formats in upload image functionality
 export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
 // how many similar products to get for signle product page slider below main info
 export const similarProductsForSingleProductPageSlider = 6;
+
+//how many rows to be product name in ProductCarouselCard component
+export const carouselCardProductNameRowsCount = 3;
