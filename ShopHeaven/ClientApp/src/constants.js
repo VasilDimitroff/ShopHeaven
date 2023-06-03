@@ -80,6 +80,3 @@ export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
 // how many similar products to get for signle product page slider below main info
 export const similarProductsForSingleProductPageSlider = 6;
-
-//how many rows to be product name in ProductCarouselCard component
-export const carouselCardProductNameRowsCount = 3;

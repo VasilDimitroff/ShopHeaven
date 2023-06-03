@@ -16,7 +16,6 @@ import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import {
   singleProductBasePath,
-  carouselCardProductNameRowsCount,
 } from "../../../constants";
 import { theme } from "../../../theme";
 
@@ -78,9 +77,6 @@ function ProductCarouselCard(props) {
     //lineHeight: '1.2em', // 1 row height
     height: "4.56em", // 3 rows
     overflow: "hidden",
-    display: "-webkit-box",
-    WebkitLineClamp: carouselCardProductNameRowsCount,
-    WebkitBoxOrient: "vertical",
     marginBottom: theme.spacing(1),
   });
 
@@ -108,18 +104,14 @@ function ProductCarouselCard(props) {
     alignItems: "center",
   });
 
-  const ActionsWrapper = styled(Box)({
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 1,
-  });
-
   const RatingText = styled(Typography)({
     marginLeft: theme.spacing(1),
+    whiteSpace: 'nowrap'
   });
 
   const PriceText = styled(Typography)({
     color: theme.palette.secondary.main,
+    whiteSpace: 'nowrap',
     fontWeight: 500,
   });
 
@@ -217,15 +209,9 @@ function ProductCarouselCard(props) {
           )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {product.currency}{" "}
-              {(
-                Math.round(
-                  (product.price - (product.price * product.discount) / 100) *
-                    100
-                ) / 100
-              ).toFixed(2)}
+              {`${product.currency} ${(Math.round((product.price - (product.price * product.discount) / 100) *100) / 100).toFixed(2)}`}
             </PriceText>
-            <ActionsWrapper>
+            <Box>
               <IconButton
                 size="large"
                 variant="contained"
@@ -237,7 +223,7 @@ function ProductCarouselCard(props) {
               >
                 <ShoppingCart sx={{ fontSize: "26px" }} />
               </IconButton>
-            </ActionsWrapper>
+            </Box>
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
