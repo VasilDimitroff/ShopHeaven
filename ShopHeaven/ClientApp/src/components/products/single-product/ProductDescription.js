@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function ProductDescription(props) {
   const [product, setProduct] = useState(props.product);

@@ -11,6 +11,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  Skeleton
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -23,8 +24,19 @@ import { theme } from "../../../theme";
 function ProductCarouselCard(props) {
   const navigate = useNavigate();
   const [product, setProduct] = useState(props.product)
+  const [isLoading, setIsLoading] = useState(true)
 
   const [subcategory, setSubcategory] = useState(props.subcategory);
+
+
+  useEffect(() => {
+    // Симулиране на зареждането на снимките
+    setTimeout(() => {
+      setProduct(product)
+      setIsLoading(false);
+    }, 0);
+  }, []);
+
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
@@ -120,7 +132,7 @@ function ProductCarouselCard(props) {
   });
 
   return  (
-    <StyledCard>
+    !isLoading ? (<StyledCard>
       <CardActionArea>
         <ProductCardMedia
           onClick={() =>
@@ -239,7 +251,10 @@ function ProductCarouselCard(props) {
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
-    </StyledCard>
+    </StyledCard>) 
+    
+    
+    : ( <StyledCard><Skeleton  variant="rounded" height={484} /></StyledCard>)
   ) 
 }
 
