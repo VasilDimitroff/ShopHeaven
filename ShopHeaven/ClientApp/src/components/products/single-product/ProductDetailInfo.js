@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ProductReviews from "./ProductReviews";
-import AddReviewForm from "./AddReviewForm";
 import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../../theme";
 

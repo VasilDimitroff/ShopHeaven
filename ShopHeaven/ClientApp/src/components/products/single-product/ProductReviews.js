@@ -43,7 +43,7 @@ export default function ProductReviews(props) {
 
 
   useEffect(() => {
-    console.log("USER HOOK", user)
+    console.log("USER ", user)
   }, [])
   
   function handleChangeRating(event, newValue) {
@@ -80,7 +80,7 @@ export default function ProductReviews(props) {
 
   async function createReview(review) {
     try {
-      console.log("DANNITE", review);
+      console.log("REVIEW REQUEST", review);
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(

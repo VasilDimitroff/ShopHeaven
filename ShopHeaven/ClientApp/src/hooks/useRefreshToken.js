@@ -14,7 +14,7 @@ const useRefreshToken = () => {
 
     setAuth(prev => {
         console.log(JSON.stringify(prev));
-        console.log("REFRESH TOKEN: " + response.data.refreshToken)
+        //console.log("REFRESH TOKEN: " + response.data.refreshToken)
         return {
           ...prev,
           roles: response.data.roles,
@@ -29,10 +29,15 @@ const useRefreshToken = () => {
         }
     });
 
-      setUser({
-        wishlistProductsCount: response?.data?.wishlistProductsCount,
-        cartProductsCount: response?.data?.cartProductsCount
+      setUser(prev => {
+        return {
+          ...prev,
+          wishlistProductsCount: response?.data?.wishlistProductsCount,
+          cartProductsCount: response?.data?.cartProductsCount,
+        };
       });
+
+      console.log("LOGGED USER", response?.data);
 
     return response.data.jwtToken;
   };

@@ -1,5 +1,6 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, Fragment, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
+import useUser from "../hooks/useUser";
 import useLogout from "../hooks/useLogout";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -42,8 +43,13 @@ import MainMenu from "./home/MainMenu";
 
 export default function Header() {
   const { auth } = useAuth();
+  const { user } = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("USERA ", user)
+  },[])
 
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -314,7 +320,7 @@ export default function Header() {
             ) : (
               <Fragment>
                 <CustomBadge
-                  badgeContent={1}
+                  badgeContent={user.wishlistProductsCount}
                   color="secondary"
                   sx={{
                     cursor: "pointer",
@@ -327,7 +333,7 @@ export default function Header() {
                   <Favorite />
                 </CustomBadge>
                 <CustomBadge
-                  badgeContent={3}
+                  badgeContent={user.cartProductsCount}
                   color="secondary"
                   sx={{
                     border: "white",
