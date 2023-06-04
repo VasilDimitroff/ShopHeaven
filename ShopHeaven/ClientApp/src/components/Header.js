@@ -20,6 +20,7 @@ import {
   IconButton,
   Fade,
   Button,
+  Snackbar,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../theme";
@@ -34,7 +35,7 @@ import {
   AccountCircle,
   Logout,
   Menu,
-  AdminPanelSettings
+  AdminPanelSettings,
 } from "@mui/icons-material";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
@@ -47,9 +48,7 @@ export default function Header() {
   const logout = useLogout();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("USERA ", user)
-  },[])
+  const [logoutMessage, setLogoutMessage] = useState("");
 
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -69,14 +68,16 @@ export default function Header() {
 
   async function signOut() {
     await logout();
+    setLogoutMessage("You successfully logged out");
     //navigate("/");
   }
 
+  function handleCloseSnackbar() {
+    setLogoutMessage("");
+  }
+
   function HideAllMenusExcept(setterFuncToShowMenu) {
-    let useStatesSetterNames = [
-      handleShowUserMenu,
-      handleShowMobileMenu,
-    ];
+    let useStatesSetterNames = [handleShowUserMenu, handleShowMobileMenu];
 
     for (let i = 0; i < useStatesSetterNames.length; i++) {
       if (setterFuncToShowMenu === useStatesSetterNames[i]) {
@@ -87,9 +88,9 @@ export default function Header() {
     }
   }
   const styledLink = {
-      textDecoration: "none",
-      color: "#000"
-  }
+    textDecoration: "none",
+    color: "#000",
+  };
 
   const CustomToolbar = styled(Toolbar)({
     display: "flex",
@@ -147,7 +148,7 @@ export default function Header() {
     zIndex: 5,
     width: "100%",
     maxWidth: 250,
-   // backgroundColor: theme.palette.dropdown.main,
+    // backgroundColor: theme.palette.dropdown.main,
     //color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(6),
     paddingTop: theme.spacing(2),
@@ -381,26 +382,24 @@ export default function Header() {
           >
             <List>
               <ListItem disablePadding>
-              <DropDownMenuListItemButton >
-                <UserNameText component="h4">{auth.email}</UserNameText>
+                <DropDownMenuListItemButton>
+                  <UserNameText component="h4">{auth.email}</UserNameText>
                 </DropDownMenuListItemButton>
               </ListItem>
               <Divider />
-             {
-              auth?.roles?.includes("Administrator")
-              ? (
+              {auth?.roles?.includes("Administrator") ? (
                 <Link style={styledLink} to="/admin">
                   <ListItem disablePadding>
-                  <DropDownMenuListItemButton >
-                    <AdminPanelSettings  />
-                    <UserMenuListItem primary="Admin Panel" />
-                  </DropDownMenuListItemButton>
-                </ListItem>
-                <Divider />
-              </Link>
-              )
-              : <></>
-             } 
+                    <DropDownMenuListItemButton>
+                      <AdminPanelSettings />
+                      <UserMenuListItem primary="Admin Panel" />
+                    </DropDownMenuListItemButton>
+                  </ListItem>
+                  <Divider />
+                </Link>
+              ) : (
+                <></>
+              )}
               <ListItem disablePadding>
                 <DropDownMenuListItemButton>
                   <AccountCircle />
@@ -439,7 +438,23 @@ export default function Header() {
           </UserMenu>
         </Slide>
       )}
-
+      <Snackbar
+        onClose={handleCloseSnackbar}
+        autoHideDuration={6000}
+        ContentProps={{
+          style: {
+            backgroundColor: theme.palette.success.main,
+            textAlign: "center",
+            fontWeight: 500,
+            fontSize: 18,
+            cursor: "pointer",
+          },
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={logoutMessage.length > 0 ? true : false}
+        TransitionComponent={Slide}
+        message={`${logoutMessage}`}
+      ></Snackbar>
       <Fade in={showMobileMenu} timeout={500} unmountOnExit>
         <MobileMenuWrapper>
           <MainMenu handleShowMobileMenu={handleShowMobileMenu} />

@@ -19,7 +19,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(AddProduct))]
-        public async Task<ActionResult<AddProductToCartResponseModel>> AddProduct([FromBody] AddProductToCartRequestModel model)
+        public async Task<ActionResult<AddProductToCartResponseModel>> AddProduct([FromBody]AddProductToCartRequestModel model)
         {
             try
             {

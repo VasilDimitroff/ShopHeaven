@@ -21,6 +21,7 @@ const useRefreshToken = () => {
           jwtToken: response.data.jwtToken,
           refreshToken: response.data.refreshToken,
           userId: response.data.id,
+          username: response.data.username,
           email: response.data.email,
           username: response.data.username,
           cartId: response.data.cartId,

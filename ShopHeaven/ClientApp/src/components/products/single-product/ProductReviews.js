@@ -157,7 +157,7 @@ export default function ProductReviews(props) {
       );
 
       controller.abort();
-
+     
       setMessages((prev) => {
         return {
           ...prev,
@@ -175,9 +175,11 @@ export default function ProductReviews(props) {
       });
 
       setReviews(prev => [...prev, response?.data])
+
+      console.log("CREAE REVIEW",response);
     } catch (error) {
       handleServerErrors(error);
-      console.log(error.message);
+      console.log(error);
     }
   }
 

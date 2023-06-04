@@ -110,7 +110,8 @@ export default function Login() {
         email: email,
         isLogged: true,
         cartId: cartId,
-        wishlistId: wishlistId
+        wishlistId: wishlistId,
+        username: username,
       });
 
       setUser({

@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Requests
 {
-    public record AddProductToCartRequestModel
+    public class AddProductToCartRequestModel
     {
         public string UserId { get; set; }
 

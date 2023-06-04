@@ -18,10 +18,11 @@ import {
 
 export default function Product() {
   const params = useParams();
-  const effectRun = useRef(false);
   const { auth } = useAuth();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
+
+  const effectRun = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -39,7 +40,7 @@ export default function Product() {
           }
         );
 
-        console.log(response?.data);
+        console.log(response);
         
         setProduct(response?.data?.product);
         setSimilarProducts(response?.data?.similarProducts);

@@ -1,4 +1,4 @@
-import { React, useState, useEffect, Fragment } from "react";
+import { React, useState, useRef } from "react";
 import {
   Box,
   Chip,
@@ -11,7 +11,6 @@ import {
   InputBase,
   Stack,
   IconButton,
-  Grid,
 } from "@mui/material";
 import {
   Favorite,
@@ -20,24 +19,89 @@ import {
   RemoveShoppingCart,
   AddCircle,
   RemoveCircle,
-  Close,
-  Cancel,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import useAuth from "../../../hooks/useAuth";
+import useUser from "../../../hooks/useUser";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function ProductActionButtons(props) {
-  const [product, setProduct] = useState(props.product);
+  const { auth } = useAuth();
+  const { setUser } = useUser();
+  let axiosPrivate = useAxiosPrivate();
 
-  const [showError, setShowError] = useState(false);
-  const [addToCart, setAddToCart] = useState(false);
-  const [addToCartContent, setAddToCartContent] = useState("Add to cart");
+  const [product, setProduct] = useState(props.product);
+  const [isInUserWishlist, setIsInUserWishlist] = useState(product.isInUserWishlist);
+
   const [addToFavorites, setAddToFavorites] = useState(false);
-  const [addToFavoritesContent, setAddToFavoritesContent] =
-    useState("Add to favorites");
+  const [addToFavoritesButtonText, setAddToFavoritesButtonText] = useState("Add to favorites");
+
+  const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
+  const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+
   let [productsQuantity, setProductsQuantity] = useState(1);
 
-  useEffect(() => {}, [productsQuantity]);
+  const quantityRef = useRef();
+
+  function onAddProductToCart(){
+    const requestData = {
+      userId: auth.userId,
+      cartId: auth.cartId,
+      productId: product.id,
+      quantity: parseInt(quantityRef.current.value)
+    }
+
+    addProductToCart(requestData);
+  }
+
+  async function addProductToCart(requestData) {
+    try {
+      console.log("Add to CART REQUEST", requestData);
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.carts.addProduct,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setProduct(prev => {
+        return {
+          ...prev,
+          quantity: prev.quantity - response?.data?.quantity
+        }
+      });
+
+      setUser( prev => {
+        return {
+          ...prev,
+          cartProductsCount: response?.data?.productsInCartCount
+        }
+      })
+      
+      setAddToCartErrorMessage("");
+      setAddToCartResponseMessage(`You have added product ${product.name} in the cart ${response?.data?.quantity} time(s)`)
+    } catch (error) {
+      
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setAddToCartErrorMessage(noPermissionsForOperationMessage)
+      } else {
+        setAddToCartErrorMessage(error?.response?.data)
+      }
+
+      console.log(error);
+    } finally {
+      setProductsQuantity(1);
+    }
+  }
+
 
   function handleSetProductsQuantity(value) {
     value = parseInt(value);
@@ -49,44 +113,34 @@ export default function ProductActionButtons(props) {
     }
 
     if (result > product.quantity) {
-      handleShowError();
+      
+      if(product.isAvailable){
+        setAddToCartErrorMessage(`In stock are ${product.quantity} items only! It is the maximum quantity you can purchase.`);
+      } else {
+        setAddToCartErrorMessage(`Product is out of stock! You cannot purchase it!`)
+      }
+      
     } else {
       setProductsQuantity((prev) => (prev += value));
-      handleCloseError();
     }
-  }
-
-  function handleShowError() {
-    setShowError(true);
-  }
-
-  function handleCloseError() {
-    setShowError(false);
-  }
-
-  function handleAddToCart(value) {
-    setAddToCart(value);
-
-    if (value === false) {
-      setAddToCartContent("Add to cart");
-    } else {
-      setAddToCartContent("Remove from cart");
-    }
-
-    console.log("Add to cart is " + addToCart);
   }
 
   function handleAddToFavorites(value) {
     setAddToFavorites(value);
 
     if (value === false) {
-      setAddToFavoritesContent("Add to favorites");
+      setAddToFavoritesButtonText("Add to favorites");
     } else {
-      setAddToFavoritesContent("Remove from favorites");
+      setAddToFavoritesButtonText("Remove from favorites");
     }
 
     console.log("Add to favorites is " + addToFavorites);
   }
+
+  function handleCloseSnackbar() {
+    setAddToCartErrorMessage("");
+    setAddToCartResponseMessage("");
+  };
 
   const Discount = styled(Typography)({
     color: "gray",
@@ -161,11 +215,7 @@ export default function ProductActionButtons(props) {
     },
   });
   function renderFavoriteIcon() {
-    return addToFavorites ? <Favorite /> : <FavoriteBorder />;
-  }
-
-  function renderCartIcon() {
-    return addToCart ? <RemoveShoppingCart /> : <AddShoppingCart />;
+    return product.isInUserWishlist ? <Favorite /> : <FavoriteBorder />;
   }
 
   function renderPrice() {
@@ -221,12 +271,13 @@ export default function ProductActionButtons(props) {
             Quantity:
           </Typography> */}
 
-          <QuantityHolder>
+          <QuantityHolder sx={{border: "1px solid black"}}>
             <IconButton onClick={() => handleSetProductsQuantity(-1)}>
               {" "}
               <RemoveCircle />
             </IconButton>
             <BootstrapInput
+              inputRef={quantityRef}
               defaultValue={productsQuantity}
               id="bootstrap-input"
               readOnly
@@ -239,8 +290,9 @@ export default function ProductActionButtons(props) {
           <Typography sx={{ textAlign: "center", mt: 1 }}>
             {`${product.quantity} items left`}
           </Typography>
-          <Snackbar
-            onClick={() => handleCloseError()}
+           <Snackbar
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
             ContentProps={{
               style: {
                 backgroundColor: theme.palette.error.main,
@@ -251,31 +303,36 @@ export default function ProductActionButtons(props) {
               },
             }}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            open={showError}
+            open={addToCartErrorMessage.length > 0 ? true : false}
             TransitionComponent={Slide}
-            message={
-              product.isAvailable ? (
-                <>
-                  (In stock are {product.quantity} items only! It is the maximum
-                  quantity you can purchase.)
-                  <Cancel sx={{ ml: 3 }} />
-                </>
-              ) : (
-                <>
-                  Product is out of stock! You cannot purchase it!
-                  <Cancel sx={{ ml: 3, right: 0 }} />
-                </>
-              )
-            }
+            message={`${addToCartErrorMessage}`}
           ></Snackbar>
+          <Snackbar
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
+            ContentProps={{
+              style: {
+                backgroundColor: theme.palette.success.main,
+                textAlign: "center",
+                fontWeight: 500,
+                fontSize: 18,
+                cursor: "pointer",
+              },
+            }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            open={addToCartResponseMessage.length > 0 ? true : false}
+            TransitionComponent={Slide}
+            message={`${addToCartResponseMessage}`}
+          ></Snackbar>
+
           <ActionButtons spacing={1.5}>
             <ActionButton
-              onClick={() => handleAddToCart(!addToCart)}
+              onClick={onAddProductToCart}
               variant="contained"
               size="large"
-              startIcon={renderCartIcon()}
+              startIcon={<AddShoppingCart />}
             >
-              {addToCartContent}
+             ADD TO CART
             </ActionButton>
             <ActionButton
               onClick={() => handleAddToFavorites(!addToFavorites)}
@@ -283,7 +340,7 @@ export default function ProductActionButtons(props) {
               size="large"
               startIcon={renderFavoriteIcon()}
             >
-              {addToFavoritesContent}
+              {addToFavoritesButtonText}
             </ActionButton>
           </ActionButtons>
           <GoToCartButton>Go to cart</GoToCartButton>
