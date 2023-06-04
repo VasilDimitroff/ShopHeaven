@@ -50,7 +50,7 @@ export default function ProductMainInfo(props) {
             <Grid item xs={12} md={6} lg={5} sx={{ position: "relative" }}>
               {
                 // second important part of the page
-                <ProductDescription product={product} totalReviewsCount={totalReviewsCount}/>
+                <ProductDescription product={product}/>
               }
             </Grid>
             <Grid item xs={12} md={12} lg={3}>

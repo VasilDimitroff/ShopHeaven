@@ -2,11 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using ShopHeaven.Data.Models;
-using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
-using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
@@ -14,7 +12,6 @@ using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Products.BaseModel;
-using ShopHeaven.Models.Responses.Reviews;
 using ShopHeaven.Models.Responses.Specifications;
 using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
@@ -771,40 +768,7 @@ namespace ShopHeaven.Data.Services
             }
         }
 
-        public async Task<ProductWithSimilarProductsResponseModel> GetProductWithSimilarProductsAsync(ProductRequestModel model)
-        {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
-
-            if (user == null)
-            {
-                model.UserId = "";
-            }
-
-            ProductResponseModel? product = await GetProductByIdAsync(model);
-
-            if (product == null)
-            {
-                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
-            }
-
-            var totalProductReviewCount = await this.db.Reviews.
-                Where(r => r.ProductId == product.Id && r.IsDeleted != true).CountAsync();
-
-            //to do: implement WHERE clause in GetSimilarProducts to fill with right products
-            List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductsByProductIdAsync(model);
-
-            var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel
-            {
-                Product = product,
-                SimilarProducts = similarProducts,
-                ReviewsCount = totalProductReviewCount,
-                PagesCount = (int)Math.Ceiling((double)totalProductReviewCount / model.RecordsPerPage),
-            };
-
-            return productWithSimilarProductResponseModel;
-        }
-
-        private async Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model)
+        public async Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model)
         {
             return await this.db.Products
                 .Where(p => p.IsDeleted != true)
@@ -820,6 +784,7 @@ namespace ShopHeaven.Data.Services
                     Price = p.Price,
                     Rating = p.Rating,
                     Labels = p.Labels
+                        .Where(x => x.IsDeleted != true)
                         .Select(x => x.Label.Content)
                         .ToList(),
                     Image = p.Images
@@ -828,8 +793,15 @@ namespace ShopHeaven.Data.Services
                 .ToListAsync();
         }
 
-        private async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
-        { 
+        public async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
+        {
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+
+            if (user == null)
+            {
+                model.UserId = "";
+            }
+
             var product = await this.db.Products
                             .Where(x => x.Id == model.Id && x.IsDeleted != true)
                             .Select(p => new ProductResponseModel
@@ -845,6 +817,7 @@ namespace ShopHeaven.Data.Services
                                 Discount = p.Discount,
                                 Quantity = p.Quantity,
                                 Rating = p.Rating,
+                                ReviewsCount = p.Reviews.Count(),
                                 IsInUserCart = p.Carts
                                     .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
                                 IsInUserWishlist = p.Wishlists
@@ -887,17 +860,10 @@ namespace ShopHeaven.Data.Services
                             })
                             .FirstOrDefaultAsync();
 
-            var reviewsRequestModel = new PaginatedReviewRequestModel
+            if (product == null)
             {
-                Status = ReviewStatus.Approved.ToString(),
-                ProductId = product.Id,
-                SearchTerm = model.SearchTerm,
-                RecordsPerPage = model.RecordsPerPage,
-                Page = model.Page,
-            };
-
-            var reviews = await this.reviewsService.GetReviewsByProductIdAsync(reviewsRequestModel);
-            product.Reviews = reviews;
+                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
+            }
 
             return product;
         }

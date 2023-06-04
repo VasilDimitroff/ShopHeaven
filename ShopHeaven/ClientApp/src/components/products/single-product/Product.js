@@ -23,11 +23,6 @@ export default function Product() {
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
 
-    //current page with reviews - pagination states
-    const [page, setPage] = useState(1);
-    const [numberOfPages, setNumberOfPages] = useState(10);
-    const [totalReviewsCount, setTotalReviewsCount] = useState(0);
-
   useEffect(() => {
     const controller = new AbortController();
     const getProduct = async () => {
@@ -38,9 +33,6 @@ export default function Product() {
             id: params.productId,
             userId: auth.userId,
             similarProductsCount: similarProductsForSingleProductPageSlider,
-            recordsPerPage: reviewsPerPageInProductPage,
-            page: page,
-            searchTerm: "",
           },
           {
             signal: controller.signal,
@@ -51,12 +43,6 @@ export default function Product() {
         
         setProduct(response?.data?.product);
         setSimilarProducts(response?.data?.similarProducts);
-        setNumberOfPages(response?.data?.pagesCount);
-        setTotalReviewsCount(response?.data?.reviewsCount);
-
-        if (page > response?.data?.pagesCount) {
-          setPage(1);
-        }
 
       } catch (error) {
         console.log(error);
@@ -101,7 +87,7 @@ export default function Product() {
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       {product ? (
         <>
-          <ProductMainInfo product={product} totalReviewsCount={totalReviewsCount} />
+          <ProductMainInfo product={product} />
           <ProductsCarousel
             products={similarProducts}
             headingName="Similar Products"

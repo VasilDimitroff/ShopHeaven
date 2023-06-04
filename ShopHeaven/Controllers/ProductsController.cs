@@ -34,14 +34,24 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Route(nameof(GetById))]
-        public async Task<ActionResult<ProductResponseModel>> GetById([FromBody] ProductRequestModel model)
+        public async Task<ActionResult<ProductWithSimilarProductsResponseModel>> GetById([FromBody] ProductRequestModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                var product = await this.productsService.GetProductWithSimilarProductsAsync(model);
-                return Ok(product);
+                var product = await this.productsService.GetProductByIdAsync(model);
+
+                //to do: implement WHERE clause in GetSimilarProducts to fill with right products
+                var similarProducts = await this.productsService.GetSimilarProductsByProductIdAsync(model);
+
+                var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel
+                {
+                    Product = product,
+                    SimilarProducts = similarProducts,
+                };
+
+                return Ok(productWithSimilarProductResponseModel);
             }
             catch (Exception ex)
             {

@@ -20,6 +20,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete);
 
-        Task<ProductWithSimilarProductsResponseModel> GetProductWithSimilarProductsAsync(ProductRequestModel model);
+        Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model);
+
+        Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model);
     }
 }

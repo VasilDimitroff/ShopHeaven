@@ -26,6 +26,8 @@ namespace ShopHeaven.Models.Responses.Products
 
         public double Rating { get; set; }
 
+        public int ReviewsCount { get; set; }
+
         public bool IsInUserCart { get; set; }
 
         public bool IsInUserWishlist { get; set; }
@@ -43,7 +45,5 @@ namespace ShopHeaven.Models.Responses.Products
         public ICollection<SpecificationResponseModel> Specifications { get; set; }
 
         public ICollection<BasicImageResponseModel> Images { get; set; }
-
-        public ICollection<ReviewResponseModel> Reviews { get; set; }
     }
 }

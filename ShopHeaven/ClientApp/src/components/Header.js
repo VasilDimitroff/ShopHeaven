@@ -69,7 +69,7 @@ export default function Header() {
 
   async function signOut() {
     await logout();
-    navigate("/");
+    //navigate("/");
   }
 
   function HideAllMenusExcept(setterFuncToShowMenu) {
