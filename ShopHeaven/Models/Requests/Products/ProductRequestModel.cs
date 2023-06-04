@@ -1,6 +1,6 @@
 ﻿namespace ShopHeaven.Models.Requests.Products
 {
-    public class ProductRequestModel
+    public class ProductRequestModel : PaginationRequestModel
     {
         public string Id { get; set; }
 

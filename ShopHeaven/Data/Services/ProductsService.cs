@@ -6,6 +6,7 @@ using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
+using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
@@ -786,13 +787,18 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
+            var totalProductReviewCount = await this.db.Reviews.
+                Where(r => r.ProductId == product.Id && r.IsDeleted != true).CountAsync();
+
             //to do: implement WHERE clause in GetSimilarProducts to fill with right products
             List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductsByProductIdAsync(model);
 
             var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel
             {
                 Product = product,
-                SimilarProducts = similarProducts
+                SimilarProducts = similarProducts,
+                ReviewsCount = totalProductReviewCount,
+                PagesCount = (int)Math.Ceiling((double)totalProductReviewCount / model.RecordsPerPage),
             };
 
             return productWithSimilarProductResponseModel;
@@ -881,7 +887,16 @@ namespace ShopHeaven.Data.Services
                             })
                             .FirstOrDefaultAsync();
 
-            var reviews = await this.reviewsService.GetReviewsByProductIdAsync(product.Id, ReviewStatus.Approved);
+            var reviewsRequestModel = new ProductPaginatedReviewRequestModel
+            {
+                Status = ReviewStatus.Approved,
+                ProductId = product.Id,
+                SearchTerm = model.SearchTerm,
+                RecordsPerPage = model.RecordsPerPage,
+                Page = model.Page,
+            };
+
+            var reviews = await this.reviewsService.GetReviewsByProductIdAsync(reviewsRequestModel);
             product.Reviews = reviews;
 
             return product;

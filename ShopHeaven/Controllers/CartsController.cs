@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Responses.Categories;
-using System.Data;
 
 namespace ShopHeaven.Controllers
 {

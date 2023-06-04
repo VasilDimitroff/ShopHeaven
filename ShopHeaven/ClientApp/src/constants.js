@@ -80,3 +80,6 @@ export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
 // how many similar products to get for signle product page slider below main info
 export const similarProductsForSingleProductPageSlider = 6;
+
+//how many reviews per page in single product page
+export const reviewsPerPageInProductPage = 3;

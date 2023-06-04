@@ -6,7 +6,7 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface IReviewsService
     {
-        Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(string productId, ReviewStatus status);
+        Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(ProductPaginatedReviewRequestModel model);
 
         Task<ReviewResponseModel> CreateReviewAsync(CreateReviewRequestModel model);
     }

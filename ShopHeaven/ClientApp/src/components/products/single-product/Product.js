@@ -13,6 +13,7 @@ import {
   subcategoryProductsBaseUrl,
   subcategoriesOfMainCategoryBaseUrl,
   similarProductsForSingleProductPageSlider,
+  reviewsPerPageInProductPage
 } from "../../../constants";
 
 export default function Product() {
@@ -21,6 +22,11 @@ export default function Product() {
   const { auth } = useAuth();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
+
+    //current page with reviews - pagination states
+    const [page, setPage] = useState(1);
+    const [numberOfPages, setNumberOfPages] = useState(10);
+    const [totalReviewsCount, setTotalReviewsCount] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,16 +38,26 @@ export default function Product() {
             id: params.productId,
             userId: auth.userId,
             similarProductsCount: similarProductsForSingleProductPageSlider,
+            recordsPerPage: reviewsPerPageInProductPage,
+            page: page,
+            searchTerm: "",
           },
           {
             signal: controller.signal,
           }
         );
 
-        setProduct(response?.data.product);
-        setSimilarProducts(response?.data.similarProducts);
+        console.log(response?.data);
+        
+        setProduct(response?.data?.product);
+        setSimilarProducts(response?.data?.similarProducts);
+        setNumberOfPages(response?.data?.pagesCount);
+        setTotalReviewsCount(response?.data?.reviewsCount);
 
-        console.log(response?.data.product);
+        if (page > response?.data?.pagesCount) {
+          setPage(1);
+        }
+
       } catch (error) {
         console.log(error);
       }
@@ -85,7 +101,7 @@ export default function Product() {
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       {product ? (
         <>
-          <ProductMainInfo product={product} />
+          <ProductMainInfo product={product} totalReviewsCount={totalReviewsCount} />
           <ProductsCarousel
             products={similarProducts}
             headingName="Similar Products"

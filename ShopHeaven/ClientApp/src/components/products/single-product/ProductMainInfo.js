@@ -8,6 +8,7 @@ import ProductActionButtons from "./ProductActionButtons";
 
 export default function ProductMainInfo(props) {
   const [product, setProduct] = useState(props.product);
+  const [totalReviewsCount, setTotalReviewsCount] = useState(props.totalReviewsCount);
 
   useEffect(()=> {
     setProduct(props.product)
@@ -49,7 +50,7 @@ export default function ProductMainInfo(props) {
             <Grid item xs={12} md={6} lg={5} sx={{ position: "relative" }}>
               {
                 // second important part of the page
-                <ProductDescription product={product}/>
+                <ProductDescription product={product} totalReviewsCount={totalReviewsCount}/>
               }
             </Grid>
             <Grid item xs={12} md={12} lg={3}>

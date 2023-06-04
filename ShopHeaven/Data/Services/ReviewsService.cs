@@ -70,19 +70,25 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(string productId, ReviewStatus status)
+        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(ProductPaginatedReviewRequestModel model)
         {
             var reviews = await this.db.Reviews
-            .Where(r => r.ProductId == productId && r.IsDeleted != true && r.Status == status)
-            .Select(r => new ReviewResponseModel
-            {
-                Id = r.Id,
-                Email = r.CreatedBy.Email,
-                Content = r.Content,
-                RatingValue = r.RatingValue,
-                CreatedOn = r.CreatedOn.ToString(),
-            })
-            .ToListAsync();
+                .OrderByDescending(r => r.CreatedOn)
+                .Where(r => r.ProductId == model.ProductId 
+                    && r.IsDeleted != true
+                    && r.Status == model.Status 
+                    && r.Content.Contains(model.SearchTerm.Trim()))
+                .Skip((model.Page - 1) * model.RecordsPerPage)
+                .Take(model.RecordsPerPage)
+                .Select(r => new ReviewResponseModel
+                {
+                    Id = r.Id,
+                    Email = r.CreatedBy.Email,
+                    Content = r.Content,
+                    RatingValue = r.RatingValue,
+                    CreatedOn = r.CreatedOn.ToString(),
+                })
+                .ToListAsync();
 
             return reviews;
         }
