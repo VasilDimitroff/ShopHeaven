@@ -21,23 +21,13 @@ namespace ShopHeaven.Data.Services
     {
         private readonly ShopDbContext db;
         private readonly IStorageService storageService;
-        private readonly ICategoriesService categoriesService;
-        private readonly ICurrencyService currencyService;
-        private readonly IReviewsService reviewsService;
 
-        public ProductsService(
-            ShopDbContext db,
-            IStorageService storageService,
-            ICategoriesService categoriesService,
-            IReviewsService reviewsService,
-            ICurrencyService currencyService)
+        public ProductsService(ShopDbContext db, IStorageService storageService)
         {
             this.db = db;
-            this.reviewsService = reviewsService;
             this.storageService = storageService;
-            this.categoriesService = categoriesService;
-            this.currencyService = currencyService;
         }
+
         public async Task<AdminProductResponseModel> CreateProductAsync(CreateProductRequestModel model)
         {
             var user = await this.db.Users
@@ -401,21 +391,10 @@ namespace ShopHeaven.Data.Services
             return updatedProduct;
         }
 
-        public async Task<ProductsWithCreationInfoResponseModel> GetAllWithCreationInfoAsync(AdminProductPaginationRequestModel model)
+        //product count by given criterias
+        public async Task<int> GetProductsCount(AdminProductPaginationRequestModel model)
         {
-            List<AdminProductResponseModel> products = await this.GetAllAsync(model) as List<AdminProductResponseModel>;
-
-            List<CategoryWithSubcategoriesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
-
-            List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
-
-            //select these product which contains search term in their name
-            //also product is not deleted
-            //and also if there is Category Id selected, filter products by this category
-            //if categoryid is empty, dont filter by category
-
-            //!!!! await
-            var productsCount = await this.db.Products
+            return await this.db.Products
                  .Where(p => (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
                     || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
@@ -423,21 +402,15 @@ namespace ShopHeaven.Data.Services
                             : p.SubCategory.MainCategoryId == model.CategoryId)
                     && p.IsDeleted != true)
                 .CountAsync();
-
-            var responseModel = new ProductsWithCreationInfoResponseModel
-            {
-                Products = products,
-                Categories = categories,
-                Currencies = currencies,
-                ProductsCount = productsCount,
-                PagesCount = (int)Math.Ceiling((double)productsCount / model.RecordsPerPage)
-            };
-
-            return responseModel;
         }
 
         public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(AdminProductPaginationRequestModel model)
         {
+            //select these product which contains search term in their name
+            //also product is not deleted
+            //and also if there is Category Id selected, filter products by this category
+            //if categoryid is empty, dont filter by category
+
             var products = await this.db.Products
             .Where(p => p.IsDeleted != true && (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
              || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))

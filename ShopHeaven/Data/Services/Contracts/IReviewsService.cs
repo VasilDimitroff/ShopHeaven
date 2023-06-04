@@ -1,5 +1,4 @@
-﻿using ShopHeaven.Data.Models.Enums;
-using ShopHeaven.Models.Requests.Reviews;
+﻿using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Responses.Reviews;
 
 namespace ShopHeaven.Data.Services.Contracts

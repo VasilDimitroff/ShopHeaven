@@ -2,6 +2,6 @@
 {
     public class AdminProductPaginationRequestModel : PaginationRequestModel
     {
-        public string? CategoryId { get; set; }
+        public string? CategoryId { get; set; } = "";
     }
 }

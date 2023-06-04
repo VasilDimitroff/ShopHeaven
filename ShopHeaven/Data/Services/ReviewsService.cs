@@ -2,7 +2,6 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
-using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Responses.Reviews;
 
