@@ -10,6 +10,8 @@ using System.Text;
 using ShopHeaven.Models.Token;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using static Duende.IdentityServer.Models.IdentityResources;
+using System.Data;
 
 namespace ShopHeaven.Data.Services
 {
@@ -84,7 +86,25 @@ namespace ShopHeaven.Data.Services
 
         public async Task<UserAuthorizationModel> FindUserByRefreshTokenAsync(string refreshToken)
         {
-            User user = await this.db.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken && x.IsDeleted != true);
+            var user = await db.Users
+              .Where(x => x.RefreshToken == refreshToken && x.IsDeleted != true)
+              .Include(x => x.Wishlist)
+              .ThenInclude(w => w.Products)
+              .Include(x => x.Cart)
+              .Select(user => new UserAuthorizationModel
+              {
+                  Id = user.Id,
+                  Email = user.Email,
+                  Username = user.UserName,               
+                  CartId = user.CartId,
+                  WishlistId = user.WishlistId,
+                  CartProductsCount = user.Cart.Products.Count(),
+                  WishlistProductsCount = user.Wishlist.Products.Count(),
+                  RefreshToken = user.RefreshToken,
+                  TokenCreated = (DateTime)user.TokenCreated,
+                  TokenExpires = (DateTime)user.TokenExpires,
+              })
+              .FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -92,21 +112,9 @@ namespace ShopHeaven.Data.Services
             }
 
             var roles = await this.usersService.GetUserRolesNamesAsync(user.Id);
+            user.Roles = roles;
 
-            var userModel = new UserAuthorizationModel
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Roles = roles,
-                Username = user.UserName,
-                CartId = user.CartId,
-                WishlistId = user.WishlistId,
-                RefreshToken = user.RefreshToken,
-                TokenCreated = (DateTime)user.TokenCreated,
-                TokenExpires = (DateTime)user.TokenExpires,
-            };
-
-            return userModel;
+            return user;
         }
 
         public RefreshToken CreateRefreshToken()

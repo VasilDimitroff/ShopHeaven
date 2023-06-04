@@ -1,9 +1,11 @@
 import axios from "../api/axios";
 import useAuth from "./useAuth";
+import useUser from "./useUser";
 import { ApiEndpoints } from "../api/endpoints";
 
 const useRefreshToken = () => {
   const { setAuth } = useAuth();
+  const { setUser } = useUser();
 
   const refresh = async () => {
     const response = await axios.get(ApiEndpoints.auth.refreshToken, {
@@ -26,6 +28,11 @@ const useRefreshToken = () => {
           isLogged: response ? true : false,
         }
     });
+
+      setUser({
+        wishlistProductsCount: response?.data?.wishlistProductsCount,
+        cartProductsCount: response?.data?.cartProductsCount
+      });
 
     return response.data.jwtToken;
   };

@@ -15,7 +15,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         public UserResponseModel GetUserInfoFromJwt();
 
-        public Task<UserResponseModel> GetUserByEmailAsync(string email);
+        public Task<UserResponseModel> GetAuthInfoByUserEmail(string email);
 
         public Task<UserWithRolesResponseModel> AddToRoleAsync(AddToRoleRequestModel model);
 

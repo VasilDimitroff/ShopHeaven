@@ -1,5 +1,6 @@
 import { React, Fragment, useRef, useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import useUser from "../../hooks/useUser"
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -34,6 +35,7 @@ const breadcrumbs = [
 
 export default function Login() {
   const { setAuth } = useAuth();
+  const { setUser } = useUser();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -85,6 +87,7 @@ export default function Login() {
     try {
       const response = await login(user);
 
+      //for authProvider
       const userId = response?.data?.id;
       const jwtToken = response?.data?.jwtToken;
       const roles = response?.data?.roles;
@@ -93,6 +96,10 @@ export default function Login() {
       const refreshToken = response?.data?.refreshToken;
       const cartId = response?.data?.cartId;
       const wishlistId = response?.data?.wishlistId;
+
+      //for userProvider
+      const wishlistProductsCount = response?.data?.wishlistProductsCount;
+      const cartProductsCount = response?.data?.cartProductsCount;
 
       setAuth({
         userId: userId,
@@ -103,6 +110,11 @@ export default function Login() {
         isLogged: true,
         cartId: cartId,
         wishlistId: wishlistId
+      });
+
+      setUser({
+        wishlistProductsCount: wishlistProductsCount,
+        cartProductsCount: cartProductsCount
       });
 
       refreshState();

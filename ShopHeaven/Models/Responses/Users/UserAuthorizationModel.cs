@@ -21,5 +21,9 @@
         public string CartId { get; set; }
 
         public string WishlistId { get; set; }
+
+        public int WishlistProductsCount { get; set; }
+
+        public int CartProductsCount { get; set; }
     }
 }

@@ -168,33 +168,38 @@ namespace ShopHeaven.Data.Services
                 Username = username,
                 Email = email,
                 Roles = roles,
-                CreatedOn = createdOn,
             };
 
             return user;
         }
 
-        public async Task<UserResponseModel> GetUserByEmailAsync(string email)
+        public async Task<UserResponseModel> GetAuthInfoByUserEmail(string email)
         {
-            var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
+            var userModel = await db.Users
+                .Where(x => x.Email == email && x.IsDeleted != true)
+                .Include(x => x.Wishlist)
+                .ThenInclude(w => w.Products)
+                .Include(x => x.Cart)
+                .Select(user => new UserResponseModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Username = user.UserName,
+                    CartId = user.CartId,
+                    WishlistId = user.WishlistId,
+                    CartProductsCount = user.Cart.Products.Count(),
+                    WishlistProductsCount = user.Wishlist.Products.Count()
+                })
+                .FirstOrDefaultAsync();
 
-            if (user == null)
+            if (userModel == null)
             {
                 return null;
             }
 
-            var userRoles = await GetUserRolesNamesAsync(user.Id);
+            var userRoles = await GetUserRolesNamesAsync(userModel.Id);
 
-            var userModel = new UserResponseModel
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Username = user.UserName,
-                CreatedOn = user.CreatedOn.ToString(),
-                Roles = userRoles,
-                CartId = user.CartId,
-                WishlistId = user.WishlistId,
-            };
+            userModel.Roles = userRoles;
 
             return userModel;
         }

@@ -68,7 +68,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var user = await this.usersService.GetUserByEmailAsync(model.Email.Trim());
+                var user = await this.usersService.GetAuthInfoByUserEmail(model.Email.Trim());
 
                 if (user == null)
                 {
@@ -94,13 +94,15 @@ namespace ShopHeaven.Controllers
                     Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
-                    JwtToken = jwtToken,
                     WishlistId = user.WishlistId,
                     CartId = user.CartId,
                     Roles = user.Roles,
+                    JwtToken = jwtToken,
                     RefreshToken = refreshToken.Token,
                     TokenCreated = refreshToken.CreatedOn,
                     TokenExpires = refreshToken.Expires,
+                    WishlistProductsCount = user.WishlistProductsCount,
+                    CartProductsCount = user.CartProductsCount,
                 };
 
                 return Ok(response);
@@ -132,9 +134,9 @@ namespace ShopHeaven.Controllers
                     return Unauthorized("Token expired.");
                 }
 
-                var roles = await this.usersService.GetUserRolesNamesAsync(userModel.Id);
+                //var roles = await this.usersService.GetUserRolesNamesAsync(userModel.Id);
 
-                string token = await this.jwtService.CreateJwtTokenAsync(userModel.Id, roles);
+                string token = await this.jwtService.CreateJwtTokenAsync(userModel.Id, userModel.Roles);
 
 
                 var newRefreshToken = this.jwtService.CreateRefreshToken();

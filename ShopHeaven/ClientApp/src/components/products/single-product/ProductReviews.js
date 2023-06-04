@@ -18,9 +18,11 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { noPermissionsForOperationMessage } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
+import useUser from "../../../hooks/useUser";
 
 export default function ProductReviews(props) {
   let { auth } = useAuth();
+  let {user, setUser} = useUser();
   let axiosPrivate = useAxiosPrivate();
 
   const [productId, setProductId] = useState(props.productId)
@@ -38,6 +40,11 @@ export default function ProductReviews(props) {
   });
 
   const commentRef = useRef();
+
+
+  useEffect(() => {
+    console.log("USER HOOK", user)
+  }, [])
   
   function handleChangeRating(event, newValue) {
     setInputFieldsValues();

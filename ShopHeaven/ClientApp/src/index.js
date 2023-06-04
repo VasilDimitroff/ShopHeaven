@@ -7,6 +7,7 @@ import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { theme } from "./theme";
 import { AuthProvider } from "./context/AuthProvider";
+import { UserProvider } from "./context/UserProvider";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -14,13 +15,15 @@ const root = createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <Routes>
-             <Route path="/*" element={<App/>} />
-          </Routes>
-        </ThemeProvider>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/*" element={<App />} />
+            </Routes>
+          </ThemeProvider>
+        </BrowserRouter>
+      </UserProvider>
     </AuthProvider>
   </React.StrictMode>
 );
