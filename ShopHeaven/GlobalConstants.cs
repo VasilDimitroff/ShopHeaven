@@ -96,6 +96,9 @@
 
         public const string NotEnoughProductQuantity = "You're trying to add more quantity of this product than quantity is in stock!";
 
+        public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
+            = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
+
         public const string FileTypeNotAllowed 
             = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";
     }

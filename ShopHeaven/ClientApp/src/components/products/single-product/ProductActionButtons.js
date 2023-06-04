@@ -112,15 +112,6 @@ export default function ProductActionButtons(props) {
     borderRadius: theme.shape.borderRadius,
   });
 
-  const MainPriceChip = styled(Chip)({
-    letterSpacing: -1,
-    fontSize: 25,
-    paddingTop: theme.spacing(2.8),
-    paddingBottom: theme.spacing(2.8),
-    fontWeight: 600,
-    borderRadius: theme.shape.borderRadius,
-  });
-
   const QuantityHolder = styled(Box)({
     display: "flex",
     alignItems: "center",

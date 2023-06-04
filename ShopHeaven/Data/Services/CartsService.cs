@@ -48,15 +48,26 @@ namespace ShopHeaven.Data.Services
 
             if (model.Quantity > product.Quantity)
             {
-                throw new ArgumentException(GlobalConstants.NotEnoughProductQuantity);
+                throw new Exception(GlobalConstants.NotEnoughProductQuantity);
             }
 
             var productCart = await this.db.ProductsCarts
                 .FirstOrDefaultAsync(x => x.CartId == model.CartId && x.ProductId == model.ProductId && x.IsDeleted != true);
 
+            //check if current quantity + wanted to add quantity is more than in stock quantity of product
             if (productCart != null)
             {
-                productCart.Quantity += model.Quantity;
+                var futureQuantity = productCart.Quantity + model.Quantity; //current quantity + wanted to add quantity
+
+                if (futureQuantity > product.Quantity)
+                {
+                    throw new Exception(GlobalConstants.CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock);
+                }
+
+                else
+                {
+                    productCart.Quantity += model.Quantity;
+                }
             }
 
             else

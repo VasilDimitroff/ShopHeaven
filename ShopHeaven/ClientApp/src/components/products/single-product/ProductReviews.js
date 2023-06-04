@@ -21,11 +21,9 @@ import axios from "../../../api/axios";
 import { loginPath, noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
 import { useNavigate, useLocation, Link  } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
-import useUser from "../../../hooks/useUser";
 
 export default function ProductReviews(props) {
   let { auth } = useAuth();
-  let {user, setUser} = useUser();
   let axiosPrivate = useAxiosPrivate();
 
   const navigate = useNavigate();
