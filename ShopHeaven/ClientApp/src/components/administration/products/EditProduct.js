@@ -1385,7 +1385,7 @@ export default function EditProduct(props) {
             <Zoom
               in={deleteProductImageResponseMessage.length > 0 ? true : false}
             >
-              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
                 {deleteProductImageResponseMessage}
               </Alert>
             </Zoom>
@@ -1405,7 +1405,7 @@ export default function EditProduct(props) {
         <Box>
           {thumbnailResponseMessage ? (
             <Zoom in={thumbnailResponseMessage.length > 0 ? true : false}>
-              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
                 {thumbnailResponseMessage}
               </Alert>
             </Zoom>
@@ -1488,7 +1488,7 @@ export default function EditProduct(props) {
       <Box>
         {editProductResponseMessage ? (
           <Zoom in={editProductResponseMessage.length > 0 ? true : false}>
-            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
               {editProductResponseMessage}
             </Alert>
           </Zoom>

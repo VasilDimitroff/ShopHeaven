@@ -119,6 +119,11 @@ export default function AdminUsers() {
     };
   }, [page, searchTerm, searchUserProperty]);
 
+  
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm,searchUserProperty])
+
   function onSearchUser(e) {
     e.preventDefault();
 

@@ -118,6 +118,11 @@ export default function AdminProducts() {
     };
   }, [page, searchTerm, searchProductByCategoryId]);
 
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm,searchProductByCategoryId])
+
   function onSearchProduct(e) {
     e.preventDefault();
 

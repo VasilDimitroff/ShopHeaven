@@ -22,9 +22,11 @@ import {
   Check,
   Close,
   Percent,
+  OpenInNew
 } from "@mui/icons-material";
 import EditProduct from "./EditProduct";
 import DeleteProduct from "./DeleteProduct";
+import { Link } from "react-router-dom";
 
 export default function ProductRow(props) {
   const [product, setProduct] = useState(props.product);
@@ -98,13 +100,30 @@ export default function ProductRow(props) {
           <IconButton size="small">
             {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
-          {!isDeleted ? <>{product?.name}</> : "PRODUCT DELETED"}
+          {!isDeleted ? (
+            <>
+              {product?.name}
+              <Link to={`/products/${product?.id}`}>
+              <Chip
+                sx={{fontSize: 10, pl: 1, mb: 0.5, marginLeft: theme.spacing(1) }}
+                icon={<OpenInNew/>}
+                color="primary"
+                clickable={true}
+                variant="contained"
+                label={``}
+                size="small"
+              />
+              </Link>
+            </>
+          ) : (
+            "PRODUCT DELETED"
+          )}
           {!isDeleted ? (
             <Fragment>
               <Grid container spacing={1} columns={8}>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Price: ${product.currency.code} ${(
                       product?.price -
                       (product.discount / 100) * product?.price
@@ -128,7 +147,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={
                       product?.isAvailable
                         ? "Product is In Stock"
@@ -152,7 +171,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={
                       product?.hasGuarantee
                         ? "Product has warranty"
@@ -176,7 +195,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Product's rating is ${product?.rating}`}
                     arrow
                   >
@@ -194,7 +213,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Product has ${product?.reviewsCount} reviews`}
                     arrow
                   >
@@ -212,7 +231,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Product is created by ${product?.createdBy}`}
                     arrow
                   >
@@ -230,7 +249,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Product's main category is ${product?.categoryName}`}
                     arrow
                   >
@@ -247,7 +266,7 @@ export default function ProductRow(props) {
                 </Grid>
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
-                  placement="bottom-start"
+                    placement="bottom-start"
                     title={`Product's subcategory is ${product?.subcategoryName}`}
                     arrow
                   >
