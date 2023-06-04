@@ -50,6 +50,7 @@ export const ApiEndpoints = {
     },
     reviews: {
         createReview: "api/reviews/create",
+        allByProductId: "api/reviews/allByProductId"
     }
 }
 

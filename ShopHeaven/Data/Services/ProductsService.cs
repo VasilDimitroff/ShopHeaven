@@ -887,9 +887,9 @@ namespace ShopHeaven.Data.Services
                             })
                             .FirstOrDefaultAsync();
 
-            var reviewsRequestModel = new ProductPaginatedReviewRequestModel
+            var reviewsRequestModel = new PaginatedReviewRequestModel
             {
-                Status = ReviewStatus.Approved,
+                Status = ReviewStatus.Approved.ToString(),
                 ProductId = product.Id,
                 SearchTerm = model.SearchTerm,
                 RecordsPerPage = model.RecordsPerPage,

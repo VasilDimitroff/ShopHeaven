@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Responses.Reviews;
 
@@ -70,13 +71,15 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(ProductPaginatedReviewRequestModel model)
+        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(PaginatedReviewRequestModel model)
         {
+            var status = ParseReviewStatus(model.Status);
+
             var reviews = await this.db.Reviews
                 .OrderByDescending(r => r.CreatedOn)
                 .Where(r => r.ProductId == model.ProductId 
                     && r.IsDeleted != true
-                    && r.Status == model.Status 
+                    && r.Status == status
                     && r.Content.Contains(model.SearchTerm.Trim()))
                 .Skip((model.Page - 1) * model.RecordsPerPage)
                 .Take(model.RecordsPerPage)
@@ -91,6 +94,27 @@ namespace ShopHeaven.Data.Services
                 .ToListAsync();
 
             return reviews;
+        }
+
+        public async Task<int> GetReviewsCountByProductIdAsync(string productId)
+        {
+            var totalReviewsCount = await this.db.Reviews
+                .Where(x => x.IsDeleted != true && x.ProductId == productId)
+                .CountAsync();
+
+            return totalReviewsCount;
+        }
+
+        private ReviewStatus ParseReviewStatus(string status)
+        {
+            bool isReviewStatusParsed = Enum.TryParse<ReviewStatus>(status, out ReviewStatus parsedStatus);
+
+            if (!isReviewStatusParsed)
+            {
+                return ReviewStatus.Approved;
+            }
+
+            return parsedStatus;
         }
     }
 }

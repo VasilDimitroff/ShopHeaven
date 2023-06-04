@@ -12,11 +12,13 @@ import {
   Avatar,
   Chip,
 } from "@mui/material";
+import AppPagination from "../../common/AppPagination";
 import { theme } from "../../../theme";
 import { styled } from "@mui/material/styles";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { noPermissionsForOperationMessage } from "../../../constants";
+import axios from "../../../api/axios";
+import { noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
 import useUser from "../../../hooks/useUser";
 
@@ -27,6 +29,62 @@ export default function ProductReviews(props) {
 
   const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
+
+
+
+
+
+  //current page with reviews - pagination states
+  const [page, setPage] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(10);
+  const [totalReviewsCount, setTotalReviewsCount] = useState(0);
+
+  const effectRun = useRef(false);
+
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const getProduct = async () => {
+      try {
+        const response = await axios.post(
+          ApiEndpoints.reviews.allByProductId,
+          {
+            productId: props.productId,
+            status: "Approved",
+            recordsPerPage: reviewsPerPageInProductPage,
+            page: page,
+            searchTerm: "",
+          },
+          {
+            signal: controller.signal,
+          }
+        );
+
+        console.log(response?.data);
+        
+        setReviews(response?.data?.reviews);
+        setNumberOfPages(response?.data?.pagesCount);
+        setTotalReviewsCount(response?.data?.reviewsCount);
+
+        if (page > response?.data?.pagesCount) {
+          setPage(1);
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getProduct();
+    }
+
+    return () => {
+      effectRun.current = true; // update the value of effectRun to true
+      controller.abort();
+    };
+  }, [page]);
+
 
   const [newReview, setNewReview] = useState({
     productId: productId,
@@ -213,6 +271,11 @@ export default function ProductReviews(props) {
     fontSize: 13,
   });
 
+  const PaginationHolder = styled(Box)({
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(1),
+  });
+
   return (
     <Fragment>
       <Box>
@@ -299,15 +362,15 @@ export default function ProductReviews(props) {
           return (
             <StyledPaper key={review.id} variant="elevation" elevation={1}>
               <InfoHolder>
-              <Avatar
-                sx={{
-                  bgcolor: theme.palette.primary.main,
-                  width: 30,
-                  height: 30,
-                }}
-              >
-                {review.email[0].toUpperCase()}
-              </Avatar>
+                <Avatar
+                  sx={{
+                    bgcolor: theme.palette.primary.main,
+                    width: 30,
+                    height: 30,
+                  }}
+                >
+                  {review.email[0].toUpperCase()}
+                </Avatar>
                 <Author>{review.email}</Author>
                 <Date>on: {review.createdOn}</Date>
               </InfoHolder>
@@ -328,6 +391,14 @@ export default function ProductReviews(props) {
           );
         })}
       </Stack>
+      <PaginationHolder>
+        <AppPagination
+          setPage={setPage}
+          page={page}
+          numberOfPages={numberOfPages}
+          isReview={true}
+        />
+      </PaginationHolder>
     </Fragment>
   );
 }
