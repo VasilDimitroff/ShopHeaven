@@ -787,8 +787,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
-            var totalProductReviewCount = await this.db.Reviews.
-                Where(r => r.ProductId == product.Id && r.IsDeleted != true).CountAsync();
+            var totalProductReviewCount = await this.reviewsService.GetReviewsCountByProductIdAsync(product.Id);
 
             //to do: implement WHERE clause in GetSimilarProducts to fill with right products
             List<ProductGalleryResponseModel> similarProducts = await GetSimilarProductsByProductIdAsync(model);
@@ -798,7 +797,6 @@ namespace ShopHeaven.Data.Services
                 Product = product,
                 SimilarProducts = similarProducts,
                 ReviewsCount = totalProductReviewCount,
-                PagesCount = (int)Math.Ceiling((double)totalProductReviewCount / model.RecordsPerPage),
             };
 
             return productWithSimilarProductResponseModel;
@@ -845,6 +843,7 @@ namespace ShopHeaven.Data.Services
                                 Discount = p.Discount,
                                 Quantity = p.Quantity,
                                 Rating = p.Rating,
+                                ReviewsCount = p.Reviews.Count(),
                                 IsInUserCart = p.Carts
                                     .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
                                 IsInUserWishlist = p.Wishlists
@@ -886,18 +885,6 @@ namespace ShopHeaven.Data.Services
                                     .ToList()
                             })
                             .FirstOrDefaultAsync();
-
-            var reviewsRequestModel = new PaginatedReviewRequestModel
-            {
-                Status = ReviewStatus.Approved.ToString(),
-                ProductId = product.Id,
-                SearchTerm = model.SearchTerm,
-                RecordsPerPage = model.RecordsPerPage,
-                Page = model.Page,
-            };
-
-            var reviews = await this.reviewsService.GetReviewsByProductIdAsync(reviewsRequestModel);
-            product.Reviews = reviews;
 
             return product;
         }

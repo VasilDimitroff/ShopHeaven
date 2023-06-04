@@ -1,7 +1,7 @@
 import { React } from "react";
 import { Pagination } from "@mui/material";
 
-const AppPagination = ({ setPage, numberOfPages, page, isReview }) => {
+const AppPagination = ({ setPage, numberOfPages, page, scroll }) => {
   const handleChange = (page) => {
     if (page < 1) {
       page = 1;
@@ -9,7 +9,7 @@ const AppPagination = ({ setPage, numberOfPages, page, isReview }) => {
 
     setPage(Number(page));
 
-    if (!isReview){
+    if (scroll){
       window.scroll(0, 0);
     }
   };
