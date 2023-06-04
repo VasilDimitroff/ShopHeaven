@@ -18,7 +18,8 @@ import { styled } from "@mui/material/styles";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import axios from "../../../api/axios";
-import { noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
+import { loginPath, noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useUser from "../../../hooks/useUser";
 
@@ -26,6 +27,8 @@ export default function ProductReviews(props) {
   let { auth } = useAuth();
   let {user, setUser} = useUser();
   let axiosPrivate = useAxiosPrivate();
+
+  const navigate = useNavigate();
 
   const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
@@ -288,85 +291,105 @@ export default function ProductReviews(props) {
 
   return (
     <Fragment>
-      <Box>
-        <Chip variant="outlined" label="LEAVE REVIEW:" />
-        <form onSubmit={onCreateReview}>
-          <Box sx={{ mt: 4 }}>
-            <InfoHolder>
-              <Avatar
-                sx={{
-                  bgcolor: theme.palette.secondary.main,
-                }}
-              >
-                {auth?.email ? auth?.email[0].toUpperCase() : "?"}
-              </Avatar>
-              <Author>{auth.email}</Author>
-            </InfoHolder>
-          </Box>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Typography>Rate:</Typography>
-            <Rating
-              onChange={(event, newValue) =>
-                handleChangeRating(event, newValue)
-              }
-              name="size-small"
+      {auth.isLogged ? (
+        <Box>
+          <Chip variant="outlined" label="LEAVE REVIEW:" />
+          <form onSubmit={onCreateReview}>
+            <Box sx={{ mt: 4 }}>
+              <InfoHolder>
+                <Avatar
+                  sx={{
+                    bgcolor: theme.palette.secondary.main,
+                  }}
+                >
+                  {auth?.email[0].toUpperCase()}
+                </Avatar>
+                <Author>{auth.email}</Author>
+              </InfoHolder>
+            </Box>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Typography>Rate:</Typography>
+              <Rating
+                onChange={(event, newValue) =>
+                  handleChangeRating(event, newValue)
+                }
+                name="size-small"
+                variant="outlined"
+                size="medium"
+                sx={{ display: "inline" }}
+                value={newReview.ratingValue}
+              />{" "}
+              <Typography>
+                {newReview.ratingValue ? (
+                  `(${newReview.ratingValue} stars)`
+                ) : (
+                  <></>
+                )}
+              </Typography>
+            </Box>
+            <CustomInput
+              inputRef={commentRef}
+              multiline
+              label="Type your comment..."
               variant="outlined"
+              defaultValue={newReview.comment}
+              minRows={4}
+            />
+            <Button
+              type="submit"
               size="medium"
-              sx={{ display: "inline" }}
-              value={newReview.ratingValue}
-            />{" "}
-            <Typography>
-              {newReview.ratingValue ? (
-                `(${newReview.ratingValue} stars)`
-              ) : (
-                <></>
-              )}
-            </Typography>
-          </Box>
-          <CustomInput
-            inputRef={commentRef}
-            multiline
-            label="Type your comment..."
-            variant="outlined"
-            defaultValue={newReview.comment}
-            minRows={4}
-          />
-          <Button
-            type="submit"
-            size="medium"
-            variant="contained"
-            sx={{ mt: theme.spacing(2) }}
-          >
-            SEND REVIEW
-          </Button>
-        </form>
-        {messages.createReviewResponseMessage ? (
-          <Zoom
-            in={messages.createReviewResponseMessage.length > 0 ? true : false}
-          >
-            <Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
-              {messages.createReviewResponseMessage}
-            </Alert>
-          </Zoom>
-        ) : (
-          ""
-        )}
-        {messages.createReviewErrorMessage ? (
-          <Zoom
-            in={messages.createReviewErrorMessage.length > 0 ? true : false}
-          >
-            <Alert
-              sx={{ marginTop: theme.spacing(2) }}
-              variant="filled"
-              severity="error"
+              variant="contained"
+              sx={{ mt: theme.spacing(2) }}
             >
-              {messages.createReviewErrorMessage}
-            </Alert>
-          </Zoom>
-        ) : (
-          ""
-        )}
-      </Box>
+              SEND REVIEW
+            </Button>
+          </form>
+          {messages.createReviewResponseMessage ? (
+            <Zoom
+              in={
+                messages.createReviewResponseMessage.length > 0 ? true : false
+              }
+            >
+              <Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
+                {messages.createReviewResponseMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+          {messages.createReviewErrorMessage ? (
+            <Zoom
+              in={messages.createReviewErrorMessage.length > 0 ? true : false}
+            >
+              <Alert
+                sx={{ marginTop: theme.spacing(2) }}
+                variant="filled"
+                severity="error"
+              >
+                {messages.createReviewErrorMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            <></>
+          )}
+        </Box>
+      ) : (
+        <Paper sx={{padding: theme.spacing(5, 0)}}>
+          <Typography sx={{ textAlign: "center", mb: 2 }}>
+            To add review you have to be logged!
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button onClick={() => navigate(loginPath)} size="big" color="secondary" variant="contained">
+              LOGIN
+            </Button>
+          </Box>
+        </Paper>
+      )}
       <Stack spacing={2} sx={{ mt: theme.spacing(4) }}>
         {reviews?.map((review) => {
           return (

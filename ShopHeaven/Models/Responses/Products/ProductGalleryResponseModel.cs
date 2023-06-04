@@ -1,6 +1,4 @@
-﻿using ShopHeaven.Models.Responses.Currencies;
-using ShopHeaven.Models.Responses.Images.BaseModel;
-using ShopHeaven.Models.Responses.Products.BaseModel;
+﻿using ShopHeaven.Models.Responses.Products.BaseModel;
 
 namespace ShopHeaven.Models.Responses.Products
 {

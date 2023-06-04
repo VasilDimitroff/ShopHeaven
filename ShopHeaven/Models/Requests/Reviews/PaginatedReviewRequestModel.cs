@@ -1,6 +1,4 @@
-﻿using ShopHeaven.Data.Models.Enums;
-
-namespace ShopHeaven.Models.Requests.Reviews
+﻿namespace ShopHeaven.Models.Requests.Reviews
 {
     public class PaginatedReviewRequestModel : PaginationRequestModel
     {

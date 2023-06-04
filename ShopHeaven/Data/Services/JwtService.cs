@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
@@ -10,7 +9,6 @@ using System.Text;
 using ShopHeaven.Models.Token;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
-using static Duende.IdentityServer.Models.IdentityResources;
 using System.Data;
 
 namespace ShopHeaven.Data.Services

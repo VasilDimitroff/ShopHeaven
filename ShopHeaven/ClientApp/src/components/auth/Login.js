@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
-import { passwordRequiredLength } from "../../constants";
+import { passwordRequiredLength, loginPath } from "../../constants";
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import FullWidthBanner from "../banners/FullWidthBanner";
 import {
@@ -29,7 +29,7 @@ const breadcrumbs = [
   },
   {
     name: "Login",
-    uri: "/login",
+    uri: `${loginPath}`,
   },
 ];
 

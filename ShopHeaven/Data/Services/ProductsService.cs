@@ -6,7 +6,6 @@ using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
-using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images.BaseModel;
