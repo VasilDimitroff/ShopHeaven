@@ -30,21 +30,32 @@ export default function ProductReviews(props) {
   const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
 
-
-
-
-
   //current page with reviews - pagination states
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(10);
   const [totalReviewsCount, setTotalReviewsCount] = useState(0);
 
+  //create new review states
+  const [newReview, setNewReview] = useState({
+    productId: productId,
+    comment: "",
+    ratingValue: null,
+  });
+
+  //error and response messages during creation and get reviews
+  const [messages, setMessages] = useState({
+    createReviewResponseMessage: "",
+    createReviewErrorMessage: "",
+  });
+
+  //refs
+  const commentRef = useRef();
   const effectRun = useRef(false);
 
-
+  //get reviews
   useEffect(() => {
     const controller = new AbortController();
-    const getProduct = async () => {
+    const getReview = async () => {
       try {
         const response = await axios.post(
           ApiEndpoints.reviews.allByProductId,
@@ -70,13 +81,22 @@ export default function ProductReviews(props) {
           setPage(1);
         }
 
+        setMessages((prev) => {
+          return {
+            ...prev,
+            createReviewErrorMessage: "",
+            createReviewResponseMessage: "",
+          };
+        });
+
       } catch (error) {
+        handleServerErrors(error)
         console.log(error);
       }
     };
 
     if (effectRun.current) {
-      getProduct();
+      getReview();
     }
 
     return () => {
@@ -85,25 +105,7 @@ export default function ProductReviews(props) {
     };
   }, [page]);
 
-
-  const [newReview, setNewReview] = useState({
-    productId: productId,
-    comment: "",
-    ratingValue: null,
-  });
-
-  const [messages, setMessages] = useState({
-    createReviewResponseMessage: "",
-    createReviewErrorMessage: "",
-  });
-
-  const commentRef = useRef();
-
-
-  useEffect(() => {
-    console.log("USER ", user)
-  }, [])
-  
+  // set selected rating
   function handleChangeRating(event, newValue) {
     setInputFieldsValues();
 
@@ -115,6 +117,7 @@ export default function ProductReviews(props) {
     });
   }
 
+  //prepare date for create request
   function onCreateReview(e) {
     e.preventDefault();
 
@@ -136,6 +139,7 @@ export default function ProductReviews(props) {
     createReview(review);
   }
 
+  //create new review
   async function createReview(review) {
     try {
       console.log("REVIEW REQUEST", review);
@@ -169,24 +173,29 @@ export default function ProductReviews(props) {
 
       setReviews(prev => [...prev, response?.data])
     } catch (error) {
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setMessages((prev) => {
-          return {
-            ...prev,
-            createReviewErrorMessage: noPermissionsForOperationMessage,
-            createReviewResponseMessage: ``,
-          };
-        });
-      } else {
-        setMessages((prev) => {
-          return {
-            ...prev,
-            createReviewErrorMessage: error?.response?.data,
-            createReviewResponseMessage: ``,
-          };
-        });
-      }
+      handleServerErrors(error);
       console.log(error.message);
+    }
+  }
+
+  //hande errors in try catch block
+  function handleServerErrors(error){
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          createReviewErrorMessage: noPermissionsForOperationMessage,
+          createReviewResponseMessage: ``,
+        };
+      });
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          createReviewErrorMessage: error?.response?.data,
+          createReviewResponseMessage: ``,
+        };
+      });
     }
   }
 
@@ -201,6 +210,7 @@ export default function ProductReviews(props) {
     });
   }
 
+  //validate create review form
   function validateForm() {
     let isValid = true;
 
