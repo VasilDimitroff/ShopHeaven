@@ -81,6 +81,7 @@ builder.Services.AddTransient<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<IProductsService, ProductsService>();
 builder.Services.AddTransient<IImagesService, ImagesService>();
 builder.Services.AddTransient<IReviewsService, ReviewsService>();
+builder.Services.AddTransient<ICartsService, CartsService>();
 
 builder.Services.AddHttpContextAccessor();
 

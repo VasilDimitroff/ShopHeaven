@@ -90,6 +90,12 @@
 
         public const string RoleWithThisIdDoesNotExist = "Role with given Id does not exist!";
 
+        public const string CartDoesNotExist = "Cart with given Id does not exist!";
+
+        public const string CannotAddProductToOtherCarts = "You cannot add products to other carts!";
+
+        public const string NotEnoughProductQuantity = "You're trying to add more quantity of this product than quantity is in stock!";
+
         public const string FileTypeNotAllowed 
             = "File type you uploaded is not supported! Supported file types are .jpeg, .jpg, .png and .webp";
     }

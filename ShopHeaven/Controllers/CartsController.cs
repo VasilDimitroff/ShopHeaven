@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests;
+using ShopHeaven.Models.Responses.Carts;
 using ShopHeaven.Models.Responses.Categories;
 
 namespace ShopHeaven.Controllers
@@ -9,13 +11,20 @@ namespace ShopHeaven.Controllers
     [ApiController]
     public class CartsController : ControllerBase
     {
+        private readonly ICartsService cartsService;
+
+        public CartsController(ICartsService cartsService)
+        {
+            this.cartsService = cartsService;
+        }
+
         [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(AddProduct))]
-        public async Task<ActionResult<DeleteCategoryResponseModel>> AddProduct([FromBody] AddProductToCartRequestModel model)
+        public async Task<ActionResult<AddProductToCartResponseModel>> AddProduct([FromBody] AddProductToCartRequestModel model)
         {
             try
             {
-               // var deletedCategory = (DeleteCategoryResponseModel)await this.categoriesService.DeleteCategoryAsync(model, true);
-                return Ok();
+                var responseModel = await this.cartsService.AddProductToCartAsync(model);
+                return Ok(responseModel);
             }
             catch (Exception ex)
             {
