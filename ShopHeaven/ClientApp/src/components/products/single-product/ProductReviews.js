@@ -406,7 +406,7 @@ export default function ProductReviews(props) {
           setPage={setPage}
           page={page}
           numberOfPages={numberOfPages}
-          scroll={false}
+          isReview={true}
         />
       </PaginationHolder>
     </Fragment>

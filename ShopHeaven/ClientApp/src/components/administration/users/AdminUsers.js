@@ -279,7 +279,6 @@ export default function AdminUsers() {
           page={page}
           setPage={setPage}
           numberOfPages={numberOfPages}
-          scroll={true}
         />
       </PaginationHolder>
     </Box>

@@ -914,7 +914,6 @@ export default function SubcategoryProducts() {
                       setPage={setPage}
                       page={page}
                       numberOfPages={numberOfPages}
-                      scroll={true}
                     />
                   </PaginationHolder>
                 </Fragment>

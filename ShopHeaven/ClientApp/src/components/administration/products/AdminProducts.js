@@ -327,7 +327,6 @@ export default function AdminProducts() {
           setPage={setPage}
           page={page}
           numberOfPages={numberOfPages}
-          scroll={true}
         />
       </PaginationHolder>
     </Box>
