@@ -3,22 +3,21 @@ import useAuth from "./useAuth";
 import { ApiEndpoints } from "../api/endpoints";
 
 const useLogout = () => {
-    const {setAuth} = useAuth();
+  const { setAuth } = useAuth();
 
-    const logout = async () => {
-        setAuth({});
+  const logout = async () => {
+    setAuth({});
 
-        try {
-            const response = await axios(ApiEndpoints.auth.logout,
-                {
-                    withCredentials: true
-                });
-        } catch(error) {
-            console.log(error);
-        }
+    try {
+      const response = await axios(ApiEndpoints.auth.logout, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    return logout;
-}
+  return logout;
+};
 
 export default useLogout;
