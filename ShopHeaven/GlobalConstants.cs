@@ -94,6 +94,8 @@
 
         public const string CannotAddProductToOtherCarts = "You cannot add products to other carts!";
 
+        public const string MinimumQuantityToAddProductInCart = "Minimum quantity to add product in cart is 1!";
+
         public const string NotEnoughProductQuantity = "You're trying to add more quantity of this product than quantity is in stock!";
 
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock

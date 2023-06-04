@@ -46,6 +46,11 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
+            if (model.Quantity < 1)
+            {
+                throw new ArgumentException(GlobalConstants.MinimumQuantityToAddProductInCart);
+            }
+
             if (model.Quantity > product.Quantity)
             {
                 throw new Exception(GlobalConstants.NotEnoughProductQuantity);
