@@ -19,7 +19,7 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import axios from "../../../api/axios";
 import { loginPath, noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link  } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useUser from "../../../hooks/useUser";
 
@@ -29,6 +29,8 @@ export default function ProductReviews(props) {
   let axiosPrivate = useAxiosPrivate();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.pathname;
 
   const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
@@ -384,9 +386,11 @@ export default function ProductReviews(props) {
               justifyContent: "center",
             }}
           >
-            <Button onClick={() => navigate(loginPath)} size="big" color="secondary" variant="contained">
+            <Link to={loginPath} state={{ from }}>
+            <Button size="big" color="secondary" variant="contained">
               LOGIN
             </Button>
+            </Link>
           </Box>
         </Paper>
       )}
