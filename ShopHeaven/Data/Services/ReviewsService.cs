@@ -80,7 +80,7 @@ namespace ShopHeaven.Data.Services
                 Email = r.CreatedBy.Email,
                 Content = r.Content,
                 RatingValue = r.RatingValue,
-                CreatedOn = r.CreatedOn.ToString()
+                CreatedOn = r.CreatedOn.ToString(),
             })
             .ToListAsync();
 

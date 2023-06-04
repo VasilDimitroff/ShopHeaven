@@ -635,7 +635,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete)
         {
-            Product productToDelete = await this.db.Products
+            var productToDelete = await this.db.Products
                 .Include(x => x.Reviews
                      .Where(x => x.IsDeleted != delete))
                 .Include(x => x.Tags
@@ -861,17 +861,7 @@ namespace ShopHeaven.Data.Services
                                         IsThumbnail = i.IsThumbnail
                                     })
                                     .ToList(),
-                                Reviews =  p.Reviews.Where(r => r.IsDeleted != true && r.Status == ReviewStatus.Approved)
-                                    .Select(r => new ReviewResponseModel
-                                    {
-                                        Id = r.Id,
-                                        Email = r.CreatedBy.Email,
-                                        Content = r.Content,
-                                        RatingValue = r.RatingValue,
-                                        CreatedOn = r.CreatedOn.ToString()
-                                    })
-                                    .ToList(),
-                                    Labels = p.Labels
+                                Labels = p.Labels
                                     .Where(l => l.IsDeleted != true)
                                     .Select(l => l.Label.Content)
                                     .ToList(),
@@ -890,6 +880,9 @@ namespace ShopHeaven.Data.Services
                                     .ToList()
                             })
                             .FirstOrDefaultAsync();
+
+            var reviews = await this.reviewsService.GetReviewsByProductIdAsync(product.Id, ReviewStatus.Approved);
+            product.Reviews = reviews;
 
             return product;
         }
