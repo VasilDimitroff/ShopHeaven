@@ -13,11 +13,11 @@ namespace ShopHeaven.Data.Models
 
         public Order()
         {
-            Products = new HashSet<ProductOrder>();
+            this.Status = OrderStatus.Pending;
+            this.Products = new HashSet<ProductOrder>();
         }
 
         public string Details { get; set; }
-
 
         [Required(ErrorMessage = "Address field cannot be null or empty")]
         public string Address { get; set; }
@@ -28,10 +28,7 @@ namespace ShopHeaven.Data.Models
 
         public decimal TotalPriceWithDiscountAndCoupon { get => CalculateTotalPriceWithDiscountAndCoupon(); private set => _totalPriceWithDiscountAndCoupon = value; }
 
-        [Required]
-        public string CouponId { get; set; }
-
-        public Coupon Coupon { get; set; }
+        public decimal CouponAmount { get; set; }
 
         [Required]
         public string PaymentId { get; set; }
@@ -63,7 +60,7 @@ namespace ShopHeaven.Data.Models
 
         private decimal CalculateTotalPriceWithDiscountAndCoupon()
         {
-            return TotalPriceWithDiscount - Coupon.Amount * TotalPriceWithDiscount / 100;
+            return TotalPriceWithDiscount - this.CouponAmount * TotalPriceWithDiscount / 100;
         }
     }
 }

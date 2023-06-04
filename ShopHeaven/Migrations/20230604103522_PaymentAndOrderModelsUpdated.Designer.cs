@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230604103522_PaymentAndOrderModelsUpdated")]
+    partial class PaymentAndOrderModelsUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -507,6 +510,9 @@ namespace ShopHeaven.Migrations
                     b.Property<decimal>("CouponAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("CouponId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CreatedById")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -550,6 +556,8 @@ namespace ShopHeaven.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CouponId");
 
                     b.HasIndex("CreatedById");
 
@@ -1225,6 +1233,10 @@ namespace ShopHeaven.Migrations
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Order", b =>
                 {
+                    b.HasOne("ShopHeaven.Data.Models.Coupon", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("CouponId");
+
                     b.HasOne("ShopHeaven.Data.Models.User", "CreatedBy")
                         .WithMany("Orders")
                         .HasForeignKey("CreatedById")
@@ -1468,6 +1480,11 @@ namespace ShopHeaven.Migrations
             modelBuilder.Entity("ShopHeaven.Data.Models.Cart", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ShopHeaven.Data.Models.Coupon", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Currency", b =>
