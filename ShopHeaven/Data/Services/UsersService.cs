@@ -133,7 +133,7 @@ namespace ShopHeaven.Data.Services
             return usersAndRoles;
         }
 
-        public BasicUserResponseModel GetUserInfoFromJwt()
+        public UserResponseModel GetUserInfoFromJwt()
         {
             if (httpContextAccessor.HttpContext == null)
             {
@@ -162,7 +162,7 @@ namespace ShopHeaven.Data.Services
                 roles.Add(role.Value.ToString());
             }
 
-            var user = new BasicUserResponseModel()
+            var user = new UserResponseModel()
             {
                 Id = id,
                 Username = username,
@@ -174,7 +174,7 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
-        public async Task<BasicUserResponseModel> GetUserByEmailAsync(string email)
+        public async Task<UserResponseModel> GetUserByEmailAsync(string email)
         {
             var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
 
@@ -185,13 +185,15 @@ namespace ShopHeaven.Data.Services
 
             var userRoles = await GetUserRolesNamesAsync(user.Id);
 
-            var userModel = new BasicUserResponseModel
+            var userModel = new UserResponseModel
             {
                 Id = user.Id,
                 Email = user.Email,
                 Username = user.UserName,
                 CreatedOn = user.CreatedOn.ToString(),
                 Roles = userRoles,
+                CartId = user.CartId,
+                WishlistId = user.WishlistId,
             };
 
             return userModel;

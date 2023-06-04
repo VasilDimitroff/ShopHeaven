@@ -92,12 +92,15 @@ namespace ShopHeaven.Controllers
                 UserAuthorizationModel response = new UserAuthorizationModel
                 {
                     Id = user.Id,
+                    Username = user.Username,
                     Email = user.Email,
                     JwtToken = jwtToken,
+                    WishlistId = user.WishlistId,
+                    CartId = user.CartId,
                     Roles = user.Roles,
                     RefreshToken = refreshToken.Token,
                     TokenCreated = refreshToken.CreatedOn,
-                    TokenExpires = refreshToken.Expires 
+                    TokenExpires = refreshToken.Expires,
                 };
 
                 return Ok(response);

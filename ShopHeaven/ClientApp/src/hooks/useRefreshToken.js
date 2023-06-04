@@ -20,6 +20,9 @@ const useRefreshToken = () => {
           refreshToken: response.data.refreshToken,
           userId: response.data.id,
           email: response.data.email,
+          username: response.data.username,
+          cartId: response.data.cartId,
+          wishlistId: response.data.wishlistId,
           isLogged: response ? true : false,
         }
     });

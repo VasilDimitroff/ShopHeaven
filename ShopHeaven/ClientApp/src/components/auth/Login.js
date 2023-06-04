@@ -89,7 +89,10 @@ export default function Login() {
       const jwtToken = response?.data?.jwtToken;
       const roles = response?.data?.roles;
       const email = response?.data?.email;
+      const username = response?.data?.username;
       const refreshToken = response?.data?.refreshToken;
+      const cartId = response?.data?.cartId;
+      const wishlistId = response?.data?.wishlistId;
 
       setAuth({
         userId: userId,
@@ -98,6 +101,8 @@ export default function Login() {
         roles: roles,
         email: email,
         isLogged: true,
+        cartId: cartId,
+        wishlistId: wishlistId
       });
 
       refreshState();

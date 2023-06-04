@@ -12,7 +12,6 @@ import {
   Avatar,
   Chip,
 } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { styled } from "@mui/material/styles";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -26,7 +25,6 @@ export default function ProductReviews(props) {
 
   const [productId, setProductId] = useState(props.productId)
   const [reviews, setReviews] = useState(props.reviews);
-  const [isReviewCreated, setIsReviewCreated] = useState(false);
 
   const [newReview, setNewReview] = useState({
     productId: productId,
@@ -40,7 +38,7 @@ export default function ProductReviews(props) {
   });
 
   const commentRef = useRef();
-
+  
   function handleChangeRating(event, newValue) {
     setInputFieldsValues();
 
@@ -95,8 +93,6 @@ export default function ProductReviews(props) {
           createReviewResponseMessage: `Review successfully created!`,
         };
       });
-
-      setIsReviewCreated(true);
 
       setNewReview((prev) => {
         return {
