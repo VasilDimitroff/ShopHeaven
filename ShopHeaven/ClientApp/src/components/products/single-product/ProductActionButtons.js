@@ -229,6 +229,7 @@ export default function ProductActionButtons(props) {
       textDecoration: "underline",
     },
   });
+  
   function renderFavoriteIcon() {
     return product.isInUserWishlist ? <Favorite /> : <FavoriteBorder />;
   }
