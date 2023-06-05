@@ -1,9 +1,9 @@
 import { React, Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Close } from "@mui/icons-material";
-import { Box, Grid, Paper, Typography, Divider, Chip, Alert } from "@mui/material";
+import { Box, Button, Paper, Typography, Divider, Chip, Alert } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { loginPath } from "../../../constants";
+import { loginPath, noPermissionsForOperationMessage } from "../../../constants";
 import { theme } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -40,16 +40,11 @@ export default function AdminSettings() {
 
         setCurrencies(response?.data);
         
-        const newAppCurrencyId = response?.data?.find(x => x.isCurrentForApplication == true).id
-        setAppCurrencyId(newAppCurrencyId)
-
-        let newCurrency = response?.data?.find(x => x.id === newAppCurrencyId) 
-
-        setCurrencyErrorMessage("");
-        setCurrencyResponseMessage(`The new currency for the application is ${newCurrency.name} (${newCurrency.code})`)
+        const currentAppCurrencyId = response?.data?.find(x => x.isCurrentForApplication == true).id
+        setAppCurrencyId(currentAppCurrencyId)
+      
         setIsLoading(false);
 
-        console.log("CRUENCEIS", response?.data)
       } catch (error) {
         console.log(error);
         navigate({ loginPath }, { state: { from: location }, replace: true });
@@ -65,6 +60,47 @@ export default function AdminSettings() {
       effectRun.current = true; // update the value of effectRun to true
     };
   }, []);
+
+
+  function onChangeAppCurrency(e){
+    e.preventDefault();
+
+    const requestData = {
+      currencyId: appCurrencyRef.current.value
+    }
+
+    setDefaultAppCurrency(requestData)
+  }
+
+  async function setDefaultAppCurrency(requestData) {
+    try {
+      const controller = new AbortController();
+      console.log("NOVA VALUE", requestData)
+      const response = await axiosPrivate.post(
+        ApiEndpoints.currencies.setAppCurrency,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      let newCurrency = response?.data?.find(x => x.id === appCurrencyId) 
+
+      setCurrencyErrorMessage("");
+      setCurrencyResponseMessage(`The new currency for the application is ${newCurrency.name} (${newCurrency.code})`)
+    } catch (error) {
+      setCurrencyResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCurrencyErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setCurrencyErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    }
+  }
 
   const HeadingChip = styled(Chip)({
     fontSize: 21,
@@ -94,9 +130,16 @@ export default function AdminSettings() {
     marginRight: theme.spacing(2),
   });
 
+  const ChangeCurrencyButtonHolder = styled(Box)({
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: theme.spacing(1, 0)
+  })
+
   return (
     <Box>
-      <Paper>
+      <Paper sx={{p: 1}}>
         <Divider>
           <HeadingChip
             label="PRODUCTS CURRENCY"
@@ -106,6 +149,7 @@ export default function AdminSettings() {
         </Divider>
         <Box>
           <InputBox>
+          <form onSubmit={onChangeAppCurrency}>
             <select
               style={StyledSelect}
               ref={appCurrencyRef}
@@ -118,6 +162,10 @@ export default function AdminSettings() {
                 </option>
               ))}
             </select>
+            <ChangeCurrencyButtonHolder>
+              <Button type="submit" variant="contained">CHANGE APP CURRENCY</Button>
+            </ChangeCurrencyButtonHolder>
+            </form>
           </InputBox>
         </Box>
       </Paper>

@@ -16,7 +16,8 @@ export const ApiEndpoints = {
         removeUserFromRole: "api/users/removeFromRole"
     },
     currencies: {
-        getAll: "api/currencies/getall"    
+        getAll: "api/currencies/getall",
+        setAppCurrency: "api/currencies/setAppCurrency"    
     },
     categories: {
         createCategory: "api/categories/create",
