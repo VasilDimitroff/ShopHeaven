@@ -86,6 +86,8 @@ export default function EditCategoryForm(props) {
         "The new name of the category is " + response?.data?.name
       );
 
+      window.scroll(0, 0);
+
       props.updateCategoryName(
         formData.get("name"),
         formData.get("description")

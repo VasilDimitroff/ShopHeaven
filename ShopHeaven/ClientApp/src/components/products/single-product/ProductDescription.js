@@ -13,7 +13,6 @@ import { useState } from "react";
 
 export default function ProductDescription(props) {
   const [product, setProduct] = useState(props.product);
-  const [totalReviewsCount, setTotalReviewsCount] = useState(props.totalReviewsCount);
 
   const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
   const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
@@ -111,9 +110,12 @@ export default function ProductDescription(props) {
             readOnly
             size="medium"
             label="stars"
+            precision={0.5}
             defaultValue={product.rating}
           />
-          <RatingText>{`${product.rating.toFixed(2)} (${product.reviewsCount} reviews)`}</RatingText>
+          <RatingText>{`${product.rating.toFixed(2)} (${
+            product.reviewsCount
+          } reviews)`}</RatingText>
         </RatingWrapper>
         <SubheadingInfoWrapper>
           <Box sx={{ display: "flex", gap: 1 }}>

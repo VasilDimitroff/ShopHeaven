@@ -80,7 +80,7 @@ export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
 export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
 // how many similar products to get for signle product page slider below main info
-export const similarProductsForSingleProductPageSlider = 6;
+export const similarProductsForSingleProductPageSlider = 12;
 
 //how many reviews per page in single product page
 export const reviewsPerPageInProductPage = 3;

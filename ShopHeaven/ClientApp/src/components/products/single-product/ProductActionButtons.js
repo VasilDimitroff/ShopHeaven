@@ -1,4 +1,5 @@
 import { React, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Chip,
@@ -16,7 +17,6 @@ import {
   Favorite,
   FavoriteBorder,
   AddShoppingCart,
-  RemoveShoppingCart,
   AddCircle,
   RemoveCircle,
 } from "@mui/icons-material";
@@ -27,12 +27,14 @@ import useUser from "../../../hooks/useUser";
 import useAppSettings from "../../../hooks/useAppSettings";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { noPermissionsForOperationMessage } from "../../../constants";
+import { noPermissionsForOperationMessage, cartPath } from "../../../constants";
 
 export default function ProductActionButtons(props) {
   const { appSettings } = useAppSettings();
   const { auth } = useAuth();
   const { setUser } = useUser();
+  const navigate = useNavigate();
+
   let axiosPrivate = useAxiosPrivate();
 
   const [product, setProduct] = useState(props.product);
@@ -273,7 +275,7 @@ export default function ProductActionButtons(props) {
             Quantity:
           </Typography> */}
 
-          <QuantityHolder sx={{border: "1px solid black"}}>
+          <QuantityHolder>
             <IconButton onClick={() => handleSetProductsQuantity(-1)}>
               {" "}
               <RemoveCircle />
@@ -282,7 +284,7 @@ export default function ProductActionButtons(props) {
               inputRef={quantityRef}
               defaultValue={productsQuantity}
               id="bootstrap-input"
-              readOnly
+              
               color="primary"
             />
             <IconButton onClick={() => handleSetProductsQuantity(1)}>
@@ -345,7 +347,7 @@ export default function ProductActionButtons(props) {
               {addToFavoritesButtonText}
             </ActionButton>
           </ActionButtons>
-          <GoToCartButton>Go to cart</GoToCartButton>
+          <GoToCartButton onClick={() => navigate(`${cartPath}`)}>Go to cart</GoToCartButton>
         </CardContent>
       </Card>
     </Box>

@@ -91,6 +91,9 @@ export default function CreateSubcategory(props) {
       setCreateSubcategoryResponseMessage(
         "Subcategory" + formData.get["name"] + "successfully created!"
       );
+
+      window.scroll(0, 0);
+      
       props.subcategoriesUpdated(response?.data);
     } catch (error) {
       setCreateSubcategoryResponseMessage("");

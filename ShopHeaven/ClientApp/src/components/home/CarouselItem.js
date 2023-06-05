@@ -2,17 +2,17 @@ import { useState } from "react";
 import { Paper, Box, Typography, Chip, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "./../../theme";
-import { Link } from "react-router-dom";
-import { subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
+import { useNavigate } from "react-router-dom";
+import { subcategoryProductsBaseUrl, subcategoriesOfMainCategoryBaseUrl, singleProductBasePath } from "../../constants";
 
 function CarouselItem(props) {
   const [product, setProduct] = useState(props.product);
+  const navigate = useNavigate();
 
   const StyledChip = styled(Chip)({
     textTransform: "uppercase",
     fontWeight: 500,
     letterSpacing: 0.6,
-    cursor: "pointer",
   });
 
   const SliderImage = styled("img")({
@@ -55,6 +55,7 @@ function CarouselItem(props) {
     marginTop: theme.spacing(1),
     paddingBottom: theme.spacing(3),
     textShadow: "1px 1px 0px #373737;",
+    cursor: "pointer",
     [theme.breakpoints.down("md")]: {
       fontSize: "12px",
     },
@@ -63,6 +64,7 @@ function CarouselItem(props) {
   const ProductName = styled(Typography)({
     marginTop: theme.spacing(2),
     textTransform: "uppercase",
+    cursor: "pointer",
     textShadow: "2px 2px 1px #373737;",
     [theme.breakpoints.down("md")]: {
       fontSize: "20px",
@@ -74,21 +76,24 @@ function CarouselItem(props) {
       <SliderImage src={product.image.url} />
       <ContentWrapper>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Link to={`${subcategoriesOfMainCategoryBaseUrl}${product.category.id}`}>
+          
             <StyledChip
+             onClick={() => navigate(`${subcategoriesOfMainCategoryBaseUrl}${product.category.id}`)}
               variant="filled"
+              clickable={true}
               color="primary"
               label={product.category.name}
             />
-          </Link>
-          <Link to={`${subcategoryProductsBaseUrl}${product.subcategory.id}`}>
+          
           <StyledChip
+            onClick={() => navigate(`${subcategoryProductsBaseUrl}${product.subcategory.id}`)}
             variant="filled"
+            clickable={true}
             color="secondary"
             label={product.subcategory.name}
           />
-          </Link>
         </Box>
+        <Box onClick={() => navigate(`${singleProductBasePath}${product.id}`)}>
         <ProductName variant="h4">
           {product.name.length > 70
             ? `${product.name.slice(0, 70)}...`
@@ -99,13 +104,17 @@ function CarouselItem(props) {
             ? `${product.description.slice(0, 200)}...`
             : `${product.description}`}
         </ProductDescription>
+        </Box>
         <Box sx={{ marginBottom: theme.spacing(7) }}>
-          <Button variant="contained" size="small">
+      
+          <Button onClick={() => navigate(`${singleProductBasePath}${product.id}`)} variant="contained" size="small">
             VIEW PRODUCT
           </Button>
+     
         </Box>
+
       </ContentWrapper>
-    </Paper>
+    </Paper>   
   );
 }
 

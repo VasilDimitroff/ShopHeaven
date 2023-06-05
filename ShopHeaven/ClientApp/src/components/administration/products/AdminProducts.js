@@ -81,10 +81,11 @@ export default function AdminProducts() {
 
         console.log(response?.data);
 
-        setCategories(response?.data?.categories);
-        setProducts(response?.data?.products);
         setNumberOfPages(response?.data?.pagesCount);
         setTotalProductsCount(response?.data?.productsCount)  
+        setCategories(response?.data?.categories);
+        setProducts(response?.data?.products);
+
 
         if (page > response?.data?.pagesCount) {
           setPage(1)

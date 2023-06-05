@@ -6,7 +6,6 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { cartPath } from "../../constants";
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
-import ProductMainInfo from "../products/single-product/ProductMainInfo";
 
 export default function Cart() {
   useEffect(() => {}, []);

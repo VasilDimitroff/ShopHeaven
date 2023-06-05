@@ -84,6 +84,9 @@ export default function CreateCategory(props) {
       setCreateCategoryResponseMessage(
         `Category ${formData.get("name")} successfully created`
       );
+      
+      window.scroll(0, 0);
+
       props.categoriesListChanged(response?.data);
     } catch (error) {
       setCreateCategoryResponseMessage("");
