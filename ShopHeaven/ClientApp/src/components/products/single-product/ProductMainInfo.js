@@ -8,11 +8,13 @@ import ProductActionButtons from "./ProductActionButtons";
 
 export default function ProductMainInfo(props) {
   const [product, setProduct] = useState(props.product);
-  const [totalReviewsCount, setTotalReviewsCount] = useState(props.totalReviewsCount);
+  const [totalReviewsCount, setTotalReviewsCount] = useState(
+    props.totalReviewsCount
+  );
 
-  useEffect(()=> {
-    setProduct(props.product)
-  }, [props.product])
+  useEffect(() => {
+    setProduct(props.product);
+  }, [props.product]);
 
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),
@@ -31,36 +33,41 @@ export default function ProductMainInfo(props) {
     marginBottom: theme.spacing(4),
     marginLeft: 0,
     lineHeight: 1.15,
-    fontSize: 24
+    fontSize: 24,
   });
 
   return (
     <MainWrapper>
-        <StyledPaper>
-          <ProductName>{product.name}</ProductName>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <Box>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={12} lg={9}>
+          <StyledPaper>
+            <ProductName>{product.name}</ProductName>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6} lg={5}>
+                <Box>
+                  {
+                    // first important part of the page
+                    <ImageCarousel product={product} />
+                  }
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} lg={7}>
                 {
-                  // first important part of the page
-                  <ImageCarousel product={product} />
+                  // second important part of the page
+                  <ProductDescription product={product} />
                 }
-              </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6} lg={5} sx={{ position: "relative" }}>
-              {
-                // second important part of the page
-                <ProductDescription product={product}/>
-              }
-            </Grid>
-            <Grid item xs={12} md={12} lg={3}>
-              {
-                // third important part of the page
-                <ProductActionButtons product={product} />
-              }
-            </Grid>
+          </StyledPaper>
+         
+        </Grid>
+        <Grid item xs={12} md={12} lg={3}>
+            {
+              // third important part of the page
+              <ProductActionButtons product={product} />
+            }
           </Grid>
-        </StyledPaper>
+      </Grid>
     </MainWrapper>
   );
 }
