@@ -1,4 +1,4 @@
-import { Box, Chip, Typography, Rating, Grid } from "@mui/material";
+import { Box, Chip, Typography, Rating, Grid, Stack } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   VerifiedUser,
@@ -24,19 +24,19 @@ export default function ProductDescription(props) {
     let charactersToShowForDescription = 100;
 
     if (isBiggerOrXs === true) {
-      charactersToShowForDescription = 1000;
+      charactersToShowForDescription = 400;
     }
     if (isBiggerOrSm === true) {
-      charactersToShowForDescription = 1000;
+      charactersToShowForDescription = 400;
     }
     if (isBiggerOrMd === true) {
       charactersToShowForDescription = 570;
     }
     if (isBiggerOrLg === true) {
-      charactersToShowForDescription = 550;
+      charactersToShowForDescription = 900;
     }
     if (isBiggerOrXl === true) {
-      charactersToShowForDescription = 650;
+      charactersToShowForDescription = 1000;
     }
 
     return charactersToShowForDescription;
@@ -95,11 +95,11 @@ export default function ProductDescription(props) {
   });
 
   const StyledChip = styled(Chip)({
-    cursor: "pointer",
+    marginTop: theme.spacing(0.7),
+    marginRight: theme.spacing(0.7),
     borderRadius: theme.shape.borderRadius,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
+    fontWeight: 500,
+    border: "0px solid white"
   });
 
   return (
@@ -146,23 +146,27 @@ export default function ProductDescription(props) {
         <DescriptionWrapper>{renderDescription()}</DescriptionWrapper>
       </Box>
       <Box>
-        <b>TAGS: </b>
-        <Grid
-          spacing={1}
+        <Stack
+          flexWrap="wrap"
+          spacing={0}
           direction="row"
-          columns={product.tags.length}
-          container
         >
+          <StyledChip
+            size="small"
+            variant="outlined"
+            label={"TAGS: "}
+          />
+
           {product.tags.map((tag, index) => (
-            <Grid key={index} item xs={1} sm={1} md={1} lg={1}>
-              <StyledChip
-                size="small"
-                label={tag}
-                color="secondary"
-              ></StyledChip>
-            </Grid>
+            <StyledChip
+              clickable={true}
+              key={index}
+              size="small"
+              label={tag}
+              color="secondary"
+            ></StyledChip>
           ))}
-        </Grid>
+        </Stack>
       </Box>
     </div>
   );
