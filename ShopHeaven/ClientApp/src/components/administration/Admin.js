@@ -9,20 +9,23 @@ import {
   ListItemText,
   Divider,
   Typography,
+  Stack
 } from "@mui/material";
 import { Outlet, Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import { theme } from "../../theme";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ReviewsIcon from "@mui/icons-material/Reviews";
 import {
   PeopleAlt,
   ShoppingBag,
   Category,
   Discount,
   ShoppingCartCheckout,
+  Settings,
+  Dashboard,
+  Reviews
 } from "@mui/icons-material";
+import { style } from "@mui/system";
 
 const breadcrumbs = [
   {
@@ -121,17 +124,6 @@ export default function Admin() {
     }
   }
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-    [theme.breakpoints.down("md")]: {
-      width: "100%",
-    },
-  }));
-
   const MainWrapper = styled(Box)({
     width: "95%",
     margin: "auto",
@@ -159,7 +151,6 @@ export default function Admin() {
     textTransform: "uppercase",
     fontWeight: 600,
     color: "#000",
-    display: "block",
     [theme.breakpoints.up("lg")]: {
       width: "100%",
     },
@@ -171,34 +162,51 @@ export default function Admin() {
       display: "block",
     },
     display: "none",
+    textAlign: "center"
   });
 
   const StyledListItemButton = styled(ListItemButton)({
-    [theme.breakpoints.up("lg")]: {
-      paddingLeft: 0,
+    paddingTop: theme.spacing(1.25),
+    paddingBottom: theme.spacing(1.25),
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0),
+    [theme.breakpoints.down("lg")]: {
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
     },
   });
+
+  const MenuHolder = styled(Stack)({
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+   
+    [theme.breakpoints.down("lg")]: {
+      padding:theme.spacing(0, 1)
+    },
+  })
 
   return (
     <MainWrapper>
       <Box sx={{ marginBottom: theme.spacing(2) }}>
         <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={12} md={12} lg={2}>
-            <Item>
+            <Paper>
               <StyledList>
-                <Grid container spacing={1}>
+                <MenuHolder direction="row" flexWrap="wrap">
                   <StyledLink to="/admin">
                     <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(1);
                       }}
                       selected={firstSelected}
+                      style={{color: firstSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <DashboardIcon sx={{ margin: "auto" }} />
+                        <Dashboard sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Dashboard" />
                     </StyledListItemButton>
@@ -211,9 +219,10 @@ export default function Admin() {
                         setSelectedItem(2);
                       }}
                       selected={secondSelected}
+                      style={{color: secondSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <PeopleAlt sx={{ margin: "auto" }} />
+                        <PeopleAlt sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Users" />
                     </StyledListItemButton>
@@ -226,9 +235,10 @@ export default function Admin() {
                         setSelectedItem(3);
                       }}
                       selected={thirdSelected}
+                      style={{color: thirdSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <ShoppingBag sx={{ margin: "auto" }} />
+                        <ShoppingBag sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Products" />
                     </StyledListItemButton>
@@ -241,9 +251,10 @@ export default function Admin() {
                         setSelectedItem(4);
                       }}
                       selected={forthSelected}
+                      style={{color: forthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <Category sx={{ margin: "auto" }} />
+                        <Category sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Categories" />
                     </StyledListItemButton>
@@ -256,9 +267,10 @@ export default function Admin() {
                         setSelectedItem(5);
                       }}
                       selected={fifthSelected}
+                      style={{color: fifthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <Discount sx={{ margin: "auto" }} />
+                        <Discount sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Coupons" />
                     </StyledListItemButton>
@@ -270,9 +282,10 @@ export default function Admin() {
                         setSelectedItem(6);
                       }}
                       selected={sixthSelected}
+                      style={{color: sixthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <ShoppingCartCheckout sx={{ margin: "auto" }} />
+                        <ShoppingCartCheckout sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Orders" />
                     </StyledListItemButton>
@@ -285,9 +298,10 @@ export default function Admin() {
                         setSelectedItem(7);
                       }}
                       selected={seventhSelected}
+                      style={{color: seventhSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <ReviewsIcon sx={{ margin: "auto" }} />
+                        <Reviews sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Reviews" />
                     </StyledListItemButton>
@@ -300,18 +314,19 @@ export default function Admin() {
                         setSelectedItem(8);
                       }}
                       selected={eightSelected}
+                      style={{color: eightSelected ? theme.palette.secondary.main : theme.palette.common.black}}
                     >
                       <ListItemIcon>
-                        <ReviewsIcon sx={{ margin: "auto" }} />
+                        <Settings sx={{ margin: "auto", color: theme.palette.secondary.main }} />
                       </ListItemIcon>
                       <StyledListItemText primary="Settings" />
                     </StyledListItemButton>
                     <MobileMenuText>Settings</MobileMenuText>
                   </StyledLink>
                   <Divider />
-                </Grid>
+                </MenuHolder>
               </StyledList>
-            </Item>
+            </Paper>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={10}>
             <Outlet />

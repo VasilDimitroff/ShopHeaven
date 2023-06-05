@@ -1,8 +1,6 @@
 ﻿using ShopHeaven.Models.Responses.Categories.BaseModel;
-using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products.BaseModel;
-using ShopHeaven.Models.Responses.Reviews;
 using ShopHeaven.Models.Responses.Specifications;
 using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
@@ -35,8 +33,6 @@ namespace ShopHeaven.Models.Responses.Products
         public CategoryBaseResponseModel Category { get; set; }
 
         public SubcategoryBaseResponseModel Subcategory { get; set; }
-
-        public string Currency { get; set; }
 
         public ICollection<string> Tags { get; set; }
 

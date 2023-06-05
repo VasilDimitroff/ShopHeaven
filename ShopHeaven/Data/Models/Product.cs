@@ -48,11 +48,6 @@ namespace ShopHeaven.Data.Models
 
         public SubCategory SubCategory { get; set; }
 
-        [Required]
-        public string CurrencyId { get; set; }
-
-        public Currency Currency { get; set; }
-
         public double Rating
         {
             get

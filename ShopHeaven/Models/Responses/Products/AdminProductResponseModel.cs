@@ -1,5 +1,4 @@
 ﻿
-using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products.BaseModel;
 using ShopHeaven.Models.Responses.Specifications;
@@ -21,8 +20,6 @@ namespace ShopHeaven.Models.Responses.Products
         public string SubcategoryName { get; set; }
 
         public bool HasGuarantee { get; set; }
-
-        public CurrencyResponseModel Currency { get; set; }
 
         public decimal Price { get; set; }
 

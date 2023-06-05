@@ -260,6 +260,9 @@ export default function CreateProduct(props) {
       setCreateProductResponseMessage(
         `${formData.get("name")} successfully created`
       );
+      
+      window.scroll(0, 0);
+
       props.productListChanged(response?.data);
     } catch (error) {
       setCreateProductResponseMessage("");

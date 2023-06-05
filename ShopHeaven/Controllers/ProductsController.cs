@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Responses.Categories;
-using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Products;
 
 namespace ShopHeaven.Controllers
@@ -14,13 +13,11 @@ namespace ShopHeaven.Controllers
     {
         private readonly IProductsService productsService;
         private readonly ICategoriesService categoriesService;
-        private readonly ICurrencyService currencyService;
 
-        public ProductsController(IProductsService productsService, ICategoriesService categoriesService, ICurrencyService currencyService)
+        public ProductsController(IProductsService productsService, ICategoriesService categoriesService)
         {
             this.productsService = productsService;
             this.categoriesService = categoriesService;
-            this.currencyService = currencyService;
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
@@ -92,20 +89,16 @@ namespace ShopHeaven.Controllers
 
                 List<CategoryWithSubcategoriesResponseModel> categories = await this.categoriesService.GetAllCategoryNamesAsync();
 
-                List<CurrencyResponseModel> currencies = await this.currencyService.GetCurrenciesAsync();
-
                 int productsCount = await this.productsService.GetProductsCount(model);
 
                 var responseModel = new ProductsWithCreationInfoResponseModel
                 {
                     Products = products,
                     Categories = categories,
-                    Currencies = currencies,
                     ProductsCount = productsCount,
                     PagesCount = (int)Math.Ceiling((double)productsCount / model.RecordsPerPage)
                 };
 
-                //var productsWithCategoriesAndCurrencies = await this.productsService.GetAllWithCreationInfoAsync(model);
                 return Ok(responseModel);
             }
             catch (Exception ex)

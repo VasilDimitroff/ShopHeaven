@@ -7,7 +7,6 @@ using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Products;
 using ShopHeaven.Models.Requests.Specifications;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
-using ShopHeaven.Models.Responses.Currencies;
 using ShopHeaven.Models.Responses.Images.BaseModel;
 using ShopHeaven.Models.Responses.Products;
 using ShopHeaven.Models.Responses.Products.BaseModel;
@@ -44,14 +43,6 @@ namespace ShopHeaven.Data.Services
             if (subcategory == null)
             {
                 throw new NullReferenceException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
-            }
-
-            var currency = await this.db.Currencies.
-                FirstOrDefaultAsync(x => x.IsCurrentForApplication == true && x.IsDeleted != true);
-
-            if (currency == null)
-            {
-                throw new NullReferenceException(GlobalConstants.CurrencyWithThisIdDoesntExist);
             }
 
             if (model.Name.Trim().Length < 2)
@@ -134,7 +125,6 @@ namespace ShopHeaven.Data.Services
             newProduct.Name = model.Name.Trim();
             newProduct.Description = model.Description.Trim();
             newProduct.Brand = model.Brand != null ? model.Brand.Trim() : "";
-            newProduct.Currency = currency;
             newProduct.SubCategoryId = subcategory.Id;
             newProduct.Discount = model.Discount;
             newProduct.Price = model.Price;
@@ -155,13 +145,6 @@ namespace ShopHeaven.Data.Services
                 CategoryName = subcategory.MainCategory.Name,
                 SubcategoryId = subcategory.Id,
                 SubcategoryName = subcategory.Name,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = currency.Id,
-                    Name = currency.Name,
-                    Code = currency.Code,
-                    IsCurrentForApplication = currency.IsCurrentForApplication
-                },
                 Price = newProduct.Price,
                 Discount = newProduct.Discount,
                 Quantity = newProduct.Quantity,
@@ -229,14 +212,6 @@ namespace ShopHeaven.Data.Services
             if (subcategory == null)
             {
                 throw new NullReferenceException(GlobalConstants.SubcategoryWithThisIdDoesntExist);
-            }
-
-            var currency = await this.db.Currencies.
-                FirstOrDefaultAsync(x => x.IsCurrentForApplication == true && x.IsDeleted != true);
-
-            if (currency == null)
-            {
-                throw new NullReferenceException(GlobalConstants.CurrencyWithThisIdDoesntExist);
             }
 
             if (model.Name.Trim().Length < 2)
@@ -323,7 +298,6 @@ namespace ShopHeaven.Data.Services
             product.Name = model.Name.Trim();
             product.Description = model.Description.Trim();
             product.Brand = model.Brand != null ? model.Brand.Trim() : "";
-            product.Currency = currency;
             product.SubCategoryId = subcategory.Id;
             product.Discount = model.Discount;
             product.Price = model.Price;
@@ -352,13 +326,6 @@ namespace ShopHeaven.Data.Services
                 CategoryName = subcategory.MainCategory.Name,
                 SubcategoryId = subcategory.Id,
                 SubcategoryName = subcategory.Name,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = currency.Id,
-                    Name = currency.Name,
-                    Code = currency.Code,
-                    IsCurrentForApplication = currency.IsCurrentForApplication
-                },
                 Price = product.Price,
                 Discount = product.Discount,
                 Quantity = product.Quantity,
@@ -431,13 +398,6 @@ namespace ShopHeaven.Data.Services
                 CategoryName = p.SubCategory.MainCategory.Name,
                 SubcategoryId = p.SubCategoryId,
                 SubcategoryName = p.SubCategory.Name,
-                Currency = new CurrencyResponseModel
-                {
-                    Id = p.Currency.Id,
-                    Name = p.Currency.Name,
-                    Code = p.Currency.Code,
-                    IsCurrentForApplication = p.Currency.IsCurrentForApplication
-                },
                 CreatedBy = p.CreatedBy.Email,
                 Price = p.Price,
                 Discount = p.Discount,
@@ -755,7 +715,6 @@ namespace ShopHeaven.Data.Services
                     Name = p.Name,
                     Discount = p.Discount,
                     Brand = p.Brand,
-                    Currency = p.Currency.Code,
                     IsAvailable = p.IsAvailable,
                     Price = p.Price,
                     Rating = p.Rating,
@@ -788,7 +747,6 @@ namespace ShopHeaven.Data.Services
                                 Description = p.Description,
                                 HasGuarantee = p.HasGuarantee,
                                 isAvailable = p.IsAvailable,
-                                Currency = p.Currency.Code,
                                 Price = p.Price,
                                 Discount = p.Discount,
                                 Quantity = p.Quantity,
@@ -1169,7 +1127,6 @@ namespace ShopHeaven.Data.Services
                     Discount = product.Discount,
                     IsAvailable = product.IsAvailable,
                     Rating = product.Rating,
-                    Currency = product.Currency.Code,
                     Image = product.Images
                             .FirstOrDefault(x => x.IsThumbnail && x.IsDeleted != true).Image.Url ?? product.Images.FirstOrDefault(x => x.IsDeleted != true).Image.Url,
                     Labels = product.Labels

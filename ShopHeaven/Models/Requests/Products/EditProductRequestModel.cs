@@ -27,9 +27,6 @@ namespace ShopHeaven.Models.Requests.Products
         public bool HasGuarantee { get; set; }
 
         [Required]
-        public string CurrencyId { get; set; }
-
-        [Required]
         public decimal Price { get; set; }
 
         [Required]

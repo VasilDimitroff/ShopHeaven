@@ -165,7 +165,7 @@ export default function AdminSettings() {
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(2, 0),
   });
 
   return (

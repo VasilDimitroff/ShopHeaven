@@ -273,6 +273,7 @@ export default function EditProduct(props) {
   }
 
   async function editProduct(formData) {
+    console.log("EDIT PRODUCT REQUES", formData)
     try {
       const controller = new AbortController();
 
@@ -296,6 +297,8 @@ export default function EditProduct(props) {
       );
 
       handleUpdateProduct(response?.data);
+      
+      window.scroll(0, 0);
 
       props.updateProduct(response?.data);
     } catch (error) {

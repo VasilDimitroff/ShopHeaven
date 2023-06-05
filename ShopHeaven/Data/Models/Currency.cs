@@ -5,11 +5,6 @@ namespace ShopHeaven.Data.Models
 {
     public class Currency : BaseModel
     {
-        public Currency()
-        {
-            Products = new HashSet<Product>();
-        }
-
         [Required(ErrorMessage = "Code cannot be null or empty.")]
         [MinLength(1, ErrorMessage="Currency code must be at least 1 characters long")]
         public string Code { get; set; } // BGN for example
@@ -18,7 +13,5 @@ namespace ShopHeaven.Data.Models
         public string Name { get; set; } // Bulgarian Lev for example
 
         public bool IsCurrentForApplication { get; set; } // default currency for application
-
-        public ICollection<Product> Products { get; set; } // these product's price are in this currency
     }
 }
