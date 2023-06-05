@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { theme } from "./theme";
 import Home from "./components/home/Home";
@@ -19,6 +19,7 @@ import AdminReviews from "./components/administration/AdminReviews";
 import AdminSettings from "./components/administration/settings/AdminSettings";
 import RequireAuth from "./components/auth/RequireAuth";
 import PersistLogin from "./components/auth/PersistLogin";
+import AppSettings from "./components/settings/AppSettings";
 import Unauthorized from "./components/auth/Unauthorized";
 import SubcategoryProducts from "./components/products/products-gallery/SubcategoryProducts";
 import { coupons } from "./components/coupons";
@@ -31,8 +32,9 @@ import {
   loginPath,
   registerPath,
   singleProductBasePath,
-  cartPath
+  cartPath,
 } from "./constants";
+import useAppSettings from "./hooks/useAppSettings";
 import Cart from "./components/cart/Cart";
 
 export default function App() {
@@ -41,48 +43,56 @@ export default function App() {
       <Routes>
         {/* public routes */}
         <Route element={<PersistLogin />}>
-          <Route exact path="/" element={<Layout />}>
-            <Route path="" element={<Home />} />
-            <Route path={`${allCategoriesUrl}`} element={<Categories />} />
-            <Route
-              path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`}
-              element={<Subcategories />}
-            />
-            <Route
-              path={`${subcategoryProductsBaseUrl}:subcategoryId`}
-              element={<SubcategoryProducts />}
-            />
-            <Route
-              path={`${singleProductBasePath}:productId`}
-              element={<Product />}
-            /> 
-            <Route path={loginPath} element={<Login />} />
-            <Route path={registerPath} element={<Register />} />
+          <Route element={<AppSettings />}>
+            <Route exact path="/" element={<Layout />}>
+              <Route path="" element={<Home />} />
+              <Route path={`${allCategoriesUrl}`} element={<Categories />} />
+              <Route
+                path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`}
+                element={<Subcategories />}
+              />
+              <Route
+                path={`${subcategoryProductsBaseUrl}:subcategoryId`}
+                element={<SubcategoryProducts />}
+              />
+              <Route
+                path={`${singleProductBasePath}:productId`}
+                element={<Product />}
+              />
+              <Route path={loginPath} element={<Login />} />
+              <Route path={registerPath} element={<Register />} />
 
-            {/* authorization needed paths */}
-            <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>
-              <Route path={`${cartPath}`} element={<Cart />} />
-            </Route>
-
-            {/* admin only routes */}
-            <Route element={<RequireAuth allowedRoles={adminRole} />}>
-              <Route path="admin" element={<Admin />}>
-                <Route path="" element={<AdminDashboard />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route
-                  path="coupons"
-                  element={<AdminCoupons coupons={coupons} />}
-                />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="reviews" element={<AdminReviews />} />
-                <Route path="settings" element={<AdminSettings />} />
+              {/* authorization needed paths */}
+              <Route
+                element={
+                  <RequireAuth
+                    allowedRoles={[applicationUserRole, adminRole]}
+                  />
+                }
+              >
+                <Route path={`${cartPath}`} element={<Cart />} />
               </Route>
-            </Route>
 
-            {/* all catch */}
-            <Route path="unauthorized" element={<Unauthorized />} />
+              {/* admin only routes */}
+              <Route element={<RequireAuth allowedRoles={adminRole} />}>
+                <Route path="admin" element={<Admin />}>
+                  <Route path="" element={<AdminDashboard />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                  <Route
+                    path="coupons"
+                    element={<AdminCoupons coupons={coupons} />}
+                  />
+                  <Route path="orders" element={<AdminOrders />} />
+                  <Route path="reviews" element={<AdminReviews />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                </Route>
+              </Route>
+
+              {/* all catch */}
+              <Route path="unauthorized" element={<Unauthorized />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

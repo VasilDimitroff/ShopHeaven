@@ -26,9 +26,12 @@ import {
 } from "@mui/icons-material";
 import EditProduct from "./EditProduct";
 import DeleteProduct from "./DeleteProduct";
+import useAppSettings from "../../../hooks/useAppSettings";
 import { Link } from "react-router-dom";
 
 export default function ProductRow(props) {
+  const { appSettings } = useAppSettings();
+
   const [product, setProduct] = useState(props.product);
   const [isDeleted, setIsDeleted] = useState(false);
   const [openEditForm, setOpenEditForm] = useState(false);
@@ -124,7 +127,7 @@ export default function ProductRow(props) {
                 <Grid item xs={8} sm={4} md={2} lg={1}>
                   <Tooltip
                     placement="bottom-start"
-                    title={`Price: ${product.currency.code} ${(
+                    title={`Price: ${appSettings.appCurrency.code} ${(
                       product?.price -
                       (product.discount / 100) * product?.price
                     ).toFixed(2)}`}
@@ -136,7 +139,7 @@ export default function ProductRow(props) {
                         variant="outlined"
                         icon={product?.discount > 0 ? <Percent /> : <></>}
                         color="primary"
-                        label={`${product.currency.code} ${(
+                        label={`${appSettings.appCurrency.code} ${(
                           product?.price -
                           (product.discount / 100) * product?.price
                         ).toFixed(2)}`}

@@ -24,11 +24,13 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import useAuth from "../../../hooks/useAuth";
 import useUser from "../../../hooks/useUser";
+import useAppSettings from "../../../hooks/useAppSettings";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function ProductActionButtons(props) {
+  const { appSettings } = useAppSettings();
   const { auth } = useAuth();
   const { setUser } = useUser();
   let axiosPrivate = useAxiosPrivate();
@@ -223,9 +225,9 @@ export default function ProductActionButtons(props) {
     let finalPrice;
     let priceWithNoDiscountToRender;
 
-    finalPrice = `${product.currency} ${price.toFixed(2)}`;
+    finalPrice = `${appSettings.appCurrency.code} ${price.toFixed(2)}`;
     priceWithNoDiscountToRender = `${
-      product.currency
+      appSettings.appCurrency.code
     } ${product.price.toFixed(2)}`;
     let renderResult;
 

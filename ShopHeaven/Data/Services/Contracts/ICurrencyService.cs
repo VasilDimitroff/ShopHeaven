@@ -7,6 +7,8 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<List<CurrencyResponseModel>> GetCurrenciesAsync();
 
+        Task<CurrencyResponseModel> GetAppCurrencyAsync();
+
         Task<CurrencyResponseModel> SetAppCurrencyAsync(SetApplicationCurrencyRequestModel model);
     }
 }

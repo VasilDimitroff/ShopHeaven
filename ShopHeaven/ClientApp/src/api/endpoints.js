@@ -17,7 +17,8 @@ export const ApiEndpoints = {
     },
     currencies: {
         getAll: "api/currencies/getall",
-        setAppCurrency: "api/currencies/setAppCurrency"    
+        getAppCurrency: "api/currencies/getAppCurrency",
+        setAppCurrency: "api/currencies/setAppCurrency"  
     },
     categories: {
         createCategory: "api/categories/create",

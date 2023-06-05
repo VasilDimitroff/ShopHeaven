@@ -16,8 +16,11 @@ import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { singleProductBasePath } from "../../../constants";
 import { theme } from "../../../theme";
+import useAppSettings from "../../../hooks/useAppSettings";
 
 function ProductCarouselCard(props) {
+  const { appSettings } = useAppSettings();
+
   const navigate = useNavigate();
   const [product, setProduct] = useState(props.product);
 
@@ -211,14 +214,14 @@ function ProductCarouselCard(props) {
                 textDecoration: "line-through",
               }}
             >
-              {product.currency} {product.price.toFixed(2)}
+              {appSettings.appCurrency.code} {product.price.toFixed(2)}
             </Box>
           ) : (
             <Box sx={{ height: 25 }}></Box>
           )}
           <PriceAndActionsWrapper>
             <PriceText variant="h6">
-              {`${product.currency} ${(
+              {`${appSettings.appCurrency.code} ${(
                 Math.round(
                   (product.price - (product.price * product.discount) / 100) *
                     100

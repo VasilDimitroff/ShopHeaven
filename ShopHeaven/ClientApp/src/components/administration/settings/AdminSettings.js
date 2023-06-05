@@ -7,10 +7,13 @@ import {
   noPermissionsForOperationMessage,
 } from "../../../constants";
 import { theme } from "../../../theme";
+import useAppSettings from "../../../hooks/useAppSettings";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function AdminSettings() {
+  const {setAppSettings} = useAppSettings();
+
   const [currencies, setCurrencies] = useState([]);
   const [appCurrencyId, setAppCurrencyId] = useState();
 
@@ -96,6 +99,17 @@ export default function AdminSettings() {
       setCurrencyResponseMessage(
         `The new currency for the application is ${newCurrency.name} (${newCurrency.code})`
       );
+
+      setAppSettings(prev => {
+        return {
+          ...prev,
+          appCurrency: {
+            id: newCurrency.id,
+            code: newCurrency.code,
+            name: newCurrency.name,
+          }
+        }
+      })
 
       console.log("RESPONSE: ", response?.data);
     } catch (error) {

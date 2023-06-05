@@ -14,6 +14,22 @@ namespace ShopHeaven.Data.Services
             this.db = db;
         }
 
+        public async Task<CurrencyResponseModel> GetAppCurrencyAsync()
+        {
+            var appCurrency = await this.db.Currencies
+                .Where(x => x.IsCurrentForApplication && x.IsDeleted != true)
+                .Select(x => new CurrencyResponseModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Code = x.Code,
+                    IsCurrentForApplication = x.IsCurrentForApplication
+                })
+                .FirstOrDefaultAsync();
+
+            return appCurrency;
+        }
+
         public async Task<List<CurrencyResponseModel>> GetCurrenciesAsync()
         {
             var currencies = await this.db.Currencies

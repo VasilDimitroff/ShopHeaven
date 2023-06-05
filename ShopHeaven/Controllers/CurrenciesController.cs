@@ -31,6 +31,26 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpGet, Route(nameof(GetAppCurrency))]
+        public async Task<ActionResult<CurrencyResponseModel>> GetAppCurrency()
+        {
+            try
+            {
+                var appCurrency = await this.currencyService.GetAppCurrencyAsync();
+
+                if (appCurrency  == null)
+                {
+                    return BadRequest(GlobalConstants.AppCurrencyNotFound);
+                }
+
+                return Ok(appCurrency);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(SetAppCurrency))]
         public async Task<ActionResult<CurrencyResponseModel>> SetAppCurrency([FromBody]SetApplicationCurrencyRequestModel model)
         {
