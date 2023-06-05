@@ -110,6 +110,14 @@ export default function AdminSettings() {
     }
   }
 
+  function clearResponseMessage(){
+    setCurrencyResponseMessage("");
+  }
+
+  function clearErrorMessage(){
+    setCurrencyErrorMessage("");
+  }
+
   const HeadingChip = styled(Chip)({
     fontSize: 21,
     padding: theme.spacing(2),
@@ -178,7 +186,7 @@ export default function AdminSettings() {
             </form>
             {currencyErrorMessage ? (
               <Zoom in={currencyErrorMessage.length > 0 ? true : false}>
-                <Alert variant="filled" severity="error">
+                <Alert onClose={clearErrorMessage} variant="filled" severity="error">
                   {currencyErrorMessage}
                 </Alert>
               </Zoom>
@@ -187,7 +195,7 @@ export default function AdminSettings() {
             )}
             {currencyResponseMessage ? (
               <Zoom in={currencyResponseMessage.length > 0 ? true : false}>
-                <Alert variant="filled" severity="success">
+                <Alert onClose={clearResponseMessage} variant="filled" severity="success">
                   {currencyResponseMessage}
                 </Alert>
               </Zoom>
