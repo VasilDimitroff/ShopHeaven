@@ -160,6 +160,7 @@ namespace ShopHeaven.Data.Services
                     Id = currency.Id,
                     Name = currency.Name,
                     Code = currency.Code,
+                    IsCurrentForApplication = currency.IsCurrentForApplication
                 },
                 Price = newProduct.Price,
                 Discount = newProduct.Discount,
@@ -356,6 +357,7 @@ namespace ShopHeaven.Data.Services
                     Id = currency.Id,
                     Name = currency.Name,
                     Code = currency.Code,
+                    IsCurrentForApplication = currency.IsCurrentForApplication
                 },
                 Price = product.Price,
                 Discount = product.Discount,
@@ -434,6 +436,7 @@ namespace ShopHeaven.Data.Services
                     Id = p.Currency.Id,
                     Name = p.Currency.Name,
                     Code = p.Currency.Code,
+                    IsCurrentForApplication = p.Currency.IsCurrentForApplication
                 },
                 CreatedBy = p.CreatedBy.Email,
                 Price = p.Price,

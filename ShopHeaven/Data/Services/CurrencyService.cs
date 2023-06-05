@@ -21,7 +21,8 @@ namespace ShopHeaven.Data.Services
                 {
                     Id = x.Id,
                     Code = x.Code,
-                    Name = x.Name
+                    Name = x.Name,
+                    IsCurrentForApplication = x.IsCurrentForApplication
                 })
                 .OrderBy(x => x.Code)
                 .ToListAsync();

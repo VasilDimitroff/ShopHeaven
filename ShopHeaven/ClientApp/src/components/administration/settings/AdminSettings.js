@@ -1,7 +1,7 @@
 import { React, Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Close } from "@mui/icons-material";
-import { Box, Grid, Paper, Typography, Divider, Chip } from "@mui/material";
+import { Box, Grid, Paper, Typography, Divider, Chip, Alert } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { loginPath } from "../../../constants";
 import { theme } from "../../../theme";
@@ -9,10 +9,11 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function AdminSettings() {
-  const [currencies, setCurrencies] = useState([{}]);
-  const [appCurrencyId, setAppCurrencyId] = useState("");
+  const [currencies, setCurrencies] = useState([]);
+  const [appCurrencyId, setAppCurrencyId] = useState();
 
   const [currencyResponseMessage, setCurrencyResponseMessage] = useState("")
+  const [currencyErrorMessage, setCurrencyErrorMessage] = useState("")
 
   let axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -36,10 +37,19 @@ export default function AdminSettings() {
             signal: controller.signal,
           }
         );
-        console.log(response.data);
 
-        setCurrencies(response.data);
+        setCurrencies(response?.data);
+        
+        const newAppCurrencyId = response?.data?.find(x => x.isCurrentForApplication == true).id
+        setAppCurrencyId(newAppCurrencyId)
+
+        let newCurrency = response?.data?.find(x => x.id === newAppCurrencyId) 
+
+        setCurrencyErrorMessage("");
+        setCurrencyResponseMessage(`The new currency for the application is ${newCurrency.name} (${newCurrency.code})`)
         setIsLoading(false);
+
+        console.log("CRUENCEIS", response?.data)
       } catch (error) {
         console.log(error);
         navigate({ loginPath }, { state: { from: location }, replace: true });
