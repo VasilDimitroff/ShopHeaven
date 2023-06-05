@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Currencies;
+using ShopHeaven.Models.Responses.Currencies;
 
 namespace ShopHeaven.Controllers
 {
@@ -22,6 +24,20 @@ namespace ShopHeaven.Controllers
             {
                 var currencies = await this.currencyService.GetCurrenciesAsync();
                 return Ok(currencies);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(SetAppCurrency))]
+        public async Task<ActionResult<CurrencyResponseModel>> SetAppCurrency([FromBody]SetApplicationCurrencyRequestModel model)
+        {
+            try
+            {
+                var currency = await this.currencyService.SetAppCurrencyAsync(model);
+                return Ok(currency);
             }
             catch (Exception ex)
             {

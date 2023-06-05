@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Currencies;
 using ShopHeaven.Models.Responses.Currencies;
 
 namespace ShopHeaven.Data.Services
@@ -28,6 +29,45 @@ namespace ShopHeaven.Data.Services
                 .ToListAsync();
 
             return currencies;
+        }
+
+        public async Task<CurrencyResponseModel> SetAppCurrencyAsync(SetApplicationCurrencyRequestModel model)
+        {
+            var currencies = await this.db.Currencies
+                  .Where(x => x.IsDeleted != true)
+                  .ToListAsync();
+
+            var targetCurrency = currencies.FirstOrDefault(x => x.Id == model.Id);
+
+            if (targetCurrency == null)
+            {
+                throw new ArgumentException(GlobalConstants.CurrencyWithThisIdDoesntExist);
+            }
+
+            foreach(var currency in currencies)
+            {
+                if (currency.Id == targetCurrency.Id)
+                {
+                    currency.IsCurrentForApplication = true;
+                    targetCurrency = currency;
+                }
+                else
+                {
+                    currency.IsCurrentForApplication = false;
+                }
+            }
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = new CurrencyResponseModel
+            {
+                Id = targetCurrency.Id,
+                Code = targetCurrency.Code,
+                Name = targetCurrency.Name,
+                IsCurrentForApplication = targetCurrency.IsCurrentForApplication
+            };
+
+            return responseModel;
         }
     }
 }

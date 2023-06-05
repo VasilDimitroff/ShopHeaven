@@ -1,9 +1,11 @@
 import { React, Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Close } from "@mui/icons-material";
-import { Box, Button, Paper, Typography, Divider, Chip, Alert } from "@mui/material";
+import { Box, Button, Paper, Zoom, Divider, Chip, Alert } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { loginPath, noPermissionsForOperationMessage } from "../../../constants";
+import {
+  loginPath,
+  noPermissionsForOperationMessage,
+} from "../../../constants";
 import { theme } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -12,8 +14,8 @@ export default function AdminSettings() {
   const [currencies, setCurrencies] = useState([]);
   const [appCurrencyId, setAppCurrencyId] = useState();
 
-  const [currencyResponseMessage, setCurrencyResponseMessage] = useState("")
-  const [currencyErrorMessage, setCurrencyErrorMessage] = useState("")
+  const [currencyResponseMessage, setCurrencyResponseMessage] = useState("");
+  const [currencyErrorMessage, setCurrencyErrorMessage] = useState("");
 
   let axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -39,12 +41,14 @@ export default function AdminSettings() {
         );
 
         setCurrencies(response?.data);
-        
-        const currentAppCurrencyId = response?.data?.find(x => x.isCurrentForApplication == true).id
-        setAppCurrencyId(currentAppCurrencyId)
-      
-        setIsLoading(false);
 
+        const currentAppCurrencyId = response?.data?.find(
+          (x) => x.isCurrentForApplication == true
+        ).id;
+        setAppCurrencyId(currentAppCurrencyId);
+
+        setIsLoading(false);
+        console.log("RESPONSE: ", response?.data);
       } catch (error) {
         console.log(error);
         navigate({ loginPath }, { state: { from: location }, replace: true });
@@ -61,21 +65,20 @@ export default function AdminSettings() {
     };
   }, []);
 
-
-  function onChangeAppCurrency(e){
+  function onChangeAppCurrency(e) {
     e.preventDefault();
 
     const requestData = {
-      currencyId: appCurrencyRef.current.value
-    }
+      id: appCurrencyRef.current.value,
+    };
 
-    setDefaultAppCurrency(requestData)
+    setDefaultAppCurrency(requestData);
   }
 
   async function setDefaultAppCurrency(requestData) {
     try {
       const controller = new AbortController();
-      console.log("NOVA VALUE", requestData)
+
       const response = await axiosPrivate.post(
         ApiEndpoints.currencies.setAppCurrency,
         requestData,
@@ -86,10 +89,15 @@ export default function AdminSettings() {
 
       controller.abort();
 
-      let newCurrency = response?.data?.find(x => x.id === appCurrencyId) 
+      let newCurrency = response?.data;
+      setAppCurrencyId(newCurrency.id);
 
       setCurrencyErrorMessage("");
-      setCurrencyResponseMessage(`The new currency for the application is ${newCurrency.name} (${newCurrency.code})`)
+      setCurrencyResponseMessage(
+        `The new currency for the application is ${newCurrency.name} (${newCurrency.code})`
+      );
+
+      console.log("RESPONSE: ", response?.data);
     } catch (error) {
       setCurrencyResponseMessage("");
 
@@ -98,7 +106,7 @@ export default function AdminSettings() {
       } else {
         setCurrencyErrorMessage(error?.response?.data);
       }
-      console.log(error?.message);
+      console.log(error);
     }
   }
 
@@ -134,12 +142,12 @@ export default function AdminSettings() {
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    margin: theme.spacing(1, 0)
-  })
+    margin: theme.spacing(1, 0),
+  });
 
   return (
     <Box>
-      <Paper sx={{p: 1}}>
+      <Paper sx={{ p: 1 }}>
         <Divider>
           <HeadingChip
             label="PRODUCTS CURRENCY"
@@ -149,23 +157,43 @@ export default function AdminSettings() {
         </Divider>
         <Box>
           <InputBox>
-          <form onSubmit={onChangeAppCurrency}>
-            <select
-              style={StyledSelect}
-              ref={appCurrencyRef}
-              name="currency"
-              defaultValue={appCurrencyId}
-            >
-              {currencies?.map((currency) => (
-                <option key={currency?.id} value={currency?.id}>
-                  {`${currency?.name} (${currency?.code})`}
-                </option>
-              ))}
-            </select>
-            <ChangeCurrencyButtonHolder>
-              <Button type="submit" variant="contained">CHANGE APP CURRENCY</Button>
-            </ChangeCurrencyButtonHolder>
+            <form onSubmit={onChangeAppCurrency}>
+              <select
+                style={StyledSelect}
+                ref={appCurrencyRef}
+                name="currency"
+                defaultValue={appCurrencyId}
+              >
+                {currencies?.map((currency) => (
+                  <option key={currency?.id} value={currency?.id}>
+                    {`${currency?.name} (${currency?.code})`}
+                  </option>
+                ))}
+              </select>
+              <ChangeCurrencyButtonHolder>
+                <Button type="submit" variant="contained">
+                  CHANGE APP CURRENCY
+                </Button>
+              </ChangeCurrencyButtonHolder>
             </form>
+            {currencyErrorMessage ? (
+              <Zoom in={currencyErrorMessage.length > 0 ? true : false}>
+                <Alert variant="filled" severity="error">
+                  {currencyErrorMessage}
+                </Alert>
+              </Zoom>
+            ) : (
+              <></>
+            )}
+            {currencyResponseMessage ? (
+              <Zoom in={currencyResponseMessage.length > 0 ? true : false}>
+                <Alert variant="filled" severity="success">
+                  {currencyResponseMessage}
+                </Alert>
+              </Zoom>
+            ) : (
+              <></>
+            )}
           </InputBox>
         </Box>
       </Paper>
