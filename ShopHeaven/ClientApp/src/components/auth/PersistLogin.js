@@ -1,10 +1,8 @@
 import { Outlet } from "react-router-dom";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
-import { theme } from "../../theme";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import StartLoader from "../common/StartLoader";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,18 +37,7 @@ const PersistLogin = () => {
   return (
     <>
       {isLoading ? (
-        <Fragment>
-          <Backdrop
-            open={true}
-            sx={{
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.white.main,
-              zIndex: (theme) => theme.zIndex.drawer + 1,
-            }}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </Fragment>
+        <StartLoader/>
       ) : (
         <Outlet />
       )}

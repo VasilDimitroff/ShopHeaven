@@ -27,6 +27,7 @@ import {
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAppSettings from "../../../hooks/useAppSettings";
 import { ApiEndpoints } from "../../../api/endpoints";
 import { noPermissionsForOperationMessage, allowedFileFormats } from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
@@ -36,6 +37,9 @@ export default function EditProduct(props) {
   const axiosPrivateForm = useAxiosPrivateForm();
   const axiosPrivate = useAxiosPrivate();
 
+  //app settings
+  const { appSettings } = useAppSettings();
+
   //auth
   const { auth } = useAuth();
 
@@ -44,7 +48,6 @@ export default function EditProduct(props) {
   //dropdowns
   const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
-  const [currencies, setCurrencies] = useState(props.currencies);
 
   //form states
   const [productName, setProductName] = useState(product.name);
@@ -65,9 +68,6 @@ export default function EditProduct(props) {
     product.specifications
   ); //array[object]
 
-  const [productCurrencyId, setProductCurrencyId] = useState(
-    product.currency.id
-  );
   const [productPrice, setProductPrice] = useState(product.price);
   const [productDiscount, setProductDiscount] = useState(product.discount);
   const [productQuantity, setProductQuantity] = useState(product.quantity);
@@ -89,7 +89,6 @@ export default function EditProduct(props) {
   let productSubcategoryRef = useRef();
   let productGuaranteeRef = useRef();
   let productQuantityRef = useRef();
-  let productCurrencyRef = useRef();
   let productPriceRef = useRef();
   let productDiscountRef = useRef();
   let productTagsRef = useRef();
@@ -103,7 +102,6 @@ export default function EditProduct(props) {
     productDescriptionError: "",
     productCategoryError: "",
     productSubcategoryError: "",
-    productCurrencyError: "",
     productPriceError: "",
     productDiscountError: "",
     productQuantityError: "",
@@ -162,7 +160,6 @@ export default function EditProduct(props) {
     setProductDescription(productDescriptionRef.current.value);
     setProductCategoryId(productCategoryRef.current.value);
     setProductSubcategoryId(productSubcategoryRef.current.value);
-    setProductCurrencyId(productCurrencyRef.current.value);
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
@@ -219,7 +216,6 @@ export default function EditProduct(props) {
       categoryId: productCategoryRef.current.value,
       subcategoryId: productSubcategoryRef.current.value,
       hasGuarantee: productGuaranteeRef.current.value,
-      currencyId: productCurrencyRef.current.value,
       price: productPriceRef.current.value,
       discount: productDiscountRef.current.value,
       quantity: productQuantityRef.current.value,
@@ -244,7 +240,6 @@ export default function EditProduct(props) {
     formData.append("categoryId", newProduct.categoryId);
     formData.append("subcategoryId", newProduct.subcategoryId);
     formData.append("hasGuarantee", newProduct.hasGuarantee);
-    formData.append("currencyId", newProduct.currencyId);
     formData.append("price", newProduct.price);
     formData.append("discount", newProduct.discount);
     formData.append("quantity", newProduct.quantity);
@@ -507,27 +502,6 @@ export default function EditProduct(props) {
         return {
           ...prev,
           productSubcategoryError: "",
-        };
-      });
-    }
-
-    if (!productCurrencyRef.current.value) {
-      let msg = "Please select a valid currency";
-      errors.push(msg);
-
-      setMessages((prev) => {
-        return {
-          ...prev,
-          productCurrencyError: msg,
-        };
-      });
-
-      isValid = false;
-    } else {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          productCurrencyError: "",
         };
       });
     }
@@ -955,32 +929,14 @@ export default function EditProduct(props) {
           <InputBox>
             <Grid container spacing={3} sx={{ textAlign: "center" }}>
               <Grid item xs={6} sm={6} md={6} lg={6}>
-                <Divider>
-                  <SubheadingChip
-                    label="CURRENCY"
-                    variant="outlined"
-                    color="primary"
-                  />
-                </Divider>
-                <select
-                  style={StyledSelect}
-                  ref={productCurrencyRef}
-                  name="currency"
-                  defaultValue={productCurrencyId}
-                >
-                  {currencies?.map((option) => (
-                    <option key={option?.id} value={option?.id}>
-                      {`${option?.code}(${option?.name})`}
-                    </option>
-                  ))}
-                </select>
-                {messages?.productCurrencyError ? (
-                  <ErrorAlert severity="error">
-                    {messages.productCurrencyError}
-                  </ErrorAlert>
-                ) : (
-                  <></>
-                )}
+              <Divider>
+                <SubheadingChip
+                  label="CURRENCY"
+                  variant="outlined"
+                  color="primary"
+                />
+              </Divider>
+              <ProductInfoInput disabled defaultValue={appSettings.appCurrency.code} />
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
                 <Divider>

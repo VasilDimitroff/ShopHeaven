@@ -23,6 +23,7 @@ import {
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAuth from "../../../hooks/useAuth";
+import useAppSettings from "../../../hooks/useAppSettings";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
   noPermissionsForOperationMessage,
@@ -33,13 +34,15 @@ export default function CreateProduct(props) {
   // api requests
   const axiosPrivateForm = useAxiosPrivateForm();
 
+  //app settings
+  const { appSettings } = useAppSettings();
+
   //auth
   const { auth } = useAuth();
 
   //dropdowns
   const [categories, setCategories] = useState(props.categories);
   const [subcategories, setSubcategories] = useState([]);
-  const [currencies, setCurrencies] = useState(props.currencies);
 
   //form states
   const [productName, setProductName] = useState("");
@@ -49,7 +52,6 @@ export default function CreateProduct(props) {
   const [productSubcategoryId, setProductSubcategoryId] = useState("");
   const [productHasGuarantee, setProductHasGuarantee] = useState("");
   const [productSpecifications, setProductSpecifications] = useState([]); //array[object]
-  const [productCurrencyId, setProductCurrencyId] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDiscount, setProductDiscount] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
@@ -70,7 +72,6 @@ export default function CreateProduct(props) {
   let productSubcategoryRef = useRef();
   let productGuaranteeRef = useRef();
   let productQuantityRef = useRef();
-  let productCurrencyRef = useRef();
   let productPriceRef = useRef();
   let productDiscountRef = useRef();
   let productTagsRef = useRef();
@@ -84,7 +85,6 @@ export default function CreateProduct(props) {
     productDescriptionError: "",
     productCategoryError: "",
     productSubcategoryError: "",
-    productCurrencyError: "",
     productPriceError: "",
     productDiscountError: "",
     productQuantityError: "",
@@ -131,7 +131,6 @@ export default function CreateProduct(props) {
     setProductDescription(productDescriptionRef.current.value);
     setProductCategoryId(productCategoryRef.current.value);
     setProductSubcategoryId(productSubcategoryRef.current.value);
-    setProductCurrencyId(productCurrencyRef.current.value);
     setProductPrice(productPriceRef.current.value);
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
@@ -192,7 +191,6 @@ export default function CreateProduct(props) {
       categoryId: productCategoryRef.current.value,
       subcategoryId: productSubcategoryRef.current.value,
       hasGuarantee: productGuaranteeRef.current.value,
-      currencyId: productCurrencyRef.current.value,
       price: productPriceRef.current.value,
       discount: productDiscountRef.current.value,
       quantity: productQuantityRef.current.value,
@@ -216,7 +214,6 @@ export default function CreateProduct(props) {
     formData.append("categoryId", newProduct.categoryId);
     formData.append("subcategoryId", newProduct.subcategoryId);
     formData.append("hasGuarantee", newProduct.hasGuarantee);
-    formData.append("currencyId", newProduct.currencyId);
     formData.append("price", newProduct.price);
     formData.append("discount", newProduct.discount);
     formData.append("quantity", newProduct.quantity);
@@ -360,27 +357,6 @@ export default function CreateProduct(props) {
         return {
           ...prev,
           productSubcategoryError: "",
-        };
-      });
-    }
-
-    if (!productCurrencyRef.current.value) {
-      let msg = "Please select a valid currency";
-      errors.push(msg);
-
-      setMessages((prev) => {
-        return {
-          ...prev,
-          productCurrencyError: msg,
-        };
-      });
-
-      isValid = false;
-    } else {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          productCurrencyError: "",
         };
       });
     }
@@ -795,26 +771,10 @@ export default function CreateProduct(props) {
                   color="primary"
                 />
               </Divider>
-
-              <select
-                style={StyledSelect}
-                ref={productCurrencyRef}
-                name="currency"
-                defaultValue={productCurrencyId}
-              >
-                {currencies?.map((option) => (
-                  <option key={option?.id} value={option?.id}>
-                    {`${option?.code}(${option?.name})`}
-                  </option>
-                ))}
-              </select>
-              {messages.productCurrencyError ? (
-                <ErrorAlert severity="error">
-                  {messages.productCurrencyError}
-                </ErrorAlert>
-              ) : (
-                <></>
-              )}
+              <ProductInfoInput
+                disabled
+                defaultValue={appSettings.appCurrency.code}
+              />
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <Divider>

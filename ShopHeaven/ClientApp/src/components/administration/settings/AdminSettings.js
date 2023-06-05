@@ -107,6 +107,7 @@ export default function AdminSettings() {
             id: newCurrency.id,
             code: newCurrency.code,
             name: newCurrency.name,
+            isCurrentForApplication: newCurrency.isCurrentForApplication
           }
         }
       })

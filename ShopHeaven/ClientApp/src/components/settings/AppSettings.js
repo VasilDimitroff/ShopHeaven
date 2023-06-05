@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import CircularProgress from "@mui/material/CircularProgress";
+import StartLoader from '../common/StartLoader';
 import useAppSettings from '../../hooks/useAppSettings';
-import Backdrop from "@mui/material/Backdrop";
-import { theme } from "../../theme";
 import { ApiEndpoints } from '../../api/endpoints';
 import axios from '../../api/axios';
 
@@ -48,18 +46,7 @@ const AppSettings = () => {
     return ( 
         <>
         {isLoading ? (
-          <>
-            <Backdrop
-              open={true}
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                color: theme.palette.white.main,
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-              }}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          </>
+          <StartLoader/>
         ) : (
           <Outlet />
         )}

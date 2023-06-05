@@ -42,7 +42,6 @@ export default function AdminProducts() {
 
   const [products, setProducts] = useState();
   const [categories, setCategories] = useState([]);
-  const [currencies, setCurrencies] = useState([]);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -84,7 +83,6 @@ export default function AdminProducts() {
 
         setCategories(response?.data?.categories);
         setProducts(response?.data?.products);
-        setCurrencies(response?.data?.currencies);
         setNumberOfPages(response?.data?.pagesCount);
         setTotalProductsCount(response?.data?.productsCount)  
 
@@ -288,7 +286,6 @@ export default function AdminProducts() {
                 <ProductRow
                   key={product.id}
                   categories={categories}
-                  currencies={currencies}
                   product={product}
                 />
               );
@@ -324,7 +321,6 @@ export default function AdminProducts() {
         <CreateProduct
           productListChanged={productListChanged}
           categories={categories}
-          currencies={currencies}
         />
       </Collapse>
       <PaginationHolder>
