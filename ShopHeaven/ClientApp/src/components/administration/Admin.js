@@ -43,6 +43,7 @@ export default function Admin() {
   let [fifthSelected, setFifthSelected] = useState(false);
   let [sixthSelected, setSixthSelected] = useState(false);
   let [seventhSelected, setSeventhSelected] = useState(false);
+  let [eightSelected, setEightSelected] = useState(false);
 
   function setSelectedItem(item) {
     if (item === 1) {
@@ -53,6 +54,7 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(false);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 2) {
       setFirstSelected(false);
       setSecondSelected(true);
@@ -61,6 +63,7 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(false);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 3) {
       setFirstSelected(false);
       setSecondSelected(false);
@@ -69,6 +72,7 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(false);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 4) {
       setFirstSelected(false);
       setSecondSelected(false);
@@ -77,6 +81,7 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(false);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 5) {
       setFirstSelected(false);
       setSecondSelected(false);
@@ -85,6 +90,7 @@ export default function Admin() {
       setFifthSelected(true);
       setSixthSelected(false);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 6) {
       setFirstSelected(false);
       setSecondSelected(false);
@@ -93,6 +99,7 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(true);
       setSeventhSelected(false);
+      setEightSelected(false);
     } else if (item === 7) {
       setFirstSelected(false);
       setSecondSelected(false);
@@ -101,6 +108,16 @@ export default function Admin() {
       setFifthSelected(false);
       setSixthSelected(false);
       setSeventhSelected(true);
+      setEightSelected(false);
+    } else if (item === 8) {
+      setFirstSelected(false);
+      setSecondSelected(false);
+      setThirdSelected(false);
+      setForthSelected(false);
+      setFifthSelected(false);
+      setSixthSelected(false);
+      setSeventhSelected(false);
+      setEightSelected(true);
     }
   }
 
@@ -275,6 +292,21 @@ export default function Admin() {
                       <StyledListItemText primary="Reviews" />
                     </StyledListItemButton>
                     <MobileMenuText>Reviews</MobileMenuText>
+                  </StyledLink>
+                  <Divider />
+                  <StyledLink to="/admin/settings">
+                    <StyledListItemButton
+                      onClick={() => {
+                        setSelectedItem(8);
+                      }}
+                      selected={eightSelected}
+                    >
+                      <ListItemIcon>
+                        <ReviewsIcon sx={{ margin: "auto" }} />
+                      </ListItemIcon>
+                      <StyledListItemText primary="Settings" />
+                    </StyledListItemButton>
+                    <MobileMenuText>Settings</MobileMenuText>
                   </StyledLink>
                   <Divider />
                 </Grid>

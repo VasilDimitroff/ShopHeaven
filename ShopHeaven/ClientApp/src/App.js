@@ -16,6 +16,7 @@ import AdminDashboard from "./components/administration/AdminDashboard";
 import AdminUsers from "./components/administration/users/AdminUsers";
 import AdminCoupons from "./components/administration/AdminCoupons";
 import AdminReviews from "./components/administration/AdminReviews";
+import AdminSettings from "./components/administration/settings/AdminSettings";
 import RequireAuth from "./components/auth/RequireAuth";
 import PersistLogin from "./components/auth/PersistLogin";
 import Unauthorized from "./components/auth/Unauthorized";
@@ -76,6 +77,7 @@ export default function App() {
                 />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="reviews" element={<AdminReviews />} />
+                <Route path="settings" element={<AdminSettings />} />
               </Route>
             </Route>
 

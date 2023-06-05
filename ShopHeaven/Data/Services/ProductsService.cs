@@ -47,7 +47,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var currency = await this.db.Currencies.
-                FirstOrDefaultAsync(x => x.Id == model.CurrencyId && x.IsDeleted != true);
+                FirstOrDefaultAsync(x => x.IsCurrentForApplication == true && x.IsDeleted != true);
 
             if (currency == null)
             {
@@ -231,7 +231,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var currency = await this.db.Currencies.
-                FirstOrDefaultAsync(x => x.Id == model.CurrencyId && x.IsDeleted != true);
+                FirstOrDefaultAsync(x => x.IsCurrentForApplication == true && x.IsDeleted != true);
 
             if (currency == null)
             {

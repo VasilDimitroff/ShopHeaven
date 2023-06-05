@@ -17,6 +17,8 @@ namespace ShopHeaven.Data.Models
         [MinLength(1, ErrorMessage = "Currency name must be at least 1 characters long")]
         public string Name { get; set; } // Bulgarian Lev for example
 
+        public bool IsCurrentForApplication { get; set; } // default currency for application
+
         public ICollection<Product> Products { get; set; } // these product's price are in this currency
     }
 }
