@@ -28,12 +28,12 @@ namespace ShopHeaven.Data.Models
 
         private decimal CalculatePriceWithNoDiscount()
          {
-                return Products.Sum(x => x.Product.Price * x.Quantity);
+                return this.Products.Sum(x => x.Product.Price * x.Quantity);
          }
 
         private decimal CalculatePriceWithDiscount()
         {
-            return  TotalPriceWithNoDiscount - Products.Sum(x => (x.Product.Discount * x.Product.Price) / 100);
+            return  TotalPriceWithNoDiscount - this.Products.Sum(x => (x.Product.Discount * x.Product.Price) / 100);
         }
     }
 }
