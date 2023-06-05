@@ -17,10 +17,16 @@ namespace ShopHeaven.Data.Models
             this.Products = new HashSet<ProductOrder>();
         }
 
-        public string Details { get; set; }
+        [Required(ErrorMessage = "Recipient field cannot be null or empty")]
+        public string Recipient { get; set; }
+
+        [Required(ErrorMessage = "Please enter contact phone")]
+        public string Phone { get; set; }
 
         [Required(ErrorMessage = "Address field cannot be null or empty")]
         public string Address { get; set; }
+
+        public string Details { get; set; }
 
         public decimal TotalPriceWithNoDiscount { get => CalculateTotalPriceWithNoDiscount(); private set => _totalPriceWithNoDiscount = value; }
 
@@ -39,6 +45,7 @@ namespace ShopHeaven.Data.Models
 
         public ShippingMethod ShippingMethod { get; set; }
 
+        //shipping method must be separated model/table
         public decimal ShippingAmount { get; set; }
 
         public string CreatedById { get; set; }

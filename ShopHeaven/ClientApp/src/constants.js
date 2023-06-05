@@ -9,7 +9,7 @@ export const allCategoriesUrl = `/categories`;
 export const subcategoriesOfMainCategoryBaseUrl =`/categories/`;
 export const subcategoryProductsBaseUrl =`/subcategories/`;
 export const singleProductBasePath =`/products/`;
-export const cartPath =`/cart/`;
+export const cartPath =`/cart`;
 
 //unautorized message
 export const noPermissionsForOperationMessage = "You have no permissions to perform the operation";
