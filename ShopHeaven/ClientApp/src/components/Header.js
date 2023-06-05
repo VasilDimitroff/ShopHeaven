@@ -41,6 +41,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import MainMenu from "./home/MainMenu";
+import { cartPath } from "../constants";
 
 export default function Header() {
   const { auth } = useAuth();
@@ -333,7 +334,9 @@ export default function Header() {
                   <Label>Favorites</Label>
                   <Favorite />
                 </CustomBadge>
+
                 <CustomBadge
+                  onClick={() => navigate(cartPath)}
                   badgeContent={user.cartProductsCount}
                   color="secondary"
                   sx={{

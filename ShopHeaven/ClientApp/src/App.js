@@ -23,13 +23,16 @@ import SubcategoryProducts from "./components/products/products-gallery/Subcateg
 import { coupons } from "./components/coupons";
 import {
   adminRole,
+  applicationUserRole,
   subcategoryProductsBaseUrl,
   subcategoriesOfMainCategoryBaseUrl,
   allCategoriesUrl,
   loginPath,
   registerPath,
   singleProductBasePath,
+  cartPath
 } from "./constants";
+import Cart from "./components/cart/Cart";
 
 export default function App() {
   return (
@@ -51,9 +54,14 @@ export default function App() {
             <Route
               path={`${singleProductBasePath}:productId`}
               element={<Product />}
-            />
+            /> 
             <Route path={loginPath} element={<Login />} />
             <Route path={registerPath} element={<Register />} />
+
+            {/* authorization needed paths */}
+            <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>
+              <Route path={`${cartPath}`} element={<Cart />} />
+            </Route>
 
             {/* admin only routes */}
             <Route element={<RequireAuth allowedRoles={adminRole} />}>

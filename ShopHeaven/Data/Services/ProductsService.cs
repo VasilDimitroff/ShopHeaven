@@ -568,6 +568,7 @@ namespace ShopHeaven.Data.Services
                     .Include(x => x.SubCategory)
                     .ThenInclude(x => x.MainCategory)
                     .Where(product => product.IsDeleted != true && product.Labels.Any(pl => pl.Label.Content.Trim().ToLower() == label))
+                    .OrderByDescending(x => x.ModifiedOn)
                     .ToListAsync();
 
                 filteredProducts.AddRange(productsByCurrentLabel);

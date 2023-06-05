@@ -9,6 +9,7 @@ export const allCategoriesUrl = `/categories`;
 export const subcategoriesOfMainCategoryBaseUrl =`/categories/`;
 export const subcategoryProductsBaseUrl =`/subcategories/`;
 export const singleProductBasePath =`/products/`;
+export const cartPath =`/cart/`;
 
 //unautorized message
 export const noPermissionsForOperationMessage = "You have no permissions to perform the operation";
@@ -64,7 +65,7 @@ export const categoriesToShowInMainMenuIfScreenIsSm = 8;
 export const categoriesToShowInMainMenuIfScreenIsMd = 10;
 
 //home slider
-export const labelCriteriaForProductsInHomeSlider = ["new", "hot"]; // filter main slider products by these labels
+export const labelCriteriaForProductsInHomeSlider = ["hot"]; // filter main slider products by these labels
 export const productsCountInHomeSlider = 5; // how many product to show in main slider
 
 //categories page

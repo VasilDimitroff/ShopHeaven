@@ -13,7 +13,6 @@ import {
   subcategoryProductsBaseUrl,
   subcategoriesOfMainCategoryBaseUrl,
   similarProductsForSingleProductPageSlider,
-  reviewsPerPageInProductPage
 } from "../../../constants";
 
 export default function Product() {
