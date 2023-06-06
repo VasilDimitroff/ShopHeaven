@@ -66,7 +66,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
             Cart userCart = await UpdateCartAmountAsync(user);
 
-            var productsInUserCart = userCart.Products.Count();
+            var productsInUserCart = userCart.Products.Sum(pc => pc.Quantity);
 
             var responseModel = new AddProductToCartResponseModel
             {
@@ -148,11 +148,11 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<int> GetProductsCountInCartAsync(string cartId)
+        public int GetProductsCountInCartAsync(string cartId)
         {
-            var productsCount = await this.db.ProductsCarts
-                .Where(x => x.CartId == cartId)
-                .CountAsync();
+            var productsCount = this.db.ProductsCarts
+                .Where(x => x.CartId == cartId && x.IsDeleted != true)
+                .Sum(x => x.Quantity);
 
             return productsCount;
         }

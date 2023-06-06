@@ -29,7 +29,7 @@ export default function CartProduct(props) {
   const { auth } = useAuth();
   const { setUser } = useUser();
   const { appSettings } = useAppSettings();
-  
+
   const axiosPrivate = useAxiosPrivate();
 
   const [productInCart, setProductInCart] = useState(props.productInCart);
@@ -70,7 +70,7 @@ export default function CartProduct(props) {
       );
 
       props.productDeleted(response?.data?.productCartId, response?.data?.summary);
-
+  
       setUser((prev) => {
         return {
           ...prev,

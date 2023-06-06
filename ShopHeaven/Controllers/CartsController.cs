@@ -60,7 +60,7 @@ namespace ShopHeaven.Controllers
             {
                 var deletedProductCartId = await this.cartsService.DeleteProductFromCartAsync(model);
                 var cartSummary = await this.cartsService.GetCartTotalPriceAsync(model.CartId);
-                var productsInCartCount = await this.cartsService.GetProductsCountInCartAsync(model.CartId);
+                var productsInCartCount = this.cartsService.GetProductsCountInCartAsync(model.CartId);
 
                 var responseModel = new DeleteProductFromCartResponseModel
                 {

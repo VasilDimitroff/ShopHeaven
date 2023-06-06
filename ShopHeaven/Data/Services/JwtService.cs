@@ -96,7 +96,7 @@ namespace ShopHeaven.Data.Services
                   Username = user.UserName,               
                   CartId = user.CartId,
                   WishlistId = user.WishlistId,
-                  CartProductsCount = user.Cart.Products.Count(),
+                  CartProductsCount = user.Cart.Products.Sum(x => x.Quantity),
                   WishlistProductsCount = user.Wishlist.Products.Count(),
                   RefreshToken = user.RefreshToken,
                   TokenCreated = (DateTime)user.TokenCreated,

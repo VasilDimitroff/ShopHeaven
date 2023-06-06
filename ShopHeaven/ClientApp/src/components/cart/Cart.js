@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography, Container, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import useAuth from "../../hooks/useAuth";
@@ -47,11 +47,11 @@ export default function Cart() {
           }
         );
 
-        console.log(response);
-
+        console.log("ZAQVKATA NANOVO: ", response);
+        
         setProductsInCart(response?.data?.products);
         setCartSummary(response?.data?.summary);
-        console.log("CART RESPONSE: ", response?.data);
+        //console.log("CART RESPONSE: ", response?.data);
       } catch (error) {
         console.log(error);
       }
@@ -68,10 +68,10 @@ export default function Cart() {
   }, [deleteProductDOMelement]);
 
   function productDeleted(productId, cartSummary) {
-    var updatedProducts = productsInCart.filter(x => x.id !== productId);
-    setProductsInCart(updatedProducts);
-    setCartSummary(cartSummary);
+   // var updatedProducts = productsInCart.filter((x) => x.id !== productId);
+    //setProductsInCart(updatedProducts);
     setDeleteProductDOMelement(true);
+   // setCartSummary(cartSummary);
   }
 
   const MainWrapper = styled(Box)({
@@ -87,28 +87,39 @@ export default function Cart() {
     <Box>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <MainWrapper>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={12} lg={9}>
-            <Stack spacing={2}>
-              {productsInCart.length ? (
-                productsInCart?.map((product) => {
+        {productsInCart.length > 0 ? (
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12} lg={9}>
+              <Stack spacing={2}>
+                {productsInCart?.map((product) => {
                   return (
-                    <CartProduct key={product.id} productInCart={product} productDeleted={productDeleted}/>
+                    <CartProduct
+                      key={product.id}
+                      productInCart={product}
+                      productDeleted={productDeleted}
+                    />
                   );
-                })
-              ) : (
-                <>You have no items in your cart!</>
-              )}
-            </Stack>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={3}>
-            {productsInCart.length > 0 ? (
+                })}
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={3}>
               <CartSummary cartSummary={cartSummary} />
-            ) : (
-              <></>
-            )}
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <Box>
+            <Typography
+              variant="h5"
+              textTransform="uppercase"
+              textAlign="center"
+            >
+              You have no items in your cart!
+            </Typography>
+            <Button variant="contained" size="large">
+              GO TO HOME
+            </Button>
+          </Box>
+        )}
       </MainWrapper>
     </Box>
   );
