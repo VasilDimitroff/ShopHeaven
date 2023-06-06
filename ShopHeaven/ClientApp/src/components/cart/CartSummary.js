@@ -33,6 +33,11 @@ export default function CartSummary(props) {
 
   const PriceHolder = styled(Box)({
     display: "flex",
+    [theme.breakpoints.up("lg")]: {
+      display: "block",
+      margin: "auto",
+      textAlign: "center"
+    },
     alignItems: "center",
     justifyContent: "space-between",
   });
@@ -83,7 +88,7 @@ export default function CartSummary(props) {
           </Box>)
         }
         <PriceHolder>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
             TOTAL PRICE:
           </Typography>
           <Typography

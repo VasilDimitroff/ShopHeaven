@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Box, Grid, Stack, Typography, Container, Button } from "@mui/material";
+import { Box, Grid, Stack, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -105,11 +105,23 @@ export default function Cart() {
             </Grid>
           </Grid>
         ) : (
-          <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 4, mt: 4}}>
-            <Typography variant="h5"textAlign="center">
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+              mt: 4,
+            }}
+          >
+            <Typography variant="h5" textAlign="center">
               YOUR CART IS EMPTY!
             </Typography>
-            <Button onClick={() => navigate("/")}  variant="contained" size="large">
+            <Button
+              onClick={() => navigate("/")}
+              variant="contained"
+              size="large"
+            >
               GO TO HOME
             </Button>
           </Box>
