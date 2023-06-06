@@ -56,7 +56,8 @@ export const ApiEndpoints = {
     },
     carts: {
         addProduct: "api/carts/addProduct",
-        getProducts: "api/carts/getProducts"
+        getProducts: "api/carts/getProducts",
+        deleteProduct: "api/carts/deleteProduct"
     }
 }
 

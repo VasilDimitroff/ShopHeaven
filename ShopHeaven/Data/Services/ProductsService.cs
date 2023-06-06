@@ -499,28 +499,6 @@ namespace ShopHeaven.Data.Services
         {
             model.Labels = model.Labels.Select(x => x.Trim().ToLower()).ToList();
 
-            /*
-            List<GetProductByLabelsResponseModel> products = await this.db.Products
-               .Where(p => p.Labels.Any(pl => pl.Label.Content.ToLower() == model.Label))
-               .Select(product => new GetProductByLabelsResponseModel
-               {
-                   Id = product.Id,
-                   Name = product.Name,
-                   Description = product.Description,
-                   Image = product.Images.FirstOrDefault().Image.Url ?? "",
-                   Category = new CategoryBaseModel
-                   {
-                       CategoryId = product.SubCategory.MainCategoryId,
-                       Name = product.SubCategory.MainCategory.Name,
-                   },
-                   Subcategory = new SubcategoryBaseResponseModel
-                   {
-                       SubcategoryId = product.SubCategoryId,
-                       Name = product.SubCategory.Name
-                   }
-               })
-               .ToListAsync();
-            */
             var filteredProducts = new HashSet<Product>();
 
             foreach (var label in model.Labels)

@@ -1,6 +1,4 @@
-import { React, Fragment, useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Close } from "@mui/icons-material";
+import { React, useState, useRef } from "react";
 import {
   useMediaQuery,
   Box,
@@ -13,34 +11,85 @@ import {
   InputBase,
   Divider,
   Alert,
-  Zoom
+  Zoom,
+  Slide,
+  Snackbar
 } from "@mui/material";
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { cartPath, noPermissionsForOperationMessage } from "../../constants";
+import { noPermissionsForOperationMessage } from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
+import useUser from "../../hooks/useUser";
 import useAppSettings from "../../hooks/useAppSettings";
 
 export default function CartProduct(props) {
   const { auth } = useAuth();
+  const { setUser } = useUser();
   const { appSettings } = useAppSettings();
+  
   const axiosPrivate = useAxiosPrivate();
 
   const [productInCart, setProductInCart] = useState(props.productInCart);
   const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] =
     useState(productInCart.purchasedQuantity); // example, it must come from props.product
 
-  const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
-  const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] = useState("");
+  const [changePurchasedQuantityErrorMessage, setChangePurchasedQuantityErrorMessage] = useState("");
 
   const quantityRef = useRef();
 
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
   const isLgOrDown = useMediaQuery(theme.breakpoints.down("lg"));
+
+
+  function onDeleteProductFromCart() {
+    const requestData = {
+      userId: auth.userId,
+      cartId: auth.cartId,
+      productId: productInCart.id,
+    };
+
+    deleteProductFromCart(requestData);
+  }
+
+  async function deleteProductFromCart(requestData) {
+    try {
+
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.carts.deleteProduct,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      props.productDeleted(response?.data?.productCartId, response?.data?.summary);
+
+      setUser((prev) => {
+        return {
+          ...prev,
+          cartProductsCount: response?.data?.cartProductsCount,
+        };
+      });
+
+      controller.abort();
+
+    } catch (error) {
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setDeleteFromCartErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setDeleteFromCartErrorMessage(error?.response?.data);
+      }
+
+      console.log(error);
+    }
+  }
 
   function onAddProductToCart() {
     const requestData = {
@@ -55,7 +104,7 @@ export default function CartProduct(props) {
 
   async function addProductToCart(requestData) {
     try {
-      console.log("Add to CART REQUEST", requestData);
+
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
@@ -68,47 +117,58 @@ export default function CartProduct(props) {
 
       controller.abort();
 
-      setPurchasedQuantityOfProduct(response?.data?.quantity);
+      /////add respose message
+     // setPurchasedQuantityOfProduct(response?.data?.quantity);
 
-      setAddToCartErrorMessage("");
-      setAddToCartResponseMessage(
-        `You have added product ${productInCart.name} in the cart ${response?.data?.quantity} time(s)`
-      );
+     // setChangePurchasedQuantityErrorMessage("");
+      //setAddToCartResponseMessage(
+      //  `You have added product ${productInCart.name} in the cart ${response?.data?.quantity} time(s)`
+     // );
     } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setAddToCartErrorMessage(noPermissionsForOperationMessage);
+      //  setChangePurchasedQuantityErrorMessage(noPermissionsForOperationMessage);
       } else {
-        setAddToCartErrorMessage(error?.response?.data);
+      //  setChangePurchasedQuantityErrorMessage(error?.response?.data);
       }
 
       console.log(error);
     }
   }
 
-  function clearErrorMessage () { setAddToCartErrorMessage(``);}
+  function clearErrorMessage () { setChangePurchasedQuantityErrorMessage(``);}
 
   function handleSetProductInCartQuantity(value) {
-    setAddToCartErrorMessage(``)
+    setChangePurchasedQuantityErrorMessage(``);
 
     value = parseInt(value);
 
-    if (purchasedQuantityOfProduct  + value < 1) {
-      setPurchasedQuantityOfProduct(1)
-      setAddToCartErrorMessage(`You have to purchase almost 1 item of product!`);
+    if (purchasedQuantityOfProduct + value < 1) {
+      setPurchasedQuantityOfProduct(1);
+      setChangePurchasedQuantityErrorMessage(
+        `You have to purchase almost 1 item of product!`
+      );
       return;
-   }
+    }
 
-   if (!productInCart.isAvailable) {
-    setAddToCartErrorMessage(`Product is out of stock! You cannot purchase it!`);
-    return;
-   } 
-    
-   if (purchasedQuantityOfProduct + value > productInCart.inStockQuantity) {
-      setAddToCartErrorMessage(`In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`);
+    if (!productInCart.isAvailable) {
+      setChangePurchasedQuantityErrorMessage(
+        `Product is out of stock! You cannot purchase it!`
+      );
       return;
-   } 
-    
-    setPurchasedQuantityOfProduct(prev => prev += value); 
+    }
+
+    if (purchasedQuantityOfProduct + value > productInCart.inStockQuantity) {
+      setChangePurchasedQuantityErrorMessage(
+        `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
+      );
+      return;
+    }
+
+    setPurchasedQuantityOfProduct((prev) => (prev += value));
+  }
+
+  function handleCloseSnackbar() {
+    setDeleteFromCartErrorMessage("");
   }
 
   const ImageHolder = styled(Box)({
@@ -252,13 +312,13 @@ export default function CartProduct(props) {
                 size="small"
                 label={"Available"}
               />
-               <Chip
+              <Chip
                 variant="outlined"
                 color="success"
                 size="small"
                 label={`NALI4NI: ${productInCart.inStockQuantity}`}
               />
-            </Stack>          
+            </Stack>
             <Typography>{productInCart.description}</Typography>
           </Stack>
         </Grid>
@@ -314,7 +374,10 @@ export default function CartProduct(props) {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
-            <IconButton color="primary" onClick={() => handleSetProductInCartQuantity(-1)}>
+            <IconButton
+              color="primary"
+              onClick={() => handleSetProductInCartQuantity(-1)}
+            >
               <RemoveCircle />
             </IconButton>
             <BootstrapInput
@@ -324,7 +387,10 @@ export default function CartProduct(props) {
               color="primary"
               value={purchasedQuantityOfProduct}
             />
-            <IconButton color="primary" onClick={() => handleSetProductInCartQuantity(1)}>
+            <IconButton
+              color="primary"
+              onClick={() => handleSetProductInCartQuantity(1)}
+            >
               <AddCircle />
             </IconButton>
           </QuantityHolder>
@@ -334,31 +400,44 @@ export default function CartProduct(props) {
             flexDirection="row"
             justifyContent={"center"}
           >
-            <Link to={`${"cartPath"}`}>
-              <LinkButton>Delete</LinkButton>
-            </Link>
-            <Link to={`${"cartPath"}`}>
-              <LinkButton>Add to favorites</LinkButton>
-            </Link>
+            <LinkButton onClick={onDeleteProductFromCart}>Delete</LinkButton>
+            <LinkButton>Add to favorites</LinkButton>
           </Stack>
         </Grid>
       </Grid>
-      {addToCartErrorMessage ? (
-            <Zoom
-              in={addToCartErrorMessage.length > 0 ? true : false}
-            >
-              <Alert
-                sx={{ marginTop: theme.spacing(2) }}
-                variant="filled"
-                severity="error"
-                onClose={clearErrorMessage}
-              >
-                {addToCartErrorMessage}
-              </Alert>
-            </Zoom>
-          ) : (
-            <></>
-          )}
+      {changePurchasedQuantityErrorMessage ? (
+        <Zoom
+          in={changePurchasedQuantityErrorMessage.length > 0 ? true : false}
+        >
+          <Alert
+            sx={{ marginTop: theme.spacing(2) }}
+            variant="filled"
+            severity="error"
+            onClose={clearErrorMessage}
+          >
+            {changePurchasedQuantityErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        <></>
+      )}
+      <Snackbar
+        onClose={handleCloseSnackbar}
+        autoHideDuration={6000}
+        ContentProps={{
+          style: {
+            backgroundColor: theme.palette.error.main,
+            textAlign: "center",
+            fontWeight: 500,
+            fontSize: 18,
+            cursor: "pointer",
+          },
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={deleteFromCartErrorMessage.length > 0 ? true : false}
+        TransitionComponent={Slide}
+        message={`${deleteFromCartErrorMessage}`}
+      ></Snackbar>
     </Paper>
   );
 }

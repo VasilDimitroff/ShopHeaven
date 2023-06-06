@@ -24,6 +24,7 @@ const breadcrumbs = [
 export default function Cart() {
   const [productsInCart, setProductsInCart] = useState([]);
   const [cartSummary, setCartSummary] = useState();
+  const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
 
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -64,7 +65,14 @@ export default function Cart() {
       effectRun.current = true;
       controller.abort();
     };
-  }, []);
+  }, [deleteProductDOMelement]);
+
+  function productDeleted(productId, cartSummary) {
+    var updatedProducts = productsInCart.filter(x => x.id !== productId);
+    setProductsInCart(updatedProducts);
+    setCartSummary(cartSummary);
+    setDeleteProductDOMelement(true);
+  }
 
   const MainWrapper = styled(Box)({
     width: "80%",
@@ -82,10 +90,10 @@ export default function Cart() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12} lg={9}>
             <Stack spacing={2}>
-              {productsInCart ? (
+              {productsInCart.length ? (
                 productsInCart?.map((product) => {
                   return (
-                    <CartProduct key={product.id} productInCart={product} />
+                    <CartProduct key={product.id} productInCart={product} productDeleted={productDeleted}/>
                   );
                 })
               ) : (

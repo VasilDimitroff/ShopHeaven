@@ -12,5 +12,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model);
 
         Task<CartSummaryResponseModel> GetCartTotalPriceAsync(string cartId);
+
+        Task<int> GetProductsCountInCartAsync(string cartId);
     }
 }
