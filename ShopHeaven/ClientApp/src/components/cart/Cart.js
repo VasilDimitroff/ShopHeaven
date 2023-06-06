@@ -23,8 +23,8 @@ const breadcrumbs = [
 
 export default function Cart() {
 
-  const [productsInCart, setProductsInCart] = useState([]);
-  const [cartSummary, setCartSummary] = useState({});
+  const [productsInCart, setProductsInCart] = useState();
+  const [cartSummary, setCartSummary] = useState();
 
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -52,6 +52,7 @@ export default function Cart() {
         setProductsInCart(response?.data?.products);
         setCartSummary(response?.data?.summary)
         console.log("CART RESPONSE: ", response?.data)
+        console.log("CART RESPONSE: ", productsInCart)
 
       } catch (error) {
         console.log(error);
@@ -84,9 +85,13 @@ export default function Cart() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12} lg={9}>
             <Stack spacing={2}>
-              <CartProduct />
-              <CartProduct />
-              <CartProduct />
+            {
+              productsInCart?.map(product => {
+                return (
+                  <CartProduct key={product.id} productInCart={product} />
+                )
+              })
+            }
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={3}>

@@ -12,6 +12,8 @@
 
         public decimal Discount { get; set; }
 
+        public string Image { get; set; }
+
         public bool IsAvailable { get; set; }
 
         public bool HasGuarantee { get; set; }

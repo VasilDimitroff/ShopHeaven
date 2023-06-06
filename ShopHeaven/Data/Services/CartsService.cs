@@ -104,7 +104,8 @@ namespace ShopHeaven.Data.Services
                 {
                     Id = pc.ProductId,
                     Name = pc.Product.Name,
-                    Description = pc.Product.Description.Substring(0, Math.Min(100, pc.Product.Description.Length)) + "...",
+                    Description = pc.Product.Description.Substring(0, Math.Min(200, pc.Product.Description.Length)) + "...",
+                    Image = pc.Product.Images.FirstOrDefault(pi => pi.IsThumbnail == true && pi.IsDeleted != true).Image.Url ?? "",
                     Discount = pc.Product.Discount,
                     Price = pc.Product.Price,
                     HasGuarantee = pc.Product.HasGuarantee,

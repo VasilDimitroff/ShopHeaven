@@ -20,12 +20,14 @@ import { cartPath, noPermissionsForOperationMessage, } from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
+import useAppSettings from "../../hooks/useAppSettings";
 
 export default function CartProduct(props) {
   const { auth } = useAuth();
+  const { appSettings } = useAppSettings();
   const axiosPrivate = useAxiosPrivate();
 
-  const [productInCart, setProductInCart] = useState(props.product);
+  const [productInCart, setProductInCart] = useState(props.productInCart);
   const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] =
     useState(1); // example, it must come from props.product
 
@@ -34,10 +36,9 @@ export default function CartProduct(props) {
 
   const quantityRef = useRef();
 
-  useEffect(() => {}, []);
-
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
+  const isLgOrDown = useMediaQuery(theme.breakpoints.down("lg"));
 
   function onAddProductToCart() {
     const requestData = {
@@ -136,7 +137,9 @@ export default function CartProduct(props) {
     fontSize: 14,
   });
 
-  const FinalPriceHolder = styled(InfoHolder)({
+  const FinalPriceHolder = styled(Box)({
+    display: "block",
+    textAlign: "center",
     gap: theme.spacing(0.8),
     marginTop: theme.spacing(1),
     fontWeight: 500,
@@ -176,6 +179,9 @@ export default function CartProduct(props) {
     marginTop: theme.spacing(1.5),
     fontSize: 14,
     color: theme.palette.primary.main,
+    [theme.breakpoints.down("lg")]: {
+      marginTop: theme.spacing(1.5),
+    },
     "&:hover": {
       textDecoration: "underline",
     },
@@ -208,7 +214,7 @@ export default function CartProduct(props) {
                 left: 0,
                 padding: theme.spacing(1),
               }}
-              src="https://img.freepik.com/premium-psd/bottle-product-mockup-psd-beauty-packaging_53876-130082.jpg"
+              src={productInCart.image}
             />
           </ImageHolder>
         </Grid>
@@ -222,39 +228,53 @@ export default function CartProduct(props) {
         >
           <Stack spacing={1.2}>
             <Typography sx={{ lineHeight: 1, fontSize: 18, fontWeight: 500 }}>
-              Here will be the great name of the best product in the world!
+              {productInCart.name}
             </Typography>
-            <Divider/>
-              <Stack spacing={2} flexWrap="wrap" direction="row">
+            <Divider />
+            <Stack spacing={2} flexWrap="wrap" direction="row">
+              {productInCart.hasGuarantee ? (
                 <Chip
                   variant="outlined"
                   color="success"
                   size="small"
-                  label={"Warranty"}
+                  label="Warranty"
                 />
-                <Chip
-                  variant="outlined"
-                  color="success"
-                  size="small"
-                  label={"Available"}
-                />  
-              </Stack>
-            <Typography>
-              Description Description Description Description Description
-              Description
-            </Typography>
+              ) : (
+                <></>
+              )}
+
+              <Chip
+                variant="outlined"
+                color="success"
+                size="small"
+                label={"Available"}
+              />
+            </Stack>
+            <Typography>{productInCart.description}</Typography>
           </Stack>
         </Grid>
         <Grid item xs={12} sm={3} md={3} lg={3}>
           <Box>
             <LabelHolder>
-              <StyledChip size="small" variant="filled" label={`Save ${5}%`} />
+              <StyledChip
+                size="small"
+                variant="filled"
+                label={`Save ${appSettings.appCurrency.code} ${(productInCart.price * productInCart.discount / 100).toFixed(2)}`} //55 lw
+              />
             </LabelHolder>
           </Box>
 
           <FinalPriceHolder>
-            <RegularPrice>$40.50</RegularPrice>
-            <Typography variant="h6">$40.50</Typography>
+            <RegularPrice>
+              {appSettings.appCurrency.code} {productInCart.price.toFixed(2)}
+            </RegularPrice>
+            <Typography variant="h6">
+              {appSettings.appCurrency.code}{" "}
+              {(
+                productInCart.price -
+                (productInCart.price * productInCart.discount) / 100
+              ).toFixed(2)}
+            </Typography>
           </FinalPriceHolder>
 
           <QuantityHolder>
@@ -271,19 +291,19 @@ export default function CartProduct(props) {
               <AddCircle sx={{ color: theme.palette.primary.main }} />
             </IconButton>
           </QuantityHolder>
-                      <Stack
-              gap={2}
-              flexWrap="wrap"
-              flexDirection="row"
-              justifyContent={isMdOrDown ? "center" : "flex-end"}
-            >
-              <Link to={`${"cartPath"}`}>
-                <LinkButton>Delete</LinkButton>
-              </Link>
-              <Link to={`${"cartPath"}`}>
-                <LinkButton>Add to favorites</LinkButton>
-              </Link>
-            </Stack>
+          <Stack
+            gap={isMdOrDown ? isSmallOrDown ? 2 : 1 : 2}
+            flexWrap="wrap"
+            flexDirection="row"
+            justifyContent={"center"}
+          >
+            <Link to={`${"cartPath"}`}>
+              <LinkButton>Delete</LinkButton>
+            </Link>
+            <Link to={`${"cartPath"}`}>
+              <LinkButton>Add to favorites</LinkButton>
+            </Link>
+          </Stack>
         </Grid>
       </Grid>
     </Paper>
