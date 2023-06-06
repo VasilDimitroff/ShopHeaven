@@ -16,7 +16,7 @@ import {
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { cartPath, noPermissionsForOperationMessage, } from "../../constants";
+import { cartPath, noPermissionsForOperationMessage } from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
@@ -84,12 +84,11 @@ export default function CartProduct(props) {
   }
 
   function handleSetProductInCartQuantity() {
-
     let value = quantityRef.current.value;
 
     //MUST GET FROM THE SERVER STOCK QUANTITY OF CURRENT PRODUCT! THIS LOGIC BELOW DONT WORK RIGHT!
     //THIS IS POSSIBLE TO CHANGE LOGIC ON SERVER TO REURN ONE MORE PROPERTY (AND CHANGE LOGIC IN PRODUCT PAGE FOR ADDING PRODUCT IN CART - view the code)
-    // No! It is absolutely different model! We change props. model, not response 
+    // No! It is absolutely different model! We change props. model, not response
     //FROM SERVER WE WEILL GET ARRAY OF ProductsCart, but with one more property => In stock quantity of product
     value = parseInt(value);
 
@@ -124,12 +123,12 @@ export default function CartProduct(props) {
   });
 
   const LabelHolder = styled(InfoHolder)({
-    margin: theme.spacing(1, 0)
-  })
+    margin: theme.spacing(1, 0),
+  });
 
   const QuantityHolder = styled(InfoHolder)({
     marginTop: theme.spacing(1.5),
-  })
+  });
 
   const RegularPrice = styled(Typography)({
     textDecoration: "line-through",
@@ -254,37 +253,53 @@ export default function CartProduct(props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={3} md={3} lg={3}>
-          <Box>
+          {productInCart.discount > 0 ? (
             <LabelHolder>
               <StyledChip
                 size="small"
                 variant="filled"
-                label={`Save ${appSettings.appCurrency.code} ${(productInCart.price * productInCart.discount / 100).toFixed(2)}`} //55 lw
+                label={`Save ${appSettings.appCurrency.code} ${(
+                  (productInCart.purchasedQuantity *
+                    productInCart.price *
+                    productInCart.discount) /
+                  100
+                ).toFixed(2)}`} //55 lw
               />
             </LabelHolder>
-          </Box>
-
+          ) : (
+            <></>
+          )}
           <FinalPriceHolder>
-            <RegularPrice>
-              {appSettings.appCurrency.code} {productInCart.price.toFixed(2)}
-            </RegularPrice>
+            {productInCart.discount > 0 ? (
+              <RegularPrice>
+                {appSettings.appCurrency.code}{" "}
+                {(
+                  productInCart.purchasedQuantity * productInCart.price
+                ).toFixed(2)}
+              </RegularPrice>
+            ) : (
+              <></>
+            )}
             <Typography variant="h6">
               {appSettings.appCurrency.code}{" "}
               {(
-                productInCart.price -
-                (productInCart.price * productInCart.discount) / 100
+                productInCart.purchasedQuantity * productInCart.price -
+                (productInCart.purchasedQuantity *
+                  productInCart.price *
+                  productInCart.discount) /
+                  100
               ).toFixed(2)}
             </Typography>
           </FinalPriceHolder>
-
           <QuantityHolder>
             <IconButton onClick={() => handleSetProductInCartQuantity()}>
               <RemoveCircle sx={{ color: theme.palette.primary.main }} />
             </IconButton>
             <BootstrapInput
               inputRef={quantityRef}
-              defaultValue={purchasedQuantityOfProduct}
+              defaultValue={productInCart.purchasedQuantity}
               id="bootstrap-input"
+              readOnly
               color="primary"
             />
             <IconButton onClick={() => handleSetProductInCartQuantity()}>
@@ -292,7 +307,7 @@ export default function CartProduct(props) {
             </IconButton>
           </QuantityHolder>
           <Stack
-            gap={isMdOrDown ? isSmallOrDown ? 2 : 1 : 2}
+            gap={isMdOrDown ? (isSmallOrDown ? 2 : 1) : 2}
             flexWrap="wrap"
             flexDirection="row"
             justifyContent={"center"}

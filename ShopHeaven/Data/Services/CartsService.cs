@@ -100,6 +100,7 @@ namespace ShopHeaven.Data.Services
 
             var products = await this.db.ProductsCarts
                 .Where(pc => pc.CartId == model.CartId && pc.IsDeleted != true)
+                .OrderByDescending(x => x.CreatedOn)
                 .Select(pc => new CartProductResponseModel
                 {
                     Id = pc.ProductId,
