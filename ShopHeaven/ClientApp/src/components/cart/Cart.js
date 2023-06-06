@@ -22,8 +22,7 @@ const breadcrumbs = [
 ];
 
 export default function Cart() {
-
-  const [productsInCart, setProductsInCart] = useState();
+  const [productsInCart, setProductsInCart] = useState([]);
   const [cartSummary, setCartSummary] = useState();
 
   const { auth } = useAuth();
@@ -48,12 +47,10 @@ export default function Cart() {
         );
 
         console.log(response);
-        
-        setProductsInCart(response?.data?.products);
-        setCartSummary(response?.data?.summary)
-        console.log("CART RESPONSE: ", response?.data)
-        console.log("CART RESPONSE: ", productsInCart)
 
+        setProductsInCart(response?.data?.products);
+        setCartSummary(response?.data?.summary);
+        console.log("CART RESPONSE: ", response?.data);
       } catch (error) {
         console.log(error);
       }
@@ -85,17 +82,23 @@ export default function Cart() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12} lg={9}>
             <Stack spacing={2}>
-            {
-              productsInCart?.map(product => {
-                return (
-                  <CartProduct key={product.id} productInCart={product} />
-                )
-              })
-            }
+              {productsInCart ? (
+                productsInCart?.map((product) => {
+                  return (
+                    <CartProduct key={product.id} productInCart={product} />
+                  );
+                })
+              ) : (
+                <>You have no items in your cart!</>
+              )}
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={3}>
-            <CartSummary />
+            {productsInCart.length > 0 ? (
+              <CartSummary cartSummary={cartSummary} />
+            ) : (
+              <></>
+            )}
           </Grid>
         </Grid>
       </MainWrapper>

@@ -9,13 +9,16 @@ import {
   Snackbar,
   Slide,
 } from "@mui/material";
-import { Close, Favorite, AddShoppingCart } from "@mui/icons-material";
+import { AddShoppingCart } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { cartPath } from "../../constants";
+import useAppSettings from "../../hooks/useAppSettings";
 
-export default function CartSummary() {
-  useEffect(() => {}, []);
+export default function CartSummary(props) {
+  const { appSettings } = useAppSettings();
+
+  const [cartSummary, setCartSummary] = useState(props.cartSummary)
 
   const RegularPriceHolder = styled(Box)({
     display: "flex",
@@ -54,18 +57,31 @@ export default function CartSummary() {
         <Typography align="center" variant="h6" fontWeight={400}>
           ORDER SUMMARY:
         </Typography>
-        <Box>
-          <RegularPriceHolder>
-            <Typography>Regular price:</Typography>
-            <Typography sx={{ textDecoration: "line-through" }}>
-              $ 200
-            </Typography>
-          </RegularPriceHolder>
-        </Box>
-        <DiscountHolder>
-          <Typography>Discount:</Typography>
-          <Typography>$ -30.50</Typography>
-        </DiscountHolder>
+        {
+          cartSummary.totalPriceWithDiscount == cartSummary.totalPriceWithNoDiscount
+          ? <></>
+          : ( <Box>
+            <Box>
+              <RegularPriceHolder>
+                <Typography>Regular price:</Typography>
+                <Typography sx={{ textDecoration: "line-through" }}>
+                  {appSettings.appCurrency.code}{" "}
+                  {cartSummary.totalPriceWithNoDiscount.toFixed(2)}
+                </Typography>
+              </RegularPriceHolder>
+            </Box>
+            <DiscountHolder>
+              <Typography>Discount:</Typography>
+              <Typography>
+                {appSettings.appCurrency.code} -
+                {(
+                  cartSummary.totalPriceWithNoDiscount -
+                  cartSummary.totalPriceWithDiscount
+                ).toFixed(2)}
+              </Typography>
+            </DiscountHolder>
+          </Box>)
+        }
         <PriceHolder>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             TOTAL PRICE:
@@ -74,7 +90,8 @@ export default function CartSummary() {
             variant="h5"
             sx={{ fontWeight: 500, color: theme.palette.error.main }}
           >
-            $ 150.20
+            {appSettings.appCurrency.code}{" "}
+            {cartSummary.totalPriceWithDiscount.toFixed(2)}
           </Typography>
         </PriceHolder>
         <Box>

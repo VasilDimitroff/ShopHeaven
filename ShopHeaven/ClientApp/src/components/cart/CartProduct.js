@@ -12,6 +12,8 @@ import {
   IconButton,
   InputBase,
   Divider,
+  Alert,
+  Zoom
 } from "@mui/material";
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -29,7 +31,7 @@ export default function CartProduct(props) {
 
   const [productInCart, setProductInCart] = useState(props.productInCart);
   const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] =
-    useState(1); // example, it must come from props.product
+    useState(productInCart.purchasedQuantity); // example, it must come from props.product
 
   const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
@@ -83,35 +85,37 @@ export default function CartProduct(props) {
     }
   }
 
-  function handleSetProductInCartQuantity() {
-    let value = quantityRef.current.value;
+  function clearErrorMessage () { setAddToCartErrorMessage(``);}
 
-    //MUST GET FROM THE SERVER STOCK QUANTITY OF CURRENT PRODUCT! THIS LOGIC BELOW DONT WORK RIGHT!
-    //THIS IS POSSIBLE TO CHANGE LOGIC ON SERVER TO REURN ONE MORE PROPERTY (AND CHANGE LOGIC IN PRODUCT PAGE FOR ADDING PRODUCT IN CART - view the code)
-    // No! It is absolutely different model! We change props. model, not response
-    //FROM SERVER WE WEILL GET ARRAY OF ProductsCart, but with one more property => In stock quantity of product
+  function handleSetProductInCartQuantity(value) {
+    setAddToCartErrorMessage(``)
+
     value = parseInt(value);
 
-    //User cannot select 0 quantity
-    if (value < 1) {
-      value = 1;
-    }
+    if (purchasedQuantityOfProduct  + value < 1) {
+      setPurchasedQuantityOfProduct(1)
+      setAddToCartErrorMessage(`You have to purchase almost 1 item of product!`);
+      return;
+   }
 
-    //THIS ROW IS IMPORTANT! MUST CHECK IF RESULT > WHOLE QUANTITY OF PRODUCT (not product in cart!!!)
-    if (value > productInCart.quantity) {
-      setAddToCartErrorMessage(
-        `Product is out of stock! You cannot purchase it!`
-      );
-    } else {
-      setPurchasedQuantityOfProduct(value);
-    }
+   if (!productInCart.isAvailable) {
+    setAddToCartErrorMessage(`Product is out of stock! You cannot purchase it!`);
+    return;
+   } 
+    
+   if (purchasedQuantityOfProduct + value > productInCart.inStockQuantity) {
+      setAddToCartErrorMessage(`In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`);
+      return;
+   } 
+    
+    setPurchasedQuantityOfProduct(prev => prev += value); 
   }
 
   const ImageHolder = styled(Box)({
-    width: isSmallOrDown ? "30%" : "55%",
+    width: isSmallOrDown ? "50%" : "75%",
     maxWidth: "200px",
     height: 0,
-    paddingBottom: isSmallOrDown ? "30%" : "55%",
+    paddingBottom: isSmallOrDown ? "50%" : "75%",
     position: "relative",
     overflow: "hidden",
   });
@@ -248,11 +252,29 @@ export default function CartProduct(props) {
                 size="small"
                 label={"Available"}
               />
-            </Stack>
+               <Chip
+                variant="outlined"
+                color="success"
+                size="small"
+                label={`NALI4NI: ${productInCart.inStockQuantity}`}
+              />
+            </Stack>          
             <Typography>{productInCart.description}</Typography>
           </Stack>
         </Grid>
-        <Grid item xs={12} sm={3} md={3} lg={3}>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          md={3}
+          lg={3}
+          sx={{
+            paddingBottom: theme.spacing(1),
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
           {productInCart.discount > 0 ? (
             <LabelHolder>
               <StyledChip
@@ -292,17 +314,17 @@ export default function CartProduct(props) {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
-            <IconButton onClick={() => handleSetProductInCartQuantity()}>
+            <IconButton onClick={() => handleSetProductInCartQuantity(-1)}>
               <RemoveCircle sx={{ color: theme.palette.primary.main }} />
             </IconButton>
             <BootstrapInput
               inputRef={quantityRef}
-              defaultValue={productInCart.purchasedQuantity}
               id="bootstrap-input"
               readOnly
               color="primary"
+              value={purchasedQuantityOfProduct}
             />
-            <IconButton onClick={() => handleSetProductInCartQuantity()}>
+            <IconButton onClick={() => handleSetProductInCartQuantity(1)}>
               <AddCircle sx={{ color: theme.palette.primary.main }} />
             </IconButton>
           </QuantityHolder>
@@ -321,6 +343,22 @@ export default function CartProduct(props) {
           </Stack>
         </Grid>
       </Grid>
+      {addToCartErrorMessage ? (
+            <Zoom
+              in={addToCartErrorMessage.length > 0 ? true : false}
+            >
+              <Alert
+                sx={{ marginTop: theme.spacing(2) }}
+                variant="filled"
+                severity="error"
+                onClose={clearErrorMessage}
+              >
+                {addToCartErrorMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            <></>
+          )}
     </Paper>
   );
 }
