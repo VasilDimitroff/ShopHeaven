@@ -54,20 +54,13 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(DeleteProduct))]
-        public async Task<ActionResult<DeleteProductFromCartResponseModel>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
+        public async Task<ActionResult<int>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
         {
             try
             {
-                var deletedProductCartId = await this.cartsService.DeleteProductFromCartAsync(model);
-                var cartSummary = await this.cartsService.GetCartTotalPriceAsync(model.CartId);
+                await this.cartsService.DeleteProductFromCartAsync(model);
                 var productsInCartCount = this.cartsService.GetProductsCountInCartAsync(model.CartId);
-
-                var responseModel = new DeleteProductFromCartResponseModel
-                {
-                    ProductCartId = deletedProductCartId,
-                    Summary = cartSummary,
-                    CartProductsCount = productsInCartCount
-                };
+                var responseModel = new DeleteProductFromCartResponseModel { CartProductsCount = productsInCartCount };
 
                 return Ok(responseModel);
             }

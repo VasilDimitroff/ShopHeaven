@@ -46,12 +46,13 @@ export default function Cart() {
             signal: controller.signal,
           }
         );
-
-        console.log("ZAQVKATA NANOVO: ", response);
         
         setProductsInCart(response?.data?.products);
         setCartSummary(response?.data?.summary);
-        //console.log("CART RESPONSE: ", response?.data);
+        setDeleteProductDOMelement(false);
+
+        console.log("CART RESPONSE: ", response?.data);
+
       } catch (error) {
         console.log(error);
       }
@@ -67,12 +68,7 @@ export default function Cart() {
     };
   }, [deleteProductDOMelement]);
 
-  function productDeleted(productId, cartSummary) {
-   // var updatedProducts = productsInCart.filter((x) => x.id !== productId);
-    //setProductsInCart(updatedProducts);
-    setDeleteProductDOMelement(true);
-   // setCartSummary(cartSummary);
-  }
+  function productDeleted() { setDeleteProductDOMelement(true) };
 
   const MainWrapper = styled(Box)({
     width: "80%",

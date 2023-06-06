@@ -7,7 +7,7 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<AddProductToCartResponseModel> AddProductToCartAsync(AddProductToCartRequestModel model);
 
-        Task<string> DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model);
+        Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model);
 
         Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model);
 

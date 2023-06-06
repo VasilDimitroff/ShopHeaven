@@ -69,7 +69,7 @@ export default function CartProduct(props) {
         }
       );
 
-      props.productDeleted(response?.data?.productCartId, response?.data?.summary);
+      props.productDeleted();
   
       setUser((prev) => {
         return {

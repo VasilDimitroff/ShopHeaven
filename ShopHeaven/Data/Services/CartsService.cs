@@ -77,7 +77,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<string> DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)
+        public async Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)
         {
             var user = await GetUserAsync(model.UserId);
 
@@ -95,14 +95,10 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductIsNotInTheCart);
             }
 
-            var deletedProductId = productCart.Id;
-
             this.db.ProductsCarts.Remove(productCart);
             await this.db.SaveChangesAsync();
 
             var updatedCart = await UpdateCartAmountAsync(user);
-
-            return deletedProductId;
         }
 
         public async Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model)
