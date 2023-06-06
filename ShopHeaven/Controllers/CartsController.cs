@@ -70,5 +70,19 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(ChangeProductQuantity))]
+        public async Task<ActionResult<ChangeProductQuantityResponseModel>> ChangeProductQuantity([FromBody] ChangeProductQuantityRequestModel model)
+        {
+            try
+            {
+                var responseModel = await this.cartsService.ChangeProductQuantityAsync(model);
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

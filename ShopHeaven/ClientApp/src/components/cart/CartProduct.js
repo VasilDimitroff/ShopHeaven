@@ -1,4 +1,4 @@
-import { React, useState, useRef } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import {
   useMediaQuery,
   Box,
@@ -26,28 +26,30 @@ import useUser from "../../hooks/useUser";
 import useAppSettings from "../../hooks/useAppSettings";
 
 export default function CartProduct(props) {
+
+  //app hooks
   const { auth } = useAuth();
   const { setUser } = useUser();
   const { appSettings } = useAppSettings();
 
+  //api
   const axiosPrivate = useAxiosPrivate();
 
+  //main states for component
   const [productInCart, setProductInCart] = useState(props.productInCart);
-  const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] = useState(
-    productInCart.purchasedQuantity
-  ); // example, it must come from props.product
 
-  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] =
-    useState("");
-  const [
-    changePurchasedQuantityErrorMessage,
-    setChangePurchasedQuantityErrorMessage,
-  ] = useState("");
+  //error messages
+  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] = useState("");
+  const [changePurchasedQuantityErrorMessage, setChangePurchasedQuantityErrorMessage] = useState("");
 
+  //refs
   const quantityRef = useRef();
 
+  //get resulution type (bool)
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
+
+  useEffect(() => { console.log("USE EFECT") }, [productInCart])
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -92,23 +94,36 @@ export default function CartProduct(props) {
     }
   }
 
-  function onAddProductToCart() {
+function onChangeProductQuantity(value) {
+
+    let passValidation = validateProductQuantityValue(value);
+
+    if(!passValidation) {
+      return;
+    }
+
+    console.log("QUANTITY NOW IS ", value);
+  
     const requestData = {
       userId: auth.userId,
       cartId: auth.cartId,
       productId: productInCart.id,
-      quantity: parseInt(quantityRef.current.value),
+      newQuantity: value,
     };
 
-    addProductToCart(requestData);
+     addProductToCart(requestData);
   }
 
   async function addProductToCart(requestData) {
     try {
+      console.log("ADD TO CART REQUEST", requestData);
+      
+     await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.carts.addProduct,
+        ApiEndpoints.carts.changeProductQuantity,
         requestData,
         {
           signal: controller.signal,
@@ -117,59 +132,82 @@ export default function CartProduct(props) {
 
       controller.abort();
 
-      /////add respose message
-      // setPurchasedQuantityOfProduct(response?.data?.quantity);
+      console.log("ADD TO CART RESPONSE", response?.data)
 
-      // setChangePurchasedQuantityErrorMessage("");
-      //setAddToCartResponseMessage(
-      //  `You have added product ${productInCart.name} in the cart ${response?.data?.quantity} time(s)`
-      // );
+      setUser((prev) => {
+        return {
+          ...prev,
+          cartProductsCount: response?.data?.productsInCartCount,
+        };
+      });
+      
+      setProductInCart(prev => {
+        return {
+          ...prev,
+          purchasedQuantity: response?.data?.productQuantity
+        }
+      })
+
+      setChangePurchasedQuantityErrorMessage("");
     } catch (error) {
+
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        //  setChangePurchasedQuantityErrorMessage(noPermissionsForOperationMessage);
+        setChangePurchasedQuantityErrorMessage(
+          noPermissionsForOperationMessage
+        );
       } else {
-        //  setChangePurchasedQuantityErrorMessage(error?.response?.data);
+        setChangePurchasedQuantityErrorMessage(error?.response?.data);
       }
 
       console.log(error);
     }
   }
 
-  function clearErrorMessage() { setChangePurchasedQuantityErrorMessage(``); }
+  function clearErrorMessage() {
+    setChangePurchasedQuantityErrorMessage(``);
+  }
 
-  function handleSetProductInCartQuantity(value) {
+  function validateProductQuantityValue(value) {
+
     setChangePurchasedQuantityErrorMessage(``);
 
     value = parseInt(value);
 
-    if (purchasedQuantityOfProduct + value < 1) {
-      setPurchasedQuantityOfProduct(1);
+    if (value < 1) {
+
+      setProductInCart(prev => {
+        return {
+          ...prev,
+          purchasedQuantity: 1
+        }
+      })
+
       setChangePurchasedQuantityErrorMessage(
         `You have to purchase almost 1 item of product!`
       );
-      return;
+
+      return false;
     }
 
     if (!productInCart.isAvailable) {
       setChangePurchasedQuantityErrorMessage(
         `Product is out of stock! You cannot purchase it!`
       );
-      return;
+
+      return false;
     }
 
-    if (purchasedQuantityOfProduct + value > productInCart.inStockQuantity) {
+    if (value > productInCart.inStockQuantity) {
       setChangePurchasedQuantityErrorMessage(
         `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
       );
-      return;
+      return false;
     }
 
-    setPurchasedQuantityOfProduct((prev) => (prev += value));
+    return true;
   }
 
-  function handleCloseSnackbar() {
-    setDeleteFromCartErrorMessage("");
-  }
+  function handleCloseSnackbar() { setDeleteFromCartErrorMessage(""); }
 
   const ImageHolder = styled(Box)({
     width: isSmallOrDown ? "50%" : "75%",
@@ -376,7 +414,7 @@ export default function CartProduct(props) {
           <QuantityHolder>
             <IconButton
               color="primary"
-              onClick={() => handleSetProductInCartQuantity(-1)}
+              onClick={() => onChangeProductQuantity(productInCart.purchasedQuantity - 1)}
             >
               <RemoveCircle />
             </IconButton>
@@ -385,11 +423,11 @@ export default function CartProduct(props) {
               id="bootstrap-input"
               readOnly
               color="primary"
-              value={purchasedQuantityOfProduct}
+              value={productInCart.purchasedQuantity}
             />
             <IconButton
               color="primary"
-              onClick={() => handleSetProductInCartQuantity(1)}
+              onClick={() => onChangeProductQuantity(productInCart.purchasedQuantity + 1)}
             >
               <AddCircle />
             </IconButton>

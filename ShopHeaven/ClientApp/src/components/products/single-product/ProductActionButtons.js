@@ -72,7 +72,6 @@ export default function ProductActionButtons(props) {
 
   async function addProductToCart(requestData) {
     try {
-      console.log("Add to CART REQUEST", requestData);
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(

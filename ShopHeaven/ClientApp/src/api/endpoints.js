@@ -23,7 +23,7 @@ export const ApiEndpoints = {
     categories: {
         createCategory: "api/categories/create",
         editCategory: "api/categories/edit",
-        getAll: "api/categories/getall",
+        getAll: "api/categories/getAll",
         deleteCategory: "api/categories/delete",
         undeleteCategory: "api/categories/undelete",
         getCategoriesSummary: "api/categories/getCategoriesSummary",
@@ -40,7 +40,7 @@ export const ApiEndpoints = {
         getById: "api/products/getById",
         createProduct: "api/products/create",
         editProduct: "api/products/edit",
-        getAllWithCreationInfo: "api/products/getallwithcreationinfo",
+        getAllWithCreationInfo: "api/products/getAllWithCreationInfo",
         getBySubcategoryId: "api/products/getBySubcategoryId",
         getByLabels: "api/products/getByLabels",
         deleteProduct: "api/products/delete",
@@ -57,7 +57,8 @@ export const ApiEndpoints = {
     carts: {
         addProduct: "api/carts/addProduct",
         getProducts: "api/carts/getProducts",
-        deleteProduct: "api/carts/deleteProduct"
+        deleteProduct: "api/carts/deleteProduct",
+        changeProductQuantity: "api/carts/changeProductQuantity",
     }
 }
 

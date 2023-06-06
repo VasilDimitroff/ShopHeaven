@@ -106,6 +106,8 @@
 
         public const string ProductIsNotInTheCart = "Product does not exist in your cart!";
 
+        public const string ProductInCartNotFound = "Searched product not found in the cart!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

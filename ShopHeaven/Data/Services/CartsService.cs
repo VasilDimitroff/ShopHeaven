@@ -77,6 +77,36 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+        public async Task<ChangeProductQuantityResponseModel> ChangeProductQuantityAsync(ChangeProductQuantityRequestModel model)
+        {
+            var user = await GetUserAsync(model.UserId);
+
+            if (user.CartId != model.CartId) throw new ArgumentException(GlobalConstants.CannotAddProductToOtherCarts);
+
+            var cart = await GetCartAsync(model.CartId);
+
+            var product = await GetProductAsync(model.ProductId);
+
+            if (model.NewQuantity < 1) throw new ArgumentException(GlobalConstants.MinimumQuantityToAddProductInCart);
+
+            if (model.NewQuantity > product.Quantity) throw new Exception(GlobalConstants.NotEnoughProductQuantity);
+
+            var productCart = await this.db.ProductsCarts
+                .FirstOrDefaultAsync(x => x.CartId == model.CartId && x.ProductId == model.ProductId && x.IsDeleted != true);
+
+            if (productCart == null) throw new ArgumentException(GlobalConstants.ProductInCartNotFound);
+
+            productCart.Quantity = model.NewQuantity;
+
+            await this.db.SaveChangesAsync();
+
+            Cart userCart = await UpdateCartAmountAsync(user);
+
+            var productsInUserCart = userCart.Products.Sum(pc => pc.Quantity);
+
+            return new ChangeProductQuantityResponseModel { ProductsInCartCount = productsInUserCart, ProductQuantity = model.NewQuantity };
+        }
+
         public async Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)
         {
             var user = await GetUserAsync(model.UserId);
