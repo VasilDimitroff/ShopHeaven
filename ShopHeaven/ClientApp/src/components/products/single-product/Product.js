@@ -24,6 +24,8 @@ export default function Product() {
   const effectRun = useRef(false);
 
   useEffect(() => {
+    window.scroll(0, 0);
+
     const controller = new AbortController();
     const getProduct = async () => {
       try {
