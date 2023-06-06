@@ -1,5 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Box, Grid, Stack, Typography, Container, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import useAuth from "../../hooks/useAuth";
@@ -27,6 +28,7 @@ export default function Cart() {
   const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
 
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
 
   const effectRun = useRef(false);
@@ -103,15 +105,11 @@ export default function Cart() {
             </Grid>
           </Grid>
         ) : (
-          <Box>
-            <Typography
-              variant="h5"
-              textTransform="uppercase"
-              textAlign="center"
-            >
-              You have no items in your cart!
+          <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 4, mt: 4}}>
+            <Typography variant="h5"textAlign="center">
+              YOUR CART IS EMPTY!
             </Typography>
-            <Button variant="contained" size="large">
+            <Button onClick={() => navigate("/")}  variant="contained" size="large">
               GO TO HOME
             </Button>
           </Box>

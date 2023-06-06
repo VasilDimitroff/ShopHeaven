@@ -13,7 +13,7 @@ import {
   Alert,
   Zoom,
   Slide,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -33,18 +33,21 @@ export default function CartProduct(props) {
   const axiosPrivate = useAxiosPrivate();
 
   const [productInCart, setProductInCart] = useState(props.productInCart);
-  const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] =
-    useState(productInCart.purchasedQuantity); // example, it must come from props.product
+  const [purchasedQuantityOfProduct, setPurchasedQuantityOfProduct] = useState(
+    productInCart.purchasedQuantity
+  ); // example, it must come from props.product
 
-  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] = useState("");
-  const [changePurchasedQuantityErrorMessage, setChangePurchasedQuantityErrorMessage] = useState("");
+  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] =
+    useState("");
+  const [
+    changePurchasedQuantityErrorMessage,
+    setChangePurchasedQuantityErrorMessage,
+  ] = useState("");
 
   const quantityRef = useRef();
 
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
-  const isLgOrDown = useMediaQuery(theme.breakpoints.down("lg"));
-
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -58,7 +61,6 @@ export default function CartProduct(props) {
 
   async function deleteProductFromCart(requestData) {
     try {
-
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
@@ -70,7 +72,7 @@ export default function CartProduct(props) {
       );
 
       props.productDeleted();
-  
+
       setUser((prev) => {
         return {
           ...prev,
@@ -79,7 +81,6 @@ export default function CartProduct(props) {
       });
 
       controller.abort();
-
     } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setDeleteFromCartErrorMessage(noPermissionsForOperationMessage);
@@ -104,7 +105,6 @@ export default function CartProduct(props) {
 
   async function addProductToCart(requestData) {
     try {
-
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
@@ -118,24 +118,24 @@ export default function CartProduct(props) {
       controller.abort();
 
       /////add respose message
-     // setPurchasedQuantityOfProduct(response?.data?.quantity);
+      // setPurchasedQuantityOfProduct(response?.data?.quantity);
 
-     // setChangePurchasedQuantityErrorMessage("");
+      // setChangePurchasedQuantityErrorMessage("");
       //setAddToCartResponseMessage(
       //  `You have added product ${productInCart.name} in the cart ${response?.data?.quantity} time(s)`
-     // );
+      // );
     } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-      //  setChangePurchasedQuantityErrorMessage(noPermissionsForOperationMessage);
+        //  setChangePurchasedQuantityErrorMessage(noPermissionsForOperationMessage);
       } else {
-      //  setChangePurchasedQuantityErrorMessage(error?.response?.data);
+        //  setChangePurchasedQuantityErrorMessage(error?.response?.data);
       }
 
       console.log(error);
     }
   }
 
-  function clearErrorMessage () { setChangePurchasedQuantityErrorMessage(``);}
+  function clearErrorMessage() { setChangePurchasedQuantityErrorMessage(``); }
 
   function handleSetProductInCartQuantity(value) {
     setChangePurchasedQuantityErrorMessage(``);
