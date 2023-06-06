@@ -26,7 +26,7 @@ namespace ShopHeaven.Data.Services
 
             var cart = await GetCartAsync(model.CartId);
 
-            var product = await GetProductAsync(model);
+            var product = await GetProductAsync(model.ProductId);
 
             if (model.Quantity < 1) throw new ArgumentException(GlobalConstants.MinimumQuantityToAddProductInCart);
 
@@ -64,20 +64,7 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.SaveChangesAsync();
-
-            var userCart = await this.db.Carts
-                        .Include(c => c.Products)
-                        .ThenInclude(cp => cp.Product)
-                        .FirstOrDefaultAsync(c => c.UserId == user.Id && c.IsDeleted != true);
-
-            //update total price of the cart
-            var totalPriceWithNoDiscount = userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity);
-            userCart.TotalPriceWithNoDiscount = totalPriceWithNoDiscount;
-
-            var totalPriceWithDiscount = totalPriceWithNoDiscount - userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity * (pc.Product.Discount / 100));
-            userCart.TotalPriceWithDiscount = totalPriceWithDiscount;
-
-            await this.db.SaveChangesAsync();
+            Cart userCart = await UpdateCartAmountAsync(user);
 
             var productsInUserCart = userCart.Products.Count();
 
@@ -88,6 +75,25 @@ namespace ShopHeaven.Data.Services
             };
 
             return responseModel;
+        }
+
+        private async Task<Cart> UpdateCartAmountAsync(User user)
+        {
+            var userCart = await this.db.Carts
+                                    .Include(c => c.Products)
+                                    .ThenInclude(cp => cp.Product)
+                                    .FirstOrDefaultAsync(c => c.UserId == user.Id && c.IsDeleted != true);
+
+            //update total price of the cart
+            var totalPriceWithNoDiscount = userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity);
+            userCart.TotalPriceWithNoDiscount = totalPriceWithNoDiscount;
+
+            var totalPriceWithDiscount = totalPriceWithNoDiscount - userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity * (pc.Product.Discount / 100));
+            userCart.TotalPriceWithDiscount = totalPriceWithDiscount;
+
+            await this.db.SaveChangesAsync();
+
+            return userCart;
         }
 
         public async Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model)
@@ -159,10 +165,10 @@ namespace ShopHeaven.Data.Services
             return cart;
         }
 
-        private async Task<Product> GetProductAsync(AddProductToCartRequestModel model)
+        private async Task<Product> GetProductAsync(string productId)
         {
             var product = await this.db.Products.
-                            FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
+                            FirstOrDefaultAsync(x => x.Id == productId && x.IsDeleted != true);
 
             if (product == null)
             {
@@ -170,6 +176,34 @@ namespace ShopHeaven.Data.Services
             }
 
             return product;
+        }
+
+        public async Task<string> DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)
+        {
+            var user = await GetUserAsync(model.UserId);
+
+            if (user.CartId != model.CartId) throw new ArgumentException(GlobalConstants.YouCanDeleteProductsFromYourCartsOnly);
+
+            await GetCartAsync(model.CartId);
+
+            await GetProductAsync(model.ProductId);
+
+            var productCart = await this.db.ProductsCarts
+               .FirstOrDefaultAsync(x => x.CartId == model.CartId && x.ProductId == model.ProductId && x.IsDeleted != true);
+
+            if (productCart == null)
+            {
+                throw new ArgumentException(GlobalConstants.ProductIsNotInTheCart);
+            }
+
+            var deletedProductId = productCart.Id;
+
+            this.db.ProductsCarts.Remove(productCart);
+            await this.db.SaveChangesAsync();
+
+           var updatedCart = await UpdateCartAmountAsync(user);
+
+           return deletedProductId;
         }
     }
 }

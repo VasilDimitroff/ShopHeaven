@@ -304,7 +304,7 @@ export default function ProductActionButtons(props) {
           ) : (
             <>
               <QuantityHolder>
-                <IconButton onClick={() => handleSetProductsQuantity(-1)}>
+                <IconButton color="primary" onClick={() => handleSetProductsQuantity(-1)}>
                   {" "}
                   <RemoveCircle />
                 </IconButton>
@@ -314,7 +314,7 @@ export default function ProductActionButtons(props) {
                   id="bootstrap-input"
                   color="primary"
                 />
-                <IconButton onClick={() => handleSetProductsQuantity(1)}>
+                <IconButton color="primary" onClick={() => handleSetProductsQuantity(1)}>
                   <AddCircle />
                 </IconButton>
               </QuantityHolder>

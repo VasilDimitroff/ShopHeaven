@@ -102,6 +102,10 @@
 
         public const string AppCurrencyNotFound = "Cannot find the app currency!";
 
+        public const string YouCanDeleteProductsFromYourCartsOnly = "You can delete products from your cart only!";
+
+        public const string ProductIsNotInTheCart = "Product does not exist in your cart!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

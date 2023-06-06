@@ -32,7 +32,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(GetProducts))]
-        public async Task<ActionResult<AddProductToCartResponseModel>> GetProducts([FromBody] GetCartProductsRequestModel model)
+        public async Task<ActionResult<CartProductResponseModel>> GetProducts([FromBody] GetCartProductsRequestModel model)
         {
             try
             {
@@ -43,6 +43,28 @@ namespace ShopHeaven.Controllers
                 {
                     Products = productsInCart,
                     Summary = cartSummary
+                };
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(DeleteProduct))]
+        public async Task<ActionResult<DeleteProductFromCartResponseModel>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
+        {
+            try
+            {
+                var deletedId = await this.cartsService.DeleteProductFromCartAsync(model);
+                var cartSummary = await this.cartsService.GetCartTotalPriceAsync(model.CartId);
+
+                var responseModel = new DeleteProductFromCartResponseModel
+                {
+                    ProductCartId = deletedId,
+                    Summary = cartSummary,
                 };
 
                 return Ok(responseModel);

@@ -314,8 +314,8 @@ export default function CartProduct(props) {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
-            <IconButton onClick={() => handleSetProductInCartQuantity(-1)}>
-              <RemoveCircle sx={{ color: theme.palette.primary.main }} />
+            <IconButton color="primary" onClick={() => handleSetProductInCartQuantity(-1)}>
+              <RemoveCircle />
             </IconButton>
             <BootstrapInput
               inputRef={quantityRef}
@@ -324,8 +324,8 @@ export default function CartProduct(props) {
               color="primary"
               value={purchasedQuantityOfProduct}
             />
-            <IconButton onClick={() => handleSetProductInCartQuantity(1)}>
-              <AddCircle sx={{ color: theme.palette.primary.main }} />
+            <IconButton color="primary" onClick={() => handleSetProductInCartQuantity(1)}>
+              <AddCircle />
             </IconButton>
           </QuantityHolder>
           <Stack
