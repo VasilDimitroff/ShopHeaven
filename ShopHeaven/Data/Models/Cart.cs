@@ -20,20 +20,11 @@ namespace ShopHeaven.Data.Models
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
-        public decimal TotalPriceWithNoDiscount  { get => CalculatePriceWithNoDiscount(); private set => _totalPriceWithNoDiscount = value; }
+        public decimal TotalPriceWithNoDiscount { get; set; }
 
-        public decimal TotalPriceWithDiscount  { get => CalculatePriceWithDiscount(); private set => _totalPriceWithDiscount = value; }
+        public decimal TotalPriceWithDiscount { get; set; }
 
         public ICollection<ProductCart> Products { get; set; } // this cart contains these products
 
-        private decimal CalculatePriceWithNoDiscount()
-         {
-                return this.Products.Sum(x => x.Product.Price * x.Quantity);
-         }
-
-        private decimal CalculatePriceWithDiscount()
-        {
-            return  TotalPriceWithNoDiscount - this.Products.Sum(x => (x.Product.Discount * x.Product.Price) / 100);
-        }
     }
 }

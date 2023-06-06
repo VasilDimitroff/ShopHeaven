@@ -55,7 +55,8 @@ export const ApiEndpoints = {
         allByProductId: "api/reviews/allByProductId"
     },
     carts: {
-        addProduct: "api/carts/addProduct"
+        addProduct: "api/carts/addProduct",
+        getProducts: "api/carts/getProducts"
     }
 }
 

@@ -45,7 +45,6 @@
   <ItemGroup>
     <Folder Include="Areas\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Models\Requests\Carts\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

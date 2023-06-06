@@ -1,4 +1,4 @@
-﻿namespace ShopHeaven.Models.Requests
+﻿namespace ShopHeaven.Models.Requests.Carts
 {
     public class AddProductToCartRequestModel
     {

@@ -1,27 +1,72 @@
-import { React, Fragment, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Close } from "@mui/icons-material";
-import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { React, useState, useEffect, useRef } from "react";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
+import useAuth from "../../hooks/useAuth";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { ApiEndpoints } from "../../api/endpoints";
 import { cartPath } from "../../constants";
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import CartSummary from "./CartSummary";
 import CartProduct from "./CartProduct";
 
-export default function Cart() {
-  useEffect(() => {}, []);
+const breadcrumbs = [
+  {
+    name: "Home",
+    uri: "/",
+  },
+  {
+    name: `Cart`,
+    uri: `${cartPath}`,
+  },
+];
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: `Cart`,
-      uri: `${cartPath}`,
-    },
-  ];
+export default function Cart() {
+
+  const [productsInCart, setProductsInCart] = useState([]);
+  const [cartSummary, setCartSummary] = useState({});
+
+  const { auth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+
+  const effectRun = useRef(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getCart = async () => {
+      try {
+        const response = await axiosPrivate.post(
+          ApiEndpoints.carts.getProducts,
+          {
+            cartId: auth.cartId,
+            userId: auth.userId,
+          },
+          {
+            signal: controller.signal,
+          }
+        );
+
+        console.log(response);
+        
+        setProductsInCart(response?.data?.products);
+        setCartSummary(response?.data?.summary)
+        console.log("CART RESPONSE: ", response?.data)
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getCart();
+    }
+
+    return () => {
+      effectRun.current = true;
+      controller.abort();
+    };
+  }, []);
 
   const MainWrapper = styled(Box)({
     width: "80%",
