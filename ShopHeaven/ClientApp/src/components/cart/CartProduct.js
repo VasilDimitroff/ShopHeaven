@@ -49,7 +49,9 @@ export default function CartProduct(props) {
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
 
-useEffect(() => {}, [productInCart])
+  useEffect(() => {
+    setProductInCart(props.productInCart);
+  }, [props.productInCart]);
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -94,13 +96,9 @@ useEffect(() => {}, [productInCart])
     }
   }
 
-function onChangeProductQuantity(value) {
+function onChangeProductQuantity() {
 
-    let newQuantity = validateProductQuantityValue(value);
-
-    if(newQuantity < 0) {
-      return;
-    }
+    const newQuantity = parseInt(quantityRef.current.value)
   
     const requestData = {
       userId: auth.userId,
@@ -118,7 +116,7 @@ function onChangeProductQuantity(value) {
 
       const controller = new AbortController();
 
-      //await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const response = await axiosPrivate.post(
         ApiEndpoints.carts.changeProductQuantity,
@@ -142,7 +140,7 @@ function onChangeProductQuantity(value) {
       setProductInCart(prev => {
         return {
           ...prev,
-          purchasedQuantity: response?.data?.productQuantity
+          purchasedQuantity: requestData.newQuantity
         }
       })
 
@@ -167,54 +165,6 @@ function onChangeProductQuantity(value) {
     setChangePurchasedQuantityErrorMessage(``);
   }
 
-  function validateProductQuantityValue(value) {
-
-    setChangePurchasedQuantityErrorMessage(``);
-    
-    let sumValue = productInCart.purchasedQuantity + value;
-
-    console.log("SUMVALUE ", sumValue)
-    if (sumValue < 1) {
-
-      setProductInCart(prev => {
-        return {
-          ...prev,
-          purchasedQuantity: 1
-        }
-      })
-
-      setChangePurchasedQuantityErrorMessage(
-        `You have to purchase almost 1 item of product!`
-      );
-
-      return 1;
-    }
-
-    if (!productInCart.isAvailable) {
-      setChangePurchasedQuantityErrorMessage(
-        `Product is out of stock! You cannot purchase it!`
-      );
-
-      return -1;
-    }
-
-    if (sumValue > productInCart.inStockQuantity) {
-
-      setProductInCart(prev => {
-        return {
-          ...prev,
-          purchasedQuantity: productInCart.inStockQuantity
-        }
-      })
-      setChangePurchasedQuantityErrorMessage(
-        `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
-      );
-      console.log("V GRESHKATa ", productInCart.purchasedQuantity)
-      return -1;
-    }
-
-    return sumValue;
-  }
 
   function handleCloseSnackbar() { setDeleteFromCartErrorMessage(""); }
 
@@ -295,6 +245,18 @@ function onChangeProductQuantity(value) {
     "&:hover": {
       textDecoration: "underline",
     },
+  });
+
+  const ProductInfoInput = styled(InputBase)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    paddingTop: theme.spacing(0.3),
+    paddingBottom: theme.spacing(0.3),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
   });
 
   return (
@@ -421,25 +383,16 @@ function onChangeProductQuantity(value) {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
-            <IconButton
-              color="primary"
-              onClick={() => onChangeProductQuantity(-1)}
-            >
-              <RemoveCircle />
-            </IconButton>
-            <BootstrapInput
-              inputRef={quantityRef}
-              id="bootstrap-input"
-              readOnly
-              color="primary"
-              value={productInCart.purchasedQuantity}
+          <ProductInfoInput
+            onChange={onChangeProductQuantity}
+            type="number"
+            inputRef={quantityRef}
+            defaultValue={productInCart.purchasedQuantity.toString()}
+            placeholder="1"
+            inputProps={{
+              min: "1",
+            }}
             />
-            <IconButton
-              color="primary"
-              onClick={() => onChangeProductQuantity(1)}
-            >
-              <AddCircle />
-            </IconButton>
           </QuantityHolder>
           <Stack
             gap={isMdOrDown ? (isSmallOrDown ? 2 : 1) : 2}
