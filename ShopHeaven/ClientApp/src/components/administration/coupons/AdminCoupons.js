@@ -93,7 +93,7 @@ export default function AdminCoupons() {
         <Table>
           <TableHead>
             <TableRow>
-              <CouponTableCell>CODE</CouponTableCell>
+              <CouponTableCell>VOUCHER</CouponTableCell>
               <CouponTableCell align="center">AMOUNT</CouponTableCell>
               <CouponTableCell align="center"></CouponTableCell>
             </TableRow>

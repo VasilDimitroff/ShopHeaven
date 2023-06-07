@@ -18,7 +18,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
-        public async Task<ActionResult<CouponResponseModel>> Create([FromBody] BaseCouponRequestModel model)
+        public async Task<ActionResult<CouponResponseModel>> Create([FromBody] CouponRequestModel model)
         {
             try
             {

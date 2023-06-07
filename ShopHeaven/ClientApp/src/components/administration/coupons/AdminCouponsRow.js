@@ -10,7 +10,7 @@ import {
   Table,
   TableBody,
   TableHead,
-  Paper,
+  Stack,
   Chip,
   Grid,
   Tooltip,
@@ -117,8 +117,8 @@ export default function AdminCouponsRow(props) {
           </IconButton>
           {!isDeleted ? <>{coupon?.code}</> : "COUPON DELETED"}
           {!isDeleted ? (
-            <Grid container spacing={1} columns={3}>
-              <Grid item xs={3} sm={1} md={1} lg={1}>
+            <Stack flexWrap={"wrap"} direction={"row"}>
+              <Box sx={{ml:1}}>
                 <Tooltip
                   title={`Coupon is applied to ${coupon?.ordersCount} orders`}
                   placement="bottom-start"
@@ -135,8 +135,26 @@ export default function AdminCouponsRow(props) {
                     />
                   </CouponInfoText>
                 </Tooltip>
-              </Grid>
-            </Grid>
+              </Box>
+              <Box sx={{ml:1}}>
+                <Tooltip
+                  title={`Coupon is applied to ${coupon?.ordersCount} orders`}
+                  placement="bottom-start"
+                  arrow
+                >
+                  <CouponInfoText>
+                    <Chip
+                      sx={{ padding: 0.5, cursor: "pointer" }}
+                      icon={<Category />}
+                      variant="outlined"
+                      color="primary"
+                      label={`to ${coupon?.ordersCount} orders`}
+                      size="small"
+                    />
+                  </CouponInfoText>
+                </Tooltip>
+              </Box>
+            </Stack>
           ) : (
             <></>
           )}
@@ -181,10 +199,7 @@ export default function AdminCouponsRow(props) {
           </Collapse>
           <Collapse in={openEditForm} timeout="auto" unmountOnExit>
             <Box>
-              <EditCoupon
-                coupon={coupon}
-                updateCoupon={updateCoupon}
-              />
+              <EditCoupon coupon={coupon} updateCoupon={updateCoupon} />
             </Box>
           </Collapse>
         </TableCell>

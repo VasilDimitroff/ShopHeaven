@@ -15,7 +15,7 @@ namespace ShopHeaven.Data.Services
             this.db = db;
         }
 
-        public async Task<CouponResponseModel> CreateCouponAsync(BaseCouponRequestModel model)
+        public async Task<CouponResponseModel> CreateCouponAsync(CouponRequestModel model)
         {
             if (model.Code.Length != GlobalConstants.CouponExactRequiredLength)  throw new ArgumentException(GlobalConstants.CouponWrongLength);
 

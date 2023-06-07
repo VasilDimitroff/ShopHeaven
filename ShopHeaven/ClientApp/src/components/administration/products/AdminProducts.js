@@ -20,7 +20,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import { productsPerPageInAdminPanel, requestTimerMilliseconds } from "../../../constants";
 import CreateProduct from "./CreateProduct";
-import ProductRow from "./ProductRow";
+import AdminProductRow from "./AdminProductRow";
 import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../common/Loader";
@@ -284,7 +284,7 @@ export default function AdminProducts() {
           <TableBody>
             {products?.map((product) => {
               return (
-                <ProductRow
+                <AdminProductRow
                   key={product.id}
                   categories={categories}
                   product={product}

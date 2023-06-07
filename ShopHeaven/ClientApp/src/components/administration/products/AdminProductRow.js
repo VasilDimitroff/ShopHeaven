@@ -29,7 +29,7 @@ import DeleteProduct from "./DeleteProduct";
 import useAppSettings from "../../../hooks/useAppSettings";
 import { Link } from "react-router-dom";
 
-export default function ProductRow(props) {
+export default function AdminProductRow(props) {
   const { appSettings } = useAppSettings();
 
   const [product, setProduct] = useState(props.product);
