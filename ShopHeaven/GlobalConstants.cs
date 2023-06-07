@@ -12,6 +12,8 @@
 
         public static int UsernameLength => 2;
 
+        public static int CouponExactRequiredLength => 8;
+
         public static IReadOnlyList<string> AllowedImageFileExtensions = new List<string>
         {
             ".jpeg",
@@ -107,6 +109,12 @@
         public const string ProductIsNotInTheCart = "Product does not exist in your cart!";
 
         public const string ProductInCartNotFound = "Searched product not found in the cart!";
+
+        public const string CouponWrongLength = "Coupon must be exact 8 characters long";
+
+        public const string CouponWithThisCodeAlreadyExist = "Coupon with given code already exist!";
+
+        public const string CouponAmountCannotBeNegativeNumber = "Coupon amount must be bigger or equals to 0!";
 
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";

@@ -38,14 +38,8 @@ export default function AdminCouponsRow(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
 
-  function updateCoupon(newName, newDescription) {
-    setCoupon((prev) => {
-      return {
-        ...prev,
-        name: newName,
-        description: newDescription,
-      };
-    });
+  function updateCoupon(newCoupon) {
+    setCoupon(newCoupon);
   }
 
   function couponDeleted() {
@@ -178,7 +172,7 @@ export default function AdminCouponsRow(props) {
                 couponDeleted={couponDeleted}
                 couponUndeleted={couponUndeleted}
                 onCancelButtonClicked={onCancelButtonClicked}
-                category={coupon}
+                coupon={coupon}
               />
             </Box>
           </Collapse>

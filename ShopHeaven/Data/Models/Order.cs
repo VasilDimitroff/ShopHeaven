@@ -34,7 +34,9 @@ namespace ShopHeaven.Data.Models
 
         public decimal TotalPriceWithDiscountAndCoupon { get => CalculateTotalPriceWithDiscountAndCoupon(); private set => _totalPriceWithDiscountAndCoupon = value; }
 
-        public decimal CouponAmount { get; set; }
+        public string? CouponId { get; set; }
+
+        public Coupon? Coupon { get; set; }
 
         [Required]
         public string PaymentId { get; set; }
@@ -67,7 +69,12 @@ namespace ShopHeaven.Data.Models
 
         private decimal CalculateTotalPriceWithDiscountAndCoupon()
         {
-            return TotalPriceWithDiscount - this.CouponAmount * TotalPriceWithDiscount / 100;
+            if (this.CouponId != null)
+            {
+                return TotalPriceWithDiscount - decimal.Parse(this.Coupon.Amount.ToString()) * TotalPriceWithDiscount / 100;
+            }
+
+            return CalculateTotalPriceWithDiscount();
         }
     }
 }

@@ -17,13 +17,11 @@ import {
   allowedFileFormats,
   noPermissionsForOperationMessage,
 } from "../../../constants";
-import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
-
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function CreateCoupon(props) {
-
   let { auth } = useAuth();
-  let axiosPrivateForm = useAxiosPrivateForm();
+  let axiosPrivate = useAxiosPrivate();
 
   let couponCodeRef = useRef();
   let couponAmountRef = useRef();
@@ -33,8 +31,7 @@ export default function CreateCoupon(props) {
 
   const [createCouponResponseMessage, setCreateCouponResponseMessage] =
     useState("");
-  const [createCouponErrorMessage, setCreateCouponErrorMessage] =
-    useState("");
+  const [createCouponErrorMessage, setCreateCouponErrorMessage] = useState("");
 
   function onCreateCoupon(e) {
     e.preventDefault();
@@ -44,16 +41,14 @@ export default function CreateCoupon(props) {
 
     if (formCouponCode.trim().length != 8) {
       setCreateCouponResponseMessage("");
-      setCreateCouponErrorMessage(
-        "Coupon code must be exact 8 character long!"
-      );
+      setCreateCouponErrorMessage("Coupon code must be exact 8 character long!");
       return;
     }
 
-   const newCoupon = {
+    const newCoupon = {
       code: formCouponCode,
-      amount: formCouponAmount
-   }
+      amount: formCouponAmount,
+    };
 
     createCoupon(newCoupon);
   }
@@ -62,8 +57,8 @@ export default function CreateCoupon(props) {
     try {
       const controller = new AbortController();
 
-      const response = await axiosPrivateForm.post(
-        ApiEndpoints.categories.createCategory,
+      const response = await axiosPrivate.post(
+        ApiEndpoints.coupons.createCoupon,
         newCoupon,
         {
           signal: controller.signal,
@@ -75,7 +70,7 @@ export default function CreateCoupon(props) {
       setCreateCouponResponseMessage(
         `Coupon ${newCoupon.code} successfully created`
       );
-      
+
       window.scroll(0, 0);
 
       props.couponsListChanged(response?.data);
@@ -108,7 +103,6 @@ export default function CreateCoupon(props) {
     marginBottom: theme.spacing(1),
   });
 
-
   return (
     <Paper sx={{ padding: theme.spacing(2) }}>
       <Box sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}>
@@ -140,9 +134,9 @@ export default function CreateCoupon(props) {
             type="number"
             placeholder={"0.00"}
             inputProps={{
-                  step: "0.01",
-                  min: "0.00",
-                }}
+              step: "0.01",
+              min: "0.00",
+            }}
           />
         </InputBox>
         <InputBox>

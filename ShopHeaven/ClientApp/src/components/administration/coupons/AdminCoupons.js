@@ -47,7 +47,7 @@ export default function AdminCoupons() {
       try {
         setIsLoading(true);
         const response = await axiosPrivate.get(
-          ApiEndpoints.categories.getAll,
+          ApiEndpoints.coupons.getAll,
           {
             signal: controller.signal,
           }
@@ -72,7 +72,7 @@ export default function AdminCoupons() {
     };
   }, []);
 
-  function handleOpen() {
+  function handleOpenCreateCoupon() {
     setOpenCreateCouponForm(!openCreateCouponForm);
   }
 
@@ -111,7 +111,7 @@ export default function AdminCoupons() {
         <StyledButtonBox>
           {openCreateCouponForm ? (
             <Button
-              onClick={handleOpen}
+              onClick={handleOpenCreateCoupon}
               variant="contained"
               size="big"
               color="secondary"
@@ -121,7 +121,7 @@ export default function AdminCoupons() {
             </Button>
           ) : (
             <Button
-              onClick={handleOpen}
+              onClick={handleOpenCreateCoupon}
               variant="contained"
               size="big"
               color="secondary"
