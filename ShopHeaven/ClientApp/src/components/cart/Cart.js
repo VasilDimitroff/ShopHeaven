@@ -34,6 +34,10 @@ export default function Cart() {
   const effectRun = useRef(false);
 
   useEffect(() => {
+    window.scroll(0, 0);
+  }, [])
+
+  useEffect(() => {
  
     const controller = new AbortController();
 

@@ -23,6 +23,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+
+    window.scroll(0, 0);
+    
     const controller = new AbortController();
 
     const getProducts = async () => {

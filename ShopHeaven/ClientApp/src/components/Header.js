@@ -41,7 +41,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import MainMenu from "./home/MainMenu";
-import { cartPath } from "../constants";
+import { cartPath, loginPath } from "../constants";
 
 export default function Header() {
   const { auth } = useAuth();
@@ -149,14 +149,13 @@ export default function Header() {
     zIndex: 5,
     width: "100%",
     maxWidth: 250,
-    // backgroundColor: theme.palette.dropdown.main,
-    //color: theme.palette.dropdown.main.color,
     marginTop: theme.spacing(6),
     paddingTop: theme.spacing(2),
     right: "8%",
     borderRadius: theme.shape.borderRadius,
     display: showUserMenu === true ? "block" : "none",
     boxShadow: theme.palette.dropdown.boxShadow,
+    backgroundColor: theme.palette.common.white
   });
 
   const CustomSearchInput = styled(InputBase)({
@@ -175,7 +174,7 @@ export default function Header() {
 
   const UserNameText = styled(Typography)({
     paddingBottom: theme.spacing(2),
-    paddingTop: theme.spacing(1),
+    paddingTop: theme.spacing(2),
     fontSize: "18px",
     fontWeight: "600",
     textAlign: "center",
@@ -228,17 +227,6 @@ export default function Header() {
   });
 
   const DropDownMenuListItemButton = styled(ListItemButton)({
-    backgroundColor: theme.palette.dropdown.main,
-    "&:hover": {
-      backgroundColor: "#d7edfd",
-    },
-  });
-
-  const StyledIconButton = styled(IconButton)({
-    paddingLeft: theme.spacing(2.5),
-    paddingRight: theme.spacing(2.5),
-    justifyContent: "center",
-    backgroundColor: theme.palette.dropdown.main,
     "&:hover": {
       backgroundColor: "#d7edfd",
     },
@@ -307,7 +295,7 @@ export default function Header() {
             <CustomSearchButton onClick={() => handleShowSearchBar(true)} />
 
             {!auth.isLogged ? (
-              <Link to="/login">
+              <Link to={loginPath}>
                 <Button
                   sx={{
                     backgroundColor: theme.palette.secondary.main,
@@ -371,7 +359,7 @@ export default function Header() {
         </CustomToolbar>
       </AppBar>
       {!auth.isLogged ? (
-        ""
+        <></>
       ) : (
         <Slide in={showUserMenu} direction="down">
           <UserMenu
@@ -383,7 +371,7 @@ export default function Header() {
                 : handleShowUserMenu(true)
             }
           >
-            <List>
+            <List sx={{p: 0}}>
               <ListItem disablePadding>
                 <DropDownMenuListItemButton>
                   <UserNameText component="h4">{auth.email}</UserNameText>

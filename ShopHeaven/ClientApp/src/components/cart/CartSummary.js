@@ -11,7 +11,9 @@ import {
   IconButton,
   Divider,
   InputBase,
-  Chip
+  Chip,
+  Zoom,
+  Alert
 } from "@mui/material";
 import { AddShoppingCart, ArrowCircleRight } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -146,7 +148,18 @@ export default function CartSummary(props) {
         <Box>
           <Chip variant="outlined" label={`REMOVE COUPON: ${"45B2AT0B"}`} color="error" size="small" onDelete={removeCoupon}/>
         </Box>
+        <Zoom in={true}>
+          <Alert
+            sx={{ marginTop: theme.spacing(2) }}
+            variant="filled"
+            severity="error"
+            //onClose={clearQuantityBlockMesssage}
+          >
+            {"ERROR COUPON MESSAGE"}
+          </Alert>
+        </Zoom>
       </CouponHolder>
+ 
     </Stack>
   );
 }

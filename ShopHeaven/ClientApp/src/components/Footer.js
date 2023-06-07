@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -5,7 +6,6 @@ import {
   List,
   ListItem,
   Divider,
-  Link,
 } from "@mui/material";
 import {
   LinkedIn,
@@ -25,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "./../theme";
 import LogoImg from "../static/images/shop_heaven_logo_big_2.png";
 import { Fragment } from "react";
+import { cartPath } from "../constants";
 
 export default function Footer() {
   const FooterWrapper = styled(Box)({
@@ -88,6 +89,7 @@ export default function Footer() {
 
   const StyledListItem = styled(ListItem)({
     display: "flex",
+    gap: 9,
     [theme.breakpoints.down("md")]: {
       justifyContent: "flex-start",
       width: "45%",
@@ -95,9 +97,13 @@ export default function Footer() {
     },
   });
 
-  const StyledLink = styled(Link)({
-    marginLeft: theme.spacing(1.5),
-  });
+ const StyledLink = styled("a") ({
+  
+ })
+
+ const InnerLink = {
+  textDecoration: "none"
+ }
 
   return (
     <Box>
@@ -120,27 +126,27 @@ export default function Footer() {
                 <List>
                   <StyledListItem>
                     <AccountCircle />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Your Account
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <ShoppingCartCheckout />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Your Orders
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <Reviews />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Your Reviews
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <ShoppingCart />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={cartPath} style={InnerLink}>
                       Your Cart
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                 </List>
               </Box>
@@ -153,27 +159,27 @@ export default function Footer() {
                 <List>
                   <StyledListItem>
                     <Email />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Contact
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <Info />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       About
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <Campaign />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Advertising
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                   <StyledListItem>
                     <Security />
-                    <StyledLink href="#" underline="hover">
+                    <Link to={"/"} style={InnerLink}>
                       Privacy Policy
-                    </StyledLink>
+                    </Link>
                   </StyledListItem>
                 </List>
               </Box>
@@ -189,7 +195,7 @@ export default function Footer() {
                     <StyledLink
                       href="https://www.linkedin.com/in/vasil-dimitrov-426abb146/"
                       target="blank"
-                      underline="hover"
+                      style={InnerLink}
                     >
                       LinkedIn
                     </StyledLink>
@@ -199,7 +205,7 @@ export default function Footer() {
                     <StyledLink
                       href="https://github.com/VasilDimitroff"
                       target="blank"
-                      underline="hover"
+                      style={InnerLink}
                     >
                       GitHub
                     </StyledLink>
@@ -209,7 +215,7 @@ export default function Footer() {
                     <StyledLink
                       href="https://www.facebook.com/vbdimitrov"
                       target="blank"
-                      underline="hover"
+                      style={InnerLink}
                     >
                       Facebook
                     </StyledLink>
@@ -219,7 +225,7 @@ export default function Footer() {
                     <StyledLink
                       href="mailto: v.b.dimitrow@gmail.com"
                       target="blank"
-                      underline="hover"
+                      style={InnerLink}
                     >
                       Email
                     </StyledLink>
@@ -237,7 +243,7 @@ export default function Footer() {
             <Logo src={LogoImg} />
           </BrandFooterItemHolder>
           <BrandFooterItemHolder>
-            <Typography sx={{fontSize: "12px"}}>
+            <Typography sx={{ fontSize: "12px" }}>
               Copyright © {new Date().getFullYear()} Shop Heaven Inc
             </Typography>
           </BrandFooterItemHolder>
