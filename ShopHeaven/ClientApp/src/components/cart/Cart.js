@@ -51,6 +51,7 @@ export default function Cart() {
         
         setProductsInCart(response?.data?.products);
         setCartSummary(response?.data?.summary);
+
         setDeleteProductDOMelement(false);
 
         console.log("CART RESPONSE: ", response?.data);
@@ -70,7 +71,13 @@ export default function Cart() {
     };
   }, [deleteProductDOMelement]);
 
+  useEffect(() => {
+  
+  }, [])
+
   function productDeleted() { setDeleteProductDOMelement(true) };
+
+  function quantityUpdated(cartSummary) { setCartSummary(cartSummary)  }
 
   const MainWrapper = styled(Box)({
     width: "80%",
@@ -95,6 +102,7 @@ export default function Cart() {
                       key={product.id}
                       productInCart={product}
                       productDeleted={productDeleted}
+                      quantityUpdated={quantityUpdated}
                     />
                   );
                 })}

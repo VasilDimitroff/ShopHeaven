@@ -103,8 +103,14 @@ namespace ShopHeaven.Data.Services
             Cart userCart = await UpdateCartAmountAsync(user);
 
             var productsInUserCart = userCart.Products.Sum(pc => pc.Quantity);
+            var cartSummary = await GetCartTotalPriceAsync(cart.Id);
 
-            return new ChangeProductQuantityResponseModel { ProductsInCartCount = productsInUserCart, ProductQuantity = model.NewQuantity };
+            return new ChangeProductQuantityResponseModel
+            {
+                ProductsInCartCount = productsInUserCart,
+                ProductQuantity = model.NewQuantity,
+                Summary = cartSummary
+            };
         }
 
         public async Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)

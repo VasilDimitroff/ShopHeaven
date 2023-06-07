@@ -49,7 +49,7 @@ export default function CartProduct(props) {
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  useEffect(() => { console.log("USE EFECT") }, [productInCart])
+useEffect(() => {}, [productInCart])
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -96,31 +96,29 @@ export default function CartProduct(props) {
 
 function onChangeProductQuantity(value) {
 
-    let passValidation = validateProductQuantityValue(value);
+    let newQuantity = validateProductQuantityValue(value);
 
-    if(!passValidation) {
+    if(newQuantity < 0) {
       return;
     }
-
-    console.log("QUANTITY NOW IS ", value);
   
     const requestData = {
       userId: auth.userId,
       cartId: auth.cartId,
       productId: productInCart.id,
-      newQuantity: value,
+      newQuantity: newQuantity,
     };
 
-     addProductToCart(requestData);
+     changeProductQuantity(requestData);
   }
 
-  async function addProductToCart(requestData) {
+  async function changeProductQuantity(requestData) {
     try {
       console.log("ADD TO CART REQUEST", requestData);
-      
-     await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const controller = new AbortController();
+
+      //await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const response = await axiosPrivate.post(
         ApiEndpoints.carts.changeProductQuantity,
@@ -132,7 +130,7 @@ function onChangeProductQuantity(value) {
 
       controller.abort();
 
-      console.log("ADD TO CART RESPONSE", response?.data)
+      console.log("CHANGE QUANTITY", response?.data)
 
       setUser((prev) => {
         return {
@@ -147,6 +145,8 @@ function onChangeProductQuantity(value) {
           purchasedQuantity: response?.data?.productQuantity
         }
       })
+
+      props.quantityUpdated(response?.data?.summary);
 
       setChangePurchasedQuantityErrorMessage("");
     } catch (error) {
@@ -170,10 +170,11 @@ function onChangeProductQuantity(value) {
   function validateProductQuantityValue(value) {
 
     setChangePurchasedQuantityErrorMessage(``);
+    
+    let sumValue = productInCart.purchasedQuantity + value;
 
-    value = parseInt(value);
-
-    if (value < 1) {
+    console.log("SUMVALUE ", sumValue)
+    if (sumValue < 1) {
 
       setProductInCart(prev => {
         return {
@@ -186,7 +187,7 @@ function onChangeProductQuantity(value) {
         `You have to purchase almost 1 item of product!`
       );
 
-      return false;
+      return 1;
     }
 
     if (!productInCart.isAvailable) {
@@ -194,17 +195,25 @@ function onChangeProductQuantity(value) {
         `Product is out of stock! You cannot purchase it!`
       );
 
-      return false;
+      return -1;
     }
 
-    if (value > productInCart.inStockQuantity) {
+    if (sumValue > productInCart.inStockQuantity) {
+
+      setProductInCart(prev => {
+        return {
+          ...prev,
+          purchasedQuantity: productInCart.inStockQuantity
+        }
+      })
       setChangePurchasedQuantityErrorMessage(
         `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
       );
-      return false;
+      console.log("V GRESHKATa ", productInCart.purchasedQuantity)
+      return -1;
     }
 
-    return true;
+    return sumValue;
   }
 
   function handleCloseSnackbar() { setDeleteFromCartErrorMessage(""); }
@@ -414,7 +423,7 @@ function onChangeProductQuantity(value) {
           <QuantityHolder>
             <IconButton
               color="primary"
-              onClick={() => onChangeProductQuantity(productInCart.purchasedQuantity - 1)}
+              onClick={() => onChangeProductQuantity(-1)}
             >
               <RemoveCircle />
             </IconButton>
@@ -427,7 +436,7 @@ function onChangeProductQuantity(value) {
             />
             <IconButton
               color="primary"
-              onClick={() => onChangeProductQuantity(productInCart.purchasedQuantity + 1)}
+              onClick={() => onChangeProductQuantity(1)}
             >
               <AddCircle />
             </IconButton>
