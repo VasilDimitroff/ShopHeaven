@@ -7,13 +7,13 @@ import {
   Typography,
   Stack,
   Chip,
-  IconButton,
   InputBase,
   Divider,
   Alert,
   Zoom,
   Slide,
   Snackbar,
+  TextField,
 } from "@mui/material";
 import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -49,9 +49,7 @@ export default function CartProduct(props) {
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  useEffect(() => {
-    setProductInCart(props.productInCart);
-  }, [props.productInCart]);
+useEffect(() => { setProductInCart(props.productInCart) }, [props.productInCart, productInCart])
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -97,8 +95,19 @@ export default function CartProduct(props) {
   }
 
 function onChangeProductQuantity() {
+    let newValue = quantityRef.current.value
+    
+    if(!newValue) {
+      newValue = 1
+    }
 
-    const newQuantity = parseInt(quantityRef.current.value)
+    let newQuantity = parseInt(quantityRef.current.value);
+
+    let isValid = validateProductQuantityValue(newQuantity);
+
+    if (!isValid) {
+      return;
+    }
   
     const requestData = {
       userId: auth.userId,
@@ -107,7 +116,9 @@ function onChangeProductQuantity() {
       newQuantity: newQuantity,
     };
 
-     changeProductQuantity(requestData);
+    setTimeout(() => {
+      changeProductQuantity(requestData);
+    }, 1000);
   }
 
   async function changeProductQuantity(requestData) {
@@ -116,7 +127,7 @@ function onChangeProductQuantity() {
 
       const controller = new AbortController();
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      //await new Promise((resolve) => setTimeout(resolve, 300));
 
       const response = await axiosPrivate.post(
         ApiEndpoints.carts.changeProductQuantity,
@@ -140,11 +151,11 @@ function onChangeProductQuantity() {
       setProductInCart(prev => {
         return {
           ...prev,
-          purchasedQuantity: requestData.newQuantity
+          purchasedQuantity: response?.data?.productQuantity
         }
       })
 
-      props.quantityUpdated(response?.data?.summary);
+      props.quantityUpdated(productInCart.id, response?.data?.productQuantity, response?.data?.summary);
 
       setChangePurchasedQuantityErrorMessage("");
     } catch (error) {
@@ -161,12 +172,69 @@ function onChangeProductQuantity() {
     }
   }
 
+
+  function validateProductQuantityValue(value) {
+
+    setChangePurchasedQuantityErrorMessage(``);
+
+    if (value < 1) {
+
+      setProductInCart(prev => {
+        return {
+          ...prev,
+          purchasedQuantity: 1
+        }
+      })
+
+      setChangePurchasedQuantityErrorMessage(
+        `You have to purchase almost 1 item of product!`
+      );
+
+      return false;
+    }
+
+    if (!productInCart.isAvailable) {
+      setChangePurchasedQuantityErrorMessage(
+        `Product is out of stock! You cannot purchase it!`
+      );
+
+      return false;
+    }
+
+    if (value > productInCart.inStockQuantity) {
+      setProductInCart(prev => {
+        return {
+          ...prev,
+          purchasedQuantity: productInCart.inStockQuantity
+        }
+      })
+      setChangePurchasedQuantityErrorMessage(
+        `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+
+
   function clearErrorMessage() {
     setChangePurchasedQuantityErrorMessage(``);
   }
 
-
   function handleCloseSnackbar() { setDeleteFromCartErrorMessage(""); }
+
+  const ProductInfoInput = styled(TextField)({
+
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    paddingTop: theme.spacing(0.3),
+    paddingBottom: theme.spacing(0.3),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+  });
 
   const ImageHolder = styled(Box)({
     width: isSmallOrDown ? "50%" : "75%",
@@ -245,18 +313,6 @@ function onChangeProductQuantity() {
     "&:hover": {
       textDecoration: "underline",
     },
-  });
-
-  const ProductInfoInput = styled(InputBase)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(0.3),
-    paddingBottom: theme.spacing(0.3),
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
   });
 
   return (
@@ -383,15 +439,15 @@ function onChangeProductQuantity() {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
-          <ProductInfoInput
-            onChange={onChangeProductQuantity}
-            type="number"
-            inputRef={quantityRef}
-            defaultValue={productInCart.purchasedQuantity.toString()}
-            placeholder="1"
-            inputProps={{
-              min: "1",
-            }}
+            <ProductInfoInput
+              type="number"
+              onChange={onChangeProductQuantity}
+              inputRef={quantityRef}
+              defaultValue={productInCart.purchasedQuantity}
+              inputProps={{
+               // min: "1",
+               // max: productInCart.inStockQuantity
+              }}
             />
           </QuantityHolder>
           <Stack

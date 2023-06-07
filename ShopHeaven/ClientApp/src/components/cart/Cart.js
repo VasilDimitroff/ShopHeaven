@@ -71,13 +71,21 @@ export default function Cart() {
     };
   }, [deleteProductDOMelement]);
 
-  useEffect(() => {
-  
-  }, [])
-
   function productDeleted() { setDeleteProductDOMelement(true) };
 
-  function quantityUpdated(cartSummary) { setCartSummary(cartSummary)  }
+  function quantityUpdated(productId, newQuantity, cartSummary) { 
+  
+    setProductsInCart((prevProducts) => {
+      return prevProducts.map((product) => {
+        if (product.id === productId) {
+          return { ...product, purchasedQuantity: newQuantity };
+        }
+        return product;
+      });
+    });
+
+    setCartSummary(cartSummary) 
+   }
 
   const MainWrapper = styled(Box)({
     width: "80%",
