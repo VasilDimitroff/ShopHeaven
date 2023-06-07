@@ -118,7 +118,7 @@ function onChangeProductQuantity() {
 
     setTimeout(() => {
       changeProductQuantity(requestData);
-    }, 1000);
+    }, 1500);
   }
 
   async function changeProductQuantity(requestData) {
@@ -315,6 +315,12 @@ function onChangeProductQuantity() {
     },
   });
 
+  const onKeyDown = (event) => {
+    if (event.keyCode !== 38 && event.keyCode !== 40) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <Paper sx={{ p: 2 }}>
       <Grid container spacing={2}>
@@ -441,6 +447,7 @@ function onChangeProductQuantity() {
           <QuantityHolder>
             <ProductInfoInput
               type="number"
+              onKeyDown={onKeyDown}
               onChange={onChangeProductQuantity}
               inputRef={quantityRef}
               defaultValue={productInCart.purchasedQuantity}
