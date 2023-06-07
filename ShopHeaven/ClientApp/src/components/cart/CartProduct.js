@@ -15,7 +15,6 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import { RemoveCircle, AddCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { noPermissionsForOperationMessage } from "../../constants";
@@ -26,7 +25,6 @@ import useUser from "../../hooks/useUser";
 import useAppSettings from "../../hooks/useAppSettings";
 
 export default function CartProduct(props) {
-
   //app hooks
   const { auth } = useAuth();
   const { setUser } = useUser();
@@ -39,8 +37,14 @@ export default function CartProduct(props) {
   const [productInCart, setProductInCart] = useState(props.productInCart);
 
   //error messages
-  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] = useState("");
-  const [changePurchasedQuantityErrorMessage, setChangePurchasedQuantityErrorMessage] = useState("");
+  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] =
+    useState("");
+  const [
+    changePurchasedQuantityErrorMessage,
+    setChangePurchasedQuantityErrorMessage,
+  ] = useState("");
+
+  const [quantityBlockMessage, setQuantityBlockMessage] = useState("");
 
   //refs
   const quantityRef = useRef();
@@ -49,7 +53,9 @@ export default function CartProduct(props) {
   const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
 
-useEffect(() => { setProductInCart(props.productInCart) }, [props.productInCart, productInCart])
+  useEffect(() => {
+    setProductInCart(props.productInCart);
+  }, [props.productInCart, productInCart]);
 
   function onDeleteProductFromCart() {
     const requestData = {
@@ -94,11 +100,11 @@ useEffect(() => { setProductInCart(props.productInCart) }, [props.productInCart,
     }
   }
 
-function onChangeProductQuantity() {
-    let newValue = quantityRef.current.value
-    
-    if(!newValue) {
-      newValue = 1
+  function onChangeProductQuantity() {
+    let newValue = quantityRef.current.value;
+
+    if (!newValue) {
+      newValue = 1;
     }
 
     let newQuantity = parseInt(quantityRef.current.value);
@@ -108,7 +114,7 @@ function onChangeProductQuantity() {
     if (!isValid) {
       return;
     }
-  
+
     const requestData = {
       userId: auth.userId,
       cartId: auth.cartId,
@@ -118,7 +124,7 @@ function onChangeProductQuantity() {
 
     setTimeout(() => {
       changeProductQuantity(requestData);
-    }, 1500);
+    }, 0);
   }
 
   async function changeProductQuantity(requestData) {
@@ -139,7 +145,7 @@ function onChangeProductQuantity() {
 
       controller.abort();
 
-      console.log("CHANGE QUANTITY", response?.data)
+      console.log("CHANGE QUANTITY", response?.data);
 
       setUser((prev) => {
         return {
@@ -147,19 +153,22 @@ function onChangeProductQuantity() {
           cartProductsCount: response?.data?.productsInCartCount,
         };
       });
-      
-      setProductInCart(prev => {
+
+      setProductInCart((prev) => {
         return {
           ...prev,
-          purchasedQuantity: response?.data?.productQuantity
-        }
-      })
+          purchasedQuantity: response?.data?.productQuantity,
+        };
+      });
 
-      props.quantityUpdated(productInCart.id, response?.data?.productQuantity, response?.data?.summary);
+      props.quantityUpdated(
+        productInCart.id,
+        response?.data?.productQuantity,
+        response?.data?.summary
+      );
 
       setChangePurchasedQuantityErrorMessage("");
     } catch (error) {
-
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setChangePurchasedQuantityErrorMessage(
           noPermissionsForOperationMessage
@@ -172,19 +181,16 @@ function onChangeProductQuantity() {
     }
   }
 
-
   function validateProductQuantityValue(value) {
-
     setChangePurchasedQuantityErrorMessage(``);
 
     if (value < 1) {
-
-      setProductInCart(prev => {
+      setProductInCart((prev) => {
         return {
           ...prev,
-          purchasedQuantity: 1
-        }
-      })
+          purchasedQuantity: 1,
+        };
+      });
 
       setChangePurchasedQuantityErrorMessage(
         `You have to purchase almost 1 item of product!`
@@ -202,12 +208,12 @@ function onChangeProductQuantity() {
     }
 
     if (value > productInCart.inStockQuantity) {
-      setProductInCart(prev => {
+      setProductInCart((prev) => {
         return {
           ...prev,
-          purchasedQuantity: productInCart.inStockQuantity
-        }
-      })
+          purchasedQuantity: productInCart.inStockQuantity,
+        };
+      });
       setChangePurchasedQuantityErrorMessage(
         `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
       );
@@ -217,23 +223,33 @@ function onChangeProductQuantity() {
     return true;
   }
 
-
-
-  function clearErrorMessage() {
+  function clearChangeQuantityErrorMessage() {
     setChangePurchasedQuantityErrorMessage(``);
   }
 
-  function handleCloseSnackbar() { setDeleteFromCartErrorMessage(""); }
+  function clearQuantityBlockMesssage() {
+    setQuantityBlockMessage("");
+  }
 
-  const ProductInfoInput = styled(TextField)({
+  const onKeyDown = (event) => {
+    if (event.keyCode !== 38 && event.keyCode !== 40) {
+      event.preventDefault();
+      setQuantityBlockMessage("Use field controls to change quantity!");
+    }
+  };
 
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(0.3),
-    paddingBottom: theme.spacing(0.3),
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+  function handleCloseSnackbar() {
+    setDeleteFromCartErrorMessage("");
+  }
+
+  const ProductInfoInput = styled(InputBase)({
+    border: "1px solid rgba(0, 0, 0, 0.2)",
+    width: "50%",
+    fontWeight: 500,
+    paddingLeft: "19%",
+    marginTop: theme.spacing(0.6),
     borderRadius: theme.shape.borderRadius,
+    cursor: "not-allowed",
   });
 
   const ImageHolder = styled(Box)({
@@ -255,7 +271,9 @@ function onChangeProductQuantity() {
     margin: theme.spacing(1, 0),
   });
 
-  const QuantityHolder = styled(InfoHolder)({
+  const QuantityHolder = styled(Box)({
+    display: "block",
+    textAlign: "center",
     marginTop: theme.spacing(1.5),
   });
 
@@ -281,26 +299,6 @@ function onChangeProductQuantity() {
     borderRadius: theme.shape.borderRadius,
   });
 
-  const BootstrapInput = styled(InputBase)(({ theme }) => ({
-    width: 40,
-    "label + &": {
-      marginTop: theme.spacing(3),
-    },
-    "& .MuiInputBase-input": {
-      color: "black",
-      textAlign: "center",
-      borderRadius: "50%",
-      backgroundColor: theme.palette.mode === "light" ? "#fcfcfb" : "#2b2b2b",
-      border: "1px solid #ced4da",
-      fontSize: 17,
-      "&:focus": {
-        borderColor: theme.palette.primary.main,
-        boxShadow: theme.palette.dropdown.boxShadow.main,
-      },
-      "&:disabled": {},
-    },
-  }));
-
   const LinkButton = styled(Typography)({
     textAlign: "right",
     cursor: "pointer",
@@ -314,12 +312,6 @@ function onChangeProductQuantity() {
       textDecoration: "underline",
     },
   });
-
-  const onKeyDown = (event) => {
-    if (event.keyCode !== 38 && event.keyCode !== 40) {
-      event.preventDefault();
-    }
-  };
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -445,16 +437,19 @@ function onChangeProductQuantity() {
             </Typography>
           </FinalPriceHolder>
           <QuantityHolder>
+            <Typography>Quantity:</Typography>
             <ProductInfoInput
               type="number"
               onKeyDown={onKeyDown}
               onChange={onChangeProductQuantity}
               inputRef={quantityRef}
               defaultValue={productInCart.purchasedQuantity}
-              inputProps={{
-               // min: "1",
-               // max: productInCart.inStockQuantity
-              }}
+              inputProps={
+                {
+                  // min: "1",
+                  // max: productInCart.inStockQuantity
+                }
+              }
             />
           </QuantityHolder>
           <Stack
@@ -468,6 +463,20 @@ function onChangeProductQuantity() {
           </Stack>
         </Grid>
       </Grid>
+      {quantityBlockMessage ? (
+        <Zoom in={quantityBlockMessage.length > 0 ? true : false}>
+          <Alert
+            sx={{ marginTop: theme.spacing(2) }}
+            variant="filled"
+            severity="error"
+            onClose={clearQuantityBlockMesssage}
+          >
+            {quantityBlockMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        <></>
+      )}
       {changePurchasedQuantityErrorMessage ? (
         <Zoom
           in={changePurchasedQuantityErrorMessage.length > 0 ? true : false}
@@ -476,7 +485,7 @@ function onChangeProductQuantity() {
             sx={{ marginTop: theme.spacing(2) }}
             variant="filled"
             severity="error"
-            onClose={clearErrorMessage}
+            onClose={clearChangeQuantityErrorMessage}
           >
             {changePurchasedQuantityErrorMessage}
           </Alert>

@@ -34,6 +34,7 @@ export default function Cart() {
   const effectRun = useRef(false);
 
   useEffect(() => {
+ 
     const controller = new AbortController();
 
     const getCart = async () => {
