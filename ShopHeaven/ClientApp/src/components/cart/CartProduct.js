@@ -13,7 +13,6 @@ import {
   Zoom,
   Slide,
   Snackbar,
-  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -43,7 +42,6 @@ export default function CartProduct(props) {
     changePurchasedQuantityErrorMessage,
     setChangePurchasedQuantityErrorMessage,
   ] = useState("");
-
   const [quantityBlockMessage, setQuantityBlockMessage] = useState("");
 
   //refs
@@ -374,12 +372,6 @@ export default function CartProduct(props) {
                 color="success"
                 size="small"
                 label={"Available"}
-              />
-              <Chip
-                variant="outlined"
-                color="success"
-                size="small"
-                label={`NALI4NI: ${productInCart.inStockQuantity}`}
               />
             </Stack>
             <Typography>{productInCart.description}</Typography>

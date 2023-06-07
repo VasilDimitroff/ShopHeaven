@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 import { theme } from "./theme";
 import Home from "./components/home/Home";
@@ -34,7 +34,6 @@ import {
   singleProductBasePath,
   cartPath,
 } from "./constants";
-import useAppSettings from "./hooks/useAppSettings";
 import Cart from "./components/cart/Cart";
 
 export default function App() {
@@ -45,7 +44,7 @@ export default function App() {
         <Route element={<PersistLogin />}>
           <Route element={<AppSettings />}>
             <Route exact path="/" element={<Layout />}>
-              <Route path="" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path={`${allCategoriesUrl}`} element={<Categories />} />
               <Route
                 path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`}

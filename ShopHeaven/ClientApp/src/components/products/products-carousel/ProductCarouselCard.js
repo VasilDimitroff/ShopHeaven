@@ -11,20 +11,116 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  Snackbar,
+  Slide,
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { singleProductBasePath } from "../../../constants";
 import { theme } from "../../../theme";
 import useAppSettings from "../../../hooks/useAppSettings";
+import useAuth from "../../../hooks/useAuth";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useUser from "../../../hooks/useUser";
+import { ApiEndpoints } from "../../../api/endpoints";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 function ProductCarouselCard(props) {
   const { appSettings } = useAppSettings();
+  const { auth } = useAuth();
+  const { setUser } = useUser();
+  const axiosPrivate = useAxiosPrivate();
 
   const navigate = useNavigate();
   const [product, setProduct] = useState(props.product);
 
   const [subcategory, setSubcategory] = useState(props.subcategory);
+
+  const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
+  const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+
+  function onAddProductToCart() {
+    let isValid = validateProductQuantity(1);
+
+    if (!isValid) {
+      return;
+    }
+
+    const requestData = {
+      userId: auth.userId,
+      cartId: auth.cartId,
+      productId: product.id,
+      quantity: 1,
+    };
+
+    addProductToCart(requestData);
+  }
+
+  async function addProductToCart(requestData) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.carts.addProduct,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setProduct((prev) => {
+        return {
+          ...prev,
+          quantity: prev.quantity - response?.data?.quantity,
+        };
+      });
+
+      setUser((prev) => {
+        return {
+          ...prev,
+          cartProductsCount: response?.data?.productsInCartCount,
+        };
+      });
+
+      setAddToCartErrorMessage("");
+      setAddToCartResponseMessage(
+        `You have added product ${product.name} in the cart ${response?.data?.quantity} time(s)`
+      );
+    } catch (error) {
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setAddToCartErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setAddToCartErrorMessage(error?.response?.data);
+      }
+
+      console.log(error);
+    }
+  }
+
+  function validateProductQuantity(addQuantityValue) {
+    if (!product.isAvailable) {
+      setAddToCartErrorMessage(
+        `Product is out of stock! You cannot purchase it!`
+      );
+      return false;
+    }
+
+    if (addQuantityValue > product.quantity) {
+      setAddToCartErrorMessage(
+        `In stock are ${product.quantity} items only! It is the maximum quantity you can purchase.`
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  function handleCloseSnackbar() {
+    setAddToCartErrorMessage("");
+    setAddToCartResponseMessage("");
+  }
 
   const ProductCardMedia = styled(CardMedia)({
     height: 250,
@@ -39,7 +135,7 @@ function ProductCarouselCard(props) {
     "&:hover": {
       color: theme.palette.error.main,
     },
-  })
+  });
 
   const FavoriteIcon = styled(Box)({
     position: "absolute",
@@ -87,9 +183,9 @@ function ProductCarouselCard(props) {
     //lineHeight: '1.2em', // 1 row height
     height: "4.56em", // 3 rows
     overflow: "hidden",
-    display: '-webkit-box',
+    display: "-webkit-box",
     WebkitLineClamp: 3, // 3 rows
-    WebkitBoxOrient: 'vertical',
+    WebkitBoxOrient: "vertical",
     marginBottom: theme.spacing(1),
   });
 
@@ -204,7 +300,9 @@ function ProductCarouselCard(props) {
               readOnly
               size="small"
             />
-            <RatingText component="legend">{product.rating.toFixed(2)} stars</RatingText>
+            <RatingText component="legend">
+              {product.rating.toFixed(2)} stars
+            </RatingText>
           </RatingWrapper>
           {product?.discount > 0 ? (
             <Box
@@ -230,12 +328,11 @@ function ProductCarouselCard(props) {
             </PriceText>
             <Box>
               <IconButton
+                onClick={onAddProductToCart}
                 size="large"
                 variant="contained"
-                sx={{
-                  "&:hover": {
+                sx={{              
                     color: theme.palette.primary.main,
-                  },
                 }}
               >
                 <ShoppingCart sx={{ fontSize: "26px" }} />
@@ -244,6 +341,42 @@ function ProductCarouselCard(props) {
           </PriceAndActionsWrapper>
         </Box>
       </CardContent>
+      <Snackbar
+        onClose={handleCloseSnackbar}
+        autoHideDuration={6000}
+        ContentProps={{
+          style: {
+            backgroundColor: theme.palette.error.main,
+            textAlign: "center",
+            fontWeight: 500,
+            fontSize: 18,
+            cursor: "pointer",
+            zIndex: 5
+          },
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={addToCartErrorMessage.length > 0 ? true : false}
+        TransitionComponent={Slide}
+        message={`${addToCartErrorMessage}`}
+      ></Snackbar>
+      <Snackbar
+        onClose={handleCloseSnackbar}
+        autoHideDuration={6000}
+        ContentProps={{
+          style: {
+            backgroundColor: theme.palette.success.main,
+            textAlign: "center",
+            fontWeight: 500,
+            fontSize: 18,
+            cursor: "pointer",
+            zIndex: 5
+          },
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={addToCartResponseMessage.length > 0 ? true : false}
+        TransitionComponent={Slide}
+        message={`${addToCartResponseMessage}`}
+      ></Snackbar>
     </StyledCard>
   );
 }
