@@ -73,7 +73,7 @@ export default function AdminCouponsRow(props) {
     marginTop: theme.spacing(2),
   });
 
-  const CouponNumberTableCell = styled(TableCell)({
+  const CouponTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
     "&:hover": {
@@ -107,30 +107,30 @@ export default function AdminCouponsRow(props) {
           "& > *": { borderBottom: "unset" },
         }}
       >
-        <CouponNumberTableCell
+        <CouponTableCell
           onClick={handleShowEditForm}
           component="th"
           scope="row"
         >
           <IconButton aria-label="expand row" size="small">
-            {true ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
-          {!isDeleted ? <>{coupon?.name}</> : "COUPON DELETED"}
+          {!isDeleted ? <>{coupon?.code}</> : "COUPON DELETED"}
           {!isDeleted ? (
             <Grid container spacing={1} columns={3}>
               <Grid item xs={3} sm={1} md={1} lg={1}>
                 <Tooltip
-                  title={`5 subcategories`}
+                  title={`Coupon is applied to ${coupon?.ordersCount} orders`}
                   placement="bottom-start"
                   arrow
                 >
                   <CouponInfoText>
                     <Chip
-                      sx={{ padding: 0.5 }}
+                      sx={{ padding: 0.5, cursor: "pointer" }}
                       icon={<Category />}
                       variant="outlined"
                       color="primary"
-                      label={`Applied to 5 orders`}
+                      label={`to ${coupon?.ordersCount} orders`}
                       size="small"
                     />
                   </CouponInfoText>
@@ -140,7 +140,10 @@ export default function AdminCouponsRow(props) {
           ) : (
             <></>
           )}
-        </CouponNumberTableCell>
+        </CouponTableCell>
+        <CouponTableCell align="center" onClick={handleShowEditForm}>
+          {`- ${coupon?.amount} %`}
+        </CouponTableCell>
         <TableCell>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
