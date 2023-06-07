@@ -273,7 +273,7 @@ export default function AdminUserRow(props) {
           </Collapse>
           <Snackbar
             open={openSnackbar}
-            autoHideDuration={6000}
+            autoHideDuration={8000}
             message={`${user.email} is deleted! To edit the user, first you should undelete it!`}
             severity="error"
             onClose={handleSnackbarClose}

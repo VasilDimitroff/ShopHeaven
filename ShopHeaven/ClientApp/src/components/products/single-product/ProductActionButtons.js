@@ -322,17 +322,14 @@ export default function ProductActionButtons(props) {
               </Typography>
               <Snackbar
                 onClose={handleCloseSnackbar}
-                autoHideDuration={6000}
+                autoHideDuration={9000}
                 ContentProps={{
                   style: {
                     backgroundColor: theme.palette.error.main,
                     textAlign: "center",
-                    fontWeight: 500,
-                    fontSize: 18,
-                    cursor: "pointer",
                   },
                 }}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 open={addToCartErrorMessage.length > 0 ? true : false}
                 TransitionComponent={Slide}
                 message={`${addToCartErrorMessage}`}
@@ -342,14 +339,10 @@ export default function ProductActionButtons(props) {
                 autoHideDuration={6000}
                 ContentProps={{
                   style: {
-                    backgroundColor: theme.palette.success.main,
                     textAlign: "center",
-                    fontWeight: 500,
-                    fontSize: 18,
-                    cursor: "pointer",
                   },
                 }}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 open={addToCartResponseMessage.length > 0 ? true : false}
                 TransitionComponent={Slide}
                 message={`${addToCartResponseMessage}`}

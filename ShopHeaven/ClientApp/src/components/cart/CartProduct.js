@@ -506,12 +506,9 @@ export default function CartProduct(props) {
           style: {
             backgroundColor: theme.palette.error.main,
             textAlign: "center",
-            fontWeight: 500,
-            fontSize: 18,
-            cursor: "pointer",
           },
         }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={deleteFromCartErrorMessage.length > 0 ? true : false}
         TransitionComponent={Slide}
         message={`${deleteFromCartErrorMessage}`}

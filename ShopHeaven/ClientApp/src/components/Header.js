@@ -434,14 +434,13 @@ export default function Header() {
         autoHideDuration={6000}
         ContentProps={{
           style: {
-            backgroundColor: theme.palette.success.main,
             textAlign: "center",
             fontWeight: 500,
             fontSize: 18,
             cursor: "pointer",
           },
         }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={logoutMessage.length > 0 ? true : false}
         TransitionComponent={Slide}
         message={`${logoutMessage}`}

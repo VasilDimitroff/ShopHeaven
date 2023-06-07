@@ -40,8 +40,7 @@ function ProductCarouselCard(props) {
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
 
   function onAddProductToCart() {
-
-    if(!auth.isLogged) {
+    if (!auth.isLogged) {
       navigate(loginPath);
     }
 
@@ -336,8 +335,8 @@ function ProductCarouselCard(props) {
                 onClick={onAddProductToCart}
                 size="large"
                 variant="contained"
-                sx={{              
-                    color: theme.palette.primary.main,
+                sx={{
+                  color: theme.palette.primary.main,
                 }}
               >
                 <ShoppingCart sx={{ fontSize: "26px" }} />
@@ -348,36 +347,27 @@ function ProductCarouselCard(props) {
       </CardContent>
       <Snackbar
         onClose={handleCloseSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         ContentProps={{
           style: {
             backgroundColor: theme.palette.error.main,
             textAlign: "center",
-            fontWeight: 500,
-            fontSize: 18,
-            cursor: "pointer",
-            zIndex: 5
           },
         }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={addToCartErrorMessage.length > 0 ? true : false}
         TransitionComponent={Slide}
         message={`${addToCartErrorMessage}`}
       ></Snackbar>
       <Snackbar
         onClose={handleCloseSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         ContentProps={{
           style: {
-            backgroundColor: theme.palette.success.main,
             textAlign: "center",
-            fontWeight: 500,
-            fontSize: 18,
-            cursor: "pointer",
-            zIndex: 5
           },
         }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={addToCartResponseMessage.length > 0 ? true : false}
         TransitionComponent={Slide}
         message={`${addToCartResponseMessage}`}
