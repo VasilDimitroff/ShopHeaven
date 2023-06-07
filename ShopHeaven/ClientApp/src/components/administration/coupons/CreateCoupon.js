@@ -1,50 +1,105 @@
-import { React, useState, Fragment, useRef, useEffect } from "react";
+import { React, useState, useRef } from "react";
 import {
   Box,
   Button,
-  TableRow,
-  TableCell,
-  IconButton,
-  Collapse,
   Typography,
-  Table,
-  TableBody,
-  TableHead,
-  TableContainer,
-  InputBase,
+  TextField,
+  Paper,
+  Alert,
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import {
-  KeyboardArrowUp,
-  KeyboardArrowDown,
-  Close,
-  Delete,
-  AddCircle,
-  PhotoCamera,
-} from "@mui/icons-material";
-import axios from "axios";
+import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
+import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
+import {
+  allowedFileFormats,
+  noPermissionsForOperationMessage,
+} from "../../../constants";
+import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 
 
-export default function CreateCoupon() {
+export default function CreateCoupon(props) {
 
-  let couponNameRef = useRef();
-  let couponDescriptionRef = useRef();
+  let { auth } = useAuth();
+  let axiosPrivateForm = useAxiosPrivateForm();
+
+  let couponCodeRef = useRef();
+  let couponAmountRef = useRef();
+
+  const [couponCode, setCouponCode] = useState("");
+  const [couponAmount, setCouponAmount] = useState(0);
 
   const [createCouponResponseMessage, setCreateCouponResponseMessage] =
     useState("");
-  const [createCouponErrorMessage, setCreateCouponErrorMessage] = useState(false);
+  const [createCouponErrorMessage, setCreateCouponErrorMessage] =
+    useState("");
 
-  function clearFormValues() {
-    couponNameRef.current.value = "";
-    couponDescriptionRef.current.value = "";
-    document.getElementById("create-coupon-image").value = "";
+  function onCreateCoupon(e) {
+    e.preventDefault();
+
+    const formCouponCode = couponCodeRef.current.value;
+    const formCouponAmount = parseFloat(couponAmountRef.current.value);
+
+    if (formCouponCode.trim().length != 8) {
+      setCreateCouponResponseMessage("");
+      setCreateCouponErrorMessage(
+        "Coupon code must be exact 8 character long!"
+      );
+      return;
+    }
+
+   const newCoupon = {
+      code: formCouponCode,
+      amount: formCouponAmount
+   }
+
+    createCoupon(newCoupon);
   }
 
+  async function createCoupon(newCoupon) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivateForm.post(
+        ApiEndpoints.categories.createCategory,
+        newCoupon,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+      setCreateCouponErrorMessage("");
+      setCreateCouponResponseMessage(
+        `Coupon ${newCoupon.code} successfully created`
+      );
+      
+      window.scroll(0, 0);
+
+      props.couponsListChanged(response?.data);
+    } catch (error) {
+      setCreateCouponResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCreateCouponErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setCreateCouponErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
+
+  const CouponInfoInput = styled(TextField)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+  });
+
   const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
   });
 
   const CreateCouponButton = styled(Button)({
@@ -53,68 +108,77 @@ export default function CreateCoupon() {
     marginBottom: theme.spacing(1),
   });
 
-  const ResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.success.main,
-  });
-
-  const ErrorResponseMessage = styled(Typography)({
-    textAlign: "center",
-    color: theme.palette.error.main,
-  });
-
-  const CouponInfoInput = styled(InputBase)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    paddingTop: theme.spacing(0.3),
-    paddingBottom: theme.spacing(0.3),
-    paddingLeft: theme.spacing(1),
-    paddingRigth: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
-  });
 
   return (
-    <Fragment>
- 
-            <Box sx={{ margin: 2 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                COUPON INFO
-              </Typography>
-              <form component="form">
-                <InputBox>
-                  <CouponInfoInput
-                    sx={{ fontSize: 24 }}
-                    inputRef={couponNameRef}
-                    placeholder="Min. 8-numbered code"
-                  />
-                </InputBox>
-                <InputBox>
-                  <CouponInfoInput
-                    sx={{ fontSize: 24 }}
-                    inputRef={couponNameRef}
-                    placeholder="Amount in %"
-                  />
-                </InputBox>
-                <Box sx={{display: "flex", gap: 2}}>
-                <CreateCouponButton
-                  type="submit"
-                  size="medium"
-                  variant="contained"
-                >
-                  CREATE COUPON
-                </CreateCouponButton>
-                </Box>
-              </form>
-            </Box>
-      <ResponseMessage>{createCouponResponseMessage}</ResponseMessage>
-      {createCouponErrorMessage ? (
-        <ErrorResponseMessage>
-          An error during coupon editing!
-        </ErrorResponseMessage>
+    <Paper sx={{ padding: theme.spacing(2) }}>
+      <Box sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}>
+        <Typography variant="h6" component="h2">
+          ADD NEW COUPON
+        </Typography>
+        <Typography>
+          Enter exat 8-character coupon. No matter uppercase or lowercase.
+          Amount is in %
+        </Typography>
+      </Box>
+
+      <form onSubmit={onCreateCoupon}>
+        <InputBox>
+          <CouponInfoInput
+            inputRef={couponCodeRef}
+            label="Coupon code"
+            defaultValue={couponCode}
+            variant="outlined"
+            placeholder="FOR EXAMPLE: 0AT725KA, DISC2023"
+          />
+        </InputBox>
+        <InputBox>
+          <CouponInfoInput
+            inputRef={couponAmountRef}
+            label="Coupon amount"
+            defaultValue={couponAmount}
+            variant="outlined"
+            type="number"
+            placeholder={"0.00"}
+            inputProps={{
+                  step: "0.01",
+                  min: "0.00",
+                }}
+          />
+        </InputBox>
+        <InputBox>
+          <CreateCouponButton
+            color="secondary"
+            startIcon={<AddCircle />}
+            type="submit"
+            size="large"
+            variant="contained"
+          >
+            Create coupon
+          </CreateCouponButton>
+        </InputBox>
+      </form>
+      {createCouponResponseMessage ? (
+        <Zoom in={createCouponResponseMessage.length > 0 ? true : false}>
+          <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+            {createCouponResponseMessage}
+          </Alert>
+        </Zoom>
       ) : (
         ""
       )}
-    </Fragment>
+      {createCouponErrorMessage ? (
+        <Zoom in={createCouponErrorMessage.length > 0 ? true : false}>
+          <Alert
+            sx={{ marginTop: theme.spacing(1) }}
+            variant="filled"
+            severity="error"
+          >
+            {createCouponErrorMessage}
+          </Alert>
+        </Zoom>
+      ) : (
+        ""
+      )}
+    </Paper>
   );
 }

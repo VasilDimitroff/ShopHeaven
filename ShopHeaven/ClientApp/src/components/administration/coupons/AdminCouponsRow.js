@@ -136,44 +136,8 @@ export default function AdminCouponsRow(props) {
                       icon={<Category />}
                       variant="outlined"
                       color="primary"
-                      label={`5 subcategories`}
+                      label={`Applied to 5 orders`}
                       size="small"
-                    />
-                  </CouponInfoText>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={3} sm={1} md={1} lg={1}>
-                <Tooltip
-                  placement="bottom-start"
-                  title={`${5} products`}
-                  arrow
-                >
-                  <CouponInfoText>
-                    <Chip
-                      sx={{ padding: 0.5 }}
-                      icon={<ShoppingBag />}
-                      variant="outlined"
-                      color="primary"
-                      label={`${5} products`}
-                      size="small"
-                    />
-                  </CouponInfoText>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={3} sm={1} md={1} lg={1}>
-                <Tooltip
-                  placement="bottom-start"
-                  title={`Created by: ${coupon?.createdBy}`}
-                  arrow
-                >
-                  <CouponInfoText>
-                    <Chip
-                      sx={{ padding: 0.5 }}
-                      icon={<Person />}
-                      variant="outlined"
-                      label={`By: ${coupon?.createdBy}`}
-                      size="small"
-                      color="primary"
                     />
                   </CouponInfoText>
                 </Tooltip>
