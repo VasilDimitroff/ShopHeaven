@@ -9,7 +9,7 @@ import {
   ListItemText,
   Divider,
   Typography,
-  Stack
+  Stack,
 } from "@mui/material";
 import { Outlet, Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -23,9 +23,10 @@ import {
   ShoppingCartCheckout,
   Settings,
   Dashboard,
-  Reviews
+  Reviews,
+  ArrowForwardIos,
+  ArrowBackIos
 } from "@mui/icons-material";
-import { style } from "@mui/system";
 
 const breadcrumbs = [
   {
@@ -39,6 +40,9 @@ const breadcrumbs = [
 ];
 
 export default function Admin() {
+
+  const [showMenuButtonsTexts, setShowMenuButtonsTexts] = useState(true);
+
   let [firstSelected, setFirstSelected] = useState(false);
   let [secondSelected, setSecondSelected] = useState(false);
   let [thirdSelected, setThirdSelected] = useState(false);
@@ -124,6 +128,10 @@ export default function Admin() {
     }
   }
 
+  function handleSetShowMenuButtonsTexts() {
+    setShowMenuButtonsTexts(prev => !prev);
+  }
+
   const MainWrapper = styled(Box)({
     width: "95%",
     margin: "auto",
@@ -133,6 +141,7 @@ export default function Admin() {
   });
 
   const StyledListItemText = styled(ListItemText)({
+    display: showMenuButtonsTexts ? "block" : "none",
     [theme.breakpoints.down("lg")]: {
       display: "none",
     },
@@ -166,10 +175,7 @@ export default function Admin() {
   });
 
   const StyledListItemButton = styled(ListItemButton)({
-    paddingTop: theme.spacing(1.25),
-    paddingBottom: theme.spacing(1.25),
-    paddingLeft: theme.spacing(0),
-    paddingRight: theme.spacing(0),
+    padding: theme.spacing(1.25, 0),
     [theme.breakpoints.down("lg")]: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
@@ -185,6 +191,11 @@ export default function Admin() {
       padding:theme.spacing(0, 1)
     },
   })
+  const MinimizeButtonListItemButton = styled(StyledListItemButton)({
+    [theme.breakpoints.down("lg")]: {
+      display: "none"
+    },
+  })
 
   return (
     <MainWrapper>
@@ -193,20 +204,49 @@ export default function Admin() {
       </Box>
       <Box>
         <Grid container spacing={1}>
-          <Grid item xs={12} sm={12} md={12} lg={2}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={showMenuButtonsTexts ? 2 : 0.50}
+          >
             <Paper>
-              <StyledList>
+              <StyledList dense={true}>
                 <MenuHolder direction="row" flexWrap="wrap">
+                  <MinimizeButtonListItemButton
+                    onClick={handleSetShowMenuButtonsTexts}
+                    style={{ color: theme.palette.common.black }}
+                  >
+                    <ListItemIcon>
+                      {showMenuButtonsTexts ? (
+                        <ArrowBackIos sx={{ margin: "auto" }} />
+                      ) : (
+                        <ArrowForwardIos sx={{ margin: "auto" }} />
+                      )}
+                    </ListItemIcon>
+                    <StyledListItemText primary="" />
+                  </MinimizeButtonListItemButton>
+
                   <StyledLink to="/admin">
                     <StyledListItemButton
                       onClick={() => {
                         setSelectedItem(1);
                       }}
                       selected={firstSelected}
-                      style={{color: firstSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: firstSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <Dashboard sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <Dashboard
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Dashboard" />
                     </StyledListItemButton>
@@ -219,10 +259,19 @@ export default function Admin() {
                         setSelectedItem(2);
                       }}
                       selected={secondSelected}
-                      style={{color: secondSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: secondSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <PeopleAlt sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <PeopleAlt
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Users" />
                     </StyledListItemButton>
@@ -235,10 +284,19 @@ export default function Admin() {
                         setSelectedItem(3);
                       }}
                       selected={thirdSelected}
-                      style={{color: thirdSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: thirdSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <ShoppingBag sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <ShoppingBag
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Products" />
                     </StyledListItemButton>
@@ -251,10 +309,19 @@ export default function Admin() {
                         setSelectedItem(4);
                       }}
                       selected={forthSelected}
-                      style={{color: forthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: forthSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <Category sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <Category
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Categories" />
                     </StyledListItemButton>
@@ -267,10 +334,19 @@ export default function Admin() {
                         setSelectedItem(5);
                       }}
                       selected={fifthSelected}
-                      style={{color: fifthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: fifthSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <Discount sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <Discount
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Coupons" />
                     </StyledListItemButton>
@@ -282,10 +358,19 @@ export default function Admin() {
                         setSelectedItem(6);
                       }}
                       selected={sixthSelected}
-                      style={{color: sixthSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: sixthSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <ShoppingCartCheckout sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <ShoppingCartCheckout
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Orders" />
                     </StyledListItemButton>
@@ -298,10 +383,19 @@ export default function Admin() {
                         setSelectedItem(7);
                       }}
                       selected={seventhSelected}
-                      style={{color: seventhSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: seventhSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <Reviews sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <Reviews
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Reviews" />
                     </StyledListItemButton>
@@ -314,10 +408,19 @@ export default function Admin() {
                         setSelectedItem(8);
                       }}
                       selected={eightSelected}
-                      style={{color: eightSelected ? theme.palette.secondary.main : theme.palette.common.black}}
+                      style={{
+                        color: eightSelected
+                          ? theme.palette.secondary.main
+                          : theme.palette.common.black,
+                      }}
                     >
                       <ListItemIcon>
-                        <Settings sx={{ margin: "auto", color: theme.palette.secondary.main }} />
+                        <Settings
+                          sx={{
+                            margin: "auto",
+                            color: theme.palette.secondary.main,
+                          }}
+                        />
                       </ListItemIcon>
                       <StyledListItemText primary="Settings" />
                     </StyledListItemButton>
@@ -328,7 +431,13 @@ export default function Admin() {
               </StyledList>
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={10}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={showMenuButtonsTexts ? 10 : 11.50}
+          >
             <Outlet />
           </Grid>
         </Grid>

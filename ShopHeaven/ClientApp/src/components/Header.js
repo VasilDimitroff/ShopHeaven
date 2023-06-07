@@ -371,7 +371,7 @@ export default function Header() {
                 : handleShowUserMenu(true)
             }
           >
-            <List sx={{p: 0}}>
+            <List disablePadding>
               <ListItem disablePadding>
                 <DropDownMenuListItemButton>
                   <UserNameText component="h4">{auth.email}</UserNameText>
