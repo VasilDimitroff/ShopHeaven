@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { singleProductBasePath } from "../../../constants";
+import { loginPath, singleProductBasePath } from "../../../constants";
 import { theme } from "../../../theme";
 import useAppSettings from "../../../hooks/useAppSettings";
 import useAuth from "../../../hooks/useAuth";
@@ -40,6 +40,11 @@ function ProductCarouselCard(props) {
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
 
   function onAddProductToCart() {
+
+    if(!auth.isLogged) {
+      navigate(loginPath);
+    }
+
     let isValid = validateProductQuantity(1);
 
     if (!isValid) {

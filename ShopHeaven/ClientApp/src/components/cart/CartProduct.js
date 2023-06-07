@@ -1,4 +1,5 @@
 import { React, useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useMediaQuery,
   Box,
@@ -16,7 +17,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { noPermissionsForOperationMessage } from "../../constants";
+import { noPermissionsForOperationMessage, singleProductBasePath } from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
@@ -31,6 +32,9 @@ export default function CartProduct(props) {
 
   //api
   const axiosPrivate = useAxiosPrivate();
+  
+  //nav
+  const navigate = useNavigate();
 
   //main states for component
   const [productInCart, setProductInCart] = useState(props.productInCart);
@@ -259,6 +263,17 @@ export default function CartProduct(props) {
     overflow: "hidden",
   });
 
+  const ProductName = styled(Typography)({
+    cursor: "pointer",
+    lineHeight: 1,
+    fontSize: 18,
+    fontWeight: 500,
+    "&:hover": {
+      color: theme.palette.primary.main,
+      textDecoration: "underline"
+    },
+  })
+
   const InfoHolder = styled(Box)({
     display: "flex",
     alignItems: "center",
@@ -323,10 +338,10 @@ export default function CartProduct(props) {
           display="flex"
           alignContent="center"
           justifyContent="center"
-          //sx={{ border: "1px solid black" }}
         >
           <ImageHolder>
             <img
+              onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}
               style={{
                 cursor: "pointer",
                 borderRadius: "15%",
@@ -348,12 +363,11 @@ export default function CartProduct(props) {
           sm={6}
           md={6}
           lg={6}
-          //sx={{ border: "1px solid black" }}
         >
           <Stack spacing={1.2}>
-            <Typography sx={{ lineHeight: 1, fontSize: 18, fontWeight: 500 }}>
+            <ProductName onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}>
               {productInCart.name}
-            </Typography>
+            </ProductName>
             <Divider />
             <Stack spacing={2} flexWrap="wrap" direction="row">
               {productInCart.hasGuarantee ? (
@@ -400,7 +414,7 @@ export default function CartProduct(props) {
                     productInCart.price *
                     productInCart.discount) /
                   100
-                ).toFixed(2)}`} //55 lw
+                ).toFixed(2)}`}
               />
             </LabelHolder>
           ) : (
