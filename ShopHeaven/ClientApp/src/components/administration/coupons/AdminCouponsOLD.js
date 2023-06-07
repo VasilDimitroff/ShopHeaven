@@ -14,7 +14,7 @@ import {
   InputBase,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,

@@ -14,7 +14,7 @@ import {
   InputBase,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { theme } from "../../theme";
+import { theme } from "../../../theme";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -24,7 +24,7 @@ import {
   PhotoCamera,
 } from "@mui/icons-material";
 import axios from "axios";
-import { ApiEndpoints } from "../../api/endpoints";
+import { ApiEndpoints } from "../../../api/endpoints";
 
 
 export default function CreateCoupon() {
