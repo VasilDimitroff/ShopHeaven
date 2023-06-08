@@ -43,6 +43,8 @@ namespace ShopHeaven.Data.Models
 
         public OrderStatus Status { get; set; }
 
+        public PaymentMethod PaymentMethod { get; set; }
+
         [Required]
         public string ShippingMethodId { get; set; }
 

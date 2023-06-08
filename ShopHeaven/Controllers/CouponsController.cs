@@ -44,5 +44,19 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(Verify))]
+        public async Task<ActionResult<CouponResponseModel>> Verify(VerifyCouponRequestModel model)
+        {
+            try
+            {
+                var verifiedCoupon = await this.couponsService.VerifyCouponAsync(model.Code);
+                return Ok(verifiedCoupon);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

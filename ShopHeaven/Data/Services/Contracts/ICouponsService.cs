@@ -8,5 +8,7 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<CouponResponseModel> CreateCouponAsync(CouponRequestModel model);
 
         Task<ICollection<CouponResponseModel>> GetAllCouponsAsync();
+
+        Task<CouponResponseModel> VerifyCouponAsync(string code);
     }
 }

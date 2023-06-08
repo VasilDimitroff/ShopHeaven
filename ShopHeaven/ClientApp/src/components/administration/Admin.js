@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -25,7 +25,9 @@ import {
   Dashboard,
   Reviews,
   ArrowForwardIos,
-  ArrowBackIos
+  ArrowBackIos,
+  ExpandLess,
+  ExpandMore
 } from "@mui/icons-material";
 
 const breadcrumbs = [
@@ -41,8 +43,6 @@ const breadcrumbs = [
 
 export default function Admin() {
 
-  const [showMenuButtonsTexts, setShowMenuButtonsTexts] = useState(true);
-
   let [firstSelected, setFirstSelected] = useState(false);
   let [secondSelected, setSecondSelected] = useState(false);
   let [thirdSelected, setThirdSelected] = useState(false);
@@ -51,6 +51,23 @@ export default function Admin() {
   let [sixthSelected, setSixthSelected] = useState(false);
   let [seventhSelected, setSeventhSelected] = useState(false);
   let [eightSelected, setEightSelected] = useState(false);
+
+  const [maximizeMenu, setMaximizeMenu] = useState(true);
+
+  useEffect(() => {
+    // Проверка за наличие на стойност в локалното хранилище при монтаж на компонента
+    const maximizeMenuValue = localStorage.getItem('maximizeAdminMenu');
+    if (maximizeMenuValue) {
+      setMaximizeMenu(maximizeMenuValue == "true" ? true : false);
+    } else {
+      setMaximizeMenu(true);
+    }
+  }, []);
+
+  function handleSetShowMenuButtonsTexts() {
+    setMaximizeMenu(prev => !prev);
+    localStorage.setItem('maximizeAdminMenu', !maximizeMenu);
+  }
 
   function setSelectedItem(item) {
     if (item === 1) {
@@ -128,27 +145,21 @@ export default function Admin() {
     }
   }
 
-  function handleSetShowMenuButtonsTexts() {
-    setShowMenuButtonsTexts(prev => !prev);
-  }
 
   const MainWrapper = styled(Box)({
     width: "95%",
     margin: "auto",
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
   });
 
   const StyledListItemText = styled(ListItemText)({
-    display: showMenuButtonsTexts ? "block" : "none",
+    display: !maximizeMenu ? "none" : "block",
     [theme.breakpoints.down("lg")]: {
       display: "none",
     },
   });
 
   const StyledList = styled(List)({
-    display: "block",
+    display: maximizeMenu ? "block" : "flex",
     margin: "auto",
     [theme.breakpoints.down("lg")]: {
       display: "flex",
@@ -161,7 +172,7 @@ export default function Admin() {
     fontWeight: 600,
     color: "#000",
     [theme.breakpoints.up("lg")]: {
-      width: "100%",
+      width: maximizeMenu ? "100%" : "",
     },
   });
 
@@ -170,15 +181,18 @@ export default function Admin() {
       fontSize: 12,
       display: "block",
     },
-    display: "none",
+    fontSize: maximizeMenu ? "" : 12,
+    display: maximizeMenu ?  "none" : "block",
     textAlign: "center"
   });
 
   const StyledListItemButton = styled(ListItemButton)({
     padding: theme.spacing(1.25, 0),
+    paddingLeft : maximizeMenu ? theme.spacing(1) : theme.spacing(1),
+    paddingRight: maximizeMenu ? theme.spacing(1) : theme.spacing(1),
     [theme.breakpoints.down("lg")]: {
       paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
+      paddingRight:  theme.spacing(1)
     },
   });
 
@@ -186,12 +200,12 @@ export default function Admin() {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-   
     [theme.breakpoints.down("lg")]: {
-      padding:theme.spacing(0, 1)
+      padding: theme.spacing(0, 1)
     },
   })
   const MinimizeButtonListItemButton = styled(StyledListItemButton)({
+    display: "block",
     [theme.breakpoints.down("lg")]: {
       display: "none"
     },
@@ -209,7 +223,7 @@ export default function Admin() {
             xs={12}
             sm={12}
             md={12}
-            lg={showMenuButtonsTexts ? 2 : 0.50}
+            lg={maximizeMenu ? 2 : 12}
           >
             <Paper>
               <StyledList dense={true}>
@@ -219,10 +233,10 @@ export default function Admin() {
                     style={{ color: theme.palette.common.black }}
                   >
                     <ListItemIcon>
-                      {showMenuButtonsTexts ? (
-                        <ArrowBackIos sx={{ margin: "auto" }} />
+                      {maximizeMenu ? (
+                        <ExpandLess sx={{ margin: "auto" }} />
                       ) : (
-                        <ArrowForwardIos sx={{ margin: "auto" }} />
+                        <ExpandMore sx={{ margin: "auto" }} />
                       )}
                     </ListItemIcon>
                     <StyledListItemText primary="" />
@@ -436,7 +450,7 @@ export default function Admin() {
             xs={12}
             sm={12}
             md={12}
-            lg={showMenuButtonsTexts ? 10 : 11.50}
+            lg={maximizeMenu ? 10 : 12}
           >
             <Outlet />
           </Grid>

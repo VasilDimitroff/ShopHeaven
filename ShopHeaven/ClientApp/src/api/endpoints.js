@@ -62,8 +62,7 @@ export const ApiEndpoints = {
     },
     coupons: {
         createCoupon: "api/coupons/create",
-        getAll: "api/coupons/getAll"
+        getAll: "api/coupons/getAll",
+        verifyCoupon: "api/coupons/verify"
     }
 }
-
- 
