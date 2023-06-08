@@ -191,7 +191,7 @@ export default function EditCategoryForm(props) {
             label="Category Description"
             multiline
             rows={5}
-            variant="standard"
+            variant="outlined"
             defaultValue={category.description}
           />
         </InputBox>

@@ -1,94 +1,164 @@
-import { React, useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { ApiEndpoints } from "../../../api/endpoints";
+import { React, useState, useRef } from "react";
 import {
   Box,
   Button,
-  TableRow,
-  TableCell,
-  Collapse,
-  Table,
-  TableBody,
-  TableHead,
-  TableContainer,
+  Typography,
+  TextField,
+  Paper,
+  Alert,
+  Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { AddCircle, RemoveCircle } from "@mui/icons-material";
-import Loader from "../../common/Loader";
-import CreateCoupon from "./CreateCoupon";
-import { loginPath } from "../../../constants";
-import AdminCouponsRow from "./AdminCouponsRow";
+import { Edit } from "@mui/icons-material";
+import { ApiEndpoints } from "../../../api/endpoints";
+import {couponCodeLength, noPermissionsForOperationMessage } from "../../../constants";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-export default function EditCoupon() {
-  const [openCreateCouponForm, setOpenCreateCouponForm] = useState(false);
+export default function EditCoupon(props) {
 
-  const [coupons, setCoupons] = useState([]);
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const [isLoading, setIsLoading] = useState(false);
+  let couponCodeRef = useRef();
+  let couponAmountRef = useRef();
 
-  const effectRun = useRef(false);
+  const [coupon, setCoupon] = useState(props.coupon);
 
-  function couponsListChanged(newCoupon) {
-    setCoupons((prev) => {
-      return [...prev, newCoupon];
-    });
-    console.log(newCoupon);
-  }
+  const [editCouponResponseMessage, setEditCouponResponseMessage] =
+    useState("");
+  const [editCouponErrorMessage, setEditCouponErrorMessage] = useState("");
 
-  useEffect(() => {
-    const controller = new AbortController();
+  function onEditCoupon(e) {
+    e.preventDefault();
 
-    const getCoupons = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axiosPrivate.get(
-          ApiEndpoints.categories.getAll,
-          {
-            signal: controller.signal,
-          }
-        );
-        console.log(response.data);
+    const formCouponCode = couponCodeRef.current.value;
+    const formCouponAmount = parseFloat(couponAmountRef.current.value);
 
-        setCoupons(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        navigate(`${loginPath}`, { state: { from: location }, replace: true });
-      }
-    };
-
-    if (effectRun.current) {
-      getCoupons();
+    if (formCouponCode.trim().length < couponCodeLength) {
+      setEditCouponResponseMessage("");
+      setEditCouponErrorMessage(`Coupon code must be exact ${couponCodeLength} character long!`);
+      return;
     }
- 
-    return () => {
-      controller.abort();
-      effectRun.current = true;
-    };
-  }, []);
 
-  function handleOpen() {
-    setOpenCreateCouponForm(!openCreateCouponForm);
+    const couponRequest = {
+      id: coupon.id,
+      code: formCouponCode,
+      amount: formCouponAmount
+    }
+
+    editCoupon(couponRequest);
   }
 
-  const CouponTableCell = styled(TableCell)({
-    fontSize: 18,
+  async function editCoupon(couponRequest) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.coupons.editCoupon,
+        couponRequest,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setCoupon(response?.data);
+
+      setEditCouponErrorMessage("");
+      setEditCouponResponseMessage(`The new properties of the coupon: Code: ${response?.data?.code}, Amount: ${response?.data?.amount}`);
+
+      window.scroll(0, 0);
+      props.updateCoupon(response?.data);
+    } catch (error) {
+      setEditCouponResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setEditCouponErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setEditCouponErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
+
+  const StyledInput = styled(TextField)({
+    background: "rgb(255,249,249)",
+    width: "100%",
+    marginTop: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
   });
 
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
+  const InputBox = styled(Box)({
+    margin: theme.spacing(0, 4),
+  });
+
+  const CreateCategoryButton = styled(Button)({
+    width: "100%",
+    marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(1),
   });
 
   return (
-    <Box>
-            "EDIT"
-    </Box>
+    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
+    <Typography
+      sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
+      variant="h6"
+      component="h2"
+    >
+      Edit Coupon {coupon.code}
+    </Typography>
+    <form onSubmit={onEditCoupon}>
+      <InputBox>
+        <StyledInput
+          inputRef={couponCodeRef}
+          label="Coupon code"
+          variant="outlined"
+          defaultValue={coupon.code}
+        />
+      </InputBox>
+      <InputBox>
+        <StyledInput
+          inputRef={couponAmountRef}
+          label="Coupon Amount"
+          defaultValue={coupon.amount}
+          type="number"
+            placeholder={"0.00"}
+            inputProps={{
+              step: "0.01",
+              min: "0.00",
+          }}
+        />
+      </InputBox>
+      <InputBox>
+        <CreateCategoryButton
+          color="secondary"
+          startIcon={<Edit />}
+          type="submit"
+          size="large"
+          variant="contained"
+        >
+          Edit coupon
+        </CreateCategoryButton>
+      </InputBox>
+    </form>
+    {editCouponResponseMessage ? (
+      <Zoom in={editCouponResponseMessage.length > 0 ? true : false}>
+        <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+          {editCouponResponseMessage}
+        </Alert>
+      </Zoom>
+    ) : (
+      ""
+    )}
+    {editCouponErrorMessage ? (
+      <Zoom in={editCouponErrorMessage.length > 0 ? true : false}>
+        <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+          {editCouponErrorMessage}
+        </Alert>
+      </Zoom>
+    ) : (
+      <></>
+    )}
+  </Paper>
   );
 }

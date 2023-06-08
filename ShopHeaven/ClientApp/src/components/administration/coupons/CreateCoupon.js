@@ -15,6 +15,7 @@ import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
   allowedFileFormats,
+  couponCodeLength,
   noPermissionsForOperationMessage,
 } from "../../../constants";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -39,9 +40,9 @@ export default function CreateCoupon(props) {
     const formCouponCode = couponCodeRef.current.value;
     const formCouponAmount = parseFloat(couponAmountRef.current.value);
 
-    if (formCouponCode.trim().length != 8) {
+    if (formCouponCode.trim().length != couponCodeLength) {
       setCreateCouponResponseMessage("");
-      setCreateCouponErrorMessage("Coupon code must be exact 8 character long!");
+      setCreateCouponErrorMessage(`Coupon code must be exact ${couponCodeLength} character long!`);
       return;
     }
 
@@ -110,7 +111,7 @@ export default function CreateCoupon(props) {
           ADD NEW COUPON
         </Typography>
         <Typography>
-          Enter exat 8-character coupon. No matter uppercase or lowercase.
+          Enter exact {couponCodeLength}-character coupon. No matter uppercase or lowercase.
           Amount is in %
         </Typography>
       </Box>

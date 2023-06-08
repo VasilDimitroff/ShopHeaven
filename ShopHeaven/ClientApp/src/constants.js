@@ -84,3 +84,6 @@ export const similarProductsForSingleProductPageSlider = 12;
 
 //how many reviews per page in single product page
 export const reviewsPerPageInProductPage = 3;
+
+//exact length of the coupon code
+export const couponCodeLength = 8;

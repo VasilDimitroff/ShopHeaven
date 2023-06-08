@@ -9,16 +9,16 @@ import {
 
 export default function Loader() {
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Typography variant="p" sx={{ textAlign: "center", paddingBottom: 1 }}>
         Data is loading, please wait...
       </Typography>
-      <Skeleton variant="rounded" animation="pulse" height={85} />
-      <Skeleton variant="rounded" animation="pulse" height={85} />
-      <Skeleton variant="rounded" animation="pulse" height={85} />
-      <Skeleton variant="rounded" animation="pulse" height={85} />
-      <Skeleton variant="rounded" animation="pulse" height={85} />
-      <Skeleton variant="rounded" animation="pulse" height={85} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
+      <Skeleton variant="rounded" animation="pulse" height={65} />
     </Stack>
   );
 
