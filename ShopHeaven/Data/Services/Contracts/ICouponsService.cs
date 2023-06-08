@@ -5,7 +5,9 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ICouponsService
     {
-        Task<CouponResponseModel> CreateCouponAsync(CouponRequestModel model);
+        Task<CouponResponseModel> CreateCouponAsync(CreateCouponRequestModel model);
+
+        Task<CouponResponseModel> EditCouponAsync(EditCouponRequestModel model);
 
         Task<ICollection<CouponResponseModel>> GetAllCouponsAsync();
 

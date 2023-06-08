@@ -15,7 +15,7 @@ namespace ShopHeaven.Data.Services
             this.db = db;
         }
 
-        public async Task<CouponResponseModel> CreateCouponAsync(CouponRequestModel model)
+        public async Task<CouponResponseModel> CreateCouponAsync(CreateCouponRequestModel model)
         {
             if (model.Code.Length != GlobalConstants.CouponExactRequiredLength) throw new ArgumentException(GlobalConstants.CouponWrongLength);
 
@@ -34,17 +34,7 @@ namespace ShopHeaven.Data.Services
             await this.db.Coupons.AddAsync(newCoupon);
             await this.db.SaveChangesAsync();
 
-            int ordersCount = await GetCouponOrdersCountAsync(newCoupon);
-
-            var responseCoupon = new CouponResponseModel
-            {
-                Id = newCoupon.Id,
-                Amount = newCoupon.Amount,
-                Code = newCoupon.Code,
-                OrdersCount = ordersCount
-            };
-
-            return responseCoupon;
+            return await CreateResponseModel(newCoupon);
         }
 
         public async Task<ICollection<CouponResponseModel>> GetAllCouponsAsync()
@@ -65,21 +55,33 @@ namespace ShopHeaven.Data.Services
 
         public async Task<CouponResponseModel> VerifyCouponAsync(string code)
         {
-            var coupon = await this.ValidateCouponAsync(code);
-            var ordersCount = await this.GetCouponOrdersCountAsync(coupon);
+            var coupon = await this.GetCouponByCodeAsync(code);
 
-            var responseCoupon = new CouponResponseModel
-            {
-                Id = coupon.Id,
-                Amount = coupon.Amount,
-                Code = coupon.Code,
-                OrdersCount = ordersCount
-            };
-
-            return responseCoupon;
+            return await CreateResponseModel(coupon);
         }
 
-        private async Task<Coupon> ValidateCouponAsync(string code)
+        public async Task<CouponResponseModel> EditCouponAsync(EditCouponRequestModel model)
+        {
+            if (model.Amount < 0) throw new ArgumentException(GlobalConstants.CouponAmountCannotBeNegativeNumber);
+
+            var coupon = await this.db.Coupons
+               .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (coupon == null)
+            {
+                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
+            }
+
+            coupon.Amount = model.Amount;
+            coupon.Code = model.Code.Trim().ToUpper();
+
+            await this.db.SaveChangesAsync();
+
+            return await CreateResponseModel(coupon);
+        }
+
+
+        private async Task<Coupon> GetCouponByCodeAsync(string code)
         {
             if (string.IsNullOrWhiteSpace(code) || code.Length != GlobalConstants.CouponExactRequiredLength)
             {
@@ -97,11 +99,21 @@ namespace ShopHeaven.Data.Services
             return targetCoupon;
         }
 
-        private async Task<int> GetCouponOrdersCountAsync(Coupon coupon)
+        private async Task<CouponResponseModel> CreateResponseModel(Coupon coupon)
         {
-            return await this.db.Orders
+            var ordersCount = await this.db.Orders
                 .Where(x => x.CouponId == coupon.Id && x.IsDeleted != true)
-                .CountAsync();
+                .CountAsync(); ;
+
+            var responseCoupon = new CouponResponseModel
+            {
+                Id = coupon.Id,
+                Amount = coupon.Amount,
+                Code = coupon.Code,
+                OrdersCount = ordersCount
+            };
+
+            return responseCoupon;
         }
     }
 }

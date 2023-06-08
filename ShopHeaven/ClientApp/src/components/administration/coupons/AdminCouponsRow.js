@@ -68,11 +68,6 @@ export default function AdminCouponsRow(props) {
     setShowDeleteForm((prev) => !prev);
   }
 
-
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
-  });
-
   const CouponTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
@@ -118,25 +113,7 @@ export default function AdminCouponsRow(props) {
           {!isDeleted ? <>{coupon?.code}</> : "COUPON DELETED"}
           {!isDeleted ? (
             <Stack flexWrap={"wrap"} direction={"row"}>
-              <Box sx={{ml:1}}>
-                <Tooltip
-                  title={`Coupon is applied to ${coupon?.ordersCount} orders`}
-                  placement="bottom-start"
-                  arrow
-                >
-                  <CouponInfoText>
-                    <Chip
-                      sx={{ padding: 0.5, cursor: "pointer" }}
-                      icon={<Category />}
-                      variant="outlined"
-                      color="primary"
-                      label={`to ${coupon?.ordersCount} orders`}
-                      size="small"
-                    />
-                  </CouponInfoText>
-                </Tooltip>
-              </Box>
-              <Box sx={{ml:1}}>
+              <Box>
                 <Tooltip
                   title={`Coupon is applied to ${coupon?.ordersCount} orders`}
                   placement="bottom-start"

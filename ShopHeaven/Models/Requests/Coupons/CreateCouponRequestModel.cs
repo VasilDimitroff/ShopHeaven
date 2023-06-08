@@ -2,7 +2,7 @@
 
 namespace ShopHeaven.Models.Requests.Coupons
 {
-    public class CouponRequestModel
+    public class CreateCouponRequestModel
     {
         [Required, StringLength(8, ErrorMessage = "Code length must be exact 8 characters.")]
         public string Code { get; set; }

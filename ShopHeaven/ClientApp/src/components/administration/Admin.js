@@ -213,7 +213,7 @@ export default function Admin() {
         <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       </Box>
       <Box>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12} lg={maximizeMenu ? 2 : 12}>
             <Paper>
               <StyledList dense={true}>

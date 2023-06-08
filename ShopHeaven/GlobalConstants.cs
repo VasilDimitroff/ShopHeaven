@@ -118,6 +118,8 @@
 
         public const string CouponWithThisCodeDoesNotExist = "Coupon with given code does not exist";
 
+        public const string CouponWithThisIdDoesntExist = "Coupon with given Id does not exist";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

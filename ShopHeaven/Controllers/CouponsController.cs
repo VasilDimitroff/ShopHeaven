@@ -18,12 +18,26 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Create))]
-        public async Task<ActionResult<CouponResponseModel>> Create([FromBody] CouponRequestModel model)
+        public async Task<ActionResult<CouponResponseModel>> Create([FromBody] CreateCouponRequestModel model)
         {
             try
             {
                 var createdCoupon = await this.couponsService.CreateCouponAsync(model);
                 return Ok(createdCoupon);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
+        public async Task<ActionResult<CouponResponseModel>> Edit([FromBody] EditCouponRequestModel model)
+        {
+            try
+            {
+                var editedCoupon = await this.couponsService.EditCouponAsync(model);
+                return Ok(editedCoupon);
             }
             catch (Exception ex)
             {
