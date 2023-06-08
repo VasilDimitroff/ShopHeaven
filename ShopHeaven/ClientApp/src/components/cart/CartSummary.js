@@ -47,7 +47,7 @@ export default function CartSummary(props) {
     }
 
     if (!couponValue || couponValue.trim().length != 8) {
-      setCoupon(null);
+      removeCoupon();
       setApplyCouponResponseMessage("");
       setApplyCouponErrorMessage("Coupon must contain exact 8 characters");
       return;
@@ -89,7 +89,7 @@ export default function CartSummary(props) {
         };
       });
     } catch (error) {
-      setCoupon(null);
+      removeCoupon();
 
       setApplyCouponResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -102,12 +102,6 @@ export default function CartSummary(props) {
   }
 
   function removeCoupon() {
-    setCartSummary(prev => {
-      return {
-        ...prev,
-        
-      }
-    })
     setCoupon(null);
     setApplyCouponResponseMessage("");
     setApplyCouponErrorMessage("");
@@ -175,15 +169,20 @@ export default function CartSummary(props) {
     <Stack spacing={2}>
       <Paper sx={{ p: 2 }}>
         <Stack spacing={1}>
-          <Typography align="center" variant="h6" fontWeight={400}>
+          <Typography
+            align="center"
+            variant="h6"
+            fontWeight={400}
+            sx={{ mb: 1 }}
+          >
             ORDER SUMMARY:
           </Typography>
           {cartSummary.totalPriceWithDiscount ==
           cartSummary.totalPriceWithNoDiscount ? (
             <></>
           ) : (
-            <Box>
-              <Box>
+            <>
+              <>
                 <RegularPriceHolder>
                   <Typography>Regular price:</Typography>
                   <Typography sx={{ textDecoration: "line-through" }}>
@@ -191,7 +190,7 @@ export default function CartSummary(props) {
                     {cartSummary.totalPriceWithNoDiscount.toFixed(2)}
                   </Typography>
                 </RegularPriceHolder>
-              </Box>
+              </>
               <DiscountHolder>
                 <Typography>Discount:</Typography>
                 <Typography>
@@ -199,21 +198,22 @@ export default function CartSummary(props) {
                   {cartSummary.totalDiscount.toFixed(2)}
                 </Typography>
               </DiscountHolder>
-            </Box>
+            </>
           )}
 
-          {
-            coupon ?
-            (<DiscountHolder>
+          {coupon ? (
+            <DiscountHolder>
               <Typography>Coupon discount:</Typography>
               <Typography>
-                {`${appSettings.appCurrency.code} -${(cartSummary.totalPriceWithDiscount * coupon?.amount / 100).toFixed(2)} (-${coupon?.amount} %)`}
+                {`${appSettings.appCurrency.code} -${(
+                  (cartSummary.totalPriceWithDiscount * coupon?.amount) /
+                  100
+                ).toFixed(2)} (-${coupon?.amount}%)`}
               </Typography>
-            </DiscountHolder>)
-
-            : <></>
-          }
-
+            </DiscountHolder>
+          ) : (
+            <></>
+          )}
           <PriceHolder>
             <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
               TOTAL PRICE:
@@ -223,11 +223,9 @@ export default function CartSummary(props) {
               sx={{ fontWeight: 500, color: theme.palette.error.main }}
             >
               {appSettings.appCurrency.code}{" "}
-              {
-                coupon
-                ? ((cartSummary.totalPriceWithDiscount - (cartSummary.totalPriceWithDiscount * coupon?.amount / 100)).toFixed(2))
-                : (cartSummary.totalPriceWithDiscount.toFixed(2))
-              }
+              {coupon
+                ? (cartSummary.totalPriceWithDiscount - (cartSummary.totalPriceWithDiscount * coupon?.amount) / 100).toFixed(2)
+                : cartSummary.totalPriceWithDiscount.toFixed(2)}
             </Typography>
           </PriceHolder>
           <Box>
@@ -268,7 +266,7 @@ export default function CartSummary(props) {
           ) : (
             <Chip
               variant="outlined"
-              label={`REMOVE COUPON: ${coupon?.code}`}
+              label={`REMOVE COUPON: ${coupon?.code} (-${coupon?.amount}%)`}
               color="error"
               size="small"
               onDelete={removeCoupon}
