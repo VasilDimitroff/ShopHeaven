@@ -47,6 +47,8 @@ namespace ShopHeaven.Data
 
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<ShippingMethod> ShippingMethods { get; set; }
+
         public DbSet<Label> Labels { get; set; }
 
         public DbSet<Currency> Currencies { get; set; }

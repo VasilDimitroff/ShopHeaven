@@ -15,6 +15,9 @@ namespace ShopHeaven.Data.Models
         {
             this.Status = OrderStatus.Pending;
             this.Products = new HashSet<ProductOrder>();
+            this.TotalPriceWithNoDiscount = CalculateTotalPriceWithNoDiscount();
+            this.TotalPriceWithDiscount = CalculateTotalPriceWithDiscount();
+            this._totalPriceWithDiscountAndCoupon = CalculateTotalPriceWithDiscountAndCoupon();
         }
 
         [Required(ErrorMessage = "Recipient field cannot be null or empty")]
@@ -38,17 +41,16 @@ namespace ShopHeaven.Data.Models
 
         public Coupon? Coupon { get; set; }
 
-        [Required]
-        public string PaymentId { get; set; }
-
-        public Payment Payment { get; set; }
-
         public OrderStatus Status { get; set; }
+
+        [Required]
+        public string ShippingMethodId { get; set; }
 
         public ShippingMethod ShippingMethod { get; set; }
 
-        //shipping method must be separated model/table
-        public decimal ShippingAmount { get; set; }
+        public string? PaymentId { get; set; }
+
+        public Payment? Payment { get; set; }
 
         public string CreatedById { get; set; }
 

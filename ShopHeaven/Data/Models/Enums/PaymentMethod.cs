@@ -2,6 +2,6 @@
 {
     public enum PaymentMethod
     {
-        CreditCard = 0,
+        CreditCard = 0
     }
 }

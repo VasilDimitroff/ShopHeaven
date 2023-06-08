@@ -8,6 +8,7 @@ namespace ShopHeaven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = GlobalConstants.UserRoleName)]
     public class CartsController : ControllerBase
     {
         private readonly ICartsService cartsService;
@@ -17,7 +18,7 @@ namespace ShopHeaven.Controllers
             this.cartsService = cartsService;
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(AddProduct))]
+        [HttpPost, Route(nameof(AddProduct))]
         public async Task<ActionResult<AddProductToCartResponseModel>> AddProduct([FromBody]AddProductToCartRequestModel model)
         {
             try
@@ -31,7 +32,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(GetProducts))]
+        [HttpPost, Route(nameof(GetProducts))]
         public async Task<ActionResult<CartProductResponseModel>> GetProducts([FromBody] GetCartProductsRequestModel model)
         {
             try
@@ -53,7 +54,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(DeleteProduct))]
+        [HttpPost, Route(nameof(DeleteProduct))]
         public async Task<ActionResult<int>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
         {
             try
@@ -70,7 +71,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.UserRoleName), Route(nameof(ChangeProductQuantity))]
+        [HttpPost, Route(nameof(ChangeProductQuantity))]
         public async Task<ActionResult<ChangeProductQuantityResponseModel>> ChangeProductQuantity([FromBody] ChangeProductQuantityRequestModel model)
         {
             try
