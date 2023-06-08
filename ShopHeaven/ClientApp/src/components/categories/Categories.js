@@ -9,7 +9,6 @@ import {
   ImageListItemBar,
   Tooltip,
   Zoom,
-  Fade,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -138,13 +137,11 @@ export default function Categories() {
                     alt={category.name}
                     loading="lazy"
                   />
-                  <Fade in={true} direction="up" timeout={900}>
                     <StyledImageListItemBar
                       position="top"
                       title={category.name}
                       subtitle={`${category.subcategoriesCount} subcategories, ${category.productsCount} products`}
                     />
-                  </Fade>
                 </StyledImageListItem>
               
               </Tooltip>

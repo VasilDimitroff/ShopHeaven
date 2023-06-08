@@ -541,16 +541,14 @@ export default function CreateProduct(props) {
    */
   });
 
-  const ProductInfoInput = styled(InputBase)({
-    background: "rgb(255,249,249)",
+  const ProductInfoInput = styled(TextField)({
+    //background: "rgb(255,249,249)",
     width: "100%",
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(0.3),
-    paddingBottom: theme.spacing(0.3),
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
+    marginBottom: theme.spacing(1.5),
+    //paddingLeft: theme.spacing(1),
+    //paddingRight: theme.spacing(1),
+    //borderRadius: theme.shape.borderRadius,
   });
 
   const InputBox = styled(Box)({
@@ -579,17 +577,17 @@ export default function CreateProduct(props) {
     cursor: "pointer",
     width: "100%",
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
+    padding: theme.spacing(2.18,1),
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
     fontSize: 14,
-    backgroundColor: "rgb(255,249,249)",
+    //backgroundColor: "rgb(255,249,249)",
     marginTop: theme.spacing(1),
   };
 
   const SaveTagsButton = styled(Button)({
-    width: "95%",
-    padding: theme.spacing(1),
+    width: "95%", 
+    padding: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       width: "50%",
       display: "block",
@@ -645,10 +643,8 @@ export default function CreateProduct(props) {
       </Divider>
       <form component="form" onSubmit={onCreateProduct}>
         <InputBox>
-          <Divider>
-            <SubheadingChip label="NAME" variant="outlined" color="primary" />
-          </Divider>
           <ProductInfoInput
+            label="Product Name"
             sx={{ fontSize: 24 }}
             inputRef={productNameRef}
             placeholder="Example: Smartphone Samsung Galaxy A53"
@@ -662,25 +658,17 @@ export default function CreateProduct(props) {
             <></>
           )}
         </InputBox>
-        <Divider>
-          <SubheadingChip label="BRAND" variant="outlined" color="primary" />
-        </Divider>
         <InputBox>
           <ProductInfoInput
+            label="Brand"
             inputRef={productBrandRef}
             placeholder="Example: Samsung"
             defaultValue={productBrand}
           />
         </InputBox>
-        <InputBox>
-          <Divider>
-            <SubheadingChip
-              label="DESCRIPTION"
-              variant="outlined"
-              color="primary"
-            />
-          </Divider>
+        <InputBox>   
           <ProductInfoInput
+            label="Description"
             multiline
             minRows={4}
             inputRef={productDescriptionRef}
@@ -767,27 +755,15 @@ export default function CreateProduct(props) {
           </InputBox>
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="CURRENCY"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
               <ProductInfoInput
+                label="Currency"
                 disabled
                 defaultValue={appSettings.appCurrency.code}
               />
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="PRICE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
               <ProductInfoInput
+                label="Price"
                 type="number"
                 inputRef={productPriceRef}
                 defaultValue={productPrice.toString()}
@@ -807,15 +783,9 @@ export default function CreateProduct(props) {
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="DISCOUNT (IN %)"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
+            <InputBox sx={{ width: "50%" }}>  
               <ProductInfoInput
+                label="Discount"
                 type="number"
                 inputRef={productDiscountRef}
                 defaultValue={productDiscount.toString()}
@@ -834,14 +804,7 @@ export default function CreateProduct(props) {
               )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <Divider>
-                <SubheadingChip
-                  label="FINAL PRICE"
-                  variant="outlined"
-                  color="primary"
-                />
-              </Divider>
-              <ProductInfoInput disabled defaultValue={finalPrice.toFixed(2)} />
+              <ProductInfoInput label="Final Price" disabled defaultValue={finalPrice.toFixed(2)} />
             </InputBox>
           </Box>
           <CalculatePriceButton
@@ -870,6 +833,7 @@ export default function CreateProduct(props) {
                   />
                 </Divider>
                 <ProductInfoInput
+                  label="Quantity"
                   type="number"
                   inputRef={productQuantityRef}
                   defaultValue={productQuantity.toString()}
@@ -926,34 +890,20 @@ export default function CreateProduct(props) {
           <Box>
             <Box sx={{ display: "flex" }}>
               <Box sx={{ width: "50%" }}>
-                <Divider variant="middle">
-                  <SubheadingChip
-                    label="SPECIFICATION KEY"
-                    variant="outlined"
-                    color="primary"
-                  />
-                </Divider>
               </Box>
               <Box sx={{ width: "50%" }}>
-                <Divider variant="middle">
-                  <SubheadingChip
-                    label="SPECIFICATION VALUE"
-                    variant="outlined"
-                    color="primary"
-                  />
-                </Divider>
               </Box>
             </Box>
             {productSpecifications?.map((spec, index) => (
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput readOnly defaultValue={spec.key} />
+                    <ProductInfoInput label="Spec. key" readOnly defaultValue={spec.key} />
                   </InputBox>
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput readOnly defaultValue={spec.value} />
+                    <ProductInfoInput label="Spec. value" readOnly defaultValue={spec.value} />
                   </InputBox>
                 </Box>
               </Box>
@@ -962,6 +912,7 @@ export default function CreateProduct(props) {
               <Box sx={{ width: "50%" }}>
                 <InputBox>
                   <ProductInfoInput
+                    label="Spec. key"
                     inputRef={productSpecificationKeyRef}
                     placeholder="Example: Color"
                   />
@@ -970,6 +921,7 @@ export default function CreateProduct(props) {
               <Box sx={{ width: "50%" }}>
                 <InputBox>
                   <ProductInfoInput
+                    label="Spec. value"
                     inputRef={productSpecificationValueRef}
                     id="spec-value"
                     placeholder="Example: Black"
@@ -1014,20 +966,10 @@ export default function CreateProduct(props) {
         )}
         <Collapse in={tagsInput}>
           <InputBox>
-            <Divider textAlign="left" sx={{ marginBottom: theme.spacing(1) }}>
-              <SubheadingChip
-                label="TAGS SEPARATED BY COMMA"
-                variant="outlined"
-                color="primary"
-              />
-            </Divider>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
-                  sx={{
-                    marginTop: 0,
-                    padding: 1,
-                  }}
+                  label="Tags separated by comma"
                   inputRef={productTagsRef}
                   multiline
                   placeholder="phone, samsung, 4G"
@@ -1035,6 +977,7 @@ export default function CreateProduct(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
+                <Box sx={{marginTop: 1}}>
                 <SaveTagsButton
                   onClick={setValuesToStates}
                   variant="contained"
@@ -1043,6 +986,7 @@ export default function CreateProduct(props) {
                 >
                   save tags
                 </SaveTagsButton>
+                </Box>
               </Grid>
             </Grid>
           </InputBox>
@@ -1073,20 +1017,10 @@ export default function CreateProduct(props) {
         </TagsWrapper>
         <Collapse in={labelsInput}>
           <InputBox>
-            <Divider textAlign="left" sx={{ marginBottom: theme.spacing(1) }}>
-              <SubheadingChip
-                label="LABELS SEPARATED BY COMMA"
-                variant="outlined"
-                color="primary"
-              />
-            </Divider>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
-                  sx={{
-                    marginTop: 0,
-                    padding: 1,
-                  }}
+                 label="Labels separated by comma"
                   inputRef={productLabelsRef}
                   multiline
                   placeholder="new, popular"
@@ -1094,14 +1028,16 @@ export default function CreateProduct(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
-                <SaveTagsButton
-                  onClick={setValuesToStates}
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                >
-                  save labels
-                </SaveTagsButton>
+                <Box sx={{marginTop: 1}}>
+                  <SaveTagsButton
+                    onClick={setValuesToStates}
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                  >
+                    save labels
+                  </SaveTagsButton>
+                </Box>
               </Grid>
             </Grid>
           </InputBox>
@@ -1131,7 +1067,7 @@ export default function CreateProduct(props) {
             <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
             UPLOAD IMAGES
           </Typography>
-          <Typography sx={{ pt: 2, color: theme.palette.warning.main }}>
+          <Typography sx={{textAlign: "center", pt: 2, color: theme.palette.warning.main }}>
             {allowedFileFormats} file formats are allowed
           </Typography>
           <TextField

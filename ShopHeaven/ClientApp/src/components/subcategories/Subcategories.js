@@ -9,7 +9,6 @@ import {
   ImageListItemBar,
   Tooltip,
   Zoom,
-  Fade,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -158,13 +157,11 @@ export default function Subcategories() {
                     alt={subcategory.name}
                     loading="lazy"
                   />
-                  <Fade in={true} direction="up" timeout={900}>
                       <StyledImageListItemBar
                         position="top"
                         title={subcategory.name}
                         subtitle={`${subcategory.productsCount} products`}
                       />
-                  </Fade>
                 </StyledImageListItem>
               </Tooltip>
             </Fragment>
