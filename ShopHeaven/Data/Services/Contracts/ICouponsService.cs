@@ -9,6 +9,10 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<CouponResponseModel> EditCouponAsync(EditCouponRequestModel model);
 
+        Task<CouponResponseModel> DeleteCouponAsync(DeleteCouponRequestModel model);
+
+        Task<CouponResponseModel> UndeleteCouponAsync(UndeleteCouponRequestModel model);
+
         Task<ICollection<CouponResponseModel>> GetAllCouponsAsync();
 
         Task<CouponResponseModel> VerifyCouponAsync(string code);

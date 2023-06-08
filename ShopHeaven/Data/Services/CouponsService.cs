@@ -64,22 +64,45 @@ namespace ShopHeaven.Data.Services
         {
             if (model.Amount < 0) throw new ArgumentException(GlobalConstants.CouponAmountCannotBeNegativeNumber);
 
-            var coupon = await this.db.Coupons
-               .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
-
-            if (coupon == null)
-            {
-                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
-            }
+            var coupon = await GetCouponByIdAsync(model.Id);
 
             coupon.Amount = model.Amount;
             coupon.Code = model.Code.Trim().ToUpper();
+            coupon.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
 
             return await CreateResponseModel(coupon);
         }
 
+        public async Task<CouponResponseModel> DeleteCouponAsync(DeleteCouponRequestModel model)
+        {
+            var coupon = await GetCouponByIdAsync(model.Id);
+
+            coupon.IsDeleted = true;
+            coupon.DeletedOn = DateTime.UtcNow;
+
+            await this.db.SaveChangesAsync();
+
+            return await CreateResponseModel(coupon);
+        }
+
+        public async Task<CouponResponseModel> UndeleteCouponAsync(UndeleteCouponRequestModel model)
+        {
+            var coupon = await this.db.Coupons
+            .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted == true);
+
+            if (coupon == null)
+            {
+                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
+            }
+
+            coupon.IsDeleted = false;
+
+            await this.db.SaveChangesAsync();
+
+            return await CreateResponseModel(coupon);
+        }
 
         private async Task<Coupon> GetCouponByCodeAsync(string code)
         {
@@ -115,5 +138,19 @@ namespace ShopHeaven.Data.Services
 
             return responseCoupon;
         }
+
+        private async Task<Coupon> GetCouponByIdAsync(string id)
+        {
+            var coupon = await this.db.Coupons
+               .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
+
+            if (coupon == null)
+            {
+                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
+            }
+
+            return coupon;
+        }
+
     }
 }

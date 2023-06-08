@@ -1,94 +1,252 @@
-import { React, useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { ApiEndpoints } from "../../../api/endpoints";
+import { React, useState, Fragment } from "react";
 import {
   Box,
   Button,
-  TableRow,
-  TableCell,
-  Collapse,
-  Table,
-  TableBody,
-  TableHead,
-  TableContainer,
+  Typography,
+  Paper,
+  Alert,
+  AlertTitle,
+  Zoom,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Delete, Cancel, Refresh, Undo } from "@mui/icons-material";
 import { theme } from "../../../theme";
-import { AddCircle, RemoveCircle } from "@mui/icons-material";
-import Loader from "../../common/Loader";
-import CreateCoupon from "./CreateCoupon";
-import { loginPath } from "../../../constants";
-import AdminCouponsRow from "./AdminCouponsRow";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
-export default function DeleteCoupon() {
-  const [openCreateCouponForm, setOpenCreateCouponForm] = useState(false);
+export default function DeleteCoupon(props) {
 
-  const [coupons, setCoupons] = useState([]);
-  const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
+  let axiosPrivate = useAxiosPrivate();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [coupon, setCoupon] = useState(props.coupon);
+  const [deleteResponse, setDeleteResponse] = useState(undefined);
+  const [undeleteResponse, setUndeleteResponse] = useState(undefined);
+  const [undoDeleteButtonClicked, setUndoDeleteButtonClicked] = useState(false);
+  const [deleteCouponResponseMessage, setDeleteCouponResponseMessage] =
+    useState("");
+  const [deleteCouponErrorMessage, setDeleteCouponErrorMessage] =
+    useState("");
 
-  const effectRun = useRef(false);
-
-  function couponsListChanged(newCoupon) {
-    setCoupons((prev) => {
-      return [...prev, newCoupon];
-    });
-    console.log(newCoupon);
+  function refreshPage() {
+    window.location.reload(false);
   }
 
-  useEffect(() => {
-    const controller = new AbortController();
+  function onDeleteCoupon() {
+    deleteCoupon(coupon.id);
+  }
 
-    const getCoupons = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axiosPrivate.get(
-          ApiEndpoints.categories.getAll,
-          {
-            signal: controller.signal,
-          }
-        );
-        console.log(response.data);
+  async function deleteCoupon(couponId) {
+    try {
+      const controller = new AbortController();
 
-        setCoupons(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        navigate(`${loginPath}`, { state: { from: location }, replace: true });
-      }
-    };
+      const response = await axiosPrivate.post(
+        ApiEndpoints.coupons.deleteCoupon,
+        JSON.stringify({ id: couponId }),
+        {
+          signal: controller.signal,
+        }
+      );
 
-    if (effectRun.current) {
-      getCoupons();
-    }
- 
-    return () => {
       controller.abort();
-      effectRun.current = true;
-    };
-  }, []);
 
-  function handleOpen() {
-    setOpenCreateCouponForm(!openCreateCouponForm);
+      setDeleteCouponErrorMessage("");
+      setDeleteCouponResponseMessage(
+        "Coupon " + coupon.code + " deleted!"
+      );
+      setUndeleteResponse(undefined);
+      setDeleteResponse(response?.data);
+      setUndoDeleteButtonClicked(false);
+      props.couponDeleted();
+      console.log(response?.data);
+    } catch (error) {
+      setDeleteCouponResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setDeleteCouponErrorMessage(
+          noPermissionsForOperationMessage
+        );
+      } else {
+        setDeleteCouponErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
   }
 
-  const CouponTableCell = styled(TableCell)({
-    fontSize: 18,
-  });
+  function onUndeleteCoupon() {
+    undeleteCoupon(coupon.id);
+  }
 
-  const StyledButtonBox = styled(Box)({
-    marginTop: theme.spacing(2),
+  async function undeleteCoupon(couponId) {
+    try {
+      const controller = new AbortController();
+      const response = await axiosPrivate.post(
+        ApiEndpoints.coupons.undeleteCoupon,
+        JSON.stringify({ id: couponId }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setDeleteCouponErrorMessage("");
+      setDeleteCouponResponseMessage(
+        "Coupon " + coupon.code + " undeleted!"
+      );
+      setDeleteResponse(undefined);
+      setUndeleteResponse(response?.data);
+      setUndoDeleteButtonClicked(true);
+
+      props.couponUndeleted();
+      console.log(response?.data);
+    } catch (error) {
+      setDeleteCouponResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setDeleteCouponErrorMessage(
+          noPermissionsForOperationMessage
+        );
+      } else {
+        setDeleteCouponErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
+
+  const DeleteCouponButton = styled(Button)({
+    width: "100%",
+    marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(1),
   });
-
   return (
-    <Box>
-        "DELETE"
-    </Box>
+    <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
+      {deleteResponse || undeleteResponse ? (
+        deleteResponse ? (
+          <Alert severity="warning">
+            <AlertTitle>Coupon {coupon.code} successfully deleted!</AlertTitle>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                {!undoDeleteButtonClicked ? (
+                  <Button
+                    sx={{ mt: 1 }}
+                    startIcon={<Undo />}
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    onClick={onUndeleteCoupon}
+                  >
+                    UNDO DELETE
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={6}
+                lg={6}
+                sx={{ position: "relative" }}
+              >
+                <Button
+                  sx={{ mt: 1 }}
+                  startIcon={<Refresh />}
+                  size="small"
+                  variant="contained"
+                  onClick={refreshPage}
+                >
+                  REFRESH
+                </Button>
+              </Grid>
+            </Grid>
+          </Alert>
+        ) : (
+          <Alert severity="success">
+            <AlertTitle>Coupon {coupon.code} successfully revealed!</AlertTitle>
+            <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+              <Button
+                startIcon={<Refresh />}
+                size="small"
+                variant="contained"
+                onClick={refreshPage}
+              >
+                REFRESH
+              </Button>
+            </Box>
+          </Alert>
+        )
+      ) : (
+        <Fragment>
+          <Box
+            sx={{
+              textAlign: "center",
+              marginLeft: theme.spacing(4),
+              marginTop: theme.spacing(3),
+            }}
+          >
+            <Typography variant="h6">
+              You are on the way to delete coupon {coupon.code.toUpperCase()}!
+            </Typography>
+            <Typography variant="p" color="error">
+              Be careful!
+            </Typography>
+          </Box>
+
+          <Grid container spacing={3}>
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <DeleteCouponButton
+                onClick={onDeleteCoupon}
+                type="submit"
+                size="large"
+                variant="outlined"
+                color="error"
+                startIcon={<Delete />}
+              >
+                DELETE
+              </DeleteCouponButton>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              sm={6}
+              md={6}
+              lg={6}
+              sx={{ position: "relative" }}
+            >
+              <DeleteCouponButton
+                onClick={props.onCancelButtonClicked}
+                type="submit"
+                size="large"
+                variant="contained"
+                color="error"
+                startIcon={<Cancel />}
+              >
+                CANCEL
+              </DeleteCouponButton>
+            </Grid>
+          </Grid>
+
+          {deleteCouponResponseMessage ? (
+            <Zoom in={deleteCouponResponseMessage.length > 0 ? true : false}>
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+                {deleteCouponResponseMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+          {deleteCouponErrorMessage ? (
+            <Zoom in={deleteCouponErrorMessage.length > 0 ? true : false}>
+              <Alert sx={{ marginTop: theme.spacing(1) }} severity="error">
+                {deleteCouponErrorMessage}
+              </Alert>
+            </Zoom>
+          ) : (
+            ""
+          )}
+        </Fragment>
+      )}
+    </Paper>
   );
 }

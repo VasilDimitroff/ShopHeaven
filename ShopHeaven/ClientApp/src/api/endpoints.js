@@ -64,6 +64,8 @@ export const ApiEndpoints = {
         createCoupon: "api/coupons/create",
         editCoupon: "api/coupons/edit",
         getAll: "api/coupons/getAll",
+        deleteCoupon: "api/coupons/delete",
+        undeleteCoupon: "api/coupons/undelete",
         verifyCoupon: "api/coupons/verify"
     }
 }

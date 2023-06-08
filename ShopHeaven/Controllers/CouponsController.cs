@@ -45,6 +45,34 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
+        public async Task<ActionResult<CouponResponseModel>> Delete([FromBody] DeleteCouponRequestModel model)
+        {
+            try
+            {
+                var deletedCoupon = await this.couponsService.DeleteCouponAsync(model);
+                return Ok(deletedCoupon);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
+        public async Task<ActionResult<CouponResponseModel>> Undelete([FromBody] UndeleteCouponRequestModel model)
+        {
+            try
+            {
+                var undeletedCoupon = await this.couponsService.UndeleteCouponAsync(model);
+                return Ok(undeletedCoupon);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(GetAll))]
         public async Task<ActionResult<ICollection<CouponResponseModel>>> GetAll()
         {

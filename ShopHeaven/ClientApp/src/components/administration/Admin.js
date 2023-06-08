@@ -51,19 +51,8 @@ export default function Admin() {
 
   const [maximizeMenu, setMaximizeMenu] = useState(true);
 
-  useEffect(() => {
-    // Проверка за наличие на стойност в локалното хранилище при монтаж на компонента
-    const maximizeMenuValue = localStorage.getItem("maximizeAdminMenu");
-    if (maximizeMenuValue) {
-      setMaximizeMenu(maximizeMenuValue == "true" ? true : false);
-    } else {
-      setMaximizeMenu(true);
-    }
-  }, []);
-
   function handleSetShowMenuButtonsTexts() {
     setMaximizeMenu((prev) => !prev);
-    localStorage.setItem("maximizeAdminMenu", !maximizeMenu);
   }
 
   function setSelectedItem(item) {

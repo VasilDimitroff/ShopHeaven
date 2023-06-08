@@ -52,7 +52,6 @@ export default function AdminCoupons() {
             signal: controller.signal,
           }
         );
-        console.log(response.data);
 
         setCoupons(response.data);
         setIsLoading(false);
