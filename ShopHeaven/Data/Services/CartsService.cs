@@ -174,7 +174,8 @@ namespace ShopHeaven.Data.Services
             var responseModel = new CartSummaryResponseModel
             {
                 TotalPriceWithDiscount = cart.TotalPriceWithDiscount,
-                TotalPriceWithNoDiscount = cart.TotalPriceWithNoDiscount
+                TotalPriceWithNoDiscount = cart.TotalPriceWithNoDiscount,
+                TotalDiscount = cart.TotalPriceWithNoDiscount - cart.TotalPriceWithDiscount
             };
 
             return responseModel;

@@ -24,10 +24,8 @@ import {
   Settings,
   Dashboard,
   Reviews,
-  ArrowForwardIos,
-  ArrowBackIos,
   ExpandLess,
-  ExpandMore
+  ExpandMore,
 } from "@mui/icons-material";
 
 const breadcrumbs = [
@@ -42,7 +40,6 @@ const breadcrumbs = [
 ];
 
 export default function Admin() {
-
   let [firstSelected, setFirstSelected] = useState(false);
   let [secondSelected, setSecondSelected] = useState(false);
   let [thirdSelected, setThirdSelected] = useState(false);
@@ -56,7 +53,7 @@ export default function Admin() {
 
   useEffect(() => {
     // Проверка за наличие на стойност в локалното хранилище при монтаж на компонента
-    const maximizeMenuValue = localStorage.getItem('maximizeAdminMenu');
+    const maximizeMenuValue = localStorage.getItem("maximizeAdminMenu");
     if (maximizeMenuValue) {
       setMaximizeMenu(maximizeMenuValue == "true" ? true : false);
     } else {
@@ -65,8 +62,8 @@ export default function Admin() {
   }, []);
 
   function handleSetShowMenuButtonsTexts() {
-    setMaximizeMenu(prev => !prev);
-    localStorage.setItem('maximizeAdminMenu', !maximizeMenu);
+    setMaximizeMenu((prev) => !prev);
+    localStorage.setItem("maximizeAdminMenu", !maximizeMenu);
   }
 
   function setSelectedItem(item) {
@@ -145,7 +142,6 @@ export default function Admin() {
     }
   }
 
-
   const MainWrapper = styled(Box)({
     width: "95%",
     margin: "auto",
@@ -182,17 +178,17 @@ export default function Admin() {
       display: "block",
     },
     fontSize: maximizeMenu ? "" : 12,
-    display: maximizeMenu ?  "none" : "block",
-    textAlign: "center"
+    display: maximizeMenu ? "none" : "block",
+    textAlign: "center",
   });
 
   const StyledListItemButton = styled(ListItemButton)({
     padding: theme.spacing(1.25, 0),
-    paddingLeft : maximizeMenu ? theme.spacing(1) : theme.spacing(1),
+    paddingLeft: maximizeMenu ? theme.spacing(1) : theme.spacing(1),
     paddingRight: maximizeMenu ? theme.spacing(1) : theme.spacing(1),
     [theme.breakpoints.down("lg")]: {
       paddingLeft: theme.spacing(1),
-      paddingRight:  theme.spacing(1)
+      paddingRight: theme.spacing(1),
     },
   });
 
@@ -201,15 +197,15 @@ export default function Admin() {
     justifyContent: "center",
     alignItems: "center",
     [theme.breakpoints.down("lg")]: {
-      padding: theme.spacing(0, 1)
+      padding: theme.spacing(0, 1),
     },
-  })
+  });
   const MinimizeButtonListItemButton = styled(StyledListItemButton)({
     display: "block",
     [theme.breakpoints.down("lg")]: {
-      display: "none"
+      display: "none",
     },
-  })
+  });
 
   return (
     <MainWrapper>
@@ -218,13 +214,7 @@ export default function Admin() {
       </Box>
       <Box>
         <Grid container spacing={1}>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={maximizeMenu ? 2 : 12}
-          >
+          <Grid item xs={12} sm={12} md={12} lg={maximizeMenu ? 2 : 12}>
             <Paper>
               <StyledList dense={true}>
                 <MenuHolder direction="row" flexWrap="wrap">
@@ -445,13 +435,7 @@ export default function Admin() {
               </StyledList>
             </Paper>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={maximizeMenu ? 10 : 12}
-          >
+          <Grid item xs={12} sm={12} md={12} lg={maximizeMenu ? 10 : 12}>
             <Outlet />
           </Grid>
         </Grid>

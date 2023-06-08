@@ -1,4 +1,4 @@
-import { React, Fragment, useState, useEffect } from "react";
+import { React, Fragment, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -12,20 +12,114 @@ import {
   InputBase,
   Chip,
   Zoom,
-  Alert
+  Alert,
 } from "@mui/material";
 import { AddShoppingCart, ArrowCircleRight } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
+import { ApiEndpoints } from "../../api/endpoints";
 import useAppSettings from "../../hooks/useAppSettings";
-import { fontWeight } from "@mui/system";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../constants";
 
 export default function CartSummary(props) {
   const { appSettings } = useAppSettings();
 
-  const [cartSummary, setCartSummary] = useState(props.cartSummary);
+  const axiosPrivate = useAxiosPrivate();
 
-  function removeCoupon() {}
+  const [cartSummary, setCartSummary] = useState(props.cartSummary);
+  const [coupon, setCoupon] = useState(null);
+
+  const [applyCouponResponseMessage, setApplyCouponResponseMessage] =
+    useState("");
+  const [applyCouponErrorMessage, setApplyCouponErrorMessage] = useState("");
+
+  const couponRef = useRef();
+
+  function onCouponApplied() {
+    const couponValue = couponRef.current.value;
+    console.log(couponValue);
+
+    if(coupon) {
+      setApplyCouponResponseMessage("");
+      setApplyCouponErrorMessage("You can apply 1 coupon only!");
+      return;
+    }
+
+    if (!couponValue || couponValue.trim().length != 8) {
+      setCoupon(null);
+      setApplyCouponResponseMessage("");
+      setApplyCouponErrorMessage("Coupon must contain exact 8 characters");
+      return;
+    }
+
+    const couponRequestModel = {
+      code: couponValue.trim(),
+    };
+
+    verifyCoupon(couponRequestModel);
+  }
+
+  async function verifyCoupon(couponRequestModel) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.coupons.verifyCoupon,
+        couponRequestModel,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      console.log(response?.data);
+      setCoupon(response?.data);
+
+      controller.abort();
+
+      setApplyCouponErrorMessage("");
+      setApplyCouponResponseMessage(
+        `Coupon ${couponRequestModel.code} applied succesfully`
+      );
+
+      //change total summary price
+      setCartSummary((prev) => {
+        return {
+          ...prev,
+        };
+      });
+    } catch (error) {
+      setCoupon(null);
+
+      setApplyCouponResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setApplyCouponErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setApplyCouponErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
+
+  function removeCoupon() {
+    setCartSummary(prev => {
+      return {
+        ...prev,
+        
+      }
+    })
+    setCoupon(null);
+    setApplyCouponResponseMessage("");
+    setApplyCouponErrorMessage("");
+  }
+
+  function clearSuccessMessage() {
+    setApplyCouponResponseMessage("");
+  }
+
+  function clearErrorMessage() {
+    setApplyCouponErrorMessage("");
+  }
 
   const RegularPriceHolder = styled(Box)({
     display: "flex",
@@ -43,7 +137,7 @@ export default function CartSummary(props) {
     [theme.breakpoints.up("lg")]: {
       display: "block",
       margin: "auto",
-      textAlign: "center"
+      textAlign: "center",
     },
     alignItems: "center",
     justifyContent: "space-between",
@@ -77,7 +171,6 @@ export default function CartSummary(props) {
     marginTop: theme.spacing(3),
   });
 
-
   return (
     <Stack spacing={2}>
       <Paper sx={{ p: 2 }}>
@@ -103,14 +196,24 @@ export default function CartSummary(props) {
                 <Typography>Discount:</Typography>
                 <Typography>
                   {appSettings.appCurrency.code} -
-                  {(
-                    cartSummary.totalPriceWithNoDiscount -
-                    cartSummary.totalPriceWithDiscount
-                  ).toFixed(2)}
+                  {cartSummary.totalDiscount.toFixed(2)}
                 </Typography>
               </DiscountHolder>
             </Box>
           )}
+
+          {
+            coupon ?
+            (<DiscountHolder>
+              <Typography>Coupon discount:</Typography>
+              <Typography>
+                {`${appSettings.appCurrency.code} -${(cartSummary.totalPriceWithDiscount * coupon?.amount / 100).toFixed(2)} (-${coupon?.amount} %)`}
+              </Typography>
+            </DiscountHolder>)
+
+            : <></>
+          }
+
           <PriceHolder>
             <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
               TOTAL PRICE:
@@ -120,7 +223,11 @@ export default function CartSummary(props) {
               sx={{ fontWeight: 500, color: theme.palette.error.main }}
             >
               {appSettings.appCurrency.code}{" "}
-              {cartSummary.totalPriceWithDiscount.toFixed(2)}
+              {
+                coupon
+                ? ((cartSummary.totalPriceWithDiscount - (cartSummary.totalPriceWithDiscount * coupon?.amount / 100)).toFixed(2))
+                : (cartSummary.totalPriceWithDiscount.toFixed(2))
+              }
             </Typography>
           </PriceHolder>
           <Box>
@@ -136,29 +243,66 @@ export default function CartSummary(props) {
         </Stack>
       </Paper>
       <CouponHolder>
-        <Typography sx={{fontWeight: 500}}>Have a discount coupon?</Typography>
+        <Typography sx={{ fontWeight: 500 }}>
+          Have a discount coupon?
+        </Typography>
         <Box sx={{ display: "flex", flex: 1 }}>
-          <CouponInput variant="outlined" placeholder="EXAMPLE: 45B2AT0B" />
+          <CouponInput
+            variant="outlined"
+            placeholder="EXAMPLE: 45B2AT0B"
+            inputRef={couponRef}
+            defaultValue={coupon?.code}
+          />
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <IconButton color="primary" sx={{ p: "5px" }}>
+          <IconButton
+            onClick={onCouponApplied}
+            color="primary"
+            sx={{ p: "5px" }}
+          >
             <ArrowCircleRight sx={{ fontSize: 30 }} />
           </IconButton>
         </Box>
         <Box>
-          <Chip variant="outlined" label={`REMOVE COUPON: ${"45B2AT0B"}`} color="error" size="small" onDelete={removeCoupon}/>
+          {!coupon ? (
+            <></>
+          ) : (
+            <Chip
+              variant="outlined"
+              label={`REMOVE COUPON: ${coupon?.code}`}
+              color="error"
+              size="small"
+              onDelete={removeCoupon}
+            />
+          )}
         </Box>
-        <Zoom in={true}>
-          <Alert
-            sx={{ marginTop: theme.spacing(2) }}
-            variant="filled"
-            severity="error"
-            //onClose={clearQuantityBlockMesssage}
-          >
-            {"ERROR COUPON MESSAGE"}
-          </Alert>
-        </Zoom>
+        {applyCouponResponseMessage ? (
+          <Zoom in={applyCouponResponseMessage.length > 0 ? true : false}>
+            <Alert
+              onClose={clearSuccessMessage}
+              sx={{ marginTop: theme.spacing(2) }}
+              severity="success"
+            >
+              {applyCouponResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {applyCouponErrorMessage ? (
+          <Zoom in={applyCouponErrorMessage.length > 0 ? true : false}>
+            <Alert
+              onClose={clearErrorMessage}
+              sx={{ marginTop: theme.spacing(2) }}
+              variant="filled"
+              severity="error"
+            >
+              {applyCouponErrorMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          <></>
+        )}
       </CouponHolder>
- 
     </Stack>
   );
 }
