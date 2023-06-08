@@ -45,6 +45,7 @@ import {
   sortByDiscountPercentDescending,
   sortByRating,
   maxApplicationPrice,
+  subcategoriesOfMainCategoryBaseUrl
 } from "../../../constants";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
@@ -103,6 +104,10 @@ export default function SubcategoryProducts() {
     {
       name: "Categories",
       uri: `${allCategoriesUrl}`,
+    },
+    {
+      name: `${category.name}`,
+      uri: `${subcategoriesOfMainCategoryBaseUrl}${category.id}`,
     },
     {
       name: `${subcategory.name}`,

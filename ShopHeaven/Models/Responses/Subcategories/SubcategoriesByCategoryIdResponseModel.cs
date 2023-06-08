@@ -1,4 +1,4 @@
-﻿using ShopHeaven.Models.Responses.Categories.BaseModel;
+﻿using ShopHeaven.Models.Responses.Categories;
 
 namespace ShopHeaven.Models.Responses.Subcategories
 {
@@ -6,7 +6,7 @@ namespace ShopHeaven.Models.Responses.Subcategories
     {
         public ICollection<SubcategoryMainInfoResponseModel> Subcategories { get; set; }
 
-        public CategoryBaseResponseModel Category { get; set; }
+        public CategoryResponseModel Category { get; set; }
 
         public int ProductsCount { get; set; } // all products in main category
     }

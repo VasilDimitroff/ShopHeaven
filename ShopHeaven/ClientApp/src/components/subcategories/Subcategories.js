@@ -7,8 +7,10 @@ import {
   Typography,
   ImageListItem,
   ImageListItemBar,
+  Chip,
   Tooltip,
   Zoom,
+  Container,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -70,6 +72,7 @@ export default function Subcategories() {
           ...prev,
           id: response?.data?.category.id,
           name: response?.data?.category.name,
+          description: response?.data?.category.description,
           productsCount: response?.data?.productsCount,
         }));
       } catch (error) {
@@ -132,16 +135,19 @@ export default function Subcategories() {
 
   const TotalProductsCountText = styled(Typography)({
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    margin: theme.spacing(2, 0)
   })
 
   return (
     <>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <ContentWrapper>
-        <Heading>{mainCategory.name} - SUBCATEGORIES</Heading>
-        <Heading>ID OF {mainCategory.id}</Heading>
-        <TotalProductsCountText>{mainCategory.productsCount} products</TotalProductsCountText>
+        <Heading>{mainCategory.name}</Heading>
+        <Box sx={{display: "flex", justifyContent:"center", mb: 1, mt: -1}}>
+          <Chip size="small" variant="outlined" color="secondary" label={`${mainCategory.productsCount} products`} />
+        </Box>
+        <TotalProductsCountText>{mainCategory.description}</TotalProductsCountText>
         <StyledImageList cols={colsToShow}>
           {subcategories?.map((subcategory) => (
             <Fragment key={subcategory.id}>

@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
+using ShopHeaven.Models.Responses.Categories;
 using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Subcategories;
 using ShopHeaven.Models.Responses.Subcategories.BaseModel;
@@ -43,10 +44,11 @@ namespace ShopHeaven.Data.Services
 
             var subcategoriesByCategoryId = new SubcategoriesByCategoryIdResponseModel
             {
-                Category = new CategoryBaseResponseModel
+                Category = new CategoryResponseModel
                 {
                     Id = category.Id,
                     Name = category.Name,
+                    Description = category.Description,
                 },
                 Subcategories = subcategories,
                 ProductsCount = subcategories.Sum(x => x.ProductsCount)
