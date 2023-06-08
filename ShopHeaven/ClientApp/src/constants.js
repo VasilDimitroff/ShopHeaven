@@ -55,6 +55,14 @@ export const sortByPriceAscending = "PriceAscending";
 export const sortByDiscountPercentDescending = "PercentDiscountDescending";
 export const sortByRating = "Rating";
 
+//sorting products in admin panel producs. Important to be same as backend enum
+export const productsSortingCriteriaInAdminProductsPanel = "DateDescending";
+
+//Sorting criteria for first carousel with products in home page. Important to be same as backend enum
+export const firstProductCarouselSortingCriteria = "PercentDiscountDescending";
+//home carousel products count per slider
+export const productsPerSliderInHomePage = 12;
+
 //times for setTimer()
 export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
 export const loadSubcategoriesInMainMenuTimerMilliseconds = 0; // time waiting before start new request in main menu when user move the mouse

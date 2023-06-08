@@ -31,7 +31,7 @@ namespace ShopHeaven.Models.Responses.Products
 
         public string CreatedBy { get; set; }
 
-        public bool isAvailable { get; set; }
+        public bool IsAvailable { get; set; }
 
         public double Rating { get; set; }
 

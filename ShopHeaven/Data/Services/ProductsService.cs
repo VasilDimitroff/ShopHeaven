@@ -148,7 +148,7 @@ namespace ShopHeaven.Data.Services
                 Price = newProduct.Price,
                 Discount = newProduct.Discount,
                 Quantity = newProduct.Quantity,
-                isAvailable = newProduct.IsAvailable,
+                IsAvailable = newProduct.IsAvailable,
                 Rating = newProduct.Rating,
                 HasGuarantee = newProduct.HasGuarantee,
                 ReviewsCount = newProduct.Reviews
@@ -329,7 +329,7 @@ namespace ShopHeaven.Data.Services
                 Price = product.Price,
                 Discount = product.Discount,
                 Quantity = product.Quantity,
-                isAvailable = product.IsAvailable,
+                IsAvailable = product.IsAvailable,
                 Rating = product.Rating,
                 HasGuarantee = product.HasGuarantee,
                 ReviewsCount = product.Reviews
@@ -379,14 +379,19 @@ namespace ShopHeaven.Data.Services
             //and also if there is Category Id selected, filter products by this category
             //if categoryid is empty, dont filter by category
 
-            var products = await this.db.Products
+            //get requested sort criteria as enumeration type
+            SortingCriteria sortingCriteria = ParseSortingCriteria(model.SortingCriteria);
+
+            IQueryable<Product> products = this.db.Products
             .Where(p => p.IsDeleted != true && (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
              || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
                             ? p.SubCategory.MainCategoryId != null
-                            : p.SubCategory.MainCategoryId == model.CategoryId))
-            .OrderByDescending(p => p.CreatedOn)
-            .Skip((model.Page - 1) * model.RecordsPerPage)
+                            : p.SubCategory.MainCategoryId == model.CategoryId));
+
+            products = OrderBy(products, sortingCriteria);
+
+            List<AdminProductResponseModel> orderedProducts = await products.Skip((model.Page - 1) * model.RecordsPerPage)
             .Take(model.RecordsPerPage)
             .Select(p => new AdminProductResponseModel
             {
@@ -403,7 +408,7 @@ namespace ShopHeaven.Data.Services
                 Discount = p.Discount,
                 Quantity = p.Quantity,
                 HasGuarantee = p.HasGuarantee,
-                isAvailable = p.IsAvailable,
+                IsAvailable = p.IsAvailable,
                 Rating = p.Rating,
                 ReviewsCount = p.Reviews
                     .Where(x => x.IsDeleted != true)
@@ -437,7 +442,7 @@ namespace ShopHeaven.Data.Services
             .ToListAsync();
 
 
-            return products;
+            return orderedProducts;
         }
 
         public async Task<ProductsBySubcategoryResponseModel> GetAllBySubcategoryIdAsync(ProductPaginationRequestModel model)
@@ -1093,7 +1098,7 @@ namespace ShopHeaven.Data.Services
             products = OrderBy(products, sortingCriteria);
 
             //get 1 page with products and transform them into response model
-            List<ProductGalleryResponseModel> orderedProducts = await products
+            var orderedProducts = await products
                 .Skip((model.Page - 1) * model.RecordsPerPage)
                 .Take(model.RecordsPerPage)
                 .Select(product => new ProductGalleryResponseModel
@@ -1143,15 +1148,15 @@ namespace ShopHeaven.Data.Services
                 case SortingCriteria.DateDescending:
                     return productsCollection.OrderByDescending(e => e.CreatedOn);
                 case SortingCriteria.PriceAscending:
-                    return productsCollection.OrderBy(e => e.Price);
+                    return productsCollection.OrderBy(e => e.Price).ThenByDescending(x => x.CreatedOn);
                 case SortingCriteria.PriceDescending:
-                    return productsCollection.OrderByDescending(e => e.Price);
+                    return productsCollection.OrderByDescending(e => e.Price).ThenByDescending(x => x.CreatedOn);
                 case SortingCriteria.PercentDiscountDescending:
-                    return productsCollection.OrderByDescending(e => e.Discount);
+                    return productsCollection.OrderByDescending(e => e.Discount).ThenByDescending(x => x.CreatedOn);
                 case SortingCriteria.Rating:
-                    return productsCollection.OrderByDescending(e => e.Rating);
+                    return productsCollection.OrderByDescending(e => e.Rating).ThenByDescending(x => x.CreatedOn);
                 default:
-                    return productsCollection.OrderByDescending(e => e.CreatedOn);
+                    return productsCollection.OrderByDescending(e => e.CreatedOn).ThenByDescending(x => x.CreatedOn);
             }
         }
 

@@ -18,7 +18,7 @@ import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { productsPerPageInAdminPanel, requestTimerMilliseconds } from "../../../constants";
+import { productsPerPageInAdminPanel, requestTimerMilliseconds, productsSortingCriteriaInAdminProductsPanel } from "../../../constants";
 import CreateProduct from "./CreateProduct";
 import AdminProductRow from "./AdminProductRow";
 import AppPagination from "../../common/AppPagination";
@@ -67,6 +67,7 @@ export default function AdminProducts() {
           page: page,
           searchTerm: searchTerm,
           categoryId: searchProductByCategoryId,
+          sortingCriteria: productsSortingCriteriaInAdminProductsPanel
         };
 
         console.log("REQUIEST ", pagingModel);

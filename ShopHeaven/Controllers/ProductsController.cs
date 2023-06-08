@@ -62,6 +62,38 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        //using for product carousels
+        [HttpPost, Route(nameof(GetFiltered))]
+        public async Task<ActionResult<ICollection<ProductGalleryResponseModel>>> GetFiltered([FromBody] AdminProductPaginationRequestModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var products = await this.productsService.GetAllAsync(model);
+
+                var responseProducts = products.Select( x => new ProductGalleryResponseModel
+                {
+                    Id = x.Id,
+                    Brand = x.Brand,
+                    Discount = x.Discount,
+                    Image = x.Images.FirstOrDefault(x => x.IsThumbnail == true).Url,
+                    IsAvailable = x.IsAvailable,
+                    Name = x.Name,
+                    Labels = x.Labels,
+                    Price = x.Price,
+                    Rating = x.Rating,  
+                })
+                    .ToList();
+
+                return Ok(responseProducts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
         public async Task<ActionResult<AdminProductResponseModel>> Edit([FromForm] EditProductRequestModel model)

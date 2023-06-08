@@ -12,23 +12,76 @@ import axios from "../../api/axios";
 import {
   productsPerPageInSubCategoryPage,
   maxProductPriceRangeGroup,
+  productsPerSliderInHomePage,
+  firstProductCarouselSortingCriteria
 } from "../../constants.js";
 
 export default function Home() {
   const effectRun = useRef(false);
 
-  const [products, setProducts] = useState();
+  const [firstLineProducts, setFirstLineProducts] = useState();
+  const [secondLineProducts, setSecondLineProducts] = useState();
 
   //is request loading
   const [isLoading, setIsLoading] = useState(false);
 
+  //first line
   useEffect(() => {
 
     window.scroll(0, 0);
     
     const controller = new AbortController();
 
-    const getProducts = async () => {
+    const getProductsByFilter = async () => {
+      try {
+        setIsLoading(true);
+
+        let pagingModel = {
+          recordsPerPage: productsPerSliderInHomePage,
+          page: 1,
+          searchTerm: "", //no filter by search term
+          categoryId: "", //all categories
+          sortingCriteria: firstProductCarouselSortingCriteria
+        };
+
+        const response = await axios.post(
+          ApiEndpoints.products.getFilteredProducts,
+          pagingModel,
+          {
+            signal: controller.signal,
+          }
+        );
+
+        console.log(response?.data);
+
+        setSecondLineProducts(response?.data);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (effectRun.current) {
+      getProductsByFilter();
+    }
+
+    return () => {
+      effectRun.current = true;
+      controller.abort();
+    };
+  }, []);
+
+  
+
+  //second line
+  useEffect(() => {
+
+    window.scroll(0, 0);
+    
+    const controller = new AbortController();
+
+    const getProductsBySubcategory = async () => {
       try {
         setIsLoading(true);
 
@@ -60,7 +113,7 @@ export default function Home() {
 
         console.log(response?.data);
 
-        setProducts(response?.data?.products);
+        setFirstLineProducts(response?.data?.products);
 
         setIsLoading(false);
       } catch (error) {
@@ -69,7 +122,7 @@ export default function Home() {
     };
 
     if (effectRun.current) {
-      getProducts();
+      getProductsBySubcategory();
     }
 
     return () => {
@@ -78,16 +131,16 @@ export default function Home() {
     };
   }, []);
 
-  return products ? (
+  return firstLineProducts && secondLineProducts ? (
     <Fragment>
       <HomeCarouselAndMainMenu />
-      <ProductsCarousel products={products} headingName="Promotions" />
+      <ProductsCarousel products={secondLineProducts} headingName="Best Offers" />
       <ProductsCarousel
-        products={products}
+        products={secondLineProducts}
         headingName="Similar to {subcategoryName} (You may also like)"
       />
       <ProductsCarousel
-        products={products}
+        products={secondLineProducts}
         headingName="Frequently Purchased"
       />
 
