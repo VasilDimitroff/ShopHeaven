@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { InputBox, CompleteActionButton, ProductInfoInput } from "../../../styles/styles";
+import { InputBox, CompleteActionButton, UniversalInput } from "../../../styles/styles";
 import { Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -99,7 +99,7 @@ export default function EditCoupon(props) {
       </Typography>
       <form onSubmit={onEditCoupon}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             inputRef={couponCodeRef}
             label="Coupon code"
             variant="outlined"
@@ -107,7 +107,7 @@ export default function EditCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             inputRef={couponAmountRef}
             label="Coupon Amount"
             defaultValue={coupon.amount}

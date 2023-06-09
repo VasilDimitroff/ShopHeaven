@@ -15,7 +15,7 @@ import {
   StyledSelect,
   HeadingChip,
   SubheadingChip,
-  ProductInfoInput,
+  UniversalInput,
   InputBox,
   AddSpecificationButton,
   CalculatePriceButton,
@@ -530,7 +530,7 @@ export default function CreateProduct(props) {
       </Divider>
       <form component="form" onSubmit={onCreateProduct}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Product Name"
             sx={{ fontSize: 24 }}
             inputRef={productNameRef}
@@ -546,7 +546,7 @@ export default function CreateProduct(props) {
           )}
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Brand"
             inputRef={productBrandRef}
             placeholder="Example: Samsung"
@@ -554,7 +554,7 @@ export default function CreateProduct(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Description"
             multiline
             minRows={4}
@@ -642,14 +642,14 @@ export default function CreateProduct(props) {
           </InputBox>
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Currency"
                 disabled
                 defaultValue={appSettings.appCurrency.code}
               />
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Price"
                 type="number"
                 inputRef={productPriceRef}
@@ -671,7 +671,7 @@ export default function CreateProduct(props) {
           </Box>
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Discount"
                 type="number"
                 inputRef={productDiscountRef}
@@ -691,7 +691,7 @@ export default function CreateProduct(props) {
               )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Final Price"
                 disabled
                 defaultValue={finalPrice.toFixed(2)}
@@ -723,7 +723,7 @@ export default function CreateProduct(props) {
                     color="primary"
                   />
                 </Divider>
-                <ProductInfoInput
+                <UniversalInput
                   label="Quantity"
                   type="number"
                   inputRef={productQuantityRef}
@@ -787,7 +787,7 @@ export default function CreateProduct(props) {
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput
+                    <UniversalInput
                       label="Spec. key"
                       readOnly
                       defaultValue={spec.key}
@@ -796,7 +796,7 @@ export default function CreateProduct(props) {
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput
+                    <UniversalInput
                       label="Spec. value"
                       readOnly
                       defaultValue={spec.value}
@@ -808,7 +808,7 @@ export default function CreateProduct(props) {
             <Box sx={{ display: "flex" }}>
               <Box sx={{ width: "50%" }}>
                 <InputBox>
-                  <ProductInfoInput
+                  <UniversalInput
                     label="Spec. key"
                     inputRef={productSpecificationKeyRef}
                     placeholder="Example: Color"
@@ -817,7 +817,7 @@ export default function CreateProduct(props) {
               </Box>
               <Box sx={{ width: "50%" }}>
                 <InputBox>
-                  <ProductInfoInput
+                  <UniversalInput
                     label="Spec. value"
                     inputRef={productSpecificationValueRef}
                     id="spec-value"
@@ -867,7 +867,7 @@ export default function CreateProduct(props) {
           <InputBox>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
-                <ProductInfoInput
+                <UniversalInput
                   label="Tags separated by comma"
                   inputRef={productTagsRef}
                   multiline
@@ -918,7 +918,7 @@ export default function CreateProduct(props) {
           <InputBox>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
-                <ProductInfoInput
+                <UniversalInput
                   label="Labels separated by comma"
                   inputRef={productLabelsRef}
                   multiline
@@ -985,7 +985,7 @@ export default function CreateProduct(props) {
               multiple: true,
             }}
           />
-          {/*           <ProductInfoInput
+          {/*           <UniversalInput
             accept=".jpg, .png, .jpeg, .webp"
             type="file"
             variant="outlined"

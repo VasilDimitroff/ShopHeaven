@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { InputBox, CompleteActionButton, ProductInfoInput } from "../../../styles/styles";
+import { InputBox, CompleteActionButton, UniversalInput } from "../../../styles/styles";
 import { AddPhotoAlternate, Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../constants";
@@ -121,7 +121,7 @@ export default function EditCategoryForm(props) {
       </Typography>
       <form onSubmit={onEditCategory}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{mt:4}}
             inputRef={categoryNameRef}
             label="Category name"
@@ -169,7 +169,7 @@ export default function EditCategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{mt:4}}
             inputRef={categoryDescriptionRef}
             label="Category Description"

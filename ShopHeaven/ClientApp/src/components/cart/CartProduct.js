@@ -244,7 +244,7 @@ export default function CartProduct(props) {
     setDeleteFromCartErrorMessage("");
   }
 
-  const ProductInfoInput = styled(InputBase)({
+  const UniversalInput = styled(InputBase)({
     border: "1px solid rgba(0, 0, 0, 0.2)",
     width: "50%",
     fontWeight: 500,
@@ -444,7 +444,7 @@ export default function CartProduct(props) {
           </FinalPriceHolder>
           <QuantityHolder>
             <Typography>Quantity:</Typography>
-            <ProductInfoInput
+            <UniversalInput
               type="number"
               onKeyDown={onKeyDown}
               onChange={onChangeProductQuantity}

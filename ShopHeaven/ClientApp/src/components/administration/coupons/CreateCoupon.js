@@ -7,7 +7,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { theme } from "../../../theme";
-import { InputBox, ProductInfoInput, CompleteActionButton } from "../../../styles/styles";
+import { InputBox, UniversalInput, CompleteActionButton } from "../../../styles/styles";
 import { AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -98,7 +98,7 @@ export default function CreateCoupon(props) {
 
       <form onSubmit={onCreateCoupon}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             inputRef={couponCodeRef}
             label="Coupon code"
             defaultValue={couponCode}
@@ -107,7 +107,7 @@ export default function CreateCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             inputRef={couponAmountRef}
             label="Coupon amount"
             defaultValue={couponAmount}

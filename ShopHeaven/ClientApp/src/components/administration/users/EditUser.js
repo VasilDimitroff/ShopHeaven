@@ -11,7 +11,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { Edit , AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
-import { HeadingChip, SubheadingChip, InputBox, StyledSelect, ProductInfoInput, CompleteActionButton, AdminMainWrapper } from "../../../styles/styles";
+import { HeadingChip, SubheadingChip, InputBox, StyledSelect, UniversalInput, CompleteActionButton, AdminMainWrapper } from "../../../styles/styles";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -330,7 +330,7 @@ export default function EditUser(props) {
       </Divider>
       <form component="form" onSubmit={onEditUser}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label={"Email"}
             inputRef={userEmailRef}
             placeholder={user.email}
@@ -343,7 +343,7 @@ export default function EditUser(props) {
           )}
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label={"Username"}
             inputRef={userNameRef}
             placeholder={user.username}

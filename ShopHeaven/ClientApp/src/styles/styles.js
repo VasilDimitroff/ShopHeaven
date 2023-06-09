@@ -68,7 +68,7 @@ export const StyledSelect = {
   });
 
   // universal input field
-  export const ProductInfoInput = styled(TextField)({
+  export const UniversalInput = styled(TextField)({
     width: "100%",
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1.5),

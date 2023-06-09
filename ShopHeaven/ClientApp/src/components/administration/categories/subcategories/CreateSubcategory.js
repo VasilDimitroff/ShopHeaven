@@ -6,7 +6,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { theme } from "../../../../theme";
-import { InputBox, ProductInfoInput, CompleteActionButton } from "../../../../styles/styles";
+import { InputBox, UniversalInput, CompleteActionButton } from "../../../../styles/styles";
 import { AddCircle, AddPhotoAlternate } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
@@ -117,7 +117,7 @@ export default function CreateSubcategory(props) {
       </Typography>
       <form onSubmit={onCreateSubcategory}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{mb: 0}}
             inputRef={subcategoryNameRef}
             label="Subcategory name"
@@ -156,7 +156,7 @@ export default function CreateSubcategory(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
              sx={{mt: 2}}
             inputRef={subcategoryDescriptionRef}
             label="Subcategory Description"

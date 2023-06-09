@@ -4,7 +4,7 @@ import { theme } from "../../../theme";
 import {
   InputBox,
   CompleteActionButton,
-  ProductInfoInput,
+  UniversalInput,
 } from "../../../styles/styles";
 import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
@@ -106,7 +106,7 @@ export default function CreateCategory(props) {
       </Typography>
       <form onSubmit={onCreateCategory}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{ mt: 2, mb: 0 }}
             inputRef={categoryNameRef}
             label="Category name"
@@ -145,7 +145,7 @@ export default function CreateCategory(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{ mt: 2, mb: 0 }}
             inputRef={categoryDescriptionRef}
             label="Category Description"

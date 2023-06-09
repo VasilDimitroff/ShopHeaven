@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
-import { CompleteActionButton, InputBox, ProductInfoInput } from "../../../../styles/styles";
+import { CompleteActionButton, InputBox, UniversalInput } from "../../../../styles/styles";
 import { Edit, AddPhotoAlternate } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
@@ -123,7 +123,7 @@ export default function EditSubcategoryForm(props) {
 
       <form onSubmit={onEditSubcategory}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{mb: 0, mt: 3}}
             required
             inputRef={subcategoryNameRef}
@@ -172,7 +172,7 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             sx={{mb: 0, mt:3}}
             inputRef={subcategoryDescriptionRef}
             label="Subcategory Description"

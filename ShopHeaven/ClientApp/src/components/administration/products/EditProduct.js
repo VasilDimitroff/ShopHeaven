@@ -4,7 +4,7 @@ import {
   StyledSelect,
   HeadingChip,
   SubheadingChip,
-  ProductInfoInput,
+  UniversalInput,
   InputBox,
   AddSpecificationButton,
   CalculatePriceButton,
@@ -705,7 +705,7 @@ export default function EditProduct(props) {
       </Divider>
       <form component="form" onSubmit={onEditProduct}>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Product name"
             variant="outlined"
             sx={{ fontSize: 24 }}
@@ -723,7 +723,7 @@ export default function EditProduct(props) {
         </InputBox>
 
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Brand"
             variant="outlined"
             inputRef={productBrandRef}
@@ -732,7 +732,7 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <InputBox>
-          <ProductInfoInput
+          <UniversalInput
             label="Description"
             variant="outlined"
             multiline={true}
@@ -818,7 +818,7 @@ export default function EditProduct(props) {
           <InputBox>
             <Grid container spacing={3} sx={{ textAlign: "center" }}>
               <Grid item xs={6} sm={6} md={6} lg={6}>
-                <ProductInfoInput
+                <UniversalInput
                   label="Currency"
                   variant="outlined"
                   disabled
@@ -826,7 +826,7 @@ export default function EditProduct(props) {
                 />
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
-                <ProductInfoInput
+                <UniversalInput
                   type="number"
                   label="Price"
                   variant="outlined"
@@ -851,7 +851,7 @@ export default function EditProduct(props) {
 
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Discount (%)"
                 variant="outlined"
                 type="number"
@@ -872,7 +872,7 @@ export default function EditProduct(props) {
               )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput
+              <UniversalInput
                 label="Final Price"
                 variant="outlined"
                 disabled
@@ -905,7 +905,7 @@ export default function EditProduct(props) {
                     color="primary"
                   />
                 </Divider>
-                <ProductInfoInput
+                <UniversalInput
                   label="Quantity"
                   variant="outlined"
                   type="number"
@@ -970,7 +970,7 @@ export default function EditProduct(props) {
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput
+                    <UniversalInput
                       label="Spec. key"
                       variant="outlined"
                       readOnly
@@ -980,7 +980,7 @@ export default function EditProduct(props) {
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput
+                    <UniversalInput
                       label="Spec. value"
                       variant="outlined"
                       readOnly
@@ -993,7 +993,7 @@ export default function EditProduct(props) {
             <Box sx={{ display: "flex" }}>
               <Box sx={{ width: "50%" }}>
                 <InputBox>
-                  <ProductInfoInput
+                  <UniversalInput
                     label="Spec. key"
                     inputRef={productSpecificationKeyRef}
                     placeholder="Add specification key"
@@ -1002,7 +1002,7 @@ export default function EditProduct(props) {
               </Box>
               <Box sx={{ width: "50%" }}>
                 <InputBox>
-                  <ProductInfoInput
+                  <UniversalInput
                     label="Spec. value"
                     inputRef={productSpecificationValueRef}
                     id="spec-value"
@@ -1052,7 +1052,7 @@ export default function EditProduct(props) {
           <InputBox>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
-                <ProductInfoInput
+                <UniversalInput
                   label="Tags separated by comma"
                   variant="outlined"
                   inputRef={productTagsRef}
@@ -1103,7 +1103,7 @@ export default function EditProduct(props) {
           <InputBox>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
-                <ProductInfoInput
+                <UniversalInput
                   label="Labels separated by comma"
                   inputRef={productLabelsRef}
                   multiline
@@ -1293,7 +1293,7 @@ export default function EditProduct(props) {
             }}
           />
           {/*
-          <ProductInfoInput
+          <UniversalInput
             accept={allowedFileFormats}
             type="file"
             variant="outlined"
