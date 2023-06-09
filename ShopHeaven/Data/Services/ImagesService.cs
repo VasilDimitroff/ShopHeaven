@@ -60,7 +60,7 @@ namespace ShopHeaven.Data.Services
         public async Task SetImageAsProductThumbnailAsync(SetProductThumbnailRequestModel model)
         {
             var product = await this.db.Products
-               .Include(x => x.Images)
+               .Include(x => x.Images.Where(x => x.IsDeleted != true))
                .ThenInclude(x => x.Image)
                .FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
 

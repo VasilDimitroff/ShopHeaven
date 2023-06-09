@@ -88,15 +88,6 @@ export default function AdminUserRow(props) {
     fontSize: 18,
   });
 
-  const UserInfoHolder = styled(Box)({
-    marginTop: theme.spacing(1),
-    [theme.breakpoints.up("lg")]: {
-      display: "flex",
-      alignItems: "center",
-      gap: 15,
-    },
-  });
-
   const UserInfoText = styled(Box)({
     fontSize: 13,
     fontWeight: 400,

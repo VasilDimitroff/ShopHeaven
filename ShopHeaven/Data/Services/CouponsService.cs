@@ -46,7 +46,9 @@ namespace ShopHeaven.Data.Services
                     Id = x.Id,
                     Amount = x.Amount,
                     Code = x.Code,
-                    OrdersCount = x.Orders.Count()
+                    OrdersCount = x.Orders
+                        .Where(x => x.IsDeleted != true)
+                        .Count()
                 })
                 .ToListAsync();
 

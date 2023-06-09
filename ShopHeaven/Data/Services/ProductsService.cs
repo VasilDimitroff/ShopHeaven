@@ -513,7 +513,7 @@ namespace ShopHeaven.Data.Services
                     .ThenInclude(x => x.Image)
                     .Include(x => x.SubCategory)
                     .ThenInclude(x => x.MainCategory)
-                    .Where(product => product.IsDeleted != true && product.Labels.Any(pl => pl.Label.Content.Trim().ToLower() == label))
+                    .Where(product => product.IsDeleted != true && product.Labels.Any(pl => pl.IsDeleted != true &&  pl.Label.Content.Trim().ToLower() == label))
                     .OrderByDescending(x => x.ModifiedOn)
                     .ToListAsync();
 
@@ -734,7 +734,9 @@ namespace ShopHeaven.Data.Services
                                 Discount = p.Discount,
                                 Quantity = p.Quantity,
                                 Rating = p.Rating,
-                                ReviewsCount = p.Reviews.Count(),
+                                ReviewsCount = p.Reviews
+                                    .Where(x => x.IsDeleted != true)
+                                    .Count(),
                                 IsInUserCart = p.Carts
                                     .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
                                 IsInUserWishlist = p.Wishlists

@@ -31,7 +31,7 @@ namespace ShopHeaven.Data.Services
                     .SelectMany(x => x.Products
                         .Where(x => x.IsDeleted !=true))
                     .Count())
-                .ThenByDescending(x => x.SubCategories.Count())
+                .ThenByDescending(x => x.SubCategories.Where(x => x.IsDeleted != true).Count())
                 .Select(x => new CategorySummaryInfoResponseModel
                 {
                     Id = x.Id,
@@ -353,9 +353,9 @@ namespace ShopHeaven.Data.Services
             List<GetCategoriesResponseModel> allCategories = await this.db.MainCategories
                 .Where(x => x.IsDeleted != true)
                 .OrderByDescending(category => category.SubCategories
-                        .SelectMany(subcategory => subcategory.Products)
+                        .SelectMany(subcategory => subcategory.Products.Where(x => x.IsDeleted != true))
                         .Count())
-                .ThenByDescending(category => category.SubCategories.Count())
+                .ThenByDescending(category => category.SubCategories.Where(x => x.IsDeleted != true).Count())
                 .Select(x => new GetCategoriesResponseModel
                 {
                     Id = x.Id,
@@ -371,7 +371,7 @@ namespace ShopHeaven.Data.Services
                         Name = x.Name,
                         Description = x.Description,
                         Image = x.Image.Url,
-                        ProductsCount = x.Products.Count(),
+                        ProductsCount = x.Products.Where(x => x.IsDeleted != true).Count(),
                         CreatedBy = x.CreatedBy.Email,
                     })
                     .ToList()
@@ -384,11 +384,11 @@ namespace ShopHeaven.Data.Services
         public async Task<List<CategoryWithSubcategoriesResponseModel>> GetAllCategoryNamesAsync()
         {
             var categories = await this.db.MainCategories
-                .Where(x => x.IsDeleted != true)
+                //.Where(x => x.IsDeleted != true)
                 .OrderByDescending(category => category.SubCategories.Where(s => s.IsDeleted != true)
                         .SelectMany(subcategory => subcategory.Products.Where(p => p.IsDeleted != true))
                         .Count())
-                .ThenByDescending(category => category.SubCategories.Count())
+                .ThenByDescending(category => category.SubCategories.Where(x => x.IsDeleted != true).Count())
                 .Select(x => new CategoryWithSubcategoriesResponseModel
                 {
                     Id = x.Id,
@@ -409,7 +409,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<GetCategoriesResponseModel> GetCategoryByIdAsync(string id)
         {
-            GetCategoriesResponseModel getCategoryResponseModel = await this.db.MainCategories
+            var getCategoryResponseModel = await this.db.MainCategories
                 .Where(x => x.Id == id && x.IsDeleted != true)
                 .Select(x => new GetCategoriesResponseModel
                 {
@@ -418,14 +418,18 @@ namespace ShopHeaven.Data.Services
                     Description = x.Description,
                     Image = x.Image.Url,
                     CreatedBy = x.CreatedBy.Email,
-                    Subcategories = x.SubCategories.Select(s => new SubcategoryResponseModel
+                    Subcategories = x.SubCategories
+                    .Where(x => x.IsDeleted != true)
+                    .Select(s => new SubcategoryResponseModel
                     {
                         Id = s.Id,
-                        Name= s.Name,
-                        Description= s.Description,
+                        Name = s.Name,
+                        Description = s.Description,
                         Image = s.Image.Url,
                         CreatedBy = s.CreatedBy.Email,
-                        ProductsCount = s.Products.Count()
+                        ProductsCount = s.Products
+                            .Where(x => x.IsDeleted != true)
+                            .Count()
                     })
                 })
                 .FirstOrDefaultAsync();
@@ -437,7 +441,7 @@ namespace ShopHeaven.Data.Services
         {
             foreach (var product in items)
             {
-                foreach (var review in product.Reviews)
+                foreach (var review in product.Reviews.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -449,7 +453,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var tag in product.Tags)
+                foreach (var tag in product.Tags.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -461,7 +465,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var cart in product.Carts)
+                foreach (var cart in product.Carts.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -473,7 +477,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var wishlist in product.Wishlists)
+                foreach (var wishlist in product.Wishlists.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -485,7 +489,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var order in product.Orders)
+                foreach (var order in product.Orders.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -497,7 +501,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var label in product.Labels)
+                foreach (var label in product.Labels.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -509,7 +513,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var image in product.Images)
+                foreach (var image in product.Images.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {
@@ -521,7 +525,7 @@ namespace ShopHeaven.Data.Services
                     }
                 }
 
-                foreach (var specification in product.Specifications)
+                foreach (var specification in product.Specifications.Where(x => x.IsDeleted == forDelete))
                 {
                     if (forDelete == true)
                     {

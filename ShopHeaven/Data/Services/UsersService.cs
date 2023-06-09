@@ -178,7 +178,7 @@ namespace ShopHeaven.Data.Services
             var userModel = await db.Users
                 .Where(x => x.Email == email && x.IsDeleted != true)
                 .Include(x => x.Wishlist)
-                .ThenInclude(w => w.Products)
+                .ThenInclude(w => w.Products.Where(x => x.IsDeleted != true))
                 .Include(x => x.Cart)
                 .Select(user => new UserResponseModel
                 {
@@ -187,8 +187,8 @@ namespace ShopHeaven.Data.Services
                     Username = user.UserName,
                     CartId = user.CartId,
                     WishlistId = user.WishlistId,
-                    CartProductsCount = user.Cart.Products.Count(),
-                    WishlistProductsCount = user.Wishlist.Products.Count()
+                    CartProductsCount = user.Cart.Products.Where(x => x.IsDeleted != true).Count(),
+                    WishlistProductsCount = user.Wishlist.Products.Where(x => x.IsDeleted != true).Count()
                 })
                 .FirstOrDefaultAsync();
 

@@ -112,7 +112,9 @@ namespace ShopHeaven.Data.Services
                 Name = subcategory.Name,
                 CreatedBy = user.Email,
                 Image = subcategoryImage.Url,
-                ProductsCount = subcategory.Products.Count()
+                ProductsCount = subcategory.Products
+                    .Where(x => x.IsDeleted != true)
+                    .Count()
             };
 
             return newSubcategoryResponseModel;

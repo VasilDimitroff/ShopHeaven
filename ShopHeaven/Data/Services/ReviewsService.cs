@@ -26,7 +26,7 @@ namespace ShopHeaven.Data.Services
             }
 
             var product = await this.db.Products
-                .Include(x => x.Reviews)
+                .Include(x => x.Reviews.Where(x => x.IsDeleted != true))
                 .FirstOrDefaultAsync(x => x.Id == model.ProductId && x.IsDeleted != true);
 
             if (product == null)
@@ -53,7 +53,9 @@ namespace ShopHeaven.Data.Services
             };
 
             product.Reviews.Add(newReview);
-            product.Rating = Math.Round(product.Reviews.Average(r => r.RatingValue), 2);
+            product.Rating = Math.Round(product.Reviews
+                    .Where(x => x.IsDeleted != true)
+                    .Average(r => r.RatingValue), 2);
 
             await this.db.Reviews.AddAsync(newReview);
             await this.db.SaveChangesAsync();

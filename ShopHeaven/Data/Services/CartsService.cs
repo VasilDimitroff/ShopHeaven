@@ -66,7 +66,9 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
             Cart userCart = await UpdateCartAmountAsync(user);
 
-            var productsInUserCart = userCart.Products.Sum(pc => pc.Quantity);
+            var productsInUserCart = userCart.Products
+                .Where(x => x.IsDeleted != true)
+                .Sum(pc => pc.Quantity);
 
             var responseModel = new AddProductToCartResponseModel
             {
@@ -102,7 +104,10 @@ namespace ShopHeaven.Data.Services
 
             Cart userCart = await UpdateCartAmountAsync(user);
 
-            var productsInUserCart = userCart.Products.Sum(pc => pc.Quantity);
+            var productsInUserCart = userCart.Products
+                .Where(x => x.IsDeleted != true)
+                .Sum(pc => pc.Quantity);
+
             var cartSummary = await GetCartTotalPriceAsync(cart.Id);
 
             return new ChangeProductQuantityResponseModel
@@ -193,15 +198,21 @@ namespace ShopHeaven.Data.Services
         private async Task<Cart> UpdateCartAmountAsync(User user)
         {
             var userCart = await this.db.Carts
-                                    .Include(c => c.Products)
+                                    .Include(c => c.Products.Where(x => x.IsDeleted!= true))
                                     .ThenInclude(cp => cp.Product)
                                     .FirstOrDefaultAsync(c => c.UserId == user.Id && c.IsDeleted != true);
 
             //update total price of the cart
-            var totalPriceWithNoDiscount = userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity);
+            var totalPriceWithNoDiscount = userCart.Products
+                .Where(x => x.IsDeleted != true)
+                .Sum(pc => pc.Product.Price * pc.Quantity);
+
             userCart.TotalPriceWithNoDiscount = totalPriceWithNoDiscount;
 
-            var totalPriceWithDiscount = totalPriceWithNoDiscount - userCart.Products.Sum(pc => pc.Product.Price * pc.Quantity * (pc.Product.Discount / 100));
+            var totalPriceWithDiscount = totalPriceWithNoDiscount - userCart.Products
+                    .Where(x => x.IsDeleted != true)
+                    .Sum(pc => pc.Product.Price * pc.Quantity * (pc.Product.Discount / 100));
+
             userCart.TotalPriceWithDiscount = totalPriceWithDiscount;
 
             await this.db.SaveChangesAsync();

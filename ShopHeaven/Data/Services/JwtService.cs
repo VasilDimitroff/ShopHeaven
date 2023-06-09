@@ -87,7 +87,7 @@ namespace ShopHeaven.Data.Services
             var user = await db.Users
               .Where(x => x.RefreshToken == refreshToken && x.IsDeleted != true)
               .Include(x => x.Wishlist)
-              .ThenInclude(w => w.Products)
+              .ThenInclude(w => w.Products.Where(x => x.IsDeleted != true))
               .Include(x => x.Cart)
               .Select(user => new UserAuthorizationModel
               {
@@ -96,8 +96,8 @@ namespace ShopHeaven.Data.Services
                   Username = user.UserName,               
                   CartId = user.CartId,
                   WishlistId = user.WishlistId,
-                  CartProductsCount = user.Cart.Products.Sum(x => x.Quantity),
-                  WishlistProductsCount = user.Wishlist.Products.Count(),
+                  CartProductsCount = user.Cart.Products.Where(x => x.IsDeleted != true).Sum(x => x.Quantity),
+                  WishlistProductsCount = user.Wishlist.Products.Where(x => x.IsDeleted != true).Count(),
                   RefreshToken = user.RefreshToken,
                   TokenCreated = (DateTime)user.TokenCreated,
                   TokenExpires = (DateTime)user.TokenExpires,
