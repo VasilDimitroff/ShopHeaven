@@ -2,7 +2,6 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Images;
-using ShopHeaven.Models.Responses.Images;
 
 namespace ShopHeaven.Data.Services
 {

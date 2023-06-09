@@ -57,10 +57,10 @@ export const sortByDiscountPercentDescending = "PercentDiscountDescending";
 export const sortByRating = "Rating";
 
 //sorting products in admin panel producs. Important to be same as backend enum
-export const productsSortingCriteriaInAdminProductsPanel = "DateDescending";
+export const productsSortingCriteriaInAdminProductsPanel = sortByNewest;
 
 //Sorting criteria for first carousel with products in home page. Important to be same as backend enum
-export const firstProductCarouselSortingCriteria = "PercentDiscountDescending";
+export const firstProductCarouselSortingCriteria = sortByDiscountPercentDescending;
 //home carousel products count per slider
 export const productsPerSliderInHomePage = 12;
 

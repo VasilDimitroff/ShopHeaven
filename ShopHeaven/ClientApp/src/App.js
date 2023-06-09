@@ -20,9 +20,10 @@ import AdminSettings from "./components/administration/settings/AdminSettings";
 import RequireAuth from "./components/auth/RequireAuth";
 import PersistLogin from "./components/auth/PersistLogin";
 import AppSettings from "./components/settings/AppSettings";
-import Unauthorized from "./components/auth/Unauthorized";
+import Cart from "./components/cart/Cart";
+import Checkout from "./components/checkout/Checkout";
 import SubcategoryProducts from "./components/products/products-gallery/SubcategoryProducts";
-import { coupons } from "./components/coupons";
+import Unauthorized from "./components/auth/Unauthorized";
 import {
   adminRole,
   applicationUserRole,
@@ -33,8 +34,8 @@ import {
   registerPath,
   singleProductBasePath,
   cartPath,
+  checkoutPath
 } from "./constants";
-import Cart from "./components/cart/Cart";
 
 export default function App() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
                 }
               >
                 <Route path={`${cartPath}`} element={<Cart />} />
+                <Route path={`${checkoutPath}`} element={<Checkout />} />
               </Route>
 
               {/* admin only routes */}
@@ -79,10 +81,7 @@ export default function App() {
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="products" element={<AdminProducts />} />
                   <Route path="categories" element={<AdminCategories />} />
-                  <Route
-                    path="coupons"
-                    element={<AdminCoupons coupons={coupons} />}
-                  />
+                  <Route path="coupons" element={<AdminCoupons />}/>
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="settings" element={<AdminSettings />} />

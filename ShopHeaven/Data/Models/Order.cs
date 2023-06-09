@@ -26,6 +26,12 @@ namespace ShopHeaven.Data.Models
         [Required(ErrorMessage = "Please enter contact phone")]
         public string Phone { get; set; }
 
+        [Required(ErrorMessage = "Country field cannot be null or empty")]
+        public string Country { get; set; }
+
+        [Required(ErrorMessage = "City field cannot be null or empty")]
+        public string City { get; set; }
+
         [Required(ErrorMessage = "Address field cannot be null or empty")]
         public string Address { get; set; }
 
@@ -42,8 +48,6 @@ namespace ShopHeaven.Data.Models
         public Coupon? Coupon { get; set; }
 
         public OrderStatus Status { get; set; }
-
-        public PaymentMethod PaymentMethod { get; set; }
 
         [Required]
         public string ShippingMethodId { get; set; }
