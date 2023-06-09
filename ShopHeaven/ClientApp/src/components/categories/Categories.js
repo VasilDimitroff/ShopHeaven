@@ -1,20 +1,23 @@
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import { React, useState, useRef, useEffect, Fragment } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  Box,
-  ImageList,
-  Typography,
-  ImageListItem,
-  ImageListItemBar,
-  Tooltip,
-  Zoom,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Tooltip, Zoom } from "@mui/material";
 import { theme } from "../../theme";
+import {
+  MainWrapper,
+  GalleryHeading,
+  GalleryImageList,
+  GalleryImageListItem,
+  GalleryImageListItemBar,
+} from "../../styles/styles";
 import axios from "../../api/axios";
 import { ApiEndpoints } from "../../api/endpoints";
-import { columnsWithCategoriesToShowIfScreenIsLg, allCategoriesUrl, columnsWithCategoriesToShowIfScreenIsMd, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
+import {
+  columnsWithCategoriesToShowIfScreenIsLg,
+  allCategoriesUrl,
+  columnsWithCategoriesToShowIfScreenIsMd,
+  subcategoriesOfMainCategoryBaseUrl,
+} from "../../constants";
 import { useNavigate } from "react-router-dom";
 
 const breadcrumbs = [
@@ -31,7 +34,7 @@ const breadcrumbs = [
 let colsToShow = 0;
 
 export default function Categories() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [categories, setCategories] = useState([]); // array[{}]
 
@@ -72,57 +75,15 @@ export default function Categories() {
   }, []);
 
   function navigateTo(uri) {
-    navigate(uri)
+    navigate(uri);
   }
-
-  const ContentWrapper = styled(Box)({
-    width: "80%",
-    margin: "auto",
-    display: "block",
-    marginTop: theme.spacing(5),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
-  });
-
-  const StyledImageList = styled(ImageList)({
-    padding: theme.spacing(0.5),
-  });
-
-  const StyledImageListItem = styled(ImageListItem)({
-    cursor: "pointer",
-    textTransform: "uppercase",
-    "&:hover": {
-      outlineColor: theme.palette.primary.main,
-      outlineStyle: "solid",
-      outlineWidth: "3px",
-      boxShadow: theme.palette.dropdown.boxShadow.main,
-      opacity: "0.9",
-    },
-  });
-
-  const StyledImageListItemBar = styled(ImageListItemBar)({
-    fontWeight: 500,
-    background:
-      "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-  });
-
-  const Heading = styled(Typography)({
-    display: "flex",
-    justifyContent: "center",
-    fontSize: 30,
-    textAlign: "center",
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(-2),
-  });
 
   return (
     <>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      <ContentWrapper>
-        <Heading>CATEGORIES</Heading>
-        <StyledImageList cols={colsToShow}>
+      <MainWrapper sx={{ mt: 5 }}>
+        <GalleryHeading>CATEGORIES</GalleryHeading>
+        <GalleryImageList cols={colsToShow}>
           {categories?.map((category) => (
             <Fragment key={category.id}>
               <Tooltip
@@ -130,25 +91,30 @@ export default function Categories() {
                 title={category.description}
                 arrow
               >
-                <StyledImageListItem onClick={() => navigateTo(`${subcategoriesOfMainCategoryBaseUrl}${category.id}`)}>        
+                <GalleryImageListItem
+                  onClick={() =>
+                    navigateTo(
+                      `${subcategoriesOfMainCategoryBaseUrl}${category.id}`
+                    )
+                  }
+                >
                   <img
                     src={`${category.image}?w=248&fit=crop&auto=format`}
                     srcSet={`${category.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     alt={category.name}
                     loading="lazy"
                   />
-                    <StyledImageListItemBar
-                      position="top"
-                      title={category.name}
-                      subtitle={`${category.subcategoriesCount} subcategories, ${category.productsCount} products`}
-                    />
-                </StyledImageListItem>
-              
+                  <GalleryImageListItemBar
+                    position="top"
+                    title={category.name}
+                    subtitle={`${category.subcategoriesCount} subcategories, ${category.productsCount} products`}
+                  />
+                </GalleryImageListItem>
               </Tooltip>
             </Fragment>
           ))}
-        </StyledImageList>
-      </ContentWrapper>
+        </GalleryImageList>
+      </MainWrapper>
     </>
   );
 }

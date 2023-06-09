@@ -3,6 +3,7 @@ import { Box, Grid, Stack, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
+import { MainWrapper } from "../../styles/styles";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
@@ -77,15 +78,6 @@ export default function Checkout() {
       controller.abort();
     };
   }, []);
-
-  const MainWrapper = styled(Box)({
-    width: "80%",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
-  });
 
   return (
     <Box>

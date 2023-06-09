@@ -14,6 +14,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { MainWrapper, HeadingChip } from "../../../styles/styles";
 import ProductReviews from "./ProductReviews";
 import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../../theme";
@@ -45,29 +46,10 @@ export default function ProductDetailInfo(props) {
     padding: theme.spacing(3),
   });
 
-  const MainWrapper = styled(Box)({
-    width: "80%",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
-  });
-
   const DetailsHeading = styled(Box)({
     textAlign: "center",
     marginTop: theme.spacing(1.9),
     marginBottom: theme.spacing(3),
-  });
-
-  const HeadingChip = styled(Chip)({
-    textTransform: "uppercase",
-    fontWeight: 500,
-    fontSize: 20,
-    paddingTop: theme.spacing(2.5),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2.5),
   });
 
   return (

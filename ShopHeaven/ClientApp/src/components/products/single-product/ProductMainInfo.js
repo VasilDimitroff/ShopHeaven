@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { MainWrapper } from "../../../styles/styles";
 import ImageCarousel from "./image-carousel/ImageCarousel";
 import ProductDescription from "./ProductDescription";
 import ProductActionButtons from "./ProductActionButtons";
@@ -18,15 +19,6 @@ export default function ProductMainInfo(props) {
 
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),
-  });
-
-  const MainWrapper = styled(Box)({
-    width: "80%",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
   });
 
   const ProductName = styled(Typography)({

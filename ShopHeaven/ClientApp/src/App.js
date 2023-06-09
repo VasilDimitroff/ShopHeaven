@@ -34,7 +34,7 @@ import {
   registerPath,
   singleProductBasePath,
   cartPath,
-  checkoutPath
+  checkoutPath,
 } from "./constants";
 
 export default function App() {
@@ -47,29 +47,14 @@ export default function App() {
             <Route exact path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path={`${allCategoriesUrl}`} element={<Categories />} />
-              <Route
-                path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`}
-                element={<Subcategories />}
-              />
-              <Route
-                path={`${subcategoryProductsBaseUrl}:subcategoryId`}
-                element={<SubcategoryProducts />}
-              />
-              <Route
-                path={`${singleProductBasePath}:productId`}
-                element={<Product />}
-              />
+              <Route path={`${subcategoriesOfMainCategoryBaseUrl}:categoryId`} element={<Subcategories />}/>
+              <Route path={`${subcategoryProductsBaseUrl}:subcategoryId`} element={<SubcategoryProducts />}/>
+              <Route path={`${singleProductBasePath}:productId`} element={<Product />}/>
               <Route path={loginPath} element={<Login />} />
               <Route path={registerPath} element={<Register />} />
 
               {/* authorization needed paths */}
-              <Route
-                element={
-                  <RequireAuth
-                    allowedRoles={[applicationUserRole, adminRole]}
-                  />
-                }
-              >
+              <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>
                 <Route path={`${cartPath}`} element={<Cart />} />
                 <Route path={`${checkoutPath}`} element={<Checkout />} />
               </Route>
@@ -81,7 +66,7 @@ export default function App() {
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="products" element={<AdminProducts />} />
                   <Route path="categories" element={<AdminCategories />} />
-                  <Route path="coupons" element={<AdminCoupons />}/>
+                  <Route path="coupons" element={<AdminCoupons />} />
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="settings" element={<AdminSettings />} />

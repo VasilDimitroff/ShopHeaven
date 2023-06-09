@@ -1,22 +1,25 @@
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 import { React, useState, useRef, useEffect, Fragment } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  Box,
-  ImageList,
-  Typography,
-  ImageListItem,
-  ImageListItemBar,
-  Chip,
-  Tooltip,
-  Zoom,
-  Container,
-} from "@mui/material";
+import { Box, Typography, Chip, Tooltip, Zoom,} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
+import {
+  MainWrapper,
+  GalleryHeading,
+  GalleryImageList,
+  GalleryImageListItem,
+  GalleryImageListItemBar,
+} from "../../styles/styles";
 import axios from "../../api/axios";
 import { ApiEndpoints } from "../../api/endpoints";
-import { columnsWithSubcategoriesToShowIfScreenIsLg, subcategoryProductsBaseUrl, columnsWithSubcategoriesToShowIfScreenIsMd, allCategoriesUrl, subcategoriesOfMainCategoryBaseUrl } from "../../constants";
+import {
+  columnsWithSubcategoriesToShowIfScreenIsLg,
+  subcategoryProductsBaseUrl,
+  columnsWithSubcategoriesToShowIfScreenIsMd,
+  allCategoriesUrl,
+  subcategoriesOfMainCategoryBaseUrl,
+} from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
 
 let colsToShow = 0;
@@ -90,65 +93,29 @@ export default function Subcategories() {
     };
   }, []);
 
-  const ContentWrapper = styled(Box)({
-    width: "80%",
-    margin: "auto",
-    display: "block",
-    marginTop: theme.spacing(5),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
-  });
-
-  const StyledImageList = styled(ImageList)({
-    padding: theme.spacing(0.5),
-  });
-
-  const StyledImageListItem = styled(ImageListItem)({
-    cursor: "pointer",
-    textTransform: "uppercase",
-    "&:hover": {
-      outlineColor: theme.palette.primary.main,
-      outlineStyle: "solid",
-      outlineWidth: "3px",
-      boxShadow: theme.palette.dropdown.boxShadow.main,
-      opacity: "0.9",
-    },
-  });
-
-  const StyledImageListItemBar = styled(ImageListItemBar)({
-    fontWeight: 500,
-    background:
-      "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-  });
-
-  const Heading = styled(Typography)({
-    display: "flex",
-    justifyContent: "center",
-    textTransform: "uppercase",
-    fontSize: 30,
-    textAlign: "center",
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(-2),
-  });
-
   const TotalProductsCountText = styled(Typography)({
     display: "flex",
     justifyContent: "center",
-    margin: theme.spacing(2, 0)
-  })
+    margin: theme.spacing(2, 0),
+  });
 
   return (
     <>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      <ContentWrapper>
-        <Heading>{mainCategory.name}</Heading>
-        <Box sx={{display: "flex", justifyContent:"center", mb: 1, mt: -1}}>
-          <Chip size="small" variant="outlined" color="secondary" label={`${mainCategory.productsCount} products`} />
+      <MainWrapper sx={{ mt: 5 }}>
+        <GalleryHeading>{mainCategory.name}</GalleryHeading>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 1, mt: -1 }}>
+          <Chip
+            size="small"
+            variant="outlined"
+            color="secondary"
+            label={`${mainCategory.productsCount} products`}
+          />
         </Box>
-        <TotalProductsCountText>{mainCategory.description}</TotalProductsCountText>
-        <StyledImageList cols={colsToShow}>
+        <TotalProductsCountText>
+          {mainCategory.description}
+        </TotalProductsCountText>
+        <GalleryImageList cols={colsToShow}>
           {subcategories?.map((subcategory) => (
             <Fragment key={subcategory.id}>
               <Tooltip
@@ -156,24 +123,28 @@ export default function Subcategories() {
                 title={subcategory.description}
                 arrow
               >
-                <StyledImageListItem onClick={() => navigate(`${subcategoryProductsBaseUrl}${subcategory.id}`)}>
+                <GalleryImageListItem
+                  onClick={() =>
+                    navigate(`${subcategoryProductsBaseUrl}${subcategory.id}`)
+                  }
+                >
                   <img
                     src={`${subcategory.image}?w=248&fit=crop&auto=format`}
                     srcSet={`${subcategory.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     alt={subcategory.name}
                     loading="lazy"
                   />
-                      <StyledImageListItemBar
-                        position="top"
-                        title={subcategory.name}
-                        subtitle={`${subcategory.productsCount} products`}
-                      />
-                </StyledImageListItem>
+                  <GalleryImageListItemBar
+                    position="top"
+                    title={subcategory.name}
+                    subtitle={`${subcategory.productsCount} products`}
+                  />
+                </GalleryImageListItem>
               </Tooltip>
             </Fragment>
           ))}
-        </StyledImageList>
-      </ContentWrapper>
+        </GalleryImageList>
+      </MainWrapper>
     </>
   );
 }

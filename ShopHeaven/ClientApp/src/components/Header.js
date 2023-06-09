@@ -155,7 +155,7 @@ export default function Header() {
     borderRadius: theme.shape.borderRadius,
     display: showUserMenu === true ? "block" : "none",
     boxShadow: theme.palette.dropdown.boxShadow,
-    backgroundColor: theme.palette.common.white
+    backgroundColor: theme.palette.common.white,
   });
 
   const CustomSearchInput = styled(InputBase)({

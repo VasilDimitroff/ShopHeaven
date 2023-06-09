@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import AppPagination from "../../common/AppPagination";
 import { theme } from "../../../theme";
+import { UniversalInput } from "../../../styles/styles";
 import { styled } from "@mui/material/styles";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -253,14 +254,6 @@ export default function ProductReviews(props) {
     return isValid;
   }
 
-  const CustomInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
-  });
-
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),
   });
@@ -329,7 +322,7 @@ export default function ProductReviews(props) {
                 )}
               </Typography>
             </Box>
-            <CustomInput
+            <UniversalInput
               inputRef={commentRef}
               multiline
               label="Type your comment..."
