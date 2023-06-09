@@ -18,7 +18,7 @@ import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { productsPerPageInAdminPanel, requestTimerMilliseconds, productsSortingCriteriaInAdminProductsPanel } from "../../../constants";
+import { productsPerPageInAdminPanel, requestTimerMilliseconds, productsSortingCriteriaInAdminProductsPanel, loginPath } from "../../../constants";
 import CreateProduct from "./CreateProduct";
 import AdminProductRow from "./AdminProductRow";
 import AppPagination from "../../common/AppPagination";
@@ -95,7 +95,7 @@ export default function AdminProducts() {
         setIsLoading(false);
       } catch (error) {
         console.log(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate(`${loginPath}`, { state: { from: location }, replace: true });
       }
     };
 

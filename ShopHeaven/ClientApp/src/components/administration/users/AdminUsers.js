@@ -22,6 +22,7 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import {
   usersPerPageInAdminPanel,
   requestTimerMilliseconds,
+  loginPath,
 } from "../../../constants";
 import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -96,7 +97,7 @@ export default function AdminUsers() {
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate(`${loginPath}`, { state: { from: location }, replace: true });
       }
     };
 

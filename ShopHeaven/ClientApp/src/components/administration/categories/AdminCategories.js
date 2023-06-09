@@ -19,6 +19,7 @@ import { AddCircle, RemoveCircle } from "@mui/icons-material";
 import Loader from "../../common/Loader";
 import CreateCategory from "./CreateCategory";
 import AdminCategoriesRow from "./AdminCategoriesRow";
+import { loginPath } from "../../../constants";
 
 export default function AdminCategories() {
   const [openCreateCategoryModal, setOpenCreateCategoryModal] = useState(false);
@@ -57,7 +58,7 @@ export default function AdminCategories() {
         setIsLoading(false);
       } catch (error) {
         console.log(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate(`${loginPath}`, { state: { from: location }, replace: true });
       }
     };
 
