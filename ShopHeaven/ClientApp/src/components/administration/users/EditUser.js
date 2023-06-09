@@ -3,8 +3,6 @@ import {
   Box,
   Button,
   Paper,
-  Chip,
-  InputBase,
   Grid,
   Divider,
   Alert,
@@ -13,6 +11,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { Edit , AddCircle, RemoveCircle } from "@mui/icons-material";
 import { theme } from "../../../theme";
+import { HeadingChip, SubheadingChip, InputBox, StyledSelect, ProductInfoInput, CompleteActionButton, AdminMainWrapper } from "../../../styles/styles";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -318,114 +317,47 @@ export default function EditUser(props) {
     return isValid;
   }
 
-  const MainWrapper = styled(Paper)({
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  });
-
-  const UserInfoInput = styled(InputBase)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(0.3),
-    paddingBottom: theme.spacing(0.3),
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  });
-
-  const EditUserButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
-  const StyledSelect = {
-    cursor: "pointer",
-    width: "100%",
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
-    border: "1px solid #C6BFBE",
-    textTransform: "uppercase",
-    fontSize: 14,
-    backgroundColor: "rgb(255,249,249)",
-    marginTop: theme.spacing(1),
-  };
-
   const RoleButton = styled(Button)({
     width: "100%",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
   });
 
-  const HeadingChip = styled(Chip)({
-    fontSize: 21,
-    padding: theme.spacing(2),
-    fontWeight: 500,
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(5),
-    color: theme.palette.white.main,
-    backgroundColor: theme.palette.secondary.main,
-  });
-
-  const SubheadingChip = styled(Chip)({
-    fontSize: 12,
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  });
-
-  const ErrorAlert = styled(Alert)({
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
-
   return (
-    <MainWrapper>
+    <AdminMainWrapper>
       <Divider>
         <HeadingChip label="MAIN INFO" variant="outlined" color="secondary" />
       </Divider>
       <form component="form" onSubmit={onEditUser}>
         <InputBox>
-          <Divider>
-            <SubheadingChip label="EMAIL" variant="outlined" color="primary" />
-          </Divider>
-          <UserInfoInput
+          <ProductInfoInput
+            label={"Email"}
             inputRef={userEmailRef}
             placeholder={user.email}
             defaultValue={user.email}
           />
           {messages.userEmailError ? (
-            <ErrorAlert severity="error">{messages.userEmailError}</ErrorAlert>
+            <Alert variant="filled" severity="error">{messages.userEmailError}</Alert>
           ) : (
             <></>
           )}
         </InputBox>
-        <Divider>
-          <SubheadingChip label="USERNAME" variant="outlined" color="primary" />
-        </Divider>
         <InputBox>
-          <UserInfoInput
+          <ProductInfoInput
+            label={"Username"}
             inputRef={userNameRef}
             placeholder={user.username}
             defaultValue={user.username}
           />
           {messages.userNameError ? (
-            <ErrorAlert severity="error">{messages.userNameError}</ErrorAlert>
+            <Alert variant="filled" severity="error">{messages.userNameError}</Alert>
           ) : (
             <></>
           )}
         </InputBox>
-        <EditUserButton color="secondary" startIcon={<Edit />} type="submit" size="big" variant="contained">
+        <CompleteActionButton color="secondary" startIcon={<Edit />} type="submit" size="big" variant="contained">
           EDIT USER
-        </EditUserButton>
+        </CompleteActionButton>
       </form>
       <Box>
         {editUserResponseMessage ? (
@@ -439,9 +371,9 @@ export default function EditUser(props) {
         )}
         {editUserErrorMessage ? (
           <Zoom in={editUserErrorMessage.length > 0 ? true : false}>
-            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
               {editUserErrorMessage}
-            </ErrorAlert>
+            </Alert>
           </Zoom>
         ) : (
           ""
@@ -495,9 +427,9 @@ export default function EditUser(props) {
               ADD TO ROLE
             </RoleButton>
             {addUserToRoleErrorMessage ? (
-              <ErrorAlert severity="error">
+              <Alert variant="filled" severity="error">
                 {addUserToRoleErrorMessage}
-              </ErrorAlert>
+              </Alert>
             ) : (
               <></>
             )}
@@ -539,9 +471,9 @@ export default function EditUser(props) {
               REMOVE FROM ROLE
             </RoleButton>
             {removeUserFromRoleErrorMessage ? (
-              <ErrorAlert severity="error">
+              <Alert variant="filled" severity="error">
                 {removeUserFromRoleErrorMessage}
-              </ErrorAlert>
+              </Alert>
             ) : (
               <></>
             )}
@@ -555,6 +487,6 @@ export default function EditUser(props) {
           </Grid>
         </Grid>
       </InputBox>
-    </MainWrapper>
+    </AdminMainWrapper>
   );
 }

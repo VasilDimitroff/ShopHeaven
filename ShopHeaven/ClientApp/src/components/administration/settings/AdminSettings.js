@@ -7,6 +7,7 @@ import {
   noPermissionsForOperationMessage,
 } from "../../../constants";
 import { theme } from "../../../theme";
+import { InputBox, HeadingChip } from "../../../styles/styles";
 import useAppSettings from "../../../hooks/useAppSettings";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -133,33 +134,17 @@ export default function AdminSettings() {
     setCurrencyErrorMessage("");
   }
 
-  const HeadingChip = styled(Chip)({
-    fontSize: 21,
-    padding: theme.spacing(2),
-    fontWeight: 500,
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(5),
-    color: theme.palette.white.main,
-    backgroundColor: theme.palette.secondary.main,
-  });
-
   const StyledSelect = {
     cursor: "pointer",
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
+    padding: theme.spacing(2.18,1),
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
     fontSize: 14,
-    backgroundColor: "rgb(255,249,249)",
     marginTop: theme.spacing(1),
     display: "flex",
     margin: "auto",
   };
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  });
 
   const ChangeCurrencyButtonHolder = styled(Box)({
     width: "100%",

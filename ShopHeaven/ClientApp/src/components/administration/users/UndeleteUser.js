@@ -27,11 +27,6 @@ export default function UndeleteUser(props) {
     undeleteUser(user.id);
   }
 
-  const ErrorAlert = styled(Alert)({
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
-
   async function undeleteUser(userId) {
     try {
       const controller = new AbortController();
@@ -122,9 +117,9 @@ export default function UndeleteUser(props) {
       )}
       {undeleteUserErrorMessage ? (
         <Zoom in={undeleteUserErrorMessage.length > 0 ? true : false}>
-          <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+          <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
             {undeleteUserErrorMessage}
-          </ErrorAlert>
+          </Alert>
         </Zoom>
       ) : (
         ""

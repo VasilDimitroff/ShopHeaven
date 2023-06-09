@@ -118,6 +118,7 @@ export default function DeleteCoupon(props) {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
   });
+  
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       {deleteResponse || undeleteResponse ? (

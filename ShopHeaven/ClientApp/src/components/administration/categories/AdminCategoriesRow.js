@@ -27,8 +27,8 @@ import {
   Person,
   ShoppingBag,
   Category,
-  Label,
 } from "@mui/icons-material";
+import { ActionIconButton } from "../../../styles/styles";
 import EditCategoryForm from "./EditCategoryForm";
 import CreateSubcategory from "./subcategories/CreateSubcategory";
 import CategorySubcategoriesRow from "./subcategories/CategorySubcategoriesRow";
@@ -111,11 +111,6 @@ export default function AdminCategoriesRow(props) {
       cursor: "pointer",
       background: "#EAEAF7",
     },
-  });
-
-  const StyledIconButton = styled(IconButton)({
-    borderWidth: "1.5px",
-    borderStyle: "solid",
   });
 
   const CategoryInfoText = styled(Box)({
@@ -214,22 +209,22 @@ export default function AdminCategoriesRow(props) {
         <TableCell>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={() => handleShowEditForm()}
                 color="warning"
                 size="small"
               >
                 <Edit />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={handleShowDeleteForm}
                 color="error"
                 size="small"
               >
                 <Delete />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
           </Grid>
         </TableCell>

@@ -15,6 +15,7 @@ import {
 import { Search, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { StyledSelect } from "../../../styles/styles";
 import Loader from "../../common/Loader";
 import AdminUserRow from "./AdminUserRow";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -159,17 +160,6 @@ export default function AdminUsers() {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
   });
-
-  const StyledSelect = {
-    cursor: "pointer",
-    width: "100%",
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
-    border: "1px solid #C6BFBE",
-    textTransform: "uppercase",
-    fontSize: 14,
-    backgroundColor: "rgb(255,249,249)",
-  };
 
   const CancelButton = styled(Cancel)({
     position: "absolute",

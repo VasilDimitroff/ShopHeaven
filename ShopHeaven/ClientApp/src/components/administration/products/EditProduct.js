@@ -1,12 +1,24 @@
 import { React, useState, useRef, useEffect } from "react";
 import {
+  SaveTagsButton,
+  StyledSelect,
+  HeadingChip,
+  SubheadingChip,
+  ProductInfoInput,
+  InputBox,
+  AddSpecificationButton,
+  CalculatePriceButton,
+  StyledChip,
+  TagsWrapper,
+  CompleteActionButton,
+  TagWord,
+  AdminMainWrapper
+} from "../../../styles/styles";
+import {
   Box,
-  Button,
   Paper,
   IconButton,
   Typography,
-  Chip,
-  InputBase,
   Collapse,
   Grid,
   Divider,
@@ -22,14 +34,17 @@ import {
   Edit,
   Photo,
   Cancel,
-  AddPhotoAlternate
+  AddPhotoAlternate,
 } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import useAxiosPrivateForm from "../../../hooks/useAxiosPrivateForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAppSettings from "../../../hooks/useAppSettings";
 import { ApiEndpoints } from "../../../api/endpoints";
-import { noPermissionsForOperationMessage, allowedFileFormats } from "../../../constants";
+import {
+  noPermissionsForOperationMessage,
+  allowedFileFormats,
+} from "../../../constants";
 import useAuth from "../../../hooks/useAuth";
 
 export default function EditProduct(props) {
@@ -273,7 +288,7 @@ export default function EditProduct(props) {
   }
 
   async function editProduct(formData) {
-    console.log("EDIT PRODUCT REQUES", formData)
+    console.log("EDIT PRODUCT REQUES", formData);
     try {
       const controller = new AbortController();
 
@@ -297,7 +312,7 @@ export default function EditProduct(props) {
       );
 
       handleUpdateProduct(response?.data);
-      
+
       window.scroll(0, 0);
 
       props.updateProduct(response?.data);
@@ -662,127 +677,6 @@ export default function EditProduct(props) {
     return isValid;
   }
 
-  const MainWrapper = styled(Paper)({
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  });
-
-  const TagsWrapper = styled(Box)({
-    [theme.breakpoints.down("lg")]: {
-      position: "relative",
-    },
-    marginBottom: theme.spacing(2),
-  });
-
-  const StyledChip = styled(Chip)({
-    cursor: "pointer",
-    textAlign: "left",
-    marginRight: theme.spacing(0.5),
-    borderRadius: theme.shape.borderRadius,
-    /*
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
-    */
-  });
-
-  const ProductInfoInput = styled(TextField)({
-    //background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1.5),
-    //paddingLeft: theme.spacing(1),
-    //paddingRight: theme.spacing(1),
-    //borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  });
-
-  const AddSpecificationButton = styled(Button)({
-    width: "50%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("sm")]: {
-      width: "95%",
-    },
-  });
-
-  const EditProductButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-    padding: theme.spacing(2),
-  });
-
-  const StyledSelect = {
-    cursor: "pointer",
-    width: "100%",
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(2.18,1),
-    border: "1px solid #C6BFBE",
-    textTransform: "uppercase",
-    fontSize: 14,
-    //backgroundColor: "rgb(255,249,249)",
-    marginTop: theme.spacing(1),
-  };
-
-  const SaveTagsButton = styled(Button)({
-    width: "95%", 
-    padding: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      width: "50%",
-      display: "block",
-      margin: "auto",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "100%",
-    },
-  });
-
-  const TagWord = styled(Typography)({
-    display: "inline",
-    fontWeight: 500,
-    marginRight: theme.spacing(1),
-  });
-
-  const HeadingChip = styled(Chip)({
-    fontSize: 21,
-    padding: theme.spacing(2),
-    fontWeight: 500,
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(5),
-    color: theme.palette.white.main,
-    backgroundColor: theme.palette.secondary.main,
-  });
-
-  const SubheadingChip = styled(Chip)({
-    fontSize: 12,
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  });
-
-  const CalculatePriceButton = styled(Button)({
-    width: "50%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(4),
-    [theme.breakpoints.down("sm")]: {
-      width: "95%",
-    },
-  });
-
-  const ErrorAlert = styled(Alert)({
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
-
   const ThumbnailOverlayHolder = styled(Box)({
     "&:hover": {
       opacity: "1.0",
@@ -805,13 +699,12 @@ export default function EditProduct(props) {
   });
 
   return (
-    <MainWrapper>
+    <AdminMainWrapper>
       <Divider>
         <HeadingChip label="MAIN INFO" variant="outlined" color="secondary" />
       </Divider>
       <form component="form" onSubmit={onEditProduct}>
         <InputBox>
-          
           <ProductInfoInput
             label="Product name"
             variant="outlined"
@@ -821,14 +714,14 @@ export default function EditProduct(props) {
             defaultValue={productName}
           />
           {messages.productNameError ? (
-            <ErrorAlert severity="error">
+            <Alert variant="filled" severity="error">
               {messages.productNameError}
-            </ErrorAlert>
+            </Alert>
           ) : (
             <></>
           )}
         </InputBox>
-       
+
         <InputBox>
           <ProductInfoInput
             label="Brand"
@@ -839,7 +732,6 @@ export default function EditProduct(props) {
           />
         </InputBox>
         <InputBox>
-         
           <ProductInfoInput
             label="Description"
             variant="outlined"
@@ -850,9 +742,9 @@ export default function EditProduct(props) {
             defaultValue={productDescription}
           />
           {messages.productDescriptionError ? (
-            <ErrorAlert severity="error">
+            <Alert variant="filled" severity="error">
               {messages.productDescriptionError}
-            </ErrorAlert>
+            </Alert>
           ) : (
             <></>
           )}
@@ -881,9 +773,9 @@ export default function EditProduct(props) {
                 ))}
               </select>
               {messages.productCategoryError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productCategoryError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
@@ -910,9 +802,9 @@ export default function EditProduct(props) {
                 ))}
               </select>
               {messages.productSubcategoryError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productSubcategoryError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
@@ -926,11 +818,14 @@ export default function EditProduct(props) {
           <InputBox>
             <Grid container spacing={3} sx={{ textAlign: "center" }}>
               <Grid item xs={6} sm={6} md={6} lg={6}>
-              
-              <ProductInfoInput label="Currency" variant="outlined" disabled defaultValue={appSettings.appCurrency.code} />
+                <ProductInfoInput
+                  label="Currency"
+                  variant="outlined"
+                  disabled
+                  defaultValue={appSettings.appCurrency.code}
+                />
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
-               
                 <ProductInfoInput
                   type="number"
                   label="Price"
@@ -944,9 +839,9 @@ export default function EditProduct(props) {
                   }}
                 />
                 {messages.productPriceError ? (
-                  <ErrorAlert severity="error">
+                  <Alert variant="filled" severity="error">
                     {messages.productPriceError}
-                  </ErrorAlert>
+                  </Alert>
                 ) : (
                   <></>
                 )}
@@ -956,7 +851,6 @@ export default function EditProduct(props) {
 
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
-              
               <ProductInfoInput
                 label="Discount (%)"
                 variant="outlined"
@@ -970,16 +864,20 @@ export default function EditProduct(props) {
                 }}
               />
               {messages.productDiscountError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productDiscountError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-             
-              <ProductInfoInput label="Final Price" variant="outlined" disabled defaultValue={finalPrice.toFixed(2)} />
+              <ProductInfoInput
+                label="Final Price"
+                variant="outlined"
+                disabled
+                defaultValue={finalPrice.toFixed(2)}
+              />
             </InputBox>
           </Box>
           <CalculatePriceButton
@@ -1019,9 +917,9 @@ export default function EditProduct(props) {
                   }}
                 />
                 {messages.productQuantityError ? (
-                  <ErrorAlert severity="error">
+                  <Alert variant="filled" severity="error">
                     {messages.productQuantityError}
-                  </ErrorAlert>
+                  </Alert>
                 ) : (
                   <></>
                 )}
@@ -1045,9 +943,9 @@ export default function EditProduct(props) {
                   <option value={false}>No</option>
                 </select>
                 {messages.productGuaranteeError ? (
-                  <ErrorAlert severity="error">
+                  <Alert variant="filled" severity="error">
                     {messages.productGuaranteeError}
-                  </ErrorAlert>
+                  </Alert>
                 ) : (
                   <></>
                 )}
@@ -1065,21 +963,29 @@ export default function EditProduct(props) {
           </Divider>
           <Box>
             <Box sx={{ display: "flex" }}>
-              <Box sx={{ width: "50%" }}>
-              </Box>
-              <Box sx={{ width: "50%" }}>  
-              </Box>
+              <Box sx={{ width: "50%" }}></Box>
+              <Box sx={{ width: "50%" }}></Box>
             </Box>
             {productSpecifications.map((spec, index) => (
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput label="Spec. key" variant="outlined" readOnly defaultValue={spec.key} />
+                    <ProductInfoInput
+                      label="Spec. key"
+                      variant="outlined"
+                      readOnly
+                      defaultValue={spec.key}
+                    />
                   </InputBox>
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput label="Spec. value" variant="outlined" readOnly defaultValue={spec.value} />
+                    <ProductInfoInput
+                      label="Spec. value"
+                      variant="outlined"
+                      readOnly
+                      defaultValue={spec.value}
+                    />
                   </InputBox>
                 </Box>
               </Box>
@@ -1136,12 +1042,14 @@ export default function EditProduct(props) {
           </IconButton>
         </TagsWrapper>
         {messages.productTagsError ? (
-          <ErrorAlert severity="error">{messages.productTagsError}</ErrorAlert>
+          <Alert variant="filled" severity="error">
+            {messages.productTagsError}
+          </Alert>
         ) : (
           <></>
         )}
         <Collapse in={tagsInput}>
-          <InputBox>  
+          <InputBox>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
@@ -1153,7 +1061,7 @@ export default function EditProduct(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
-                <Box sx={{marginTop: 1}}>
+                <Box sx={{ marginTop: 1 }}>
                   <SaveTagsButton
                     onClick={setValuesToStates}
                     variant="contained"
@@ -1196,22 +1104,22 @@ export default function EditProduct(props) {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
-                 label="Labels separated by comma"
+                  label="Labels separated by comma"
                   inputRef={productLabelsRef}
                   multiline
                   defaultValue={productLabels.join(", ").toUpperCase()}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
-              <Box sx={{marginTop: 1}}>
-                <SaveTagsButton
-                  onClick={setValuesToStates}
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                >
-                  save labels
-                </SaveTagsButton>
+                <Box sx={{ marginTop: 1 }}>
+                  <SaveTagsButton
+                    onClick={setValuesToStates}
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                  >
+                    save labels
+                  </SaveTagsButton>
                 </Box>
               </Grid>
             </Grid>
@@ -1293,7 +1201,11 @@ export default function EditProduct(props) {
             <Zoom
               in={deleteProductImageResponseMessage.length > 0 ? true : false}
             >
-              <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
+              <Alert
+                sx={{ marginTop: theme.spacing(1) }}
+                variant="filled"
+                severity="success"
+              >
                 {deleteProductImageResponseMessage}
               </Alert>
             </Zoom>
@@ -1302,9 +1214,13 @@ export default function EditProduct(props) {
           )}
           {deleteProductImageErrorMessage ? (
             <Zoom in={deleteProductImageErrorMessage.length > 0 ? true : false}>
-              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              <Alert
+                variant="filled"
+                sx={{ marginTop: theme.spacing(1) }}
+                severity="error"
+              >
                 {deleteProductImageErrorMessage}
-              </ErrorAlert>
+              </Alert>
             </Zoom>
           ) : (
             ""
@@ -1313,7 +1229,11 @@ export default function EditProduct(props) {
         <Box>
           {thumbnailResponseMessage ? (
             <Zoom in={thumbnailResponseMessage.length > 0 ? true : false}>
-              <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
+              <Alert
+                sx={{ marginTop: theme.spacing(1) }}
+                variant="filled"
+                severity="success"
+              >
                 {thumbnailResponseMessage}
               </Alert>
             </Zoom>
@@ -1322,9 +1242,13 @@ export default function EditProduct(props) {
           )}
           {thumbnailErrorMessage ? (
             <Zoom in={thumbnailErrorMessage.length > 0 ? true : false}>
-              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              <Alert
+                variant="filled"
+                sx={{ marginTop: theme.spacing(1) }}
+                severity="error"
+              >
                 {thumbnailErrorMessage}
-              </ErrorAlert>
+              </Alert>
             </Zoom>
           ) : (
             <></>
@@ -1345,10 +1269,17 @@ export default function EditProduct(props) {
           <Typography
             variant="h6"
             sx={{ pt: 4, color: theme.palette.primary.main }}
-          ><AddPhotoAlternate sx={{ mr: 1, fontSize: 35}} />
+          >
+            <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
             ADD MORE IMAGES
           </Typography>
-          <Typography sx={{ textAlign: "center", pt: 2, color: theme.palette.warning.main }}>
+          <Typography
+            sx={{
+              textAlign: "center",
+              pt: 2,
+              color: theme.palette.warning.main,
+            }}
+          >
             {allowedFileFormats} file formats are allowed
           </Typography>
           <TextField
@@ -1384,7 +1315,7 @@ export default function EditProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <EditProductButton
+        <CompleteActionButton
           color="secondary"
           startIcon={<Edit />}
           type="submit"
@@ -1392,12 +1323,16 @@ export default function EditProduct(props) {
           variant="contained"
         >
           EDIT PRODUCT
-        </EditProductButton>
+        </CompleteActionButton>
       </form>
       <Box>
         {editProductResponseMessage ? (
           <Zoom in={editProductResponseMessage.length > 0 ? true : false}>
-            <Alert sx={{ marginTop: theme.spacing(1) }} variant="filled" severity="success">
+            <Alert
+              sx={{ marginTop: theme.spacing(1) }}
+              variant="filled"
+              severity="success"
+            >
               {editProductResponseMessage}
             </Alert>
           </Zoom>
@@ -1406,14 +1341,18 @@ export default function EditProduct(props) {
         )}
         {editProductErrorMessage ? (
           <Zoom in={editProductErrorMessage.length > 0 ? true : false}>
-            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            <Alert
+              variant="filled"
+              sx={{ marginTop: theme.spacing(1) }}
+              severity="error"
+            >
               {editProductErrorMessage}
-            </ErrorAlert>
+            </Alert>
           </Zoom>
         ) : (
           ""
         )}
       </Box>
-    </MainWrapper>
+    </AdminMainWrapper>
   );
 }

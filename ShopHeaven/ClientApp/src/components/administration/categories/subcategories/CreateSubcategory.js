@@ -1,15 +1,12 @@
 import { React, useState, Fragment, useRef } from "react";
 import {
-  Box,
-  Button,
-  InputAdornment,
   Typography,
   TextField,
   Alert,
   Zoom,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
+import { InputBox, ProductInfoInput, CompleteActionButton } from "../../../../styles/styles";
 import { AddCircle, AddPhotoAlternate } from "@mui/icons-material";
 import useAuth from "../../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../../api/endpoints";
@@ -108,28 +105,10 @@ export default function CreateSubcategory(props) {
     }
   }
 
-  const StyledInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateSubCategoryButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   return (
     <Fragment>
       <Typography
-        sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}
+        sx={{ ml: 2, mt: 2, mb: 2 }}
         id="transition-modal-title"
         variant="h6"
         component="h2"
@@ -138,7 +117,8 @@ export default function CreateSubcategory(props) {
       </Typography>
       <form onSubmit={onCreateSubcategory}>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+            sx={{mb: 0}}
             inputRef={subcategoryNameRef}
             label="Subcategory name"
             defaultValue={subcategoryName}
@@ -176,7 +156,8 @@ export default function CreateSubcategory(props) {
           />
         </InputBox>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+             sx={{mt: 2}}
             inputRef={subcategoryDescriptionRef}
             label="Subcategory Description"
             defaultValue={subcategoryDescription}
@@ -186,7 +167,7 @@ export default function CreateSubcategory(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateSubCategoryButton
+          <CompleteActionButton
             type="submit"
             size="large"
             color="secondary"
@@ -194,7 +175,7 @@ export default function CreateSubcategory(props) {
             startIcon={<AddCircle />}
           >
             Create subcategory
-          </CreateSubCategoryButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {createSubcategoryResponseMessage ? (

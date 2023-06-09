@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../../theme";
+import { CompleteActionButton, InputBox, ProductInfoInput } from "../../../../styles/styles";
 import { Edit, AddPhotoAlternate } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../../api/endpoints";
 import useAxiosPrivateForm from "../../../../hooks/useAxiosPrivateForm";
@@ -101,24 +102,6 @@ export default function EditSubcategoryForm(props) {
     }
   }
 
-  const StyledInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateCategoryButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   const ImageHolder = styled(Box)({
     position: "relative",
     marginLeft: theme.spacing(4),
@@ -140,7 +123,8 @@ export default function EditSubcategoryForm(props) {
 
       <form onSubmit={onEditSubcategory}>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+            sx={{mb: 0, mt: 3}}
             required
             inputRef={subcategoryNameRef}
             label="Subcategory name"
@@ -188,7 +172,8 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+            sx={{mb: 0, mt:3}}
             inputRef={subcategoryDescriptionRef}
             label="Subcategory Description"
             multiline
@@ -198,7 +183,7 @@ export default function EditSubcategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton
+          <CompleteActionButton
             color="secondary"
             startIcon={<Edit />}
             type="submit"
@@ -206,7 +191,7 @@ export default function EditSubcategoryForm(props) {
             variant="contained"
           >
             Edit subcategory
-          </CreateCategoryButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {editSubcategoryResponseMessage ? (

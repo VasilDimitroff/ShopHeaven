@@ -82,11 +82,6 @@ export default function DeleteUser(props) {
     justifyContent: "center",
   });
 
-  const ErrorAlert = styled(Alert)({
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
-
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
         <Fragment>
@@ -138,9 +133,9 @@ export default function DeleteUser(props) {
           )}
           {deleteUserErrorMessage ? (
             <Zoom in={deleteUserErrorMessage.length > 0 ? true : false}>
-              <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+              <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
                 {deleteUserErrorMessage}
-              </ErrorAlert>
+              </Alert>
             </Zoom>
           ) : (
             ""

@@ -1,16 +1,11 @@
 import { React, useState, useRef } from "react";
-import {
-  Box,
-  Button,
-  InputAdornment,
-  Typography,
-  TextField,
-  Paper,
-  Alert,
-  Zoom,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Typography, TextField, Paper, Alert, Zoom } from "@mui/material";
 import { theme } from "../../../theme";
+import {
+  InputBox,
+  CompleteActionButton,
+  ProductInfoInput,
+} from "../../../styles/styles";
 import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
@@ -84,7 +79,7 @@ export default function CreateCategory(props) {
       setCreateCategoryResponseMessage(
         `Category ${formData.get("name")} successfully created`
       );
-      
+
       window.scroll(0, 0);
 
       props.categoriesListChanged(response?.data);
@@ -99,24 +94,6 @@ export default function CreateCategory(props) {
     }
   }
 
-  const ProductInfoInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateCategoryButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   return (
     <Paper sx={{ padding: theme.spacing(2) }}>
       <Typography
@@ -130,6 +107,7 @@ export default function CreateCategory(props) {
       <form onSubmit={onCreateCategory}>
         <InputBox>
           <ProductInfoInput
+            sx={{ mt: 2, mb: 0 }}
             inputRef={categoryNameRef}
             label="Category name"
             defaultValue={categoryName}
@@ -165,18 +143,10 @@ export default function CreateCategory(props) {
             variant="outlined"
             id="category-image"
           />
-
-          {/* 
-          <ProductInfoInput
-            accept={allowedFileFormats}
-            type="file"
-            variant="standard"
-            id="category-image"
-          />
-*/}
         </InputBox>
         <InputBox>
           <ProductInfoInput
+            sx={{ mt: 2, mb: 0 }}
             inputRef={categoryDescriptionRef}
             label="Category Description"
             defaultValue={categoryDescription}
@@ -186,7 +156,7 @@ export default function CreateCategory(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton
+          <CompleteActionButton
             color="secondary"
             startIcon={<AddCircle />}
             type="submit"
@@ -194,7 +164,7 @@ export default function CreateCategory(props) {
             variant="contained"
           >
             Create category
-          </CreateCategoryButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {createCategoryResponseMessage ? (

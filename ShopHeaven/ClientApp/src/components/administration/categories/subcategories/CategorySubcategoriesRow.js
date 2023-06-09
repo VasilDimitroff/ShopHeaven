@@ -6,13 +6,13 @@ import {
   Collapse,
   Typography,
   Box,
-  IconButton,
   Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, Edit, Person, ShoppingBag } from "@mui/icons-material";
 import EditSubcategoryForm from "./EditSubcategoryForm";
 import { theme } from "../../../../theme";
+import { ActionIconButton } from "../../../../styles/styles";
 import DeleteSubcategoryForm from "./DeleteSubcategoryForm";
 
 export default function CategorySubcategoriesRow(props) {
@@ -69,9 +69,7 @@ export default function CategorySubcategoriesRow(props) {
     },
   });
 
-  const StyledIconButton = styled(IconButton)({
-    borderWidth: "1.5px",
-    borderStyle: "solid",
+  const StyledActionIconButton = styled(ActionIconButton)({
     margin: theme.spacing(1),
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
@@ -130,22 +128,22 @@ export default function CategorySubcategoriesRow(props) {
                 </CategoryInfoHolder>
               </Grid>
               <Grid item xs={2} sm={2} md={1} lg={1}>
-                <StyledIconButton
+                <StyledActionIconButton
                   onClick={handleOpenEditSubcategoryForm}
                   color="warning"
                   size="small"
                 >
                   <Edit />
-                </StyledIconButton>
+                </StyledActionIconButton>
               </Grid>
               <Grid item xs={2} sm={2} md={1} lg={1}>
-                <StyledIconButton
+                <StyledActionIconButton
                   onClick={handleOpenDeleteSubcategoryForm}
                   color="error"
                   size="small"
                 >
                   <Delete />
-                </StyledIconButton>
+                </StyledActionIconButton>
               </Grid>
             </Grid>
           ) : (

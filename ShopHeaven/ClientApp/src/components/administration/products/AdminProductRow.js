@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { ActionIconButton } from "../../../styles/styles";
 import { theme } from "../../../theme";
 import {
   KeyboardArrowUp,
@@ -78,11 +79,6 @@ export default function AdminProductRow(props) {
     [theme.breakpoints.down("lg")]: {
       //marginTop: theme.spacing(0.4),
     },
-  });
-
-  const StyledIconButton = styled(IconButton)({
-    borderWidth: "1.5px",
-    borderStyle: "solid",
   });
 
   return (
@@ -293,22 +289,22 @@ export default function AdminProductRow(props) {
         <TableCell align="center">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={handleSetOpenEditForm}
                 color="warning"
                 size="small"
               >
                 <Edit />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={handleSetOpenDeleteForm}
                 color="error"
                 size="small"
               >
                 <Delete />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
           </Grid>
         </TableCell>

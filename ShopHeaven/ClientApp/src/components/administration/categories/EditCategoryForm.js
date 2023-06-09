@@ -1,7 +1,6 @@
 import { React, useState, useRef } from "react";
 import {
   Box,
-  Button,
   Typography,
   TextField,
   Paper,
@@ -10,6 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { InputBox, CompleteActionButton, ProductInfoInput } from "../../../styles/styles";
 import { AddPhotoAlternate, Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import { allowedFileFormats, noPermissionsForOperationMessage } from "../../../constants";
@@ -103,24 +103,6 @@ export default function EditCategoryForm(props) {
     }
   }
 
-  const StyledInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateCategoryButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   const ImageHolder = styled(Box)({
     position: "relative",
     marginLeft: theme.spacing(4),
@@ -139,7 +121,8 @@ export default function EditCategoryForm(props) {
       </Typography>
       <form onSubmit={onEditCategory}>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+            sx={{mt:4}}
             inputRef={categoryNameRef}
             label="Category name"
             variant="outlined"
@@ -186,7 +169,8 @@ export default function EditCategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
+            sx={{mt:4}}
             inputRef={categoryDescriptionRef}
             label="Category Description"
             multiline
@@ -196,7 +180,7 @@ export default function EditCategoryForm(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton
+          <CompleteActionButton
             color="secondary"
             startIcon={<Edit />}
             type="submit"
@@ -204,7 +188,7 @@ export default function EditCategoryForm(props) {
             variant="contained"
           >
             Edit category
-          </CreateCategoryButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {editCategoryResponseMessage ? (

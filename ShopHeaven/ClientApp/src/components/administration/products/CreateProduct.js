@@ -1,12 +1,8 @@
 import { React, useState, useRef, useEffect } from "react";
 import {
   Box,
-  Button,
-  Paper,
   IconButton,
   Typography,
-  Chip,
-  InputBase,
   Collapse,
   Grid,
   Divider,
@@ -14,7 +10,21 @@ import {
   Zoom,
   TextField,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {
+  SaveTagsButton,
+  StyledSelect,
+  HeadingChip,
+  SubheadingChip,
+  ProductInfoInput,
+  InputBox,
+  AddSpecificationButton,
+  CalculatePriceButton,
+  StyledChip,
+  TagsWrapper,
+  CompleteActionButton,
+  TagWord,
+  AdminMainWrapper
+} from "../../../styles/styles";
 import {
   AddCircle,
   RemoveCircle,
@@ -260,7 +270,7 @@ export default function CreateProduct(props) {
       setCreateProductResponseMessage(
         `${formData.get("name")} successfully created`
       );
-      
+
       window.scroll(0, 0);
 
       props.productListChanged(response?.data);
@@ -506,8 +516,6 @@ export default function CreateProduct(props) {
       for (let i = 0; i < errors.length; i++) {
         final += ` (${i + 1}). ${errors[i]} \r\n`;
       }
-
-      console.log("CREATION ERRORS", final);
       setCreateProductResponseMessage("");
       setCreateProductErrorMessage(final);
     }
@@ -515,129 +523,8 @@ export default function CreateProduct(props) {
     return isValid;
   }
 
-  const MainWrapper = styled(Paper)({
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  });
-
-  const TagsWrapper = styled(Box)({
-    [theme.breakpoints.down("lg")]: {
-      position: "relative",
-    },
-    marginBottom: theme.spacing(2),
-  });
-
-  const StyledChip = styled(Chip)({
-    cursor: "pointer",
-    textAlign: "left",
-    marginRight: theme.spacing(0.5),
-    borderRadius: theme.shape.borderRadius,
-    /*
-   "&:hover": {
-     backgroundColor: theme.palette.primary.main,
-   },
-   */
-  });
-
-  const ProductInfoInput = styled(TextField)({
-    //background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1.5),
-    //paddingLeft: theme.spacing(1),
-    //paddingRight: theme.spacing(1),
-    //borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  });
-
-  const AddSpecificationButton = styled(Button)({
-    width: "50%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("sm")]: {
-      width: "95%",
-    },
-  });
-
-  const CreateProductButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-    padding: theme.spacing(2),
-  });
-
-  const StyledSelect = {
-    cursor: "pointer",
-    width: "100%",
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(2.18,1),
-    border: "1px solid #C6BFBE",
-    textTransform: "uppercase",
-    fontSize: 14,
-    //backgroundColor: "rgb(255,249,249)",
-    marginTop: theme.spacing(1),
-  };
-
-  const SaveTagsButton = styled(Button)({
-    width: "95%", 
-    padding: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      width: "50%",
-      display: "block",
-      margin: "auto",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "100%",
-    },
-  });
-
-  const TagWord = styled(Typography)({
-    display: "inline",
-    fontWeight: 500,
-    marginRight: theme.spacing(1),
-  });
-
-  const HeadingChip = styled(Chip)({
-    fontSize: 21,
-    padding: theme.spacing(2),
-    fontWeight: 500,
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(5),
-    color: theme.palette.white.main,
-    backgroundColor: theme.palette.secondary.main,
-  });
-
-  const SubheadingChip = styled(Chip)({
-    fontSize: 12,
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  });
-
-  const CalculatePriceButton = styled(Button)({
-    width: "50%",
-    display: "block",
-    margin: "auto",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(4),
-    [theme.breakpoints.down("sm")]: {
-      width: "95%",
-    },
-  });
-
-  const ErrorAlert = styled(Alert)({
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
-
   return (
-    <MainWrapper>
+    <AdminMainWrapper>
       <Divider>
         <HeadingChip label="MAIN INFO" variant="outlined" color="secondary" />
       </Divider>
@@ -651,9 +538,9 @@ export default function CreateProduct(props) {
             defaultValue={productName}
           />
           {messages.productNameError ? (
-            <ErrorAlert severity="error">
+            <Alert variant="filled" severity="error">
               {messages.productNameError}
-            </ErrorAlert>
+            </Alert>
           ) : (
             <></>
           )}
@@ -666,7 +553,7 @@ export default function CreateProduct(props) {
             defaultValue={productBrand}
           />
         </InputBox>
-        <InputBox>   
+        <InputBox>
           <ProductInfoInput
             label="Description"
             multiline
@@ -676,9 +563,9 @@ export default function CreateProduct(props) {
             defaultValue={productDescription}
           />
           {messages.productDescriptionError ? (
-            <ErrorAlert severity="error">
+            <Alert variant="filled" severity="error">
               {messages.productDescriptionError}
-            </ErrorAlert>
+            </Alert>
           ) : (
             <></>
           )}
@@ -709,9 +596,9 @@ export default function CreateProduct(props) {
                 ))}
               </select>
               {messages.productCategoryError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productCategoryError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
@@ -738,9 +625,9 @@ export default function CreateProduct(props) {
                 ))}
               </select>
               {messages.productSubcategoryError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productSubcategoryError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
@@ -774,16 +661,16 @@ export default function CreateProduct(props) {
                 }}
               />
               {messages.productPriceError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productPriceError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
             </InputBox>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <InputBox sx={{ width: "50%" }}>  
+            <InputBox sx={{ width: "50%" }}>
               <ProductInfoInput
                 label="Discount"
                 type="number"
@@ -796,15 +683,19 @@ export default function CreateProduct(props) {
                 }}
               />
               {messages.productDiscountError ? (
-                <ErrorAlert severity="error">
+                <Alert variant="filled" severity="error">
                   {messages.productDiscountError}
-                </ErrorAlert>
+                </Alert>
               ) : (
                 <></>
               )}
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
-              <ProductInfoInput label="Final Price" disabled defaultValue={finalPrice.toFixed(2)} />
+              <ProductInfoInput
+                label="Final Price"
+                disabled
+                defaultValue={finalPrice.toFixed(2)}
+              />
             </InputBox>
           </Box>
           <CalculatePriceButton
@@ -843,9 +734,9 @@ export default function CreateProduct(props) {
                   }}
                 />
                 {messages.productQuantityError ? (
-                  <ErrorAlert severity="error">
+                  <Alert variant="filled" severity="error">
                     {messages.productQuantityError}
-                  </ErrorAlert>
+                  </Alert>
                 ) : (
                   <></>
                 )}
@@ -869,9 +760,9 @@ export default function CreateProduct(props) {
                   <option value={false}>No</option>
                 </select>
                 {messages.productGuaranteeError ? (
-                  <ErrorAlert severity="error">
+                  <Alert variant="filled" severity="error">
                     {messages.productGuaranteeError}
-                  </ErrorAlert>
+                  </Alert>
                 ) : (
                   <></>
                 )}
@@ -889,21 +780,27 @@ export default function CreateProduct(props) {
           </Divider>
           <Box>
             <Box sx={{ display: "flex" }}>
-              <Box sx={{ width: "50%" }}>
-              </Box>
-              <Box sx={{ width: "50%" }}>
-              </Box>
+              <Box sx={{ width: "50%" }}></Box>
+              <Box sx={{ width: "50%" }}></Box>
             </Box>
             {productSpecifications?.map((spec, index) => (
               <Box key={index} sx={{ display: "flex" }}>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput label="Spec. key" readOnly defaultValue={spec.key} />
+                    <ProductInfoInput
+                      label="Spec. key"
+                      readOnly
+                      defaultValue={spec.key}
+                    />
                   </InputBox>
                 </Box>
                 <Box sx={{ width: "50%" }}>
                   <InputBox>
-                    <ProductInfoInput label="Spec. value" readOnly defaultValue={spec.value} />
+                    <ProductInfoInput
+                      label="Spec. value"
+                      readOnly
+                      defaultValue={spec.value}
+                    />
                   </InputBox>
                 </Box>
               </Box>
@@ -960,7 +857,9 @@ export default function CreateProduct(props) {
           </IconButton>
         </TagsWrapper>
         {messages.productTagsError ? (
-          <ErrorAlert severity="error">{messages.productTagsError}</ErrorAlert>
+          <Alert variant="filled" severity="error">
+            {messages.productTagsError}
+          </Alert>
         ) : (
           <></>
         )}
@@ -977,15 +876,15 @@ export default function CreateProduct(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
-                <Box sx={{marginTop: 1}}>
-                <SaveTagsButton
-                  onClick={setValuesToStates}
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                >
-                  save tags
-                </SaveTagsButton>
+                <Box sx={{ marginTop: 1 }}>
+                  <SaveTagsButton
+                    onClick={setValuesToStates}
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                  >
+                    save tags
+                  </SaveTagsButton>
                 </Box>
               </Grid>
             </Grid>
@@ -1020,7 +919,7 @@ export default function CreateProduct(props) {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={9} lg={10}>
                 <ProductInfoInput
-                 label="Labels separated by comma"
+                  label="Labels separated by comma"
                   inputRef={productLabelsRef}
                   multiline
                   placeholder="new, popular"
@@ -1028,7 +927,7 @@ export default function CreateProduct(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3} lg={2}>
-                <Box sx={{marginTop: 1}}>
+                <Box sx={{ marginTop: 1 }}>
                   <SaveTagsButton
                     onClick={setValuesToStates}
                     variant="contained"
@@ -1067,7 +966,13 @@ export default function CreateProduct(props) {
             <AddPhotoAlternate sx={{ mr: 1, fontSize: 35 }} />
             UPLOAD IMAGES
           </Typography>
-          <Typography sx={{textAlign: "center", pt: 2, color: theme.palette.warning.main }}>
+          <Typography
+            sx={{
+              textAlign: "center",
+              pt: 2,
+              color: theme.palette.warning.main,
+            }}
+          >
             {allowedFileFormats} file formats are allowed
           </Typography>
           <TextField
@@ -1091,9 +996,9 @@ export default function CreateProduct(props) {
           />*/}
 
           {messages.productImagesError ? (
-            <ErrorAlert severity="error">
+            <Alert variant="filled" severity="error">
               {messages.productImagesError}
-            </ErrorAlert>
+            </Alert>
           ) : (
             <></>
           )}
@@ -1108,7 +1013,7 @@ export default function CreateProduct(props) {
         >
           IF YOU ARE READY:
         </Typography>
-        <CreateProductButton
+        <CompleteActionButton
           startIcon={<AddCircle />}
           color="secondary"
           type="submit"
@@ -1116,7 +1021,7 @@ export default function CreateProduct(props) {
           variant="contained"
         >
           CREATE PRODUCT
-        </CreateProductButton>
+        </CompleteActionButton>
       </form>
       <Box>
         {createProductResponseMessage ? (
@@ -1130,14 +1035,18 @@ export default function CreateProduct(props) {
         )}
         {createProductErrorMessage ? (
           <Zoom in={createProductErrorMessage.length > 0 ? true : false}>
-            <ErrorAlert sx={{ marginTop: theme.spacing(1) }} severity="error">
+            <Alert
+              variant="filled"
+              sx={{ marginTop: theme.spacing(1) }}
+              severity="error"
+            >
               {createProductErrorMessage}
-            </ErrorAlert>
+            </Alert>
           </Zoom>
         ) : (
           ""
         )}
       </Box>
-    </MainWrapper>
+    </AdminMainWrapper>
   );
 }

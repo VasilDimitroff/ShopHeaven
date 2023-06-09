@@ -1,15 +1,10 @@
 import { React, useState, Fragment } from "react";
 import {
   Box,
-  Button,
   TableRow,
   TableCell,
   IconButton,
   Collapse,
-  Typography,
-  Table,
-  TableBody,
-  TableHead,
   Stack,
   Chip,
   Grid,
@@ -17,17 +12,13 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { ActionIconButton } from "../../../styles/styles";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
   Edit,
   Delete,
-  AddCircle,
-  RemoveCircle,
-  Person,
-  ShoppingBag,
   Category,
-  Label,
 } from "@mui/icons-material";
 import EditCoupon from "./EditCoupon";
 import DeleteCoupon from "./DeleteCoupon";
@@ -77,11 +68,6 @@ export default function AdminCouponsRow(props) {
     },
   });
 
-  const StyledIconButton = styled(IconButton)({
-    borderWidth: "1.5px",
-    borderStyle: "solid",
-  });
-
   const CouponInfoText = styled(Box)({
     fontSize: 11,
     fontWeight: 400,
@@ -89,7 +75,6 @@ export default function AdminCouponsRow(props) {
       marginTop: theme.spacing(0.4),
     },
   });
-
 
   return (
     <Fragment>
@@ -142,22 +127,22 @@ export default function AdminCouponsRow(props) {
         <TableCell>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={handleShowEditForm}
                 color="warning"
                 size="small"
               >
                 <Edit />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <StyledIconButton
+              <ActionIconButton
                 onClick={handleShowDeleteForm}
                 color="error"
                 size="small"
               >
                 <Delete />
-              </StyledIconButton>
+              </ActionIconButton>
             </Grid>
           </Grid>
         </TableCell>

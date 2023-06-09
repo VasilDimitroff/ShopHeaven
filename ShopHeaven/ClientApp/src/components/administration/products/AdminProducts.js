@@ -179,7 +179,6 @@ export default function AdminProducts() {
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
     fontSize: 14,
-    backgroundColor: "rgb(255,249,249)",
   };
 
   const CancelButton = styled(Cancel)({

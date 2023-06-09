@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
+import { InputBox, CompleteActionButton, ProductInfoInput } from "../../../styles/styles";
 import { Edit } from "@mui/icons-material";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -87,27 +88,10 @@ export default function EditCoupon(props) {
     }
   }
 
-  const StyledInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    margin: theme.spacing(0, 4),
-  });
-
-  const CreateCategoryButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
       <Typography
-        sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(3) }}
+        sx={{ ml: 2, mt: 3, mb:2 }}
         variant="h6"
         component="h2"
       >
@@ -115,7 +99,7 @@ export default function EditCoupon(props) {
       </Typography>
       <form onSubmit={onEditCoupon}>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
             inputRef={couponCodeRef}
             label="Coupon code"
             variant="outlined"
@@ -123,7 +107,7 @@ export default function EditCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <StyledInput
+          <ProductInfoInput
             inputRef={couponAmountRef}
             label="Coupon Amount"
             defaultValue={coupon.amount}
@@ -136,7 +120,7 @@ export default function EditCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCategoryButton
+          <CompleteActionButton
             color="secondary"
             startIcon={<Edit />}
             type="submit"
@@ -144,7 +128,7 @@ export default function EditCoupon(props) {
             variant="contained"
           >
             Edit coupon
-          </CreateCategoryButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {editCouponResponseMessage ? (

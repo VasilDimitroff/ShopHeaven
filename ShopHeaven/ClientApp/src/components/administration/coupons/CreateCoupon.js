@@ -1,16 +1,14 @@
 import { React, useState, useRef } from "react";
 import {
   Box,
-  Button,
   Typography,
-  TextField,
   Paper,
   Alert,
   Zoom,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { AddPhotoAlternate, AddCircle } from "@mui/icons-material";
+import { InputBox, ProductInfoInput, CompleteActionButton } from "../../../styles/styles";
+import { AddCircle } from "@mui/icons-material";
 import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -86,27 +84,9 @@ export default function CreateCoupon(props) {
     }
   }
 
-  const CouponInfoInput = styled(TextField)({
-    background: "rgb(255,249,249)",
-    width: "100%",
-    marginTop: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-  });
-
-  const InputBox = styled(Box)({
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
-  });
-
-  const CreateCouponButton = styled(Button)({
-    width: "100%",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-  });
-
   return (
-    <Paper sx={{ padding: theme.spacing(2) }}>
-      <Box sx={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}>
+    <Paper sx={{ p: 2 }}>
+      <Box sx={{ ml: 2, mt: 2, mb: 2 }}>
         <Typography variant="h6" component="h2">
           ADD NEW COUPON
         </Typography>
@@ -118,7 +98,7 @@ export default function CreateCoupon(props) {
 
       <form onSubmit={onCreateCoupon}>
         <InputBox>
-          <CouponInfoInput
+          <ProductInfoInput
             inputRef={couponCodeRef}
             label="Coupon code"
             defaultValue={couponCode}
@@ -127,7 +107,7 @@ export default function CreateCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <CouponInfoInput
+          <ProductInfoInput
             inputRef={couponAmountRef}
             label="Coupon amount"
             defaultValue={couponAmount}
@@ -141,7 +121,7 @@ export default function CreateCoupon(props) {
           />
         </InputBox>
         <InputBox>
-          <CreateCouponButton
+          <CompleteActionButton
             color="secondary"
             startIcon={<AddCircle />}
             type="submit"
@@ -149,7 +129,7 @@ export default function CreateCoupon(props) {
             variant="contained"
           >
             Create coupon
-          </CreateCouponButton>
+          </CompleteActionButton>
         </InputBox>
       </form>
       {createCouponResponseMessage ? (
