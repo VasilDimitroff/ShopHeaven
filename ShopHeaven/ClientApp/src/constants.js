@@ -64,18 +64,21 @@ export const firstProductCarouselSortingCriteria = sortByDiscountPercentDescendi
 //home carousel products count per slider
 export const productsPerSliderInHomePage = 12;
 
-//times for setTimer()
-export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
-export const loadSubcategoriesInMainMenuTimerMilliseconds = 0; // time waiting before start new request in main menu when user move the mouse
-export const hideSubmenuWhenUserIsOutsideTimerMilliseconds = 1000; // how much time to show submenu when user is outside of submenu
+// how many similar products to get for single product page slider below main info
+export const similarProductsForSingleProductPageSlider = 12;
+
+//home slider
+export const labelCriteriaForProductsInHomeSlider = ["hot"]; // filter main slider products by these labels
+export const productsCountInHomeSlider = 5; // how many product to show in main slider
 
 //home main menu
 export const categoriesToShowInMainMenuIfScreenIsSm = 8;
 export const categoriesToShowInMainMenuIfScreenIsMd = 10;
 
-//home slider
-export const labelCriteriaForProductsInHomeSlider = ["hot"]; // filter main slider products by these labels
-export const productsCountInHomeSlider = 5; // how many product to show in main slider
+//times for setTimer()
+export const requestTimerMilliseconds = 500; // wait for user to type text in search fields
+export const loadSubcategoriesInMainMenuTimerMilliseconds = 0; // time waiting before start new request in main menu when user move the mouse
+export const hideSubmenuWhenUserIsOutsideTimerMilliseconds = 1000; // how much time to show submenu when user is outside of submenu
 
 //categories page
 export const columnsWithCategoriesToShowIfScreenIsMd = 2;
@@ -85,14 +88,11 @@ export const columnsWithCategoriesToShowIfScreenIsLg = 4;
 export const columnsWithSubcategoriesToShowIfScreenIsMd = 2;
 export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
 
-//allowed file formats in upload image functionality
+//allowed file formats in upload image functionality (sync it with backend)
 export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
-
-// how many similar products to get for signle product page slider below main info
-export const similarProductsForSingleProductPageSlider = 12;
 
 //how many reviews per page in single product page
 export const reviewsPerPageInProductPage = 3;
 
-//exact length of the coupon code
+//exact length of the coupon code (sync it with backend)
 export const couponCodeLength = 8;
