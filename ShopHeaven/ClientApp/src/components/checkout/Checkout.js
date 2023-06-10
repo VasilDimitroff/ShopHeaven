@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Box, Grid, Stack, Typography, Button, Paper, Chip } from "@mui/material";
+import { Box, Grid, Typography, Button, Paper, Chip } from "@mui/material";
 import { AddShoppingCart } from "@mui/icons-material";
 import { AddCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +61,7 @@ export default function Checkout() {
   const effectRun = useRef(false);
 
   useEffect(() => {
-    window.scroll(0, 0);
+    //window.scroll(0, 0);
   }, [])
 
   useEffect(() => {
@@ -159,14 +159,6 @@ export default function Checkout() {
     marginTop: theme.spacing(2),
   });
 
-
-  const ActionButton = styled(Button)({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-    width: "100%",
-    marginTop: theme.spacing(3),
-  });
-
   const DiscountHolder = styled(Box)({
     display: "flex",
     color: "gray",
@@ -176,13 +168,9 @@ export default function Checkout() {
 
   const PriceHolder = styled(Box)({
     display: "flex",
-    [theme.breakpoints.up("lg")]: {
-      display: "block",
-      margin: "auto",
-      textAlign: "center",
-    },
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    gap: 20
   });
 
   const SectionNumberChip = styled(Chip)({
@@ -204,6 +192,12 @@ export default function Checkout() {
   const SectionWrapper = styled(Paper)({
     padding: theme.spacing(1, 0),
     margin: theme.spacing(4, 0)
+  })
+
+  const Divider = styled(Box)({
+    width: "1px",
+    borderLeft: "2px outset  #C8C8C8", 
+    height: "100%"
   })
 
   return (
@@ -323,59 +317,66 @@ export default function Checkout() {
               </InputBox>
             </SectionWrapper>
             <Paper sx={{ p: 2 }}>
-              <Stack spacing={1}>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  fontWeight={400}
-                  sx={{ mb: 1 }}
-                >
-                  ORDER SUMMARY:
-                </Typography>
-                <RegularPriceHolder>
-                  <Typography>Regular price:</Typography>
-                  <Typography sx={{ textDecoration: "line-through" }}>
-                    {appSettings.appCurrency.code}{" "}
-                    {10}
-                  </Typography>
-                </RegularPriceHolder>
-                <DiscountHolder>
-                  <Typography>Discount:</Typography>
-                  <Typography>
-                    {appSettings.appCurrency.code} -
-                    {10}
-                  </Typography>
-                </DiscountHolder>
-                <DiscountHolder>
-                  <Typography>Coupon discount:</Typography>
-                  <Typography>
-                    {`${appSettings.appCurrency.code} ${200} (-${12}%)`}
-                  </Typography>
-                </DiscountHolder>
-                <PriceHolder>
-                  <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
-                    TOTAL PRICE:
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 500, color: theme.palette.error.main }}
-                  >
-                    EUR 350
-                  </Typography>
-                </PriceHolder>
-              </Stack>
-            </Paper>
-            <InputBox>
-              <CompleteActionButton
-                color="secondary"
-                startIcon={<AddCircle />}
-                type="submit"
-                size="large"
-                variant="contained"
+              <Typography
+                align="center"
+                variant="h5"
+                fontWeight={500}
+                sx={{ mb: 3 }}
               >
-                Send Order
-              </CompleteActionButton>
-            </InputBox>
+                ORDER SUMMARY:
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={12} lg={5.6}>
+                  <RegularPriceHolder>
+                    <Typography>Regular price:</Typography>
+                    <Typography sx={{ textDecoration: "line-through" }}>
+                      {appSettings.appCurrency.code}{" "}
+                      {10}
+                    </Typography>
+                  </RegularPriceHolder>
+                  <DiscountHolder>
+                    <Typography>Discount:</Typography>
+                    <Typography>
+                      {appSettings.appCurrency.code} -
+                      {10}
+                    </Typography>
+                  </DiscountHolder>
+                  <DiscountHolder>
+                    <Typography>Coupon discount:</Typography>
+                    <Typography>
+                      {`${appSettings.appCurrency.code} ${200} (-${12}%)`}
+                    </Typography>
+                  </DiscountHolder>
+                </Grid>
+                <Grid item xs={0} sm={0} md={0} lg={0.8} sx={{display:"flex", justifyContent: "center"}}>
+                   <Divider></Divider>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={5.6}>
+                  <PriceHolder>
+                    <Typography sx={{ fontWeight: 600, fontSize: 22, }}>
+                      TOTAL PRICE:
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 500, color: theme.palette.error.main }}
+                    >
+                      EUR 350.00
+                    </Typography>
+                  </PriceHolder>
+                  <InputBox>
+                    <CompleteActionButton
+                      color="secondary"
+                      startIcon={<AddCircle />}
+                      type="submit"
+                      size="large"
+                      variant="contained"
+                    >
+                      Send Order
+                    </CompleteActionButton>
+                  </InputBox>
+                </Grid>
+              </Grid>
+            </Paper>
           </form>
         </Paper>
       </MainWrapper>
