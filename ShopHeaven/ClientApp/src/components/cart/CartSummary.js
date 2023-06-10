@@ -39,7 +39,9 @@ export default function CartSummary(props) {
     setCartSummary(props.cartSummary)
   }, [props.cartSummary])
 
-  function onCouponApplied() {
+  function onCouponApplied(e) {
+    e.preventDefault();
+
     const couponValue = couponRef.current.value;
     console.log(couponValue);
 
@@ -236,6 +238,7 @@ export default function CartSummary(props) {
         </Stack>
       </Paper>
       <CouponHolder>
+        <form onSubmit={onCouponApplied}>
         <Typography sx={{ fontWeight: 500 }}>
           Have a discount coupon?
         </Typography>
@@ -248,7 +251,7 @@ export default function CartSummary(props) {
           />
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
           <IconButton
-            onClick={onCouponApplied}
+            type="submit"
             color="primary"
             sx={{ p: "5px" }}
           >
@@ -264,6 +267,7 @@ export default function CartSummary(props) {
               label={`REMOVE COUPON: ${coupon?.code} (-${coupon?.amount}%)`}
               color="error"
               size="small"
+              sx={{mt:2}}
               onDelete={removeCoupon}
             />
           )}
@@ -295,6 +299,7 @@ export default function CartSummary(props) {
         ) : (
           <></>
         )}
+          </form>
       </CouponHolder>
     </Stack>
   );
