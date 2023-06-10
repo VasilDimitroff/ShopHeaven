@@ -1,6 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Box, Grid, Typography, Button, Paper, Chip } from "@mui/material";
-import { AddShoppingCart } from "@mui/icons-material";
+import { AddShoppingCart, ArrowForwardIos } from "@mui/icons-material";
 import { AddCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
@@ -366,12 +366,13 @@ export default function Checkout() {
                   <InputBox>
                     <CompleteActionButton
                       color="secondary"
-                      startIcon={<AddCircle />}
+                      startIcon={<ArrowForwardIos />}
+                      endIcon={<ArrowForwardIos />}
                       type="submit"
                       size="large"
                       variant="contained"
                     >
-                      Send Order
+                      Continue
                     </CompleteActionButton>
                   </InputBox>
                 </Grid>

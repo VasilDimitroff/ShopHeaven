@@ -36,6 +36,10 @@ export default function CartSummary(props) {
 
   const couponRef = useRef();
 
+  useEffect(() => {
+    setCartSummary(props.cartSummary)
+  }, [props.cartSummary])
+
   function onCouponApplied() {
     const couponValue = couponRef.current.value;
     console.log(couponValue);
@@ -78,16 +82,8 @@ export default function CartSummary(props) {
       controller.abort();
 
       setApplyCouponErrorMessage("");
-      setApplyCouponResponseMessage(
-        `Coupon ${couponRequestModel.code} applied succesfully`
-      );
+      setApplyCouponResponseMessage(`Coupon ${couponRequestModel.code} applied succesfully`);
 
-      //change total summary price
-      setCartSummary((prev) => {
-        return {
-          ...prev,
-        };
-      });
     } catch (error) {
       removeCoupon();
 
