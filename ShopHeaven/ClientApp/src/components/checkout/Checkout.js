@@ -2,7 +2,7 @@ import { React, useState, useEffect, useRef } from "react";
 import { Box, Grid, Stack, Typography, Button, Paper, Chip } from "@mui/material";
 import { AddCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { MainWrapper, UniversalInput, InputBox, CompleteActionButton, StyledSelect } from "../../styles/styles";
 import useAuth from "../../hooks/useAuth";
@@ -102,6 +102,47 @@ export default function Checkout() {
 
   function onCreateOrder(e) {
     e.preventDefault();
+
+    const recipient = recipientRef.current.value;
+    const phone = phoneRef.current.value;
+    const country = countryRef.current.value;
+    const shippingMethod = shippingMethodRef.current.value;
+    const city = cityRef.current.value;
+    const address = addressRef.current.value;
+    const details = detailsRef.current.value;
+    const paymentMethod = paymentMethodRef.current.value;
+
+
+    const order = {
+      recipient: recipient,
+      phone: phone,
+      country: country,
+      shippingMethod: shippingMethod,
+      city: city,
+      address: address,
+      details: details,
+      paymentMethod: paymentMethod,
+    }
+
+    handleSetOrderInfo(order);
+
+    console.log("ORDER: ", order)
+  }
+
+  function handleSetOrderInfo(order) {
+    setOrderInfo(prev => {
+      return {
+        ...prev,
+        recipient: order.recipient,
+        phone: order.phone,
+        country: order.country,
+        shippingMethod: order.shippingMethod,
+        city: order.city,
+        address: order.address,
+        details: order.details,
+        paymentMethod: order.paymentMethod
+      }
+    })
   }
 
   const SectionNumberChip = styled(Chip)({
@@ -120,12 +161,19 @@ export default function Checkout() {
     marginBottom: theme.spacing(2)
   })
 
+  const SectionWrapper = styled(Paper)({
+    padding: theme.spacing(1, 0),
+    margin: theme.spacing(4, 0)
+  })
+
   return (
     <Box>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
       <MainWrapper>
-        <Paper>
+        <Paper sx={{p:2, backgroundColor: alpha(theme.palette.primary.main, 0.1)}}>
+        <Typography textAlign={"center"} variant="h4" fontWeight={500}>ORDER INFO</Typography>
           <form onSubmit={onCreateOrder}>
+            <SectionWrapper elevation={0}>
             <InputBoxFlex>
               <SectionNumberChip label={1} />
               <Typography variant="h6">RECIPIENT</Typography>
@@ -153,6 +201,8 @@ export default function Checkout() {
                 }}
               />
             </InputBox>
+            </SectionWrapper>
+            <SectionWrapper elevation={0}>
             <InputBoxFlex>
               <SectionNumberChip label={2} />
               <Typography variant="h6">SHIPPING</Typography>
@@ -210,6 +260,8 @@ export default function Checkout() {
                 placeholder="Additional notes (optional)"
               />
             </InputBox>
+            </SectionWrapper>
+            <SectionWrapper elevation={0}>
             <InputBoxFlex>
               <SectionNumberChip label={3} />
               <Typography variant="h6">PAYMENT</Typography>
@@ -229,6 +281,7 @@ export default function Checkout() {
                 </option>
               </select>
             </InputBox>
+            </SectionWrapper>
             <InputBox>
               <CompleteActionButton
                 color="secondary"
