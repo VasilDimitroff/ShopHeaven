@@ -6,7 +6,6 @@ import {
   Stack,
   Typography,
   Button,
-  Slide,
   IconButton,
   Divider,
   InputBase,
