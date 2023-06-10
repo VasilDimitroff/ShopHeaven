@@ -19,22 +19,18 @@ namespace ShopHeaven.Data.Services
     {
         private readonly ShopDbContext db;
         private readonly IStorageService storageService;
+        private readonly IUsersService usersService;
 
-        public ProductsService(ShopDbContext db, IStorageService storageService)
+        public ProductsService(ShopDbContext db, IStorageService storageService, IUsersService usersService)
         {
             this.db = db;
             this.storageService = storageService;
+            this.usersService = usersService;
         }
 
         public async Task<AdminProductResponseModel> CreateProductAsync(CreateProductRequestModel model)
         {
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new NullReferenceException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             var subcategory = await this.db.SubCategories
                 .Include(x => x.MainCategory)
@@ -197,13 +193,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new NullReferenceException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             var subcategory = await this.db.SubCategories
                 .Include(x => x.MainCategory)
@@ -778,6 +768,19 @@ namespace ShopHeaven.Data.Services
                                     .ToList()
                             })
                             .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
+            }
+
+            return product;
+        }
+
+        public async Task<Product> GetProductAsync(string id)
+        {
+            var product = await this.db.Products.
+                            FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
 
             if (product == null)
             {

@@ -1,4 +1,6 @@
-﻿namespace ShopHeaven.Models.Responses.Orders
+﻿using ShopHeaven.Models.Responses.ShippingMethods;
+
+namespace ShopHeaven.Models.Responses.Orders
 {
     public class CheckoutResponseModel
     {
@@ -12,9 +14,11 @@
 
         public string? Address { get; set; }
 
-        public string PaymentMethod { get; set; }
+        public OrderSummaryResponseModel OrderSummary { get; set; }
 
-        public string ShippingMethod { get; set; }
+        public ICollection<string> PaymentMethods { get; set; }
+
+        public ICollection<ShippingMethodResponseModel> ShippingMethods { get; set; }
 
     }
 }

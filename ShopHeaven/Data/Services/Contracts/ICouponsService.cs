@@ -1,10 +1,13 @@
-﻿using ShopHeaven.Models.Requests.Coupons;
+﻿using ShopHeaven.Data.Models;
+using ShopHeaven.Models.Requests.Coupons;
 using ShopHeaven.Models.Responses.Coupons;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ICouponsService
     {
+        Task<Coupon> GetCouponByIdAsync(string id);
+
         Task<CouponResponseModel> CreateCouponAsync(CreateCouponRequestModel model);
 
         Task<CouponResponseModel> EditCouponAsync(EditCouponRequestModel model);

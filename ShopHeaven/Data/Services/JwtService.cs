@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Responses.Users;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,12 +29,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<string> CreateJwtTokenAsync(string userId, ICollection<string> userRoles)
         {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new NullReferenceException(GlobalConstants.UserNotFound);
-            }
+            var user = await this.usersService.GetUserAsync(userId);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
@@ -68,12 +62,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task SetRefreshTokenAsync(RefreshToken refreshToken, string userId)
         {
-            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserNotFound);
-            }
+            var user = await this.usersService.GetUserAsync(userId);
 
             user.RefreshToken = refreshToken.Token;
             user.TokenCreated = refreshToken.CreatedOn;

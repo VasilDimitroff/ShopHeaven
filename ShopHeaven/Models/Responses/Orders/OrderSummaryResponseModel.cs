@@ -2,13 +2,23 @@
 {
     public class OrderSummaryResponseModel
     {
-        public decimal TotalPriceWithNoDiscount { get; set; }
+        // regular price (db)
+        public decimal TotalPriceWithNoDiscount { get; set; } 
 
-        public decimal CouponDiscount { get; set; } // nominal
+        // regular price - sum of product discounts price (db)
+        public decimal TotalPriceWithDiscountOfProducts { get; set; }
 
-        public decimal TotalPriceWithDiscount => TotalPriceWithDiscount - CouponDiscount;
+        // percent
+        public decimal CouponAmount { get; set; }
 
-        public decimal Discount => TotalPriceWithNoDiscount - TotalPriceWithDiscount; // nominal
+        //nominal
+        public decimal CouponDiscount => TotalPriceWithDiscountOfProducts * CouponAmount / 100;
+
+        // price after all discounts (coupon included)
+        public decimal TotalPriceWithAllDiscounts => TotalPriceWithDiscountOfProducts - CouponDiscount; 
+
+        // nominal discount without coupon
+        public decimal Discount => TotalPriceWithNoDiscount - TotalPriceWithDiscountOfProducts;
 
     }
 }

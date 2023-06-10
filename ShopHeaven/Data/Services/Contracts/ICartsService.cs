@@ -1,10 +1,13 @@
-﻿using ShopHeaven.Models.Requests.Carts;
+﻿using ShopHeaven.Data.Models;
+using ShopHeaven.Models.Requests.Carts;
 using ShopHeaven.Models.Responses.Carts;
 
 namespace ShopHeaven.Data.Services.Contracts
 {
     public interface ICartsService
     {
+        Task<Cart> GetCartAsync(string cartId);
+
         Task<AddProductToCartResponseModel> AddProductToCartAsync(AddProductToCartRequestModel model);
 
         Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model);

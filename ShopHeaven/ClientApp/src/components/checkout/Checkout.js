@@ -1,8 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Box, Grid, Typography, Button, Paper, Chip } from "@mui/material";
 import { AddShoppingCart, ArrowForwardIos } from "@mui/icons-material";
-import { AddCircle } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { MainWrapper, UniversalInput, InputBox, CompleteActionButton, StyledSelect } from "../../styles/styles";
@@ -33,6 +32,15 @@ export default function Checkout() {
   const [cartSummary, setCartSummary] = useState();
   const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
 
+  const { appSettings } = useAppSettings();
+  const { auth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const couponId = queryParams.get("couponId");
+
   const [orderInfo, setOrderInfo] = useState({
     recipient: "",
     phone: "",
@@ -44,10 +52,7 @@ export default function Checkout() {
     paymentMethod: "",
   });
 
-  const { auth } = useAuth();
-  const { appSettings } = useAppSettings();
-  const navigate = useNavigate();
-  const axiosPrivate = useAxiosPrivate();
+
 
   const recipientRef = useRef();
   const phoneRef = useRef();
@@ -66,23 +71,28 @@ export default function Checkout() {
 
   useEffect(() => {
 
+    const getCheckoutRequestData = {
+      cartId: auth.cartId,
+      userId: auth.userId,
+      couponId: couponId
+    }
+
+    console.log('GET CHECKOUT REQUEST:', getCheckoutRequestData);
+
     const controller = new AbortController();
 
     const getCheckountInfo = async () => {
       try {
         const response = await axiosPrivate.post(
-          ApiEndpoints.carts.checkout,
-          {
-            cartId: auth.cartId,
-            userId: auth.userId,
-          },
+          ApiEndpoints.orders.checkout,
+          getCheckoutRequestData,
           {
             signal: controller.signal,
           }
         );
 
-        setProductsInCart(response?.data?.products);
-        setCartSummary(response?.data?.summary);
+        //setProductsInCart(response?.data?.products);
+        //setCartSummary(response?.data?.summary);
 
         setDeleteProductDOMelement(false);
 
@@ -196,7 +206,7 @@ export default function Checkout() {
 
   const Divider = styled(Box)({
     width: "1px",
-    borderLeft: "2px outset  #C8C8C8", 
+    borderLeft: "2px outset  #C8C8C8",
     height: "100%"
   })
 
@@ -348,8 +358,8 @@ export default function Checkout() {
                     </Typography>
                   </DiscountHolder>
                 </Grid>
-                <Grid item xs={0} sm={0} md={0} lg={0.8} sx={{display:"flex", justifyContent: "center"}}>
-                   <Divider></Divider>
+                <Grid item xs={0} sm={0} md={0} lg={0.8} sx={{ display: "flex", justifyContent: "center" }}>
+                  <Divider></Divider>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={5.6}>
                   <PriceHolder>

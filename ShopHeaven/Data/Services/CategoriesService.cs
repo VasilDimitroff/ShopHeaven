@@ -14,11 +14,13 @@ namespace ShopHeaven.Data.Services
     public class CategoriesService : ICategoriesService
     {
         private readonly IStorageService storageService;
+        private readonly IUsersService usersService;
         private readonly ShopDbContext db;
 
-        public CategoriesService(IStorageService storageService, ShopDbContext db)
+        public CategoriesService(IStorageService storageService, IUsersService usersService, ShopDbContext db)
         {
             this.storageService = storageService;
+            this.usersService = usersService;
             this.db = db;
         }
 
@@ -64,12 +66,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentNullException(GlobalConstants.CategoryImageCannotBeEmpty);
             }
 
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Name == model.Name && x.IsDeleted != true);
 
@@ -306,12 +303,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentNullException(GlobalConstants.CategoryNameCannotBeEmpty);
             }
 
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true );
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             if (model.Image != null)
             {

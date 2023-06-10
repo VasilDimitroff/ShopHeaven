@@ -8,7 +8,7 @@ namespace ShopHeaven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = GlobalConstants.UserRoleName)]
+    [Authorize]
     public class CartsController : ControllerBase
     {
         private readonly ICartsService cartsService;

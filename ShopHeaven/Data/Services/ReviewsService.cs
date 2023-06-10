@@ -10,20 +10,17 @@ namespace ShopHeaven.Data.Services
     public class ReviewsService : IReviewsService
     {
         private readonly ShopDbContext db;
+        private readonly IUsersService usersService;
 
-        public ReviewsService(ShopDbContext db)
+        public ReviewsService(ShopDbContext db, IUsersService usersService)
         {
             this.db = db;
+            this.usersService = usersService;
         }
 
         public async Task<ReviewResponseModel> CreateReviewAsync(CreateReviewRequestModel model)
         {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.UserId);
 
             var product = await this.db.Products
                 .Include(x => x.Reviews.Where(x => x.IsDeleted != true))

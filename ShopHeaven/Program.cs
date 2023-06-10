@@ -83,6 +83,8 @@ builder.Services.AddTransient<IImagesService, ImagesService>();
 builder.Services.AddTransient<IReviewsService, ReviewsService>();
 builder.Services.AddTransient<ICartsService, CartsService>();
 builder.Services.AddTransient<ICouponsService, CouponsService>();
+builder.Services.AddTransient<IOrdersService, OrdersService>();
+builder.Services.AddTransient<IShippingService, ShippingService>();
 
 builder.Services.AddHttpContextAccessor();
 

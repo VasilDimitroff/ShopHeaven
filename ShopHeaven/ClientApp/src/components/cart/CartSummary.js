@@ -19,7 +19,7 @@ import { theme } from "../../theme";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAppSettings from "../../hooks/useAppSettings";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { noPermissionsForOperationMessage } from "../../constants";
+import { checkoutPath, noPermissionsForOperationMessage } from "../../constants";
 
 export default function CartSummary(props) {
   const { appSettings } = useAppSettings();
@@ -226,6 +226,7 @@ export default function CartSummary(props) {
             </Typography>
           </PriceHolder>
           <Box>
+            <Link to={`${checkoutPath}${coupon ? `?couponId=${coupon?.id}` : ""}`}>
             <ActionButton
               //onClick={onAddProductToCart}
               variant="contained"
@@ -234,6 +235,7 @@ export default function CartSummary(props) {
             >
               GO TO CHECKOUT
             </ActionButton>
+            </Link>
           </Box>
         </Stack>
       </Paper>

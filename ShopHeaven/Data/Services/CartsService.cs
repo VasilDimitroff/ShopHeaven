@@ -9,15 +9,19 @@ namespace ShopHeaven.Data.Services
     public class CartsService : ICartsService
     {
         private readonly ShopDbContext db;
+        private readonly IUsersService usersService;
+        private readonly IProductsService productsService;
 
-        public CartsService(ShopDbContext db)
+        public CartsService(ShopDbContext db, IUsersService usersService, IProductsService productsService)
         {
             this.db = db;
+            this.usersService = usersService;
+            this.productsService = productsService;
         }
 
         public async Task<AddProductToCartResponseModel> AddProductToCartAsync(AddProductToCartRequestModel model)
         {
-            var user = await GetUserAsync(model.UserId);
+            var user = await this.usersService.GetUserAsync(model.UserId);
 
             if (user.CartId != model.CartId)
             {
@@ -26,7 +30,7 @@ namespace ShopHeaven.Data.Services
 
             var cart = await GetCartAsync(model.CartId);
 
-            var product = await GetProductAsync(model.ProductId);
+            var product = await this.productsService.GetProductAsync(model.ProductId);
 
             if (model.Quantity < 1) throw new ArgumentException(GlobalConstants.MinimumQuantityToAddProductInCart);
 
@@ -81,13 +85,13 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ChangeProductQuantityResponseModel> ChangeProductQuantityAsync(ChangeProductQuantityRequestModel model)
         {
-            var user = await GetUserAsync(model.UserId);
+            var user = await this.usersService.GetUserAsync(model.UserId);
 
             if (user.CartId != model.CartId) throw new ArgumentException(GlobalConstants.CannotAddProductToOtherCarts);
 
             var cart = await GetCartAsync(model.CartId);
 
-            var product = await GetProductAsync(model.ProductId);
+            var product = await this.productsService.GetProductAsync(model.ProductId);
 
             if (model.NewQuantity < 1) throw new ArgumentException(GlobalConstants.MinimumQuantityToAddProductInCart);
 
@@ -120,13 +124,13 @@ namespace ShopHeaven.Data.Services
 
         public async Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model)
         {
-            var user = await GetUserAsync(model.UserId);
+            var user = await this.usersService.GetUserAsync(model.UserId);
 
             if (user.CartId != model.CartId) throw new ArgumentException(GlobalConstants.YouCanDeleteProductsFromYourCartsOnly);
 
             await GetCartAsync(model.CartId);
 
-            await GetProductAsync(model.ProductId);
+            await this.productsService.GetProductAsync(model.ProductId);
 
             var productCart = await this.db.ProductsCarts
                .FirstOrDefaultAsync(x => x.CartId == model.CartId && x.ProductId == model.ProductId && x.IsDeleted != true);
@@ -144,7 +148,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model)
         {
-            var user = await GetUserAsync(model.UserId);
+            var user = await this.usersService.GetUserAsync(model.UserId);
 
             if (user.CartId != model.CartId) throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);
 
@@ -220,20 +224,7 @@ namespace ShopHeaven.Data.Services
             return userCart;
         }
 
-        private async Task<User> GetUserAsync(string userId)
-        {
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserNotFound);
-            }
-
-            return user;
-        }
-
-        private async Task<Cart> GetCartAsync(string cartId)
+        public async Task<Cart> GetCartAsync(string cartId)
         {
             var cart = await this.db.Carts
                             .FirstOrDefaultAsync(x => x.Id == cartId && x.IsDeleted != true);
@@ -244,19 +235,6 @@ namespace ShopHeaven.Data.Services
             }
 
             return cart;
-        }
-
-        private async Task<Product> GetProductAsync(string productId)
-        {
-            var product = await this.db.Products.
-                            FirstOrDefaultAsync(x => x.Id == productId && x.IsDeleted != true);
-
-            if (product == null)
-            {
-                throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
-            }
-
-            return product;
         }
     }
 }

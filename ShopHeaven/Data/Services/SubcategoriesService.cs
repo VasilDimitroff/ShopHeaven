@@ -3,7 +3,6 @@ using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Subcategories;
 using ShopHeaven.Models.Responses.Categories;
-using ShopHeaven.Models.Responses.Categories.BaseModel;
 using ShopHeaven.Models.Responses.Subcategories;
 using ShopHeaven.Models.Responses.Subcategories.BaseModel;
 
@@ -13,11 +12,13 @@ namespace ShopHeaven.Data.Services
     {
         private readonly ShopDbContext db;
         private readonly IStorageService storageService;
+        private readonly IUsersService usersService;
 
-        public SubcategoriesService(ShopDbContext db, IStorageService storageService)
+        public SubcategoriesService(ShopDbContext db, IStorageService storageService, IUsersService usersService)
         {
             this.db = db;
             this.storageService = storageService;
+            this.usersService = usersService;
         }
 
         public async Task<SubcategoriesByCategoryIdResponseModel> GetSubcategoriesByCategoryId(SubcategorySummaryRequestModel model)
@@ -59,12 +60,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<SubcategoryResponseModel> CreateSubcategoryAsync(CreateSubcategoryRequestModel model)
         {
-            User user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-        
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             var category = await this.db.MainCategories.FirstOrDefaultAsync(x => x.Id == model.CategoryId && x.IsDeleted != true);
 
@@ -289,12 +285,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentNullException(GlobalConstants.SubcategoryNameCannotBeEmpty);
             }
 
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedBy && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.usersService.GetUserAsync(model.CreatedBy);
 
             if (model.Image != null)
             {

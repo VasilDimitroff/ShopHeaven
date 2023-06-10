@@ -354,6 +354,19 @@ namespace ShopHeaven.Data.Services
             return userModel;
         }
 
+        public async Task<User> GetUserAsync(string userId)
+        {
+            var user = await this.db.Users
+                .FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
+
+            if (user == null)
+            {
+                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
+            }
+
+            return user;
+        }
+
         private async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
         {
             var user = await this.db.Users

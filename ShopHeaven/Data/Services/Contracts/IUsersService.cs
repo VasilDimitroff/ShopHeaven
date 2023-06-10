@@ -1,4 +1,5 @@
-﻿using ShopHeaven.Models.Requests;
+﻿using ShopHeaven.Data.Models;
+using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
@@ -7,6 +8,8 @@ namespace ShopHeaven.Data.Services.Contracts
 {
     public interface IUsersService
     {
+        Task<User> GetUserAsync(string userId);
+
         Task RegisterAsync(CreateUserRequestModel model);
 
         Task<IList<string>> GetUserRolesNamesAsync(string userId);

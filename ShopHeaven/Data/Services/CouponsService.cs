@@ -91,19 +91,26 @@ namespace ShopHeaven.Data.Services
 
         public async Task<CouponResponseModel> UndeleteCouponAsync(UndeleteCouponRequestModel model)
         {
-            var coupon = await this.db.Coupons
-            .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted == true);
-
-            if (coupon == null)
-            {
-                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
-            }
+            var coupon = await GetCouponByIdAsync(model.Id);
 
             coupon.IsDeleted = false;
 
             await this.db.SaveChangesAsync();
 
             return await CreateResponseModel(coupon);
+        }
+
+        public async Task<Coupon> GetCouponByIdAsync(string id)
+        {
+            var coupon = await this.db.Coupons
+               .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
+
+            if (coupon == null)
+            {
+                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
+            }
+
+            return coupon;
         }
 
         private async Task<Coupon> GetCouponByCodeAsync(string code)
@@ -139,19 +146,6 @@ namespace ShopHeaven.Data.Services
             };
 
             return responseCoupon;
-        }
-
-        private async Task<Coupon> GetCouponByIdAsync(string id)
-        {
-            var coupon = await this.db.Coupons
-               .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
-
-            if (coupon == null)
-            {
-                throw new ArgumentException(GlobalConstants.CouponWithThisIdDoesntExist);
-            }
-
-            return coupon;
         }
 
     }

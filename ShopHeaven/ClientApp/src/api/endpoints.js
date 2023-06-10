@@ -68,5 +68,8 @@ export const ApiEndpoints = {
         deleteCoupon: "api/coupons/delete",
         undeleteCoupon: "api/coupons/undelete",
         verifyCoupon: "api/coupons/verify"
+    },
+    orders: {
+        checkout: "api/orders/checkout"
     }
 }
