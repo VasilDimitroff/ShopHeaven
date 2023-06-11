@@ -29,6 +29,7 @@ const breadcrumbs = [
 ];
 
 export default function Checkout() {
+
   const { auth } = useAuth();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -174,11 +175,12 @@ export default function Checkout() {
   }
 
   async function createOrder(order) {
+
     try {
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.orders.createOrder,
+        ApiEndpoints.payments.createSession,
         order,
         {
           signal: controller.signal,
@@ -186,6 +188,7 @@ export default function Checkout() {
       );
 
       controller.abort();
+
       setCreateOrderErrorMessage("");
       setCreateOrderResponseMessage(
         `Order successfully created`

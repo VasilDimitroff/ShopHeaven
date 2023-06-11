@@ -71,6 +71,8 @@ export const ApiEndpoints = {
     },
     orders: {
         checkout: "api/orders/checkout",
-        createOrder: "api/orders/create"
+    },
+    payments: {
+        createSession: "api/orders/createCheckoutSession"
     }
 }

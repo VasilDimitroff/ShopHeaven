@@ -9,6 +9,7 @@ using ShopHeaven.Data;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services;
 using ShopHeaven.Data.Services.Contracts;
+using Stripe;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -36,9 +37,13 @@ builder.Services.AddIdentityServer()
 //builder.Services.AddAuthentication()
 //   .AddIdentityServerJwt();
 
+var stripeSettingsConfiguration = builder.Configuration.GetSection("Stripe");
+builder.Services.Configure<StripeSettings>(stripeSettingsConfiguration);
+var stripeSettings = stripeSettingsConfiguration.Get<StripeSettings>();
+StripeConfiguration.ApiKey = stripeSettings.SecretKey;
+
 var appSettingsConfiguration = builder.Configuration.GetSection("ApplicationSettings");
 builder.Services.Configure<ApplicationSettings>(appSettingsConfiguration);
-
 var appSettings = appSettingsConfiguration.Get<ApplicationSettings>();
 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
@@ -85,6 +90,8 @@ builder.Services.AddTransient<ICartsService, CartsService>();
 builder.Services.AddTransient<ICouponsService, CouponsService>();
 builder.Services.AddTransient<IOrdersService, OrdersService>();
 builder.Services.AddTransient<IShippingService, ShippingService>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
+
 
 builder.Services.AddHttpContextAccessor();
 
