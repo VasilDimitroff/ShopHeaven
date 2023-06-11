@@ -12,7 +12,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model);
 
-        Task<ICollection<CartProductResponseModel>> GetCartProductsAsync(GetCartProductsRequestModel model);
+        Task<ICollection<CartProductResponseModel>> GetCartProductsFullInfoAsync(GetCartProductsRequestModel model);
 
         Task<CartSummaryResponseModel> GetCartTotalPriceAsync(string cartId);
 

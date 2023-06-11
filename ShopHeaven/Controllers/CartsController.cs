@@ -37,7 +37,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var productsInCart = await this.cartsService.GetCartProductsAsync(model);
+                var productsInCart = await this.cartsService.GetCartProductsFullInfoAsync(model);
                 var cartSummary = await this.cartsService.GetCartTotalPriceAsync(model.CartId);
 
                 var responseModel = new GetCartProductsResponseModel

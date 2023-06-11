@@ -136,16 +136,18 @@ export default function Checkout() {
     const details = detailsRef.current.value;
     const paymentMethod = paymentMethodRef.current.value;
 
-
     const order = {
       recipient: recipient,
       phone: phone,
       country: country,
-      shippingMethod: shippingMethod,
       city: city,
       address: address,
       details: details,
+      shippingMethod: shippingMethod,
       paymentMethod: paymentMethod,
+      cartId: auth.cartId,
+      couponId: couponId,
+      userId: auth.userId
     }
 
     handleSetOrderInfo(order);
