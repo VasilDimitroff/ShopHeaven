@@ -16,9 +16,8 @@ namespace ShopHeaven.Controllers
     {
         private readonly IOrdersService ordersService;
         private readonly IPaymentService paymentService;
-
-        //const string endpointSecret = "whsec_d72a89f3322b41d4ff9b7f480410167021339dd6e0c5e9acd6a3722abfa254a0";
         private readonly StripeSettings stripeSettings;
+
         public OrdersController(
             IOrdersService ordersService,
             IPaymentService paymentService,

@@ -65,7 +65,6 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
-
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews();
@@ -91,7 +90,6 @@ builder.Services.AddTransient<ICouponsService, CouponsService>();
 builder.Services.AddTransient<IOrdersService, OrdersService>();
 builder.Services.AddTransient<IShippingService, ShippingService>();
 builder.Services.AddTransient<IPaymentService, PaymentService>();
-
 
 builder.Services.AddHttpContextAccessor();
 
