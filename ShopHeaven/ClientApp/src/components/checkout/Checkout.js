@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Box, Grid, Typography, Paper, Chip } from "@mui/material";
+import { Box, Grid, Typography, Paper, Chip, Zoom, Alert } from "@mui/material";
 import { ArrowForwardIos } from "@mui/icons-material";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
@@ -37,7 +37,6 @@ export default function Checkout() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-
   const couponId = queryParams.get("couponId");
 
   const [shippingMethods, setShippingMethods] = useState([]);
@@ -54,6 +53,19 @@ export default function Checkout() {
     shippingMethod: "",
     paymentMethod: "",
   });
+
+  const [messages, setMessages] = useState({
+    recipientError: "",
+    phoneError: "",
+    countryError: "",
+    cityError: "",
+    addressError: "",
+    shippingError: "",
+    paymentError: "",
+  });
+  
+  const [createOrderResponseMessage, setCreateOrderResponseMessage] = useState("");
+  const [createOrderErrorMessage, setCreateOrderErrorMessage] = useState("");
 
   const recipientRef = useRef();
   const phoneRef = useRef();
@@ -152,6 +164,12 @@ export default function Checkout() {
 
     handleSetOrderInfo(order);
 
+    const isValid = validateOrder();
+
+    if(!isValid) {
+      return;
+    }
+
     console.log("ORDER: ", order)
   }
 
@@ -162,13 +180,181 @@ export default function Checkout() {
         recipient: order.recipient,
         phone: order.phone,
         country: order.country,
-        shippingMethod: order.shippingMethod,
         city: order.city,
         address: order.address,
         details: order.details,
+        shippingMethod: order.shippingMethod,
         paymentMethod: order.paymentMethod
       }
     })
+  }
+
+  function validateOrder() {
+    let isValid = true;
+    let errors = [];
+
+    if (!recipientRef.current.value) {
+      let msg = "Please enter a recipient fo the products";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          recipientError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          recipientError: "",
+        };
+      });
+    }
+
+    if (!phoneRef.current.value) {
+      let msg = "Please enter a valid phone";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          phoneError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          phoneError: "",
+        };
+      });
+    }
+
+    if (!countryRef.current.value) {
+      let msg = "Please select your country";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          countryError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          countryError: "",
+        };
+      });
+    }
+
+    if (!cityRef.current.value) {
+      let msg = "Please select a city";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          cityError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          cityError: "",
+        };
+      });
+    }
+
+    if (!addressRef.current.value) {
+      let msg = "Please select an address";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          addressError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          addressError: "",
+        };
+      });
+    }
+
+    if (!shippingMethodRef.current.value) {
+      let msg = "Please select a shipping method";
+      errors.push(msg);
+
+      setMessages((prev) => {
+        return {
+          ...prev,
+          shippingError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          shippingError: "",
+        };
+      });
+    }
+
+    if (!paymentMethodRef.current.value) {
+      let msg = "Please select a payment method";
+      errors.push(msg);
+      setMessages((prev) => {
+        return {
+          ...prev,
+          paymentError: msg,
+        };
+      });
+
+      isValid = false;
+    } else {
+      setMessages((prev) => {
+        return {
+          ...prev,
+          paymentError: "",
+        };
+      });
+    }
+
+    if (!isValid) {
+      let final =
+        "The next validation errors occurs. Please resolve them and try again: \r\n";
+      for (let i = 0; i < errors.length; i++) {
+        final += ` (${i + 1}). ${errors[i]} \r\n`;
+      }
+      setCreateOrderResponseMessage("");
+      setCreateOrderErrorMessage(final);
+    }
+
+    else {
+      setCreateOrderResponseMessage("");
+      setCreateOrderErrorMessage("");
+    }
+
+    return isValid;
   }
 
   const RegularPriceHolder = styled(Box)({
@@ -223,6 +409,10 @@ export default function Checkout() {
     height: "100%"
   })
 
+  const CreateOrderAlert = styled(Alert)({
+    margin: theme.spacing(1, 2)
+  })
+
   return (
     <Box>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
@@ -244,6 +434,13 @@ export default function Checkout() {
                   placeholder="e.g., Till Lindemann"
                 />
               </InputBox>
+              {messages.recipientError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.recipientError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
               <InputBox>
                 <UniversalInput
                   inputRef={phoneRef}
@@ -258,6 +455,13 @@ export default function Checkout() {
                   }}
                 />
               </InputBox>
+              {messages.phoneError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.phoneError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
             </SectionWrapper>
             <SectionWrapper elevation={0}>
               <InputBoxFlex>
@@ -283,6 +487,13 @@ export default function Checkout() {
                   }
                 </select>
               </InputBox>
+              {messages.shippingError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.shippingError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
               <InputBox>
                 <UniversalInput
                   inputRef={countryRef}
@@ -292,6 +503,13 @@ export default function Checkout() {
                   placeholder="e.g., Bulgaria"
                 />
               </InputBox>
+              {messages.countryError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.countryError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
               <InputBox>
                 <UniversalInput
                   inputRef={cityRef}
@@ -301,6 +519,13 @@ export default function Checkout() {
                   placeholder="e.g., Sofia"
                 />
               </InputBox>
+              {messages.cityError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.cityError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
               <InputBox>
                 <UniversalInput
                   inputRef={addressRef}
@@ -310,6 +535,13 @@ export default function Checkout() {
                   placeholder="e.g., Garibaldi Sq. 1"
                 />
               </InputBox>
+              {messages.addressError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.addressError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
               <InputBox>
                 <UniversalInput
                   multiline
@@ -346,6 +578,13 @@ export default function Checkout() {
                   }
                 </select>
               </InputBox>
+              {messages.paymentError ? (
+                  <CreateOrderAlert variant="filled" severity="error">
+                    {messages.paymentError}
+                  </CreateOrderAlert>
+                ) : (
+                  <></>
+               )}
             </SectionWrapper>
             <Paper sx={{ p: 2 }}>
               <Typography
@@ -416,6 +655,30 @@ export default function Checkout() {
                   </InputBox>
                 </Grid>
               </Grid>
+              <Box>
+        {createOrderResponseMessage ? (
+          <Zoom in={createOrderResponseMessage.length > 0 ? true : false}>
+            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              {createOrderResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {createOrderErrorMessage ? (
+          <Zoom in={createOrderErrorMessage.length > 0 ? true : false}>
+            <Alert
+              variant="filled"
+              sx={{ marginTop: theme.spacing(1) }}
+              severity="error"
+            >
+              {createOrderErrorMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+      </Box>
             </Paper>
           </form>
         </Paper>

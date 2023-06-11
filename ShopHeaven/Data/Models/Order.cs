@@ -35,7 +35,7 @@ namespace ShopHeaven.Data.Models
         [Required(ErrorMessage = "Address field cannot be null or empty")]
         public string Address { get; set; }
 
-        public string Details { get; set; }
+        public string? Details { get; set; }
 
         public decimal TotalPriceWithNoDiscount { get => CalculateTotalPriceWithNoDiscount(); private set => _totalPriceWithNoDiscount = value; }
 
