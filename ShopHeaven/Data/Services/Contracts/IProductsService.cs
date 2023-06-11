@@ -15,7 +15,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ProductBaseResponseModel> DeleteProductAsync(DeleteProductRequestModel model, bool delete);
 
-        Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model);
+        Task<ProductResponseModel?> GetFullProductDataAsync(ProductRequestModel model);
 
         Task<ICollection<AdminProductResponseModel>> GetAllAsync(AdminProductPaginationRequestModel model);
 

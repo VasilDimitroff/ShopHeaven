@@ -701,7 +701,7 @@ namespace ShopHeaven.Data.Services
                 .ToListAsync();
         }
 
-        public async Task<ProductResponseModel?> GetProductByIdAsync(ProductRequestModel model)
+        public async Task<ProductResponseModel?> GetFullProductDataAsync(ProductRequestModel model)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
 

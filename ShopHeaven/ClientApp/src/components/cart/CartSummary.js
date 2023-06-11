@@ -83,7 +83,7 @@ export default function CartSummary(props) {
       controller.abort();
 
       setApplyCouponErrorMessage("");
-      setApplyCouponResponseMessage(`Coupon ${couponRequestModel.code} applied succesfully`);
+      setApplyCouponResponseMessage(`${couponRequestModel.code.toUpperCase()} applied succesfully`);
 
     } catch (error) {
       removeCoupon();
@@ -267,7 +267,7 @@ export default function CartSummary(props) {
             <Chip
               variant="outlined"
               label={`REMOVE COUPON: ${coupon?.code} (-${coupon?.amount}%)`}
-              color="error"
+              color="primary"
               size="small"
               sx={{mt:2}}
               onDelete={removeCoupon}

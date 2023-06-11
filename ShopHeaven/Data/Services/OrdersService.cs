@@ -85,7 +85,7 @@ namespace ShopHeaven.Data.Services
                     .Include(x => x.Coupon)
                     .Include(x => x.ShippingMethod)
                     .Include(x => x.Products)
-                    .Where(x => x.CreatedById == userId)
+                    .Where(x => x.CreatedById == userId && x.IsDeleted != true)
                     .FirstOrDefaultAsync();
 
             return lastOrder;

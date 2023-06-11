@@ -1,11 +1,12 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Box, Grid, Typography, Button, Paper, Chip } from "@mui/material";
-import { AddShoppingCart, ArrowForwardIos } from "@mui/icons-material";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Box, Grid, Typography, Paper, Chip } from "@mui/material";
+import { ArrowForwardIos } from "@mui/icons-material";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { MainWrapper, UniversalInput, InputBox, CompleteActionButton, StyledSelect } from "../../styles/styles";
 import useAuth from "../../hooks/useAuth";
+import useUser from "../../hooks/useUser";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import { cartPath, checkoutPath } from "../../constants";
@@ -28,18 +29,20 @@ const breadcrumbs = [
 ];
 
 export default function Checkout() {
-  const [productsInCart, setProductsInCart] = useState([]);
-  const [cartSummary, setCartSummary] = useState();
-  const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
-
-  const { appSettings } = useAppSettings();
   const { auth } = useAuth();
-  const axiosPrivate = useAxiosPrivate();
+  const { user } = useUser();
   const navigate = useNavigate();
+  const { appSettings } = useAppSettings();
+  const axiosPrivate = useAxiosPrivate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
+
   const couponId = queryParams.get("couponId");
+
+  const [shippingMethods, setShippingMethods] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [orderSummary, setOrderSummary] = useState();
 
   const [orderInfo, setOrderInfo] = useState({
     recipient: "",
@@ -51,8 +54,6 @@ export default function Checkout() {
     shippingMethod: "",
     paymentMethod: "",
   });
-
-
 
   const recipientRef = useRef();
   const phoneRef = useRef();
@@ -66,10 +67,10 @@ export default function Checkout() {
   const effectRun = useRef(false);
 
   useEffect(() => {
-    //window.scroll(0, 0);
-  }, [])
 
-  useEffect(() => {
+    if(user.cartProductsCount < 1) {
+      navigate(cartPath)
+    } 
 
     const getCheckoutRequestData = {
       cartId: auth.cartId,
@@ -91,10 +92,20 @@ export default function Checkout() {
           }
         );
 
-        //setProductsInCart(response?.data?.products);
-        //setCartSummary(response?.data?.summary);
+        setOrderInfo(prev => {
+          return {
+            ...prev,
+            recipient: response?.data?.recipient,
+            phone: response?.data?.phone,
+            country: response?.data?.country,
+            city: response?.data?.city,
+            address: response?.data?.city
+          }
+        });
 
-        setDeleteProductDOMelement(false);
+        setOrderSummary(response?.data?.orderSummary);
+        setPaymentMethods(response?.data?.paymentMethods);
+        setShippingMethods(response?.data?.shippingMethods)
 
         console.log("CART RESPONSE: ", response?.data);
 
@@ -261,9 +272,13 @@ export default function Checkout() {
                   <option value={""}>
                     {`${'--- SHIPPING METHOD ---'}`}
                   </option>
-                  <option value={"MethodValue"}>
-                    {`${'COURIER'}`}
-                  </option>
+                  {
+                    shippingMethods?.map(shipMethod => {
+                      return <option key={shipMethod.id} value={shipMethod.name}>
+                        {`${shipMethod.name}`}
+                      </option>
+                    })
+                  }
                 </select>
               </InputBox>
               <InputBox>
@@ -320,9 +335,13 @@ export default function Checkout() {
                   <option value={""}>
                     {`${'--- PAYMENT METHOD ---'}`}
                   </option>
-                  <option value={"PMethodValue"}>
-                    {`${'CARD'}`}
-                  </option>
+                  {
+                    paymentMethods?.map(payMethod => {
+                      return <option key={payMethod} value={payMethod}>
+                        {`${payMethod}`}
+                      </option>
+                    })
+                  }
                 </select>
               </InputBox>
             </SectionWrapper>
@@ -339,24 +358,32 @@ export default function Checkout() {
                 <Grid item xs={12} sm={12} md={12} lg={5.6}>
                   <RegularPriceHolder>
                     <Typography>Regular price:</Typography>
-                    <Typography sx={{ textDecoration: "line-through" }}>
+                    <Typography sx={{ textDecoration: orderSummary?.discount > 0 ? "line-through" : "none" }}>
                       {appSettings.appCurrency.code}{" "}
-                      {10}
+                      {orderSummary?.totalPriceWithNoDiscount.toFixed(2)}
                     </Typography>
                   </RegularPriceHolder>
-                  <DiscountHolder>
-                    <Typography>Discount:</Typography>
-                    <Typography>
-                      {appSettings.appCurrency.code} -
-                      {10}
-                    </Typography>
-                  </DiscountHolder>
-                  <DiscountHolder>
-                    <Typography>Coupon discount:</Typography>
-                    <Typography>
-                      {`${appSettings.appCurrency.code} ${200} (-${12}%)`}
-                    </Typography>
-                  </DiscountHolder>
+                  {
+                    orderSummary?.discount > 0
+                      ? <DiscountHolder>
+                          <Typography>Discount:</Typography>
+                          <Typography>
+                            {appSettings.appCurrency.code} -
+                            {orderSummary?.discount.toFixed(2)}
+                          </Typography>
+                       </DiscountHolder>
+                      : <></>
+                  }
+                  {
+                    orderSummary?.couponDiscount > 0
+                      ? (<DiscountHolder>
+                        <Typography>Coupon discount:</Typography>
+                        <Typography>
+                          {`${appSettings.appCurrency.code} -${orderSummary?.couponDiscount.toFixed(2)} (-${orderSummary?.couponAmount}%)`}
+                        </Typography>
+                      </DiscountHolder>)
+                      : <></>
+                  }
                 </Grid>
                 <Grid item xs={0} sm={0} md={0} lg={0.8} sx={{ display: "flex", justifyContent: "center" }}>
                   <Divider></Divider>
@@ -370,7 +397,7 @@ export default function Checkout() {
                       variant="h5"
                       sx={{ fontWeight: 500, color: theme.palette.error.main }}
                     >
-                      EUR 350.00
+                      {appSettings.appCurrency.code} {orderSummary?.totalPriceWithAllDiscounts.toFixed(2)}
                     </Typography>
                   </PriceHolder>
                   <InputBox>
