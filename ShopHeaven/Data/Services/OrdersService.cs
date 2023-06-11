@@ -52,12 +52,7 @@ namespace ShopHeaven.Data.Services
 
             var responseModel = new CheckoutResponseModel
             {
-                OrderSummary = new OrderSummaryResponseModel
-                {
-                    TotalPriceWithNoDiscount = cart.TotalPriceWithNoDiscount,
-                    TotalPriceWithDiscountOfProducts = cart.TotalPriceWithDiscount,
-                    CouponAmount = (decimal)coupon.Amount,
-                },
+                OrderSummary = GetOrderSummary(cart, coupon),
                 ShippingMethods = shippingMethods,
                 PaymentMethods = paymentMethods
             };
@@ -76,6 +71,84 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+
+        public async Task CreateOrderAsync(CreateOrderRequestModel model)
+        {
+            var user = await this.usersService.GetUserAsync(model.UserId);
+
+            if (user.CartId != model.CartId)
+            {
+                throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);
+            }
+
+            var cart = await this.cartsService.GetCartAsync(model.CartId);
+
+            var coupon = new Coupon();
+
+            if (model.CouponId != null)
+            {
+                coupon = await this.couponsService.GetCouponByIdAsync(model.CouponId);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Recipient)){ throw new ArgumentException(GlobalConstants.RecipientCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Phone)){ throw new ArgumentException(GlobalConstants.PhoneCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Country)){ throw new ArgumentException(GlobalConstants.CountryCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.City)){ throw new ArgumentException(GlobalConstants.CityCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Address)){ throw new ArgumentException(GlobalConstants.AddressCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.PaymentMethod)){ throw new ArgumentException(GlobalConstants.PaymentMethodCannotBeEmpty); }
+
+            if (!ValidatePaymentMethod(model.PaymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
+
+            if (string.IsNullOrWhiteSpace(model.ShippingMethod)) { throw new ArgumentException(GlobalConstants.ShippingMethodCannotBeEmpty); }
+
+            var shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
+
+            var cartProducts = await this.cartsService.GetCartProductsAsync(model.CartId);
+
+            var orderSummary = this.GetOrderSummary(cart, coupon);
+
+            var newOrder = new Order
+            {
+                Recipient = model.Recipient.Trim(),
+                Phone = model.Phone.Trim(),
+                Country = model.Country.Trim(),
+                City = model.City.Trim(),
+                Address = model.Address.Trim(),
+                Details = model.Details.Trim(),
+                ShippingMethod = shippingMethod,
+                CouponId = model.CouponId,
+                CreatedById = model.UserId,
+                TotalPriceWithNoDiscount = orderSummary.TotalPriceWithNoDiscount,
+                TotalPriceWithDiscount = orderSummary.TotalPriceWithDiscountOfProducts,
+                TotalPriceWithDiscountAndCoupon = orderSummary.TotalPriceWithAllDiscounts
+            };
+
+            var orderProducts = new List<ProductOrder>();
+
+            foreach (var cartProduct in cartProducts)
+            {
+                var orderProduct = new ProductOrder
+                {
+                    Quantity = cartProduct.Quantity,
+                    ProductId = cartProduct.ProductId,
+                    OrderId = newOrder.Id,
+                };
+
+                orderProducts.Add(orderProduct);
+            }
+
+            await this.db.ProductsOrders.AddRangeAsync(orderProducts);
+
+            await this.db.Orders.AddAsync(newOrder);
+
+            //await this.db.SaveChangesAsync();
+        }
+
         private async Task<Order> GetLastOrderAsync(string userId)
         {
             var user = await this.usersService.GetUserAsync(userId);
@@ -89,6 +162,23 @@ namespace ShopHeaven.Data.Services
                     .FirstOrDefaultAsync();
 
             return lastOrder;
+        }
+
+        public OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon)
+        {
+            return new OrderSummaryResponseModel
+            {
+                TotalPriceWithNoDiscount = cart.TotalPriceWithNoDiscount,
+                TotalPriceWithDiscountOfProducts = cart.TotalPriceWithDiscount,
+                CouponAmount = (decimal)coupon.Amount,
+            };
+        }
+
+        private bool ValidatePaymentMethod(string status)
+        {
+            bool isPaymentMethodParsed = Enum.TryParse<PaymentMethod>(status, out PaymentMethod paymentMethod);
+
+            return isPaymentMethodParsed;
         }
     }
 }

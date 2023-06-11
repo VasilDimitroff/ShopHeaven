@@ -15,9 +15,6 @@ namespace ShopHeaven.Data.Models
         {
             this.Status = OrderStatus.Pending;
             this.Products = new HashSet<ProductOrder>();
-            this.TotalPriceWithNoDiscount = CalculateTotalPriceWithNoDiscount();
-            this.TotalPriceWithDiscount = CalculateTotalPriceWithDiscount();
-            this._totalPriceWithDiscountAndCoupon = CalculateTotalPriceWithDiscountAndCoupon();
         }
 
         [Required(ErrorMessage = "Recipient field cannot be null or empty")]
@@ -37,11 +34,11 @@ namespace ShopHeaven.Data.Models
 
         public string? Details { get; set; }
 
-        public decimal TotalPriceWithNoDiscount { get => CalculateTotalPriceWithNoDiscount(); private set => _totalPriceWithNoDiscount = value; }
+        public decimal TotalPriceWithNoDiscount { get; set; }
 
-        public decimal TotalPriceWithDiscount { get => CalculateTotalPriceWithDiscount(); private set => _totalPriceWithDiscount = value; }
+        public decimal TotalPriceWithDiscount { get; set; }
 
-        public decimal TotalPriceWithDiscountAndCoupon { get => CalculateTotalPriceWithDiscountAndCoupon(); private set => _totalPriceWithDiscountAndCoupon = value; }
+        public decimal TotalPriceWithDiscountAndCoupon { get; set; }
 
         public string? CouponId { get; set; }
 

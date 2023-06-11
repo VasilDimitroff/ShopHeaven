@@ -146,6 +146,15 @@ namespace ShopHeaven.Data.Services
             var updatedCart = await UpdateCartAmountAsync(user);
         }
 
+        public async Task<ICollection<ProductCart>> GetCartProductsAsync(string cartId){
+            var productCarts = await this.db.ProductsCarts
+                .Include(x => x.Product)
+                .Where(x => x.CartId == cartId && x.IsDeleted != true)
+                .ToListAsync();
+
+            return productCarts;
+        }
+
         public async Task<ICollection<CartProductResponseModel>> GetCartProductsFullInfoAsync(GetCartProductsRequestModel model)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);

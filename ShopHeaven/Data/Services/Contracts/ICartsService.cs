@@ -12,6 +12,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task DeleteProductFromCartAsync(DeleteProductFromCartRequestModel model);
 
+        Task<ICollection<ProductCart>> GetCartProductsAsync(string cartId);
+
         Task<ICollection<CartProductResponseModel>> GetCartProductsFullInfoAsync(GetCartProductsRequestModel model);
 
         Task<CartSummaryResponseModel> GetCartTotalPriceAsync(string cartId);

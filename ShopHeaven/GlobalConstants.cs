@@ -120,6 +120,24 @@
 
         public const string CouponWithThisIdDoesntExist = "Coupon with given Id does not exist";
 
+        public const string RecipientCannotBeEmpty = "Recipient cannot be empty or whitespace";
+
+        public const string PhoneCannotBeEmpty = "Phone cannot be empty or whitespace";
+
+        public const string CountryCannotBeEmpty = "Country cannot be empty or whitespace";
+
+        public const string CityCannotBeEmpty = "City cannot be empty or whitespace";
+
+        public const string AddressCannotBeEmpty = "Address cannot be empty or whitespace";
+
+        public const string ShippingMethodCannotBeEmpty = "Shipping method cannot be empty or whitespace";
+
+        public const string InvalidShippingMethod = "Shipping method is invalid!";
+
+        public const string PaymentMethodCannotBeEmpty = "Payment method cannot be empty or whitespace";
+
+        public const string PaymentMethodIsInvalid = "Payment method is invalid!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

@@ -9,7 +9,7 @@ import useAuth from "../../hooks/useAuth";
 import useUser from "../../hooks/useUser";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
-import { cartPath, checkoutPath } from "../../constants";
+import { cartPath, checkoutPath, noPermissionsForOperationMessage } from "../../constants";
 import useAppSettings from "../../hooks/useAppSettings";
 import BreadcrumbsBar from "../common/BreadcrumbsBar";
 
@@ -170,7 +170,38 @@ export default function Checkout() {
       return;
     }
 
-    console.log("ORDER: ", order)
+    createOrder(order)
+  }
+
+  async function createOrder(order) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.orders.createOrder,
+        order,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+      setCreateOrderErrorMessage("");
+      setCreateOrderResponseMessage(
+        `Order successfully created`
+      );
+
+      //TODO: Clear global cart products count
+    } catch (error) {
+      setCreateOrderResponseMessage("");
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setCreateOrderErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setCreateOrderErrorMessage(error?.response?.data);
+      }
+      console.log(error?.message);
+    }
   }
 
   function handleSetOrderInfo(order) {

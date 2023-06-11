@@ -70,6 +70,7 @@ export const ApiEndpoints = {
         verifyCoupon: "api/coupons/verify"
     },
     orders: {
-        checkout: "api/orders/checkout"
+        checkout: "api/orders/checkout",
+        createOrder: "api/orders/create"
     }
 }

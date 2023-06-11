@@ -31,5 +31,21 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Route(nameof(Create))]
+        public async Task<ActionResult> Create([FromBody] CreateOrderRequestModel model)
+        {
+            try
+            {
+                await this.ordersService.CreateOrderAsync(model);
+                //get products??
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
