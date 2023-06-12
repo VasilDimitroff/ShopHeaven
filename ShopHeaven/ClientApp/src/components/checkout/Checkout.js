@@ -85,6 +85,8 @@ export default function Checkout() {
       navigate(cartPath)
     } 
 
+    window.scroll(0,0);
+
     const getCheckoutRequestData = {
       cartId: auth.cartId,
       userId: auth.userId,

@@ -45,7 +45,7 @@ StripeConfiguration.ApiKey = stripeSettings.SecretKey;
 var appSettingsConfiguration = builder.Configuration.GetSection("ApplicationSettings");
 builder.Services.Configure<ApplicationSettings>(appSettingsConfiguration);
 var appSettings = appSettingsConfiguration.Get<ApplicationSettings>();
-var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+var key = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
 
 builder.Services.AddAuthentication(x =>
 {

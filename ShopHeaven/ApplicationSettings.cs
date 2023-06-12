@@ -1,4 +1,6 @@
 ﻿public class ApplicationSettings
 {
-    public string Secret { get; set; }
+    public string JwtSecret { get; set; }
+
+    public string ClientSPAUrl { get; set; }
 }

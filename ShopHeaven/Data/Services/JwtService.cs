@@ -32,7 +32,7 @@ namespace ShopHeaven.Data.Services
             var user = await this.usersService.GetUserAsync(userId);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this.applicationSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(this.applicationSettings.JwtSecret);
 
             var claims = new List<Claim>
                 {

@@ -1,12 +1,19 @@
-﻿using ShopHeaven.Data.Services.Contracts;
+﻿using Microsoft.Extensions.Options;
+using ShopHeaven.Data.Services.Contracts;
 using Stripe;
 using Stripe.Checkout;
-using Stripe.Issuing;
 
 namespace ShopHeaven.Data.Services
 {
     public class PaymentService : IPaymentService
     {
+        private readonly ApplicationSettings applicationSettings;
+
+        public PaymentService(IOptions<ApplicationSettings> applicationSettings)
+        {
+            this.applicationSettings = applicationSettings.Value;
+        }
+
         public async Task<Session> CreateSessionAsync()
         {
             //get all products from cart
@@ -38,8 +45,8 @@ namespace ShopHeaven.Data.Services
                 {
                     "card",
                 },
-                SuccessUrl = "https://www.vdimitrov.net/",
-                CancelUrl = "https://example.com/cancel",
+                SuccessUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/success",
+                CancelUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/cancelled",
             };
 
             var service = new SessionService();

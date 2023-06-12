@@ -23,6 +23,7 @@ import AppSettings from "./components/settings/AppSettings";
 import Cart from "./components/cart/Cart";
 import Checkout from "./components/checkout/Checkout";
 import SubcategoryProducts from "./components/products/products-gallery/SubcategoryProducts";
+import Success from "./components/payment/Success";
 import Unauthorized from "./components/auth/Unauthorized";
 import {
   adminRole,
@@ -35,7 +36,10 @@ import {
   singleProductBasePath,
   cartPath,
   checkoutPath,
+  successPaymentPath,
+  cancelPaymentPath
 } from "./constants";
+import Cancelled from "./components/payment/Cancelled";
 
 export default function App() {
   return (
@@ -52,6 +56,8 @@ export default function App() {
               <Route path={`${singleProductBasePath}:productId`} element={<Product />}/>
               <Route path={loginPath} element={<Login />} />
               <Route path={registerPath} element={<Register />} />
+              <Route path={successPaymentPath} element={<Success />} />
+              <Route path={cancelPaymentPath} element={<Cancelled />} />
 
               {/* authorization needed paths */}
               <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>
