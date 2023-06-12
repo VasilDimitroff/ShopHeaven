@@ -7,10 +7,6 @@ namespace ShopHeaven.Data.Models
 {
     public class Order : BaseModel, ICreatableModel
     {
-        private decimal _totalPriceWithNoDiscount;
-        private decimal _totalPriceWithDiscount;
-        private decimal _totalPriceWithDiscountAndCoupon;
-
         public Order()
         {
             this.Status = OrderStatus.Pending;
@@ -40,6 +36,9 @@ namespace ShopHeaven.Data.Models
 
         public decimal TotalPriceWithDiscountAndCoupon { get; set; }
 
+        //it is the final price
+        public decimal TotalPriceWithDiscountCouponAndShippingTax { get; set; }
+
         public string? CouponId { get; set; }
 
         public Coupon? Coupon { get; set; }
@@ -62,24 +61,5 @@ namespace ShopHeaven.Data.Models
         public User CreatedBy { get; set; }
 
         public ICollection<ProductOrder> Products { get; set; } // this order contain these products
-
-        private decimal CalculateTotalPriceWithNoDiscount()
-        {
-            return Products.Sum(x => x.Product.Price * x.Quantity);
-        }
-        private decimal CalculateTotalPriceWithDiscount()
-        {
-            return TotalPriceWithNoDiscount - Products.Sum(x => (x.Product.Discount * x.Product.Price) / 100);
-        }
-
-        private decimal CalculateTotalPriceWithDiscountAndCoupon()
-        {
-            if (this.CouponId != null)
-            {
-                return TotalPriceWithDiscount - decimal.Parse(this.Coupon.Amount.ToString()) * TotalPriceWithDiscount / 100;
-            }
-
-            return CalculateTotalPriceWithDiscount();
-        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using ShopHeaven.Data.Models;
-using ShopHeaven.Models.Requests.Orders;
+﻿using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Responses.Orders;
 
 namespace ShopHeaven.Data.Services.Contracts
@@ -8,8 +7,8 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<CheckoutResponseModel> GetCheckoutInfoAsync(CheckoutRequestModel model);
 
-        OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon);
+        Task<OrderSummaryResponseModel> RegisterOrderAsync(CreateOrderRequestModel model);
 
-        Task<OrderPaymentInfoResponseModel> RegisterOrderAsync(CreateOrderRequestModel model);
+        Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model);
     }
 }

@@ -42,11 +42,13 @@ namespace ShopHeaven.Data.Services
 
             var cart = await this.cartsService.GetCartAsync(model.CartId);
 
-            Coupon coupon = new Coupon();
+            Coupon coupon = await PrepareCouponAsync(model.CouponId);
 
-            if (model.CouponId != null)
+            ShippingMethod shippingMethod = new ShippingMethod();
+
+            if (!string.IsNullOrWhiteSpace(model.ShippingMethod))
             {
-                coupon = await this.couponsService.GetCouponByIdAsync(model.CouponId);
+                shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
             }
 
             var shippingMethods = await this.shippingService.GetShippingMethodsAsync();
@@ -55,7 +57,7 @@ namespace ShopHeaven.Data.Services
 
             var responseModel = new CheckoutResponseModel
             {
-                OrderSummary = GetOrderSummary(cart, coupon),
+                OrderSummary = GetOrderSummary(cart, coupon, shippingMethod),
                 ShippingMethods = shippingMethods,
                 PaymentMethods = paymentMethods
             };
@@ -74,44 +76,31 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<OrderPaymentInfoResponseModel> RegisterOrderAsync(CreateOrderRequestModel model)
+        public async Task<OrderSummaryResponseModel> RegisterOrderAsync(CreateOrderRequestModel model)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);
 
-            if (user.CartId != model.CartId)
-            {
-                throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);
-            }
+            if (user.CartId != model.CartId) {  throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts); }
 
             var cart = await this.cartsService.GetCartAsync(model.CartId);
 
-            var coupon = new Coupon();
+            Coupon coupon = await PrepareCouponAsync(model.CouponId);
 
-            if (model.CouponId != null)
-            {
-                coupon = await this.couponsService.GetCouponByIdAsync(model.CouponId);
-            }
-
-            if (string.IsNullOrWhiteSpace(model.Recipient)) { throw new ArgumentException(GlobalConstants.RecipientCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.Phone)) { throw new ArgumentException(GlobalConstants.PhoneCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.Country)) { throw new ArgumentException(GlobalConstants.CountryCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.City)) { throw new ArgumentException(GlobalConstants.CityCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.Address)) { throw new ArgumentException(GlobalConstants.AddressCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.PaymentMethod)) { throw new ArgumentException(GlobalConstants.PaymentMethodCannotBeEmpty); }
-
-            if (string.IsNullOrWhiteSpace(model.ShippingMethod)) { throw new ArgumentException(GlobalConstants.ShippingMethodCannotBeEmpty); }
+            ValidateFormData(model);
 
             var shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
 
             var cartProducts = await this.cartsService.GetCartProductsAsync(model.CartId);
 
-            var orderSummary = this.GetOrderSummary(cart, coupon);
+            var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
 
+            await CreateOrderAsync(model, shippingMethod, cartProducts, orderSummary);
+
+            return orderSummary;
+        }
+
+        private async Task CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)
+        {
             var newOrder = new Order
             {
                 Recipient = model.Recipient.Trim(),
@@ -125,9 +114,43 @@ namespace ShopHeaven.Data.Services
                 CreatedById = model.UserId,
                 TotalPriceWithNoDiscount = orderSummary.TotalPriceWithNoDiscount,
                 TotalPriceWithDiscount = orderSummary.TotalPriceWithDiscountOfProducts,
-                TotalPriceWithDiscountAndCoupon = orderSummary.TotalPriceWithAllDiscounts
+                TotalPriceWithDiscountAndCoupon = orderSummary.TotalPriceWithAllDiscounts,
+                TotalPriceWithDiscountCouponAndShippingTax = orderSummary.FinalPrice,
             };
 
+            await CreateOrderProductsAsync(cartProducts, newOrder);
+
+            var orderPayment = await this.paymentService
+                .CreatePaymentAsync(newOrder.Id, 0, model.PaymentMethod.Trim());
+
+            newOrder.PaymentId = orderPayment.Id;
+
+            await this.db.Orders.AddAsync(newOrder);
+
+            await this.db.SaveChangesAsync();
+        }
+
+        public async Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model)
+        {
+            var user = await this.usersService.GetUserAsync(model.UserId);
+
+            if (user.CartId != model.CartId)  {  throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);  }
+
+            var cart = await this.cartsService.GetCartAsync(model.CartId);
+
+            Coupon coupon = await PrepareCouponAsync(model.CouponId);
+
+            ValidateFormData(model);
+
+            var shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
+
+            var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
+
+            return orderSummary;
+        }
+
+        private async Task CreateOrderProductsAsync(ICollection<ProductCart> cartProducts, Order newOrder)
+        {
             var orderProducts = new List<ProductOrder>();
 
             foreach (var cartProduct in cartProducts)
@@ -142,27 +165,36 @@ namespace ShopHeaven.Data.Services
                 orderProducts.Add(orderProduct);
             }
 
-            var orderPayment = await this.paymentService
-                .CreatePaymentAsync(newOrder.Id, 0, model.PaymentMethod.Trim());
-
-            newOrder.PaymentId = orderPayment.Id;
-
             await this.db.ProductsOrders.AddRangeAsync(orderProducts);
+        }
 
-            await this.db.Orders.AddAsync(newOrder);
+        private async Task<Coupon> PrepareCouponAsync(string couponId)
+        {
+            var coupon = new Coupon();
 
-            await this.db.SaveChangesAsync();
-
-            //in this model is ok to apply shipping method
-            var orderInfo = new OrderPaymentInfoResponseModel
+            if (couponId != null)
             {
-                Id = newOrder.Id,
-                CouponAmount = orderSummary.CouponAmount,
-                TotalPriceWithNoDiscount = orderSummary.TotalPriceWithNoDiscount,
-                TotalPriceWithDiscountOfProducts = orderSummary.TotalPriceWithDiscountOfProducts,
-            };
+                coupon = await this.couponsService.GetCouponByIdAsync(couponId);
+            }
 
-            return orderInfo;
+            return coupon;
+        }
+
+        private void ValidateFormData(CreateOrderRequestModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Recipient)) { throw new ArgumentException(GlobalConstants.RecipientCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Phone)) { throw new ArgumentException(GlobalConstants.PhoneCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Country)) { throw new ArgumentException(GlobalConstants.CountryCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.City)) { throw new ArgumentException(GlobalConstants.CityCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.Address)) { throw new ArgumentException(GlobalConstants.AddressCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.PaymentMethod)) { throw new ArgumentException(GlobalConstants.PaymentMethodCannotBeEmpty); }
+
+            if (string.IsNullOrWhiteSpace(model.ShippingMethod)) { throw new ArgumentException(GlobalConstants.ShippingMethodCannotBeEmpty); }
         }
 
         private async Task<Order> GetLastOrderAsync(string userId)
@@ -180,13 +212,15 @@ namespace ShopHeaven.Data.Services
             return lastOrder;
         }
 
-        public OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon)
+        private OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon, ShippingMethod shippingMethod)
         {
             return new OrderSummaryResponseModel
             {
+                CartId = cart.Id,
                 TotalPriceWithNoDiscount = cart.TotalPriceWithNoDiscount,
                 TotalPriceWithDiscountOfProducts = cart.TotalPriceWithDiscount,
                 CouponAmount = (decimal)coupon.Amount,
+                ShippingMethodAmount = shippingMethod.ShippingAmount,
             };
         }
     }

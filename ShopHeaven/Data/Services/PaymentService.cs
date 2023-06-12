@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Orders;
 using Stripe;
 using Stripe.Checkout;
 
@@ -34,9 +35,8 @@ namespace ShopHeaven.Data.Services
             return orderPayment;
         }
 
-        public async Task<Session> CreateSessionAsync(string orderId, decimal totalAmount, string appCurrencyCode)
+        public async Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, string appCurrencyCode)
         {
-
             totalAmount = Math.Round(totalAmount, 2);
 
             var options = new SessionCreateOptions
@@ -63,9 +63,19 @@ namespace ShopHeaven.Data.Services
                     "card",
                 },
                 SuccessUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/success",
-                CancelUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/cancelled",
+                CancelUrl = $"{this.applicationSettings.ClientSPAUrl}/cart",
                 Metadata = new Dictionary<string, string> {
-                    { "orderId", orderId },
+                    { nameof(model.CartId), model.CartId },
+                    { nameof(model.UserId), model.UserId },
+                    { nameof(model.CouponId), model.CouponId },
+                    { nameof(model.Recipient), model.Recipient },
+                    { nameof(model.Phone), model.Phone },
+                    { nameof(model.Country), model.Country },
+                    { nameof(model.City), model.City },
+                    { nameof(model.Address), model.Address },
+                    { nameof(model.ShippingMethod), model.ShippingMethod },
+                    { nameof(model.PaymentMethod), model.PaymentMethod },
+                    { nameof(model.Details), model.Details },
                 }
             };
 
@@ -76,8 +86,6 @@ namespace ShopHeaven.Data.Services
 
         public void ProcessPaymentResult(Event stripeEvent)
         {
-            // + price for courier !!!!! in order creation - think about front end   
-
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
                 var session = stripeEvent.Data.Object as Session;
@@ -90,7 +98,7 @@ namespace ShopHeaven.Data.Services
                 Session sessionWithLineItems = service.Get(session.Id, options);
                 StripeList<LineItem> lineItems = sessionWithLineItems.LineItems;
 
-                var orderId = session.Metadata["orderId"];
+                var metadata = session.Metadata;
 
                 // reduce quantity of products 
                 // empty cart

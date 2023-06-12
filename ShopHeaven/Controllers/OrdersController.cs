@@ -6,7 +6,6 @@ using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Responses.Orders;
 using Stripe;
 using Stripe.Checkout;
-using System.Collections.Generic;
 
 namespace ShopHeaven.Controllers
 {
@@ -51,8 +50,8 @@ namespace ShopHeaven.Controllers
             try
             {
                 var appCurrency = await this.currencyService.GetAppCurrencyAsync();
-                var orderInfo = await this.ordersService.RegisterOrderAsync(model);
-                Session session = await this.paymentService.CreateSessionAsync(orderInfo.Id, orderInfo.TotalPriceWithAllDiscounts, appCurrency.Code);
+                var orderInfo = await this.ordersService.GetPaymentInfo(model);
+                Session session = await this.paymentService.CreateSessionAsync(model, orderInfo.FinalPrice, appCurrency.Code);
                 Response.Headers.Add("Location", session.Url);
 
                 return Ok(303);

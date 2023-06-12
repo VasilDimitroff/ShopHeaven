@@ -90,7 +90,8 @@ export default function Checkout() {
     const getCheckoutRequestData = {
       cartId: auth.cartId,
       userId: auth.userId,
-      couponId: couponId
+      couponId: couponId,
+      shippingMethod: orderInfo.shippingMethod
     }
 
     console.log('GET CHECKOUT REQUEST:', getCheckoutRequestData);
@@ -137,7 +138,7 @@ export default function Checkout() {
       effectRun.current = true;
       controller.abort();
     };
-  }, []);
+  }, [orderInfo.shippingMethod]);
 
   function onCreateOrder(e) {
     e.preventDefault();
@@ -222,6 +223,16 @@ export default function Checkout() {
         details: order.details,
         shippingMethod: order.shippingMethod,
         paymentMethod: order.paymentMethod
+      }
+    })
+  }
+
+  function handleChangeShippingMethod() {
+    setOrderInfo(prev => {
+      return {
+        ...prev,
+        shippingMethod: shippingMethodRef.current.value,
+        paymentMethod: paymentMethodRef.current.value
       }
     })
   }
@@ -507,6 +518,7 @@ export default function Checkout() {
               </InputBoxFlex>
               <InputBox sx={{ mb: 1.5 }}>
                 <select
+                  onChange={handleChangeShippingMethod}
                   style={StyledSelect}
                   ref={shippingMethodRef}
                   name="shippingMethod"
@@ -518,7 +530,7 @@ export default function Checkout() {
                   {
                     shippingMethods?.map(shipMethod => {
                       return <option key={shipMethod.id} value={shipMethod.name}>
-                        {`${shipMethod.name}`}
+                        {`${shipMethod.name}  (+${appSettings.appCurrency.code} ${shipMethod.amount.toFixed(2)} Tax)`}
                       </option>
                     })
                   }
@@ -662,6 +674,16 @@ export default function Checkout() {
                       </DiscountHolder>)
                       : <></>
                   }
+                   {
+                    orderSummary?.shippingMethodAmount > 0
+                      ? (<DiscountHolder>
+                        <Typography>Shipping Tax:</Typography>
+                        <Typography>
+                          {`${appSettings.appCurrency.code} +${orderSummary?.shippingMethodAmount.toFixed(2)}`}
+                        </Typography>
+                      </DiscountHolder>)
+                      : <></>
+                  }
                 </Grid>
                 <Grid item xs={0} sm={0} md={0} lg={0.8} sx={{ display: "flex", justifyContent: "center" }}>
                   <Divider></Divider>
@@ -675,7 +697,7 @@ export default function Checkout() {
                       variant="h5"
                       sx={{ fontWeight: 500, color: theme.palette.error.main }}
                     >
-                      {appSettings.appCurrency.code} {orderSummary?.totalPriceWithAllDiscounts.toFixed(2)}
+                      {appSettings.appCurrency.code} {orderSummary?.finalPrice.toFixed(2)}
                     </Typography>
                   </PriceHolder>
                   <InputBox>
@@ -687,7 +709,7 @@ export default function Checkout() {
                       size="large"
                       variant="contained"
                     >
-                      Continue
+                      Payment
                     </CompleteActionButton>
                   </InputBox>
                 </Grid>
