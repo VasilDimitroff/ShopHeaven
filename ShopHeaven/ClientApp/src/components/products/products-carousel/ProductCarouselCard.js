@@ -133,9 +133,9 @@ function ProductCarouselCard(props) {
 
   const FavoriteIconHolder = styled(Box)({
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "rgba(255, 255, 255, 0.8)",
+    alignItems: "flex-start",
+    justifyContent: "flex-end",
+    color: "rgba(0, 0, 0, 0.3)",
     "&:hover": {
       color: theme.palette.error.main,
     },
@@ -143,12 +143,13 @@ function ProductCarouselCard(props) {
 
   const FavoriteIcon = styled(Box)({
     position: "absolute",
-    top: "35%",
-    backgroundColor: "rgba(0, 0, 0, 0.00)",
+    top: 10,
+    right: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
     borderRadius: "50%",
     padding: theme.spacing(1.5),
     "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, 0.2)",
+      backgroundColor: "rgba(0, 0, 0, 0.1)",
     },
   });
 
@@ -247,7 +248,7 @@ function ProductCarouselCard(props) {
             <Box>
               <Favorite
                 sx={{
-                  fontSize: "30px",
+                  fontSize: "25px",
                 }}
               />
             </Box>

@@ -37,9 +37,7 @@ import {
   cartPath,
   checkoutPath,
   successPaymentPath,
-  cancelPaymentPath
 } from "./constants";
-import Cancelled from "./components/payment/Cancelled";
 
 export default function App() {
   return (
@@ -57,7 +55,6 @@ export default function App() {
               <Route path={loginPath} element={<Login />} />
               <Route path={registerPath} element={<Register />} />
               <Route path={successPaymentPath} element={<Success />} />
-              <Route path={cancelPaymentPath} element={<Cancelled />} />
 
               {/* authorization needed paths */}
               <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>

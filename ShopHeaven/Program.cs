@@ -34,9 +34,6 @@ builder.Services.AddDefaultIdentity<User>(options =>
 builder.Services.AddIdentityServer()
     .AddApiAuthorization<User, ShopDbContext>();
 
-//builder.Services.AddAuthentication()
-//   .AddIdentityServerJwt();
-
 var stripeSettingsConfiguration = builder.Configuration.GetSection("Stripe");
 builder.Services.Configure<StripeSettings>(stripeSettingsConfiguration);
 var stripeSettings = stripeSettingsConfiguration.Get<StripeSettings>();
@@ -141,7 +138,6 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(services);
 }
 */
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -376,7 +376,7 @@ namespace ShopHeaven.Data.Services
         public async Task<List<CategoryWithSubcategoriesResponseModel>> GetAllCategoryNamesAsync()
         {
             var categories = await this.db.MainCategories
-                //.Where(x => x.IsDeleted != true)
+                .Where(x => x.IsDeleted != true)
                 .OrderByDescending(category => category.SubCategories.Where(s => s.IsDeleted != true)
                         .SelectMany(subcategory => subcategory.Products.Where(p => p.IsDeleted != true))
                         .Count())

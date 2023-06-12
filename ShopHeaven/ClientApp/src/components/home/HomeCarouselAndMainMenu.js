@@ -19,10 +19,6 @@ export default function HomeCarouselAndMainMenu() {
       <Grid
         container
         spacing={2}
-        // sx={{
-        //  display: "flex",
-        //  justifyContent: "space-between",
-        //  }}
       >
         <Grid
           item

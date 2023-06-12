@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
-using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Responses.Orders;
-using Stripe;
-using Stripe.Issuing;
 
 namespace ShopHeaven.Data.Services
 {
@@ -98,7 +95,7 @@ namespace ShopHeaven.Data.Services
             return order;
         }
 
-        public async Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model)
+        public async Task<OrderSummaryResponseModel> GetPaymentInfoAsync(CreateOrderRequestModel model)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);
 

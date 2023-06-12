@@ -50,7 +50,8 @@ namespace ShopHeaven.Controllers
             try
             {
                 var appCurrency = await this.currencyService.GetAppCurrencyAsync();
-                var orderInfo = await this.ordersService.GetPaymentInfo(model);
+                var orderInfo = await this.ordersService.GetPaymentInfoAsync(model);
+
                 Session session = await this.paymentService.CreateSessionAsync(model, orderInfo.FinalPrice, appCurrency.Code);
                 Response.Headers.Add("Location", session.Url);
 
@@ -79,9 +80,9 @@ namespace ShopHeaven.Controllers
 
                 return Ok();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }     
     }

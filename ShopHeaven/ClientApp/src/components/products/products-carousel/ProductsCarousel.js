@@ -88,6 +88,7 @@ function ProductsCarousel(props) {
         <Carousel
           animation="slide"
           swipe={false}
+          fullHeightHover={false}  
           navButtonsAlwaysVisible={true}
           indicators={true}
           interval={12000}
@@ -106,8 +107,7 @@ function ProductsCarousel(props) {
           navButtonsProps={{
             style: {
               opacity: "0.8",
-              backgroundColor: theme.palette.primary.main,
-              border: "2px solid black"
+              backgroundColor: theme.palette.primary.main
             },
           }}
         >

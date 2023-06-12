@@ -10,7 +10,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<Order> RegisterOrderAsync(CreateOrderRequestModel model);
 
-        Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model);
+        Task<OrderSummaryResponseModel> GetPaymentInfoAsync(CreateOrderRequestModel model);
 
         Task<ICollection<ProductOrder>> GetOrderProductsAsync(string orderId);
 
