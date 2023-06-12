@@ -114,7 +114,7 @@ export default function Checkout() {
             phone: response?.data?.phone,
             country: response?.data?.country,
             city: response?.data?.city,
-            address: response?.data?.city
+            address: response?.data?.address,
           }
         });
 
@@ -196,9 +196,6 @@ export default function Checkout() {
       window.location.href = stripeUrl
 
       setCreateOrderErrorMessage("");
-      setCreateOrderResponseMessage(
-        `Order successfully created`
-      );
 
       //TODO: Clear global cart products count
     } catch (error) {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using Stripe;
 using Stripe.Checkout;
@@ -8,19 +9,35 @@ namespace ShopHeaven.Data.Services
     public class PaymentService : IPaymentService
     {
         private readonly ApplicationSettings applicationSettings;
+        private readonly ShopDbContext db;
 
-        public PaymentService(IOptions<ApplicationSettings> applicationSettings)
+        public PaymentService(ShopDbContext db, IOptions<ApplicationSettings> applicationSettings)
         {
             this.applicationSettings = applicationSettings.Value;
+            this.db = db;
         }
 
-        public async Task<Session> CreateSessionAsync()
+        public async Task<Payment> CreatePaymentAsync(string orderId, decimal amount, string paymentMethod)
         {
-            //get all products from cart
-            // with their quantity
-            // with their regular price,
-            // with their discount
-            // get the coupon and apply it as discount
+            if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
+
+            var orderPayment = new Payment
+            {
+                OrderId = orderId,
+                Amount = amount,
+                PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
+                IsCompleted = false,
+            };
+            
+            await this.db.Payments.AddAsync(orderPayment);
+
+            return orderPayment;
+        }
+
+        public async Task<Session> CreateSessionAsync(string orderId, decimal totalAmount, string appCurrencyCode)
+        {
+
+            totalAmount = Math.Round(totalAmount, 2);
 
             var options = new SessionCreateOptions
             {
@@ -30,8 +47,8 @@ namespace ShopHeaven.Data.Services
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmountDecimal = Math.Round((Convert.ToDecimal(20.34) * 100), 2),
-                            Currency = "usd",
+                            UnitAmountDecimal = totalAmount * 100,
+                            Currency = appCurrencyCode.ToLower(),
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = $"{GlobalConstants.SystemName} purchase",
@@ -47,6 +64,9 @@ namespace ShopHeaven.Data.Services
                 },
                 SuccessUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/success",
                 CancelUrl = $"{this.applicationSettings.ClientSPAUrl}/payment/cancelled",
+                Metadata = new Dictionary<string, string> {
+                    { "orderId", orderId },
+                }
             };
 
             var service = new SessionService();
@@ -56,6 +76,8 @@ namespace ShopHeaven.Data.Services
 
         public void ProcessPaymentResult(Event stripeEvent)
         {
+            // + price for courier !!!!! in order creation - think about front end   
+
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
                 var session = stripeEvent.Data.Object as Session;
@@ -68,8 +90,21 @@ namespace ShopHeaven.Data.Services
                 Session sessionWithLineItems = service.Get(session.Id, options);
                 StripeList<LineItem> lineItems = sessionWithLineItems.LineItems;
 
-                // Create Order...
+                var orderId = session.Metadata["orderId"];
+
+                // reduce quantity of products 
+                // empty cart
+                // set payment do True for completed
+                // update amount of payment
+                // modifiedOn at payment
             }
+        }
+
+        private bool ValidatePaymentMethod(string method)
+        {
+            bool isPaymentMethodParsed = Enum.TryParse<Models.Enums.PaymentMethod>(method, out Models.Enums.PaymentMethod paymentMethod);
+
+            return isPaymentMethodParsed;
         }
     }
 }

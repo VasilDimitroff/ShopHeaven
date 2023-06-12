@@ -13,18 +13,21 @@ namespace ShopHeaven.Data.Services
         private readonly ICartsService cartsService;
         private readonly IUsersService usersService;
         private readonly ICouponsService couponsService;
+        private readonly IPaymentService paymentService;
         private readonly IShippingService shippingService;
 
         public OrdersService(ShopDbContext db,
             ICartsService cartsService,
             IUsersService usersService,
             ICouponsService couponsService,
+            IPaymentService paymentService,
             IShippingService shippingService)
         {
             this.db = db;
             this.cartsService = cartsService;
             this.usersService = usersService;
             this.couponsService = couponsService;
+            this.paymentService = paymentService;
             this.shippingService = shippingService;
         }
 
@@ -71,8 +74,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-
-        public async Task CreateOrderAsync(CreateOrderRequestModel model)
+        public async Task<OrderPaymentInfoResponseModel> RegisterOrderAsync(CreateOrderRequestModel model)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);
 
@@ -90,19 +92,17 @@ namespace ShopHeaven.Data.Services
                 coupon = await this.couponsService.GetCouponByIdAsync(model.CouponId);
             }
 
-            if (string.IsNullOrWhiteSpace(model.Recipient)){ throw new ArgumentException(GlobalConstants.RecipientCannotBeEmpty); }
+            if (string.IsNullOrWhiteSpace(model.Recipient)) { throw new ArgumentException(GlobalConstants.RecipientCannotBeEmpty); }
 
-            if (string.IsNullOrWhiteSpace(model.Phone)){ throw new ArgumentException(GlobalConstants.PhoneCannotBeEmpty); }
+            if (string.IsNullOrWhiteSpace(model.Phone)) { throw new ArgumentException(GlobalConstants.PhoneCannotBeEmpty); }
 
-            if (string.IsNullOrWhiteSpace(model.Country)){ throw new ArgumentException(GlobalConstants.CountryCannotBeEmpty); }
+            if (string.IsNullOrWhiteSpace(model.Country)) { throw new ArgumentException(GlobalConstants.CountryCannotBeEmpty); }
 
-            if (string.IsNullOrWhiteSpace(model.City)){ throw new ArgumentException(GlobalConstants.CityCannotBeEmpty); }
+            if (string.IsNullOrWhiteSpace(model.City)) { throw new ArgumentException(GlobalConstants.CityCannotBeEmpty); }
 
-            if (string.IsNullOrWhiteSpace(model.Address)){ throw new ArgumentException(GlobalConstants.AddressCannotBeEmpty); }
+            if (string.IsNullOrWhiteSpace(model.Address)) { throw new ArgumentException(GlobalConstants.AddressCannotBeEmpty); }
 
-            if (string.IsNullOrWhiteSpace(model.PaymentMethod)){ throw new ArgumentException(GlobalConstants.PaymentMethodCannotBeEmpty); }
-
-            if (!ValidatePaymentMethod(model.PaymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
+            if (string.IsNullOrWhiteSpace(model.PaymentMethod)) { throw new ArgumentException(GlobalConstants.PaymentMethodCannotBeEmpty); }
 
             if (string.IsNullOrWhiteSpace(model.ShippingMethod)) { throw new ArgumentException(GlobalConstants.ShippingMethodCannotBeEmpty); }
 
@@ -142,11 +142,27 @@ namespace ShopHeaven.Data.Services
                 orderProducts.Add(orderProduct);
             }
 
+            var orderPayment = await this.paymentService
+                .CreatePaymentAsync(newOrder.Id, 0, model.PaymentMethod.Trim());
+
+            newOrder.PaymentId = orderPayment.Id;
+
             await this.db.ProductsOrders.AddRangeAsync(orderProducts);
 
             await this.db.Orders.AddAsync(newOrder);
 
-            //await this.db.SaveChangesAsync();
+            await this.db.SaveChangesAsync();
+
+            //in this model is ok to apply shipping method
+            var orderInfo = new OrderPaymentInfoResponseModel
+            {
+                Id = newOrder.Id,
+                CouponAmount = orderSummary.CouponAmount,
+                TotalPriceWithNoDiscount = orderSummary.TotalPriceWithNoDiscount,
+                TotalPriceWithDiscountOfProducts = orderSummary.TotalPriceWithDiscountOfProducts,
+            };
+
+            return orderInfo;
         }
 
         private async Task<Order> GetLastOrderAsync(string userId)
@@ -172,13 +188,6 @@ namespace ShopHeaven.Data.Services
                 TotalPriceWithDiscountOfProducts = cart.TotalPriceWithDiscount,
                 CouponAmount = (decimal)coupon.Amount,
             };
-        }
-
-        private bool ValidatePaymentMethod(string status)
-        {
-            bool isPaymentMethodParsed = Enum.TryParse<PaymentMethod>(status, out PaymentMethod paymentMethod);
-
-            return isPaymentMethodParsed;
         }
     }
 }

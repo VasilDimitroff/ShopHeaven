@@ -16,16 +16,19 @@ namespace ShopHeaven.Controllers
     {
         private readonly IOrdersService ordersService;
         private readonly IPaymentService paymentService;
+        private readonly ICurrencyService currencyService;
         private readonly StripeSettings stripeSettings;
 
         public OrdersController(
             IOrdersService ordersService,
             IPaymentService paymentService,
+            ICurrencyService currencyService,
             IOptions<StripeSettings> stripeSettings)
         {
             this.stripeSettings = stripeSettings.Value;
             this.ordersService = ordersService;
             this.paymentService = paymentService;
+            this.currencyService = currencyService;
         }
 
         [HttpPost, Authorize, Route(nameof(Checkout))]
@@ -42,31 +45,24 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize, Route(nameof(Create))]
-        public async Task<ActionResult> Create([FromBody] CreateOrderRequestModel model)
-        {
-            try
-            {
-                await this.ordersService.CreateOrderAsync(model);
-                //get products??
-                //reduce products quantity
-                // empty cart
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost, Route(nameof(CreateCheckoutSession))]
         public async Task<ActionResult> CreateCheckoutSession(CreateOrderRequestModel model)
         {
-            Session session = await this.paymentService.CreateSessionAsync();
-            Response.Headers.Add("Location", session.Url);
+            try
+            {
+                var appCurrency = await this.currencyService.GetAppCurrencyAsync();
+                var orderInfo = await this.ordersService.RegisterOrderAsync(model);
+                Session session = await this.paymentService.CreateSessionAsync(orderInfo.Id, orderInfo.TotalPriceWithAllDiscounts, appCurrency.Code);
+                Response.Headers.Add("Location", session.Url);
 
-            return Ok(303);
+                return Ok(303);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         //case sensitive !!!!!

@@ -8,8 +8,8 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<CheckoutResponseModel> GetCheckoutInfoAsync(CheckoutRequestModel model);
 
-        Task CreateOrderAsync(CreateOrderRequestModel model);
-
         OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon);
+
+        Task<OrderPaymentInfoResponseModel> RegisterOrderAsync(CreateOrderRequestModel model);
     }
 }
