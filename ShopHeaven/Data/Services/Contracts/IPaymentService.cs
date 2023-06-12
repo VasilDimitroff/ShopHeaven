@@ -9,8 +9,6 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, string appCurrencyCode);
 
-        Task<Payment> CreatePaymentAsync(string orderId, decimal amount, string paymentMethod);
-
-        void ProcessPaymentResult(Event stripeEvent);
+        Task ProcessPaymentResultAsync(Event stripeEvent);
     }
 }

@@ -75,13 +75,12 @@ namespace ShopHeaven.Controllers
                 var stripeEvent = EventUtility.ConstructEvent(json,
                     Request.Headers["Stripe-Signature"], this.stripeSettings.PaymentCompletedCallbackSecret, 300, false);
 
-                this.paymentService.ProcessPaymentResult(stripeEvent);
+                await this.paymentService.ProcessPaymentResultAsync(stripeEvent);
 
                 return Ok();
             }
             catch (Exception e)
             {
-                Console.WriteLine("V CATHA");
                 return BadRequest();
             }
         }     

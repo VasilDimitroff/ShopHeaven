@@ -25,7 +25,6 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ICollection<GetProductByLabelsResponseModel>> GetProductsByLabelsAsync(GetProductsByLabelRequestModel model);
 
-
         Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model);
 
     }

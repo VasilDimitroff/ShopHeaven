@@ -21,5 +21,7 @@ namespace ShopHeaven.Data.Services.Contracts
         public int GetProductsCountInCartAsync(string cartId);
 
         public Task<ChangeProductQuantityResponseModel> ChangeProductQuantityAsync(ChangeProductQuantityRequestModel model);
+
+        Task EmptyCartAsync(string cartId);
     }
 }

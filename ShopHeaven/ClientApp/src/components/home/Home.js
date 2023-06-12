@@ -168,6 +168,6 @@ export default function Home() {
       />
     </Fragment>
   ) : (
-    <Box sx={{mt: 10}}><CircleLoader /></Box>
+    <Box sx={{pt: 15}}><CircleLoader /></Box>
   );
 }

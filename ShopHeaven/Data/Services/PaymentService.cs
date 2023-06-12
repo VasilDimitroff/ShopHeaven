@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
 using Stripe;
@@ -10,29 +9,17 @@ namespace ShopHeaven.Data.Services
     public class PaymentService : IPaymentService
     {
         private readonly ApplicationSettings applicationSettings;
-        private readonly ShopDbContext db;
+        private readonly IOrdersService ordersService;
+        private readonly ICartsService cartsService;
 
-        public PaymentService(ShopDbContext db, IOptions<ApplicationSettings> applicationSettings)
+        public PaymentService(
+            IOrdersService ordersServce,
+            ICartsService cartsService,
+            IOptions<ApplicationSettings> applicationSettings)
         {
             this.applicationSettings = applicationSettings.Value;
-            this.db = db;
-        }
-
-        public async Task<Payment> CreatePaymentAsync(string orderId, decimal amount, string paymentMethod)
-        {
-            if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
-
-            var orderPayment = new Payment
-            {
-                OrderId = orderId,
-                Amount = amount,
-                PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
-                IsCompleted = false,
-            };
-            
-            await this.db.Payments.AddAsync(orderPayment);
-
-            return orderPayment;
+            this.ordersService = ordersServce;
+            this.cartsService = cartsService;
         }
 
         public async Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, string appCurrencyCode)
@@ -84,35 +71,56 @@ namespace ShopHeaven.Data.Services
             return session;
         }
 
-        public void ProcessPaymentResult(Event stripeEvent)
+        public async Task ProcessPaymentResultAsync(Event stripeEvent)
         {
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
                 var session = stripeEvent.Data.Object as Session;
-                var options = new SessionGetOptions();
-                options.AddExpand("line_items");
 
-                var service = new SessionService();
+                // create order
+                var createOrderRequestModel = CreateOrderRequestModelFromStripeSessionResponse(session.Metadata);
+                var order = await this.ordersService.RegisterOrderAsync(createOrderRequestModel);
 
-                // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
-                Session sessionWithLineItems = service.Get(session.Id, options);
-                StripeList<LineItem> lineItems = sessionWithLineItems.LineItems;
+                //reduce quantity of ordered products
+                await this.ordersService.ReduceQuantityOfProductsAsync(order.Id);
 
-                var metadata = session.Metadata;
-
-                // reduce quantity of products 
                 // empty cart
-                // set payment do True for completed
-                // update amount of payment
-                // modifiedOn at payment
+                await this.cartsService.EmptyCartAsync(createOrderRequestModel.CartId);
             }
         }
 
-        private bool ValidatePaymentMethod(string method)
+        private CreateOrderRequestModel CreateOrderRequestModelFromStripeSessionResponse(Dictionary<string, string> metadata)
         {
-            bool isPaymentMethodParsed = Enum.TryParse<Models.Enums.PaymentMethod>(method, out Models.Enums.PaymentMethod paymentMethod);
+            var cartId = metadata[nameof(CreateOrderRequestModel.CartId)];
+            var userId = metadata[nameof(CreateOrderRequestModel.UserId)];
+            var couponId = metadata[nameof(CreateOrderRequestModel.CouponId)];
+            var recipient = metadata[nameof(CreateOrderRequestModel.Recipient)];
+            var phone = metadata[nameof(CreateOrderRequestModel.Phone)];
+            var country = metadata[nameof(CreateOrderRequestModel.Country)];
+            var city = metadata[nameof(CreateOrderRequestModel.City)];
+            var address = metadata[nameof(CreateOrderRequestModel.Address)];
+            var shippingMethod = metadata[nameof(CreateOrderRequestModel.ShippingMethod)];
+            var paymentMethod = metadata[nameof(CreateOrderRequestModel.PaymentMethod)];
+            var details = metadata[nameof(CreateOrderRequestModel.Details)];
 
-            return isPaymentMethodParsed;
+
+            var createOrderRequestModel = new CreateOrderRequestModel
+            {
+                CartId = cartId,
+                UserId = userId,
+                CouponId = couponId,
+                Recipient = recipient,
+                Phone = phone,
+                Country = country,
+                City = city,
+                Address = address,
+                ShippingMethod = shippingMethod,
+                PaymentMethod = paymentMethod,
+                Details = details,
+            };
+
+            return createOrderRequestModel;
         }
+
     }
 }

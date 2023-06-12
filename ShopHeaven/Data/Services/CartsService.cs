@@ -208,10 +208,30 @@ namespace ShopHeaven.Data.Services
             return productsCount;
         }
 
+        public async Task<Cart> GetCartAsync(string cartId)
+        {
+            var cart = await this.db.Carts
+                            .FirstOrDefaultAsync(x => x.Id == cartId && x.IsDeleted != true);
+
+            if (cart == null)
+            {
+                throw new ArgumentException(GlobalConstants.CartDoesNotExist);
+            }
+
+            return cart;
+        }
+
+        public async Task EmptyCartAsync(string cartId)
+        {
+            var productCartsToRemove = this.db.ProductsCarts.Where(pc => pc.CartId == cartId && pc.IsDeleted != true);
+            this.db.ProductsCarts.RemoveRange(productCartsToRemove);
+            await this.db.SaveChangesAsync();
+        }
+
         private async Task<Cart> UpdateCartAmountAsync(User user)
         {
             var userCart = await this.db.Carts
-                                    .Include(c => c.Products.Where(x => x.IsDeleted!= true))
+                                    .Include(c => c.Products.Where(x => x.IsDeleted != true))
                                     .ThenInclude(cp => cp.Product)
                                     .FirstOrDefaultAsync(c => c.UserId == user.Id && c.IsDeleted != true);
 
@@ -231,19 +251,6 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
 
             return userCart;
-        }
-
-        public async Task<Cart> GetCartAsync(string cartId)
-        {
-            var cart = await this.db.Carts
-                            .FirstOrDefaultAsync(x => x.Id == cartId && x.IsDeleted != true);
-
-            if (cart == null)
-            {
-                throw new ArgumentException(GlobalConstants.CartDoesNotExist);
-            }
-
-            return cart;
         }
     }
 }

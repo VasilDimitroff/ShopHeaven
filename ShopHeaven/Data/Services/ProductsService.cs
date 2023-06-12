@@ -21,7 +21,9 @@ namespace ShopHeaven.Data.Services
         private readonly IStorageService storageService;
         private readonly IUsersService usersService;
 
-        public ProductsService(ShopDbContext db, IStorageService storageService, IUsersService usersService)
+        public ProductsService(ShopDbContext db,
+            IStorageService storageService,
+            IUsersService usersService)
         {
             this.db = db;
             this.storageService = storageService;

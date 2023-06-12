@@ -4,6 +4,8 @@ using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Responses.Orders;
+using Stripe;
+using Stripe.Issuing;
 
 namespace ShopHeaven.Data.Services
 {
@@ -13,21 +15,18 @@ namespace ShopHeaven.Data.Services
         private readonly ICartsService cartsService;
         private readonly IUsersService usersService;
         private readonly ICouponsService couponsService;
-        private readonly IPaymentService paymentService;
         private readonly IShippingService shippingService;
 
         public OrdersService(ShopDbContext db,
             ICartsService cartsService,
             IUsersService usersService,
             ICouponsService couponsService,
-            IPaymentService paymentService,
             IShippingService shippingService)
         {
             this.db = db;
             this.cartsService = cartsService;
             this.usersService = usersService;
             this.couponsService = couponsService;
-            this.paymentService = paymentService;
             this.shippingService = shippingService;
         }
 
@@ -42,7 +41,7 @@ namespace ShopHeaven.Data.Services
 
             var cart = await this.cartsService.GetCartAsync(model.CartId);
 
-            Coupon coupon = await PrepareCouponAsync(model.CouponId);
+            var coupon = await PrepareCouponAsync(model.CouponId);
 
             ShippingMethod shippingMethod = new ShippingMethod();
 
@@ -53,7 +52,7 @@ namespace ShopHeaven.Data.Services
 
             var shippingMethods = await this.shippingService.GetShippingMethodsAsync();
 
-            var paymentMethods = Enum.GetNames(typeof(PaymentMethod));
+            var paymentMethods = Enum.GetNames(typeof(Data.Models.Enums.PaymentMethod));
 
             var responseModel = new CheckoutResponseModel
             {
@@ -76,7 +75,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<OrderSummaryResponseModel> RegisterOrderAsync(CreateOrderRequestModel model)
+        public async Task<Order> RegisterOrderAsync(CreateOrderRequestModel model)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);
 
@@ -84,7 +83,7 @@ namespace ShopHeaven.Data.Services
 
             var cart = await this.cartsService.GetCartAsync(model.CartId);
 
-            Coupon coupon = await PrepareCouponAsync(model.CouponId);
+            var coupon = await PrepareCouponAsync(model.CouponId);
 
             ValidateFormData(model);
 
@@ -94,12 +93,57 @@ namespace ShopHeaven.Data.Services
 
             var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
 
-            await CreateOrderAsync(model, shippingMethod, cartProducts, orderSummary);
+            var order = await CreateOrderAsync(model, shippingMethod, cartProducts, orderSummary);
+
+            return order;
+        }
+
+        public async Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model)
+        {
+            var user = await this.usersService.GetUserAsync(model.UserId);
+
+            if (user.CartId != model.CartId)  {  throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);  }
+
+            var cart = await this.cartsService.GetCartAsync(model.CartId);
+
+            var coupon = await PrepareCouponAsync(model.CouponId);
+
+            ValidateFormData(model);
+
+            var shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
+
+            var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
 
             return orderSummary;
         }
+ 
+        public async Task<ICollection<ProductOrder>> GetOrderProductsAsync(string orderId)
+        {
+            var orderProducts = await this.db.ProductsOrders
+                .Include(x => x.Product)
+                .Where(x => x.OrderId == orderId && x.IsDeleted != true)
+                .ToListAsync();
 
-        private async Task CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)
+            return orderProducts;
+        }
+
+        public async Task ReduceQuantityOfProductsAsync(string orderId)
+        {
+            //get order products by orderId
+            var productOrders = await GetOrderProductsAsync(orderId);
+
+            // reduce quantity of products 
+            foreach (var productOrder in productOrders)
+            {
+                int reduceProductQuantityBy = productOrder.Quantity;
+
+                productOrder.Product.Quantity -= reduceProductQuantityBy;
+            }
+
+            await this.db.SaveChangesAsync();
+        }
+
+        private async Task<Order> CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)
         {
             var newOrder = new Order
             {
@@ -120,33 +164,16 @@ namespace ShopHeaven.Data.Services
 
             await CreateOrderProductsAsync(cartProducts, newOrder);
 
-            var orderPayment = await this.paymentService
-                .CreatePaymentAsync(newOrder.Id, 0, model.PaymentMethod.Trim());
+            var orderPayment = await this
+                .CreatePaymentAsync(newOrder.Id, newOrder.TotalPriceWithDiscountCouponAndShippingTax, model.PaymentMethod.Trim(), true);
 
             newOrder.PaymentId = orderPayment.Id;
 
             await this.db.Orders.AddAsync(newOrder);
 
             await this.db.SaveChangesAsync();
-        }
 
-        public async Task<OrderSummaryResponseModel> GetPaymentInfo(CreateOrderRequestModel model)
-        {
-            var user = await this.usersService.GetUserAsync(model.UserId);
-
-            if (user.CartId != model.CartId)  {  throw new ArgumentException(GlobalConstants.YouCanSeeOnlyYourCartProducts);  }
-
-            var cart = await this.cartsService.GetCartAsync(model.CartId);
-
-            Coupon coupon = await PrepareCouponAsync(model.CouponId);
-
-            ValidateFormData(model);
-
-            var shippingMethod = await this.shippingService.GetShippingMethodByNameAsync(model.ShippingMethod.Trim());
-
-            var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
-
-            return orderSummary;
+            return newOrder;
         }
 
         private async Task CreateOrderProductsAsync(ICollection<ProductCart> cartProducts, Order newOrder)
@@ -166,18 +193,6 @@ namespace ShopHeaven.Data.Services
             }
 
             await this.db.ProductsOrders.AddRangeAsync(orderProducts);
-        }
-
-        private async Task<Coupon> PrepareCouponAsync(string couponId)
-        {
-            var coupon = new Coupon();
-
-            if (couponId != null)
-            {
-                coupon = await this.couponsService.GetCouponByIdAsync(couponId);
-            }
-
-            return coupon;
         }
 
         private void ValidateFormData(CreateOrderRequestModel model)
@@ -212,7 +227,7 @@ namespace ShopHeaven.Data.Services
             return lastOrder;
         }
 
-        private OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon, ShippingMethod shippingMethod)
+        private OrderSummaryResponseModel GetOrderSummary(Cart cart, Data.Models.Coupon coupon, ShippingMethod shippingMethod)
         {
             return new OrderSummaryResponseModel
             {
@@ -222,6 +237,42 @@ namespace ShopHeaven.Data.Services
                 CouponAmount = (decimal)coupon.Amount,
                 ShippingMethodAmount = shippingMethod.ShippingAmount,
             };
+        }
+
+        private async Task<Payment> CreatePaymentAsync(string orderId, decimal amount, string paymentMethod, bool isCompleted)
+        {
+            if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
+
+            var orderPayment = new Payment
+            {
+                OrderId = orderId,
+                Amount = amount,
+                PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
+                IsCompleted = isCompleted,
+            };
+
+            await this.db.Payments.AddAsync(orderPayment);
+
+            return orderPayment;
+        }
+
+        private bool ValidatePaymentMethod(string method)
+        {
+            bool isPaymentMethodParsed = Enum.TryParse<Models.Enums.PaymentMethod>(method, out Models.Enums.PaymentMethod paymentMethod);
+
+            return isPaymentMethodParsed;
+        }
+
+        private async Task<Models.Coupon> PrepareCouponAsync(string couponId)
+        {
+            var coupon = new Data.Models.Coupon();
+
+            if (couponId != null)
+            {
+                coupon = await this.couponsService.GetCouponByIdAsync(couponId);
+            }
+
+            return coupon;
         }
     }
 }
