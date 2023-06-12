@@ -1,7 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Box, Grid, Typography, Paper, Chip, Zoom, Alert } from "@mui/material";
 import { ArrowForwardIos } from "@mui/icons-material";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { theme } from "../../theme";
 import { MainWrapper, UniversalInput, InputBox, CompleteActionButton, StyledSelect } from "../../styles/styles";
@@ -188,6 +188,10 @@ export default function Checkout() {
       );
 
       controller.abort();
+
+      const stripeUrl = response.headers['location'];
+      console.log(stripeUrl)
+      window.location.href = stripeUrl
 
       setCreateOrderErrorMessage("");
       setCreateOrderResponseMessage(

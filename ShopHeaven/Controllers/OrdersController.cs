@@ -69,7 +69,7 @@ namespace ShopHeaven.Controllers
             return Ok(303);
         }
 
-        //enter it with case sensitive !!!!!
+        //case sensitive !!!!!
         [HttpPost, Route(nameof(OnPaymentCompleted))]
         public async Task<IActionResult> OnPaymentCompleted()
         {
