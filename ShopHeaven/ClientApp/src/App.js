@@ -11,7 +11,7 @@ import Subcategories from "./components/subcategories/Subcategories";
 import Admin from "./components/administration/Admin";
 import AdminCategories from "./components/administration/categories/AdminCategories";
 import AdminProducts from "./components/administration/products/AdminProducts";
-import AdminOrders from "./components/administration/AdminOrders";
+import AdminOrders from "./components/administration/orders/AdminOrders";
 import AdminDashboard from "./components/administration/AdminDashboard";
 import AdminUsers from "./components/administration/users/AdminUsers";
 import AdminCoupons from "./components/administration/coupons/AdminCoupons";

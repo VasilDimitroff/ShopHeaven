@@ -11,5 +11,5 @@ namespace ShopHeaven.Models.Responses.Users
         public int UsersCount { get; set; }
 
         public int PagesCount { get; set; }
-}
+    }
 }

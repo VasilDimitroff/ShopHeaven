@@ -15,24 +15,24 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { noPermissionsForOperationMessage } from "../../../constants";
 
-export default function DeleteUser(props) {
+export default function DeleteOrder(props) {
   let axiosPrivate = useAxiosPrivate();
 
-  const [user, setUser] = useState(props.user);
+  const [order, setOrder] = useState(props.order);
   const [deleteResponse, setDeleteResponse] = useState(undefined);
   const [undeleteResponse, setUndeleteResponse] = useState(undefined);
   const [undoDeleteButtonClicked, setUndoDeleteButtonClicked] = useState(false);
-  const [deleteUserResponseMessage, setDeleteUserResponseMessage] =
+  const [deleteOrderResponseMessage, setDeleteOrderResponseMessage] =
     useState("");
-  const [deleteUserErrorMessage, setDeleteUserErrorMessage] =
+  const [deleteOrderErrorMessage, setDeleteOrderErrorMessage] =
     useState("");
   const [isDeleted, setIsDeleted] = useState(false);
 
-  function onDeleteUser() {
-    deleteUser(user.id);
+  function onDenleteOrder() {
+    deleteOrder(order.id);
   }
 
-  async function deleteUser(userId) {
+  async function deleteOrder(userId) {
     try {
       const controller = new AbortController();
 
@@ -46,29 +46,29 @@ export default function DeleteUser(props) {
 
       controller.abort();
 
-      setDeleteUserErrorMessage("");
-      setDeleteUserResponseMessage(
-        "User " + user.email + " deleted!"
+      setDeleteOrderErrorMessage("");
+      setDeleteOrderResponseMessage(
+        "Order " + order?.email + " deleted!"
       );
 
       setDeleteResponse(response?.data);
       
       setIsDeleted(true);
-      props.updateUser(response?.data);
+      props.updateOrder(response?.data);
     } catch (error) {
-      setDeleteUserResponseMessage("");
+      setDeleteOrderResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setDeleteUserErrorMessage(
+        setDeleteOrderErrorMessage(
           noPermissionsForOperationMessage
         );
       } else {
-        setDeleteUserErrorMessage(error?.response?.data);
+        setDeleteOrderErrorMessage(error?.response?.data);
       }
       console.log(error.message);
     }
   } 
 
-  const DeleteUserButton = styled(Button)({
+  const DeleteOrderButton = styled(Button)({
     width: "100%",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
@@ -93,25 +93,25 @@ export default function DeleteUser(props) {
             }}
           >
             <Typography variant="h6">
-              You are on the way to delete user {user.email.toUpperCase()}!
+              You are on the way to delete order {order.email.toUpperCase()}!
             </Typography>
             <Typography variant="p" color="error">
               Be careful!
             </Typography>
           </Box>
           <ButtonsHolder>
-            <DeleteUserButton
+            <DeleteOrderButton
               startIcon={<Delete />}
-              onClick={onDeleteUser}
+              onClick={onDenleteOrder}
               type="submit"
               size="large"
               variant="outlined"
               color="error"
               disabled={isDeleted ? true : false}
             >
-              DELETE USER
-            </DeleteUserButton>
-            <DeleteUserButton
+              DELETE ORDER
+            </DeleteOrderButton>
+            <DeleteOrderButton
               startIcon={<Cancel />}
               onClick={props.onCancelButtonClicked}
               type="submit"
@@ -120,21 +120,21 @@ export default function DeleteUser(props) {
               color="error"
             >
               CANCEL
-            </DeleteUserButton>
+            </DeleteOrderButton>
           </ButtonsHolder>
-          {deleteUserResponseMessage ? (
-            <Zoom in={deleteUserResponseMessage.length > 0 ? true : false}>
+          {deleteOrderResponseMessage ? (
+            <Zoom in={deleteOrderResponseMessage.length > 0 ? true : false}>
               <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
-                {deleteUserResponseMessage}
+                {deleteOrderResponseMessage}
               </Alert>
             </Zoom>
           ) : (
             ""
           )}
-          {deleteUserErrorMessage ? (
-            <Zoom in={deleteUserErrorMessage.length > 0 ? true : false}>
+          {deleteOrderErrorMessage ? (
+            <Zoom in={deleteOrderErrorMessage.length > 0 ? true : false}>
               <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
-                {deleteUserErrorMessage}
+                {deleteOrderErrorMessage}
               </Alert>
             </Zoom>
           ) : (
