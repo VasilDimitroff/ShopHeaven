@@ -10,7 +10,6 @@ namespace ShopHeaven.Data.Models
         [Required]
         public string OrderId { get; set; }
 
-
         [ForeignKey(nameof(OrderId))]
         public Order Order { get; set; }
 
