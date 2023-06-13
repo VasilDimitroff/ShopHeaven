@@ -146,7 +146,7 @@ namespace ShopHeaven.Data.Services
 
         public ICollection<string> GetOrderStatuses()
         {
-            var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.PaymentMethod));
+            var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.OrderStatus));
             return orderStatuses;
         }
 
@@ -154,6 +154,7 @@ namespace ShopHeaven.Data.Services
         {
             var orders = await this.db.Orders
                 .Where(x => x.IsDeleted != true)
+                .OrderByDescending(x => x.CreatedOn)
                 .Select(x => new OrderResponseModel
                 {
                     Id = x.Id,
@@ -194,11 +195,9 @@ namespace ShopHeaven.Data.Services
                         .Where(p => p.IsDeleted != true)
                         .Select(p => new ProductOrderResponseModel
                         {
-                            Id = p.Id,
-                            Discount = p.Product.Discount,
+                            Id = p.Product.Id,
                             Name = p.Product.Name,
-                            Quantity = p.Product.Quantity,
-                            Price = p.Product.Price
+                            Quantity = p.Quantity,
                         })
                         .ToList(),         
                 })

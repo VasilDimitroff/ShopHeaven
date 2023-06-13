@@ -31,7 +31,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpGet, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Checkout))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(All))]
         public async Task<ActionResult<OrdersAndStatusesResponseModel>> All(OrderPaginationRequestModel model)
         {
             try

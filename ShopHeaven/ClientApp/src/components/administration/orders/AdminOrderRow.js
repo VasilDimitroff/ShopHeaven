@@ -14,8 +14,8 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { ActionIconButton } from "../../../styles/styles";
-//import EditUser from "./EditUser";
 import DeleteOrder from "./DeleteOrder";
+import EditOrder from "./EditOrder";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -25,11 +25,14 @@ import {
   Edit,
   Delete,
   RestoreFromTrash,
+  Info,
+  MoreHoriz,
 } from "@mui/icons-material";
 import UndeleteOrder from "./UndeleteOrder";
 
 export default function AdminOrderRow(props) {
   const [order, setOrder] = useState(props.order);
+  const [orderStatuses, setOrderStatuses] = useState(props.orderStatuses);
 
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
@@ -97,6 +100,16 @@ export default function AdminOrderRow(props) {
     },
   });
 
+  const StyledSelect = {
+    cursor: "pointer",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    fontSize: 14,
+  };
+
+
   return (
     <Fragment>
       <TableRow
@@ -117,28 +130,28 @@ export default function AdminOrderRow(props) {
           </IconButton>
           {order?.isDeleted ? (
             <>
-              {order?.email}
+              {order?.id}
               <Typography
                 color="error"
                 sx={{ display: "inline", fontWeight: 500 }}
               >
                 {" "}
-                (User Deleted)
+                (Order Deleted)
               </Typography>
             </>
           ) : (
-            <>{order?.email}</>
+            <>{order?.id}</>
           )}
           <Grid container spacing={1} columns={4}>
             <Grid item xs={4} sm={2} md={1} lg={1}>
-              <Tooltip title={`Username: ${order?.id}`} placement="bottom-start" arrow>
+              <Tooltip title={`By: ${order?.createdBy}`} placement="bottom-start" arrow>
                 <OrderInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<AccountCircle />}
                     variant="outlined"
                     color="primary"
-                    label={`Username: ${order?.isDeleted}`}
+                    label={`By: ${order?.createdBy}`}
                     size="small"
                   />
                 </OrderInfoText>
@@ -165,9 +178,7 @@ export default function AdminOrderRow(props) {
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`User has these roles: ${order?.roles?.map(
-                  (x) => x.name
-                )}`}
+                title={`Recipient of the order is: ${order?.recipient}`}
                 arrow
               >
                 <OrderInfoText>
@@ -175,7 +186,7 @@ export default function AdminOrderRow(props) {
                     sx={{ padding: 0.5 }}
                     icon={<Group />}
                     variant="outlined"
-                    label={`User roles: ${order?.roles?.map((x) => x.name)}`}
+                    label={`For: ${order?.recipient}`}
                     size="small"
                     color="primary"
                   />
@@ -185,7 +196,7 @@ export default function AdminOrderRow(props) {
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Is user deleted: ${order?.isDeleted ? "Yes" : "No"}`}
+                title={`Is order deleted: ${order?.isDeleted ? "Yes" : "No"}`}
                 arrow
               >
                 <OrderInfoText>
@@ -203,17 +214,32 @@ export default function AdminOrderRow(props) {
           </Grid>
         </OrderTableCell>
         <TableCell align="center">
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ display: "flex", alignItems: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
+              <Box>
+                <select
+                  style={StyledSelect}
+                  name="status"
+                  defaultValue={order?.status}
+                >
+                  {orderStatuses?.map((status) => (
+                    <option key={status} value={status.toLowerCase()}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={12} md={3} lg={3}>
               <ActionIconButton
                 onClick={handleSetOpenEditForm}
-                color="warning"
+                color="info"
                 size="small"
               >
-                <Edit />
+                <MoreHoriz />
               </ActionIconButton>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={3} lg={3}>
               {!order?.isDeleted ? (
                 <ActionIconButton
                   onClick={handleSetOpenDeleteForm}
@@ -238,17 +264,14 @@ export default function AdminOrderRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           {
-            /*
-             <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-           <EditUser
-              user={user}
-              applicationRoles={props.applicationRoles}
-              updateOrder={updateOrder}
-            />
-          </Collapse>
-            */
+            <Collapse in={openEditForm} timeout="auto" unmountOnExit>
+              <EditOrder
+                order={order}
+                orderStatuses={props.orderStatuses}
+                updateOrder={updateOrder}
+              />
+            </Collapse>
           }
-        
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
             <DeleteOrder
               order={order}

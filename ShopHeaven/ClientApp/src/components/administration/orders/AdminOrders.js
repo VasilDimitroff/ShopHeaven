@@ -15,7 +15,6 @@ import {
 import { Search, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
-import { StyledSelect } from "../../../styles/styles";
 import Loader from "../../common/Loader";
 import AdminOrderRow from "./AdminOrderRow";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -34,9 +33,10 @@ export default function AdminOrders() {
   //is data loading
   const [isLoading, setIsLoading] = useState(false);
 
-  //orders array
+  //orders array adn orderStatuses
   const [orders, setOrders] = useState();
-  // all roles in the app
+
+  // order statuses
   const [orderStatuses, setOrderStatuses] = useState([]);
 
   //timer for delay request
@@ -58,7 +58,8 @@ export default function AdminOrders() {
 
   // searchTerm and filter criteria refs for input
   const searchInputRef = useRef();
-  // by what to searc => username, product name..???
+
+  // by what to searc => username, product name,  ..???
   const propertySearchRef = useRef();
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export default function AdminOrders() {
         console.log("ORDER REQUEST ", pagingModel);
 
         const response = await axiosPrivate.post(
-          ApiEndpoints.users.getAll,
+          ApiEndpoints.orders.getAll,
           pagingModel,
           {
             signal: controller.signal,
@@ -172,6 +173,16 @@ export default function AdminOrders() {
     },
   });
 
+  const StyledSelect = {
+    cursor: "pointer",
+    width: "100%",
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    border: "1px solid #C6BFBE",
+    textTransform: "uppercase",
+    fontSize: 14,
+  };
+
   const StyledSearchIcon = styled(Search)({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
@@ -206,7 +217,7 @@ export default function AdminOrders() {
               ref={searchInputRef}
               onChange={onSearchUser}
               defaultValue={searchTerm}
-              placeholder="Search user by name or email..."
+              placeholder="Search order by recipient, username, email, product or status..."
             />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
@@ -218,10 +229,16 @@ export default function AdminOrders() {
               ref={propertySearchRef}
               name="filter"
             >
-              <option value="">{"--- EMAIL, USERNAME, PRODUCT, ALL STATUSES ---"}</option>
-              <option value="email">EMAIL & USERNAME</option>
-              <option value="username">PRODUCT NAME</option>
-              <option value="All_STATUSES">PENDING</option>
+              <option value="">{"--- FILTER BY ---"}</option>
+              <option value="recipient">RECIPIENT</option>
+              <option value="email">EMAIL</option>
+              <option value="username">USERNAME</option>
+              <option value="product-name">PRODUCT NAME</option>
+              {
+                orderStatuses?.map(status => {
+                  return <option key={status} value={status?.toLowerCase()}>{status}</option>
+                })
+              }
             </select>
           </Grid>
         </Grid>
@@ -254,15 +271,15 @@ export default function AdminOrders() {
           <Table>
             <TableHead>
               <TableRow>
-                <OrderTableCell></OrderTableCell>
-                <OrderTableCell align="center"></OrderTableCell>
+                <OrderTableCell>ORDER ID</OrderTableCell>
+                <OrderTableCell align="left"></OrderTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {orders?.map((order) => {
                 return (
                   <AdminOrderRow
-                    key={order.id}
+                    key={order?.id}
                     orderStatuses={orderStatuses}
                     order={order}
                   />

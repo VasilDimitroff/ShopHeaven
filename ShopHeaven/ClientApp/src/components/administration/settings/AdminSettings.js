@@ -1,6 +1,6 @@
 import { React, Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Button, Paper, Zoom, Divider, Chip, Alert } from "@mui/material";
+import { Box, Button, Paper, Zoom, Divider, Chip, Alert, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   loginPath,
@@ -13,7 +13,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 
 export default function AdminSettings() {
-  const {setAppSettings} = useAppSettings();
+  const { setAppSettings, appSettings } = useAppSettings();
 
   const [currencies, setCurrencies] = useState([]);
   const [appCurrencyId, setAppCurrencyId] = useState();
@@ -52,7 +52,6 @@ export default function AdminSettings() {
         setAppCurrencyId(currentAppCurrencyId);
 
         setIsLoading(false);
-        console.log("RESPONSE: ", response?.data);
       } catch (error) {
         console.log(error);
         navigate({ loginPath }, { state: { from: location }, replace: true });
@@ -126,18 +125,18 @@ export default function AdminSettings() {
     }
   }
 
-  function clearResponseMessage(){
+  function clearResponseMessage() {
     setCurrencyResponseMessage("");
   }
 
-  function clearErrorMessage(){
+  function clearErrorMessage() {
     setCurrencyErrorMessage("");
   }
 
   const StyledSelect = {
     cursor: "pointer",
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(2.18,1),
+    padding: theme.spacing(2.18, 1),
     border: "1px solid #C6BFBE",
     textTransform: "uppercase",
     fontSize: 14,
@@ -164,6 +163,7 @@ export default function AdminSettings() {
           />
         </Divider>
         <Box>
+          <Typography sx={{textAlign: "center", mb: 3}}>Now current currency of the application is {appSettings.appCurrency.name} ({appSettings.appCurrency.code})</Typography>
           <InputBox>
             <form onSubmit={onChangeAppCurrency}>
               <select
@@ -195,7 +195,7 @@ export default function AdminSettings() {
             )}
             {currencyResponseMessage ? (
               <Zoom in={currencyResponseMessage.length > 0 ? true : false}>
-                <Alert onClose={clearResponseMessage} variant="filled" severity="success">
+                <Alert onClose={clearResponseMessage} severity="success">
                   {currencyResponseMessage}
                 </Alert>
               </Zoom>
