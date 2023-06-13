@@ -151,7 +151,7 @@ namespace ShopHeaven.Data.Services
                 Address = model.Address.Trim(),
                 Details = model.Details.Trim(),
                 ShippingMethod = shippingMethod,
-                CouponId = model.CouponId,
+                CouponId = model.CouponId.Trim() != string.Empty ? model.CouponId : null,
                 CreatedById = model.UserId,
                 TotalPriceWithNoDiscount = orderSummary.TotalPriceWithNoDiscount,
                 TotalPriceWithDiscount = orderSummary.TotalPriceWithDiscountOfProducts,
@@ -262,12 +262,12 @@ namespace ShopHeaven.Data.Services
 
         private async Task<Models.Coupon> PrepareCouponAsync(string couponId)
         {
-            var coupon = new Data.Models.Coupon();
-
-            if (couponId != null)
+            if (couponId == null || couponId.Trim() == "")
             {
-                coupon = await this.couponsService.GetCouponByIdAsync(couponId);
+                return new Data.Models.Coupon();
             }
+
+            var coupon = await this.couponsService.GetCouponByIdAsync(couponId);
 
             return coupon;
         }

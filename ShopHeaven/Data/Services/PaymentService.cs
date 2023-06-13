@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
+using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
+using ShopHeaven.Models.Responses.ShippingMethods;
 using Stripe;
 using Stripe.Checkout;
 
@@ -22,12 +24,29 @@ namespace ShopHeaven.Data.Services
             this.cartsService = cartsService;
         }
 
-        public async Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, string appCurrencyCode)
+        public async Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, ShippingMethod shippingMethod, string appCurrencyCode)
         {
             totalAmount = Math.Round(totalAmount, 2);
+            var shippingAmount = Math.Round(shippingMethod.ShippingAmount, 2);
 
             var options = new SessionCreateOptions
             {
+                ShippingOptions = new List<SessionShippingOptionOptions>
+                {
+                    new SessionShippingOptionOptions
+                    {
+                        ShippingRateData = new SessionShippingOptionShippingRateDataOptions
+                        {
+                            FixedAmount = new SessionShippingOptionShippingRateDataFixedAmountOptions
+                            {
+                                Amount = (long)shippingAmount * 100,
+                                Currency = appCurrencyCode.ToLower()
+                            },
+                            DisplayName = shippingMethod.Name,
+                            Type = "fixed_amount",
+                        },
+                    },
+                },
                 LineItems = new List<SessionLineItemOptions>
                 {
                     new SessionLineItemOptions
@@ -39,7 +58,7 @@ namespace ShopHeaven.Data.Services
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = $"{GlobalConstants.SystemName} purchase",
-                            },                          
+                            },
                         },
                         Quantity = 1,
                     },
@@ -86,6 +105,11 @@ namespace ShopHeaven.Data.Services
 
                 // empty cart
                 await this.cartsService.EmptyCartAsync(createOrderRequestModel.CartId);
+            }
+
+            else if (stripeEvent.Type == Events.ChargeFailed)
+            {
+
             }
         }
 
