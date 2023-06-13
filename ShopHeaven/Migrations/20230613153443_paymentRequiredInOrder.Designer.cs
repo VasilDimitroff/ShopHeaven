@@ -12,8 +12,8 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20230613130101_PaymentIsRequiredInOrderModel")]
-    partial class PaymentIsRequiredInOrderModel
+    [Migration("20230613153443_paymentRequiredInOrder")]
+    partial class paymentRequiredInOrder
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
