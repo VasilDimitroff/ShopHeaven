@@ -106,12 +106,12 @@ namespace ShopHeaven.Data.Services
 
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
-                // create order
+                
+                //create request model by stripe session data
                 var createOrderRequestModel = CreateOrderRequestModelFromStripeSessionResponse(session.Metadata);
-                var order = await this.ordersService.RegisterOrderAsync(createOrderRequestModel);
 
-                //set paymentSession success to true
-                await this.paymentSessionsService.ChangePaymentSessionStatusAsync(session.Id, true);
+                // create order, create OrderProducts, create payment and update paymentSession status
+                var order = await this.ordersService.RegisterOrderAsync(createOrderRequestModel, session.Id);
 
                 //reduce quantity of ordered products
                 await this.ordersService.ReduceQuantityOfProductsAsync(order.Id);
@@ -123,7 +123,7 @@ namespace ShopHeaven.Data.Services
             else if (stripeEvent.Type == Events.ChargeFailed)
             {
                 //set paymentSession success to false
-                await this.paymentSessionsService.ChangePaymentSessionStatusAsync(session.Id, false);
+                await this.paymentSessionsService.UpdatePaymentSessionAsync(session.Id, false, null);
             }
         }
 

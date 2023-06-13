@@ -22,6 +22,11 @@ namespace ShopHeaven.Data.Models
         [InverseProperty("PaymentSessions")]
         public User CreatedBy { get; set; }
 
+        public string? PaymentId { get; set; }
+
+        [ForeignKey(nameof(PaymentId))]
+        public Payment? Payment { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }

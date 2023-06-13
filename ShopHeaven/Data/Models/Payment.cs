@@ -15,6 +15,10 @@ namespace ShopHeaven.Data.Models
 
         public decimal Amount { get; set; }
 
+        public string? PaymentSessionId { get; set; }
+
+        public PaymentSession? PaymentSession { get; set; }
+
         public PaymentMethod PaymentMethod { get; set; }
     }
 }

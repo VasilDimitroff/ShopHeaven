@@ -9,18 +9,21 @@ namespace ShopHeaven.Data.Services
     public class OrdersService : IOrdersService
     {
         private readonly ShopDbContext db;
+        private readonly IPaymentSessionsService paymentSessionsService;
         private readonly ICartsService cartsService;
         private readonly IUsersService usersService;
         private readonly ICouponsService couponsService;
         private readonly IShippingService shippingService;
 
         public OrdersService(ShopDbContext db,
+            IPaymentSessionsService paymentSessionsService,
             ICartsService cartsService,
             IUsersService usersService,
             ICouponsService couponsService,
             IShippingService shippingService)
         {
             this.db = db;
+            this.paymentSessionsService = paymentSessionsService;
             this.cartsService = cartsService;
             this.usersService = usersService;
             this.couponsService = couponsService;
@@ -72,7 +75,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<Order> RegisterOrderAsync(CreateOrderRequestModel model)
+        public async Task<Order> RegisterOrderAsync(CreateOrderRequestModel model, string sessionId)
         {
             var user = await this.usersService.GetUserAsync(model.UserId);
 
@@ -90,7 +93,9 @@ namespace ShopHeaven.Data.Services
 
             var orderSummary = this.GetOrderSummary(cart, coupon, shippingMethod);
 
-            var order = await CreateOrderAsync(model, shippingMethod, cartProducts, orderSummary);
+            var order = await CreateOrderAsync(model, shippingMethod, cartProducts, orderSummary, sessionId);
+
+            await this.paymentSessionsService.UpdatePaymentSessionAsync(sessionId, true, order.PaymentId);
 
             return order;
         }
@@ -140,7 +145,7 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        private async Task<Order> CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)
+        private async Task<Order> CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary, string sessionId)
         {
             var newOrder = new Order
             {
@@ -162,7 +167,7 @@ namespace ShopHeaven.Data.Services
             await CreateOrderProductsAsync(cartProducts, newOrder);
 
             var orderPayment = await this
-                .CreatePaymentAsync(newOrder, model.PaymentMethod.Trim());
+                .CreatePaymentAsync(newOrder, model.PaymentMethod.Trim(), sessionId);
 
             newOrder.PaymentId = orderPayment.Id;
 
@@ -236,7 +241,7 @@ namespace ShopHeaven.Data.Services
             };
         }
 
-        private async Task<Payment> CreatePaymentAsync(Order order, string paymentMethod)
+        private async Task<Payment> CreatePaymentAsync(Order order, string paymentMethod, string paymentSessionId)
         {
             if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
 
@@ -244,6 +249,7 @@ namespace ShopHeaven.Data.Services
             {
                 OrderId = order.Id,
                 Amount = order.TotalPriceWithDiscountCouponAndShippingTax,
+                PaymentSessionId = paymentSessionId,
                 PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
             };
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613145722_foreignKeyInPaymentCanBenullNew")]
+    partial class foreignKeyInPaymentCanBenullNew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -607,12 +610,16 @@ namespace ShopHeaven.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentSessionId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId")
                         .IsUnique();
+
+                    b.HasIndex("PaymentSessionId")
+                        .IsUnique()
+                        .HasFilter("[PaymentSessionId] IS NOT NULL");
 
                     b.ToTable("Payments");
                 });
@@ -639,15 +646,11 @@ namespace ShopHeaven.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("PaymentId")
-                        .IsUnique()
-                        .HasFilter("[PaymentId] IS NOT NULL");
 
                     b.ToTable("PaymentSessions");
                 });
@@ -1340,7 +1343,14 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopHeaven.Data.Models.PaymentSession", "PaymentSession")
+                        .WithOne("Payment")
+                        .HasForeignKey("ShopHeaven.Data.Models.Payment", "PaymentSessionId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Order");
+
+                    b.Navigation("PaymentSession");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.PaymentSession", b =>
@@ -1351,13 +1361,7 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShopHeaven.Data.Models.Payment", "Payment")
-                        .WithOne("PaymentSession")
-                        .HasForeignKey("ShopHeaven.Data.Models.PaymentSession", "PaymentId");
-
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
@@ -1609,9 +1613,9 @@ namespace ShopHeaven.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
+            modelBuilder.Entity("ShopHeaven.Data.Models.PaymentSession", b =>
                 {
-                    b.Navigation("PaymentSession");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>

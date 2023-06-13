@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613143631_attributeAddedInPaymentModel")]
+    partial class attributeAddedInPaymentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -607,12 +610,14 @@ namespace ShopHeaven.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentSessionId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId")
                         .IsUnique();
+
+                    b.HasIndex("PaymentSessionId");
 
                     b.ToTable("Payments");
                 });
@@ -645,9 +650,7 @@ namespace ShopHeaven.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("PaymentId")
-                        .IsUnique()
-                        .HasFilter("[PaymentId] IS NOT NULL");
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("PaymentSessions");
                 });
@@ -1340,7 +1343,13 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopHeaven.Data.Models.PaymentSession", "PaymentSession")
+                        .WithMany()
+                        .HasForeignKey("PaymentSessionId");
+
                     b.Navigation("Order");
+
+                    b.Navigation("PaymentSession");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.PaymentSession", b =>
@@ -1352,8 +1361,8 @@ namespace ShopHeaven.Migrations
                         .IsRequired();
 
                     b.HasOne("ShopHeaven.Data.Models.Payment", "Payment")
-                        .WithOne("PaymentSession")
-                        .HasForeignKey("ShopHeaven.Data.Models.PaymentSession", "PaymentId");
+                        .WithMany()
+                        .HasForeignKey("PaymentId");
 
                     b.Navigation("CreatedBy");
 
@@ -1607,11 +1616,6 @@ namespace ShopHeaven.Migrations
                         .IsRequired();
 
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
-                {
-                    b.Navigation("PaymentSession");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>

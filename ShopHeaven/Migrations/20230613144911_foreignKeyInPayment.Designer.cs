@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613144911_foreignKeyInPayment")]
+    partial class foreignKeyInPayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -607,6 +610,7 @@ namespace ShopHeaven.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentSessionId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1611,7 +1615,8 @@ namespace ShopHeaven.Migrations
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
                 {
-                    b.Navigation("PaymentSession");
+                    b.Navigation("PaymentSession")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
