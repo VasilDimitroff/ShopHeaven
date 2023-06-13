@@ -138,6 +138,8 @@
 
         public const string PaymentMethodIsInvalid = "Payment method is invalid!";
 
+        public const string PaymentSessionNotFound = "Payment session with this Id not found!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

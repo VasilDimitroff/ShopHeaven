@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
-using ShopHeaven.Models.Responses.ShippingMethods;
 using Stripe;
 using Stripe.Checkout;
 
@@ -11,14 +11,17 @@ namespace ShopHeaven.Data.Services
     public class PaymentService : IPaymentService
     {
         private readonly ApplicationSettings applicationSettings;
+        private readonly ShopDbContext db;
         private readonly IOrdersService ordersService;
         private readonly ICartsService cartsService;
 
         public PaymentService(
+            ShopDbContext db,
             IOrdersService ordersServce,
             ICartsService cartsService,
             IOptions<ApplicationSettings> applicationSettings)
         {
+            this.db = db;
             this.applicationSettings = applicationSettings.Value;
             this.ordersService = ordersServce;
             this.cartsService = cartsService;
@@ -87,18 +90,24 @@ namespace ShopHeaven.Data.Services
 
             var service = new SessionService();
             Session session = await service.CreateAsync(options);
+
+            await CreatePaymentSessionAsync(session.Id, model.UserId);
+
             return session;
         }
 
         public async Task ProcessPaymentResultAsync(Event stripeEvent)
         {
+            var session = stripeEvent.Data.Object as Session;
+
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
-                var session = stripeEvent.Data.Object as Session;
-
                 // create order
                 var createOrderRequestModel = CreateOrderRequestModelFromStripeSessionResponse(session.Metadata);
                 var order = await this.ordersService.RegisterOrderAsync(createOrderRequestModel);
+
+                //set paymentSession success to true
+                await ChangePaymentSessionStatusAsync(session.Id, true);
 
                 //reduce quantity of ordered products
                 await this.ordersService.ReduceQuantityOfProductsAsync(order.Id);
@@ -109,7 +118,8 @@ namespace ShopHeaven.Data.Services
 
             else if (stripeEvent.Type == Events.ChargeFailed)
             {
-
+                //set paymentSession success to false
+                await ChangePaymentSessionStatusAsync(session.Id, false);
             }
         }
 
@@ -144,6 +154,35 @@ namespace ShopHeaven.Data.Services
             };
 
             return createOrderRequestModel;
+        }
+
+        private async Task CreatePaymentSessionAsync(string id, string userId)
+        {
+            var newPaymentSession = new PaymentSession
+            {
+                Id = id,
+                CreatedById = userId,
+                CreatedOn = DateTime.UtcNow,
+                IsSuccessful = false,
+            };
+
+            await this.db.PaymentSessions.AddAsync(newPaymentSession);
+
+            await this.db.SaveChangesAsync();
+        }
+
+        private async Task ChangePaymentSessionStatusAsync(string id, bool isSuccessfull)
+        {
+            var paymentSession = await this.db.PaymentSessions.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
+
+            if (paymentSession == null)
+            {
+                throw new ArgumentException(GlobalConstants.PaymentSessionNotFound);
+            }
+
+            paymentSession.IsSuccessful = isSuccessfull;
+
+            await this.db.SaveChangesAsync();
         }
 
     }

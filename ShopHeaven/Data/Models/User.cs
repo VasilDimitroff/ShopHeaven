@@ -17,6 +17,7 @@ namespace ShopHeaven.Data.Models
             SubCategories = new HashSet<SubCategory>();
             Tags = new HashSet<Tag>();
             Orders = new HashSet<Order>();
+            PaymentSessions = new HashSet<PaymentSession>();
         }
 
         [Required]
@@ -63,5 +64,8 @@ namespace ShopHeaven.Data.Models
 
         [InverseProperty("CreatedBy")] 
         public ICollection<Order> Orders { get; set; } // user is created these orders
+
+        [InverseProperty("CreatedBy")]
+        public ICollection<PaymentSession> PaymentSessions { get; set; } // user is created these payment sessions
     }
 }

@@ -59,6 +59,8 @@ namespace ShopHeaven.Data
 
         public DbSet<ProductImage> ProductsImages { get; set; }
 
+        public DbSet<PaymentSession> PaymentSessions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

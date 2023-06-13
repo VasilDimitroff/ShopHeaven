@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopHeaven.Data;
 
@@ -11,9 +12,11 @@ using ShopHeaven.Data;
 namespace ShopHeaven.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613100500_IsCompletedFieldDeletedFromPaymentModel")]
+    partial class IsCompletedFieldDeletedFromPaymentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -611,34 +614,6 @@ namespace ShopHeaven.Migrations
                         .IsUnique();
 
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.PaymentSession", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSuccessful")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.ToTable("PaymentSessions");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
@@ -1332,17 +1307,6 @@ namespace ShopHeaven.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("ShopHeaven.Data.Models.PaymentSession", b =>
-                {
-                    b.HasOne("ShopHeaven.Data.Models.User", "CreatedBy")
-                        .WithMany("PaymentSessions")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-                });
-
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
                 {
                     b.HasOne("ShopHeaven.Data.Models.User", "CreatedBy")
@@ -1630,8 +1594,6 @@ namespace ShopHeaven.Migrations
                     b.Navigation("MainCategories");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("PaymentSessions");
 
                     b.Navigation("Products");
 
