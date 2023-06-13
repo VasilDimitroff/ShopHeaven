@@ -19,12 +19,12 @@ root.render(
       <AuthProvider>
         <UserProvider>
           <BrowserRouter>
-            <ThemeProvider theme={theme}>
-              <Routes>
-                <Route path="/*" element={<App />} />
-              </Routes>
-            </ThemeProvider>
-          </BrowserRouter>
+              <ThemeProvider theme={theme}>
+                <Routes>
+                  <Route path="/*" element={<App />} />
+                </Routes>
+              </ThemeProvider>
+            </BrowserRouter>
         </UserProvider>
       </AuthProvider>
     </AppSettingsProvider>

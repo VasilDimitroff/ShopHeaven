@@ -32,9 +32,11 @@ export default function Checkout() {
 
   const { auth } = useAuth();
   const { user } = useUser();
-  const navigate = useNavigate();
   const { appSettings } = useAppSettings();
+
   const axiosPrivate = useAxiosPrivate();
+
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -84,8 +86,6 @@ export default function Checkout() {
     if(user.cartProductsCount < 1) {
       navigate(cartPath)
     } 
-
-    window.scroll(0,0);
 
     const getCheckoutRequestData = {
       cartId: auth.cartId,
@@ -192,13 +192,16 @@ export default function Checkout() {
 
       controller.abort();
 
+      localStorage.setItem("paymentSessionId", response?.data?.sessionId);
+      
       const stripeUrl = response.headers['location'];
-      console.log(stripeUrl)
-      window.location.href = stripeUrl
 
-      setCreateOrderErrorMessage("");
+    //  console.log("SESIQTA", response?.data?.sessionId)
 
-      //TODO: Clear global cart products count
+      goToPaymentPage(stripeUrl)
+      
+      //setCreateOrderErrorMessage("");
+
     } catch (error) {
       setCreateOrderResponseMessage("");
 
@@ -209,6 +212,10 @@ export default function Checkout() {
       }
       console.log(error?.message);
     }
+  }
+
+  function goToPaymentPage(url) {
+    window.location.href = url;
   }
 
   function handleSetOrderInfo(order) {

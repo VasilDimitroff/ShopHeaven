@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
+using ShopHeaven.Models.Requests.Payments;
+using ShopHeaven.Models.Responses.Payments;
 using Stripe;
 using Stripe.Checkout;
 
@@ -45,11 +47,10 @@ namespace ShopHeaven.Controllers
                 Session session = await this.paymentService.CreateSessionAsync(model, orderInfo.TotalPriceWithAllDiscounts, shippingMethod, appCurrency.Code);
                 Response.Headers.Add("Location", session.Url);
 
-                return Ok(303);
+                return Ok(new { sessionId = session.Id });
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
 
@@ -74,6 +75,21 @@ namespace ShopHeaven.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost, Route(nameof(GetPaymentSession))]
+        public async Task<ActionResult<PaymentSessionResponseModel>> GetPaymentSession(PaymentSessionRequestModel model)
+        {
+            try
+            {
+                var paymentSession = await this.paymentService.GetPaymentSessionAsync(model.Id);
+                return Ok(paymentSession);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }

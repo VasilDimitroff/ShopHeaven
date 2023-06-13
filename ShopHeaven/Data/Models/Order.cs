@@ -50,9 +50,9 @@ namespace ShopHeaven.Data.Models
 
         public ShippingMethod ShippingMethod { get; set; }
 
-        public string? PaymentId { get; set; }
+        public string PaymentId { get; set; }
 
-        public Payment? Payment { get; set; }
+        public Payment Payment { get; set; }
 
         public string CreatedById { get; set; }
 

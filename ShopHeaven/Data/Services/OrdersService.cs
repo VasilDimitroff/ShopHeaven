@@ -162,7 +162,7 @@ namespace ShopHeaven.Data.Services
             await CreateOrderProductsAsync(cartProducts, newOrder);
 
             var orderPayment = await this
-                .CreatePaymentAsync(newOrder.Id, newOrder.TotalPriceWithDiscountCouponAndShippingTax, model.PaymentMethod.Trim());
+                .CreatePaymentAsync(newOrder, model.PaymentMethod.Trim());
 
             newOrder.PaymentId = orderPayment.Id;
 
@@ -236,14 +236,14 @@ namespace ShopHeaven.Data.Services
             };
         }
 
-        private async Task<Payment> CreatePaymentAsync(string orderId, decimal amount, string paymentMethod)
+        private async Task<Payment> CreatePaymentAsync(Order order, string paymentMethod)
         {
             if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
 
             var orderPayment = new Payment
             {
-                OrderId = orderId,
-                Amount = amount,
+                OrderId = order.Id,
+                Amount = order.TotalPriceWithDiscountCouponAndShippingTax,
                 PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
             };
 
