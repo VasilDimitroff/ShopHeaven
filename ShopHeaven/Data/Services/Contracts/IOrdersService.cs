@@ -8,7 +8,7 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<CheckoutResponseModel> GetCheckoutInfoAsync(CheckoutRequestModel model);
 
-        Task<Order> RegisterOrderAsync(CreateOrderRequestModel model, string sessionId);
+        Task<Order> RegisterOrderAsync(CreateOrderRequestModel model);
 
         Task<OrderSummaryResponseModel> GetPaymentInfoAsync(CreateOrderRequestModel model);
 

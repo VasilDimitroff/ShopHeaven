@@ -606,9 +606,6 @@ namespace ShopHeaven.Migrations
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentSessionId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId")
@@ -638,16 +635,9 @@ namespace ShopHeaven.Migrations
                     b.Property<bool>("IsSuccessful")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("PaymentId")
-                        .IsUnique()
-                        .HasFilter("[PaymentId] IS NOT NULL");
 
                     b.ToTable("PaymentSessions");
                 });
@@ -1351,13 +1341,7 @@ namespace ShopHeaven.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShopHeaven.Data.Models.Payment", "Payment")
-                        .WithOne("PaymentSession")
-                        .HasForeignKey("ShopHeaven.Data.Models.PaymentSession", "PaymentId");
-
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>
@@ -1607,11 +1591,6 @@ namespace ShopHeaven.Migrations
                         .IsRequired();
 
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ShopHeaven.Data.Models.Payment", b =>
-                {
-                    b.Navigation("PaymentSession");
                 });
 
             modelBuilder.Entity("ShopHeaven.Data.Models.Product", b =>

@@ -28,11 +28,9 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        public async Task UpdatePaymentSessionAsync(string id, bool isSuccessfull, string paymentId)
+        public async Task ChangePaymentSessionStatusAsync(string id, bool isSuccessfull)
         {
-            var paymentSession = await this.db.PaymentSessions
-                .Include(x => x.Payment)
-                .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
+            var paymentSession = await this.db.PaymentSessions.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
 
             if (paymentSession == null)
             {
@@ -40,7 +38,6 @@ namespace ShopHeaven.Data.Services
             }
 
             paymentSession.IsSuccessful = isSuccessfull;
-            paymentSession.PaymentId = paymentId;
 
             await this.db.SaveChangesAsync();
         }

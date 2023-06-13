@@ -6,7 +6,7 @@ namespace ShopHeaven.Data.Services.Contracts
     {
         Task<PaymentSessionResponseModel> GetPaymentSessionAsync(string id);
 
-        Task UpdatePaymentSessionAsync(string id, bool isSuccessfull, string paymentId);
+        Task ChangePaymentSessionStatusAsync(string id, bool isSuccessfull);
 
         Task CreatePaymentSessionAsync(string id, string userId, bool isSuccessful);
     }
