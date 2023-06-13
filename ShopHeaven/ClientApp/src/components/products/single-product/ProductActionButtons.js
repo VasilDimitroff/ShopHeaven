@@ -1,4 +1,4 @@
-import { React, useState, useRef } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   Box,
@@ -58,6 +58,10 @@ export default function ProductActionButtons(props) {
   let [productsQuantity, setProductsQuantity] = useState(1);
 
   const quantityRef = useRef();
+
+  useEffect(() => {
+    setProduct(props.product);
+  }, [props.product]);
 
   function onAddProductToCart() {
     const requestData = {
