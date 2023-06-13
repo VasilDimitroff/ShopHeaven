@@ -15,17 +15,20 @@ namespace ShopHeaven.Data.Services
         private readonly ShopDbContext db;
         private readonly IOrdersService ordersService;
         private readonly ICartsService cartsService;
+        private readonly IPaymentSessionsService paymentSessionsService;
 
         public PaymentService(
             ShopDbContext db,
             IOrdersService ordersServce,
             ICartsService cartsService,
+            IPaymentSessionsService paymentSessionsService,
             IOptions<ApplicationSettings> applicationSettings)
         {
             this.db = db;
             this.applicationSettings = applicationSettings.Value;
             this.ordersService = ordersServce;
             this.cartsService = cartsService;
+            this.paymentSessionsService = paymentSessionsService;
         }
 
         public async Task<Session> CreateSessionAsync(CreateOrderRequestModel model, decimal totalAmount, ShippingMethod shippingMethod, string appCurrencyCode)
@@ -92,7 +95,7 @@ namespace ShopHeaven.Data.Services
             var service = new SessionService();
             Session session = await service.CreateAsync(options);
 
-            await CreatePaymentSessionAsync(session.Id, model.UserId, false);
+            await this.paymentSessionsService.CreatePaymentSessionAsync(session.Id, model.UserId, false);
 
             return session;
         }
@@ -108,7 +111,7 @@ namespace ShopHeaven.Data.Services
                 var order = await this.ordersService.RegisterOrderAsync(createOrderRequestModel);
 
                 //set paymentSession success to true
-                await ChangePaymentSessionStatusAsync(session.Id, true);
+                await this.paymentSessionsService.ChangePaymentSessionStatusAsync(session.Id, true);
 
                 //reduce quantity of ordered products
                 await this.ordersService.ReduceQuantityOfProductsAsync(order.Id);
@@ -120,7 +123,7 @@ namespace ShopHeaven.Data.Services
             else if (stripeEvent.Type == Events.ChargeFailed)
             {
                 //set paymentSession success to false
-                await ChangePaymentSessionStatusAsync(session.Id, false);
+                await this.paymentSessionsService.ChangePaymentSessionStatusAsync(session.Id, false);
             }
         }
 
@@ -156,53 +159,5 @@ namespace ShopHeaven.Data.Services
 
             return createOrderRequestModel;
         }
-
-        private async Task CreatePaymentSessionAsync(string id, string userId, bool isSuccessful)
-        {
-            var newPaymentSession = new PaymentSession
-            {
-                Id = id,
-                CreatedById = userId,
-                IsSuccessful = isSuccessful,
-            };
-
-            await this.db.PaymentSessions.AddAsync(newPaymentSession);
-
-            await this.db.SaveChangesAsync();
-        }
-
-        private async Task ChangePaymentSessionStatusAsync(string id, bool isSuccessfull)
-        {
-            var paymentSession = await this.db.PaymentSessions.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
-
-            if (paymentSession == null)
-            {
-                throw new ArgumentException(GlobalConstants.PaymentSessionNotFound);
-            }
-
-            paymentSession.IsSuccessful = isSuccessfull;
-
-            await this.db.SaveChangesAsync();
-        }
-
-        public async Task<PaymentSessionResponseModel> GetPaymentSessionAsync(string id)
-        {
-            var paymentSession = await this.db.PaymentSessions.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
-
-            if (paymentSession == null)
-            {
-                throw new ArgumentException(GlobalConstants.PaymentSessionNotFound);
-            }
-
-            var paymentSessionResponseModel = new PaymentSessionResponseModel
-            {
-                Id = paymentSession.Id,
-                CreatedOn = paymentSession.CreatedOn.ToString(),
-                IsSuccessful = paymentSession.IsSuccessful,
-            };
-
-            return paymentSessionResponseModel;
-        }
-
     }
 }

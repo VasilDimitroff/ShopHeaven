@@ -18,6 +18,7 @@ namespace ShopHeaven.Controllers
         private readonly ICurrencyService currencyService;
         private readonly IOrdersService ordersService;
         private readonly IShippingService shippingService;
+        private readonly IPaymentSessionsService paymentSessionsService;
         private readonly StripeSettings stripeSettings;
 
         public PaymentsController(
@@ -25,6 +26,7 @@ namespace ShopHeaven.Controllers
             ICurrencyService currencyService,
             IOrdersService ordersService,
             IShippingService shippingService,
+            IPaymentSessionsService paymentSessionsService,
             IOptions<StripeSettings> stripeSettings)
         {
             this.stripeSettings = stripeSettings.Value;
@@ -32,6 +34,7 @@ namespace ShopHeaven.Controllers
             this.currencyService = currencyService;
             this.ordersService = ordersService;
             this.shippingService = shippingService;
+            this.paymentSessionsService = paymentSessionsService;
         }
 
         [HttpPost, Route(nameof(CreateCheckoutSession))]
@@ -82,7 +85,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var paymentSession = await this.paymentService.GetPaymentSessionAsync(model.Id);
+                var paymentSession = await this.paymentSessionsService.GetPaymentSessionAsync(model.Id);
                 return Ok(paymentSession);
             }
             catch (Exception ex)

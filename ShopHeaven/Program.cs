@@ -87,6 +87,7 @@ builder.Services.AddTransient<ICouponsService, CouponsService>();
 builder.Services.AddTransient<IOrdersService, OrdersService>();
 builder.Services.AddTransient<IShippingService, ShippingService>();
 builder.Services.AddTransient<IPaymentService, PaymentService>();
+builder.Services.AddTransient<IPaymentSessionsService, PaymentSessionsService>();
 
 builder.Services.AddHttpContextAccessor();
 
