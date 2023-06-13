@@ -2,7 +2,11 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Orders;
+using ShopHeaven.Models.Responses.Coupons;
 using ShopHeaven.Models.Responses.Orders;
+using ShopHeaven.Models.Responses.Payments;
+using ShopHeaven.Models.Responses.ProductOrders;
+using ShopHeaven.Models.Responses.ShippingMethods;
 
 namespace ShopHeaven.Data.Services
 {
@@ -140,6 +144,69 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
+        public ICollection<string> GetOrderStatuses()
+        {
+            var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.PaymentMethod));
+            return orderStatuses;
+        }
+
+        public async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model)
+        {
+            var orders = await this.db.Orders
+                .Where(x => x.IsDeleted != true)
+                .Select(x => new OrderResponseModel
+                {
+                    Id = x.Id,
+                    Recipient = x.Recipient,
+                    Phone = x.Phone,
+                    Country = x.Country,
+                    City = x.City,
+                    Address = x.Address,
+                    Details = x.Details,
+                    CreatedBy = x.CreatedBy.Email,
+                    Status = x.Status.ToString(),
+                    CreatedOn = x.CreatedOn.ToString(),
+                    TotalPriceWithDiscount = x.TotalPriceWithDiscount,
+                    TotalPriceWithNoDiscount = x.TotalPriceWithNoDiscount,
+                    TotalPriceWithDiscountAndCoupon = x.TotalPriceWithDiscountAndCoupon,
+                    TotalPriceWithDiscountCouponAndShippingTax = x.TotalPriceWithDiscountCouponAndShippingTax,
+                    Payment = new PaymentResponseModel
+                    {
+                        Id = x.Payment.Id,
+                        Amount = x.Payment.Amount,
+                        IsCompleted = x.Payment.IsCompleted,
+                        PaymentMethod = x.Payment.PaymentMethod.ToString(),
+                    },
+                    ShippingMethod = new ShippingMethodResponseModel
+                    {
+                        Id = x.ShippingMethod.Id,
+                        Name = x.ShippingMethod.Name,
+                        Amount = x.ShippingMethod.ShippingAmount
+                    },
+                    Coupon = x.Coupon != null 
+                            ? new CouponBaseResponseModel
+                            {
+                                Code = x.Coupon.Code,
+                                Amount = x.Coupon.Amount,
+                            }
+                            : null,
+                    Products = x.Products
+                        .Where(p => p.IsDeleted != true)
+                        .Select(p => new ProductOrderResponseModel
+                        {
+                            Id = p.Id,
+                            Discount = p.Product.Discount,
+                            Name = p.Product.Name,
+                            Quantity = p.Product.Quantity,
+                            Price = p.Product.Price
+                        })
+                        .ToList(),         
+                })
+                .ToListAsync();
+
+            return orders;
+        }
+
         private async Task<Order> CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)
         {
             var newOrder = new Order
@@ -162,7 +229,7 @@ namespace ShopHeaven.Data.Services
             await CreateOrderProductsAsync(cartProducts, newOrder);
 
             var orderPayment = await this
-                .CreatePaymentAsync(newOrder, model.PaymentMethod.Trim());
+                .CreatePaymentAsync(newOrder, model.PaymentMethod.Trim(), true);
 
             newOrder.PaymentId = orderPayment.Id;
 
@@ -236,13 +303,14 @@ namespace ShopHeaven.Data.Services
             };
         }
 
-        private async Task<Payment> CreatePaymentAsync(Order order, string paymentMethod)
+        private async Task<Payment> CreatePaymentAsync(Order order, string paymentMethod, bool isCompleted)
         {
             if (!ValidatePaymentMethod(paymentMethod.Trim())) { throw new ArgumentException(GlobalConstants.PaymentMethodIsInvalid); }
 
             var orderPayment = new Payment
             {
                 OrderId = order.Id,
+                IsCompleted = isCompleted,
                 Amount = order.TotalPriceWithDiscountCouponAndShippingTax,
                 PaymentMethod = (Models.Enums.PaymentMethod)Enum.Parse(typeof(Models.Enums.PaymentMethod), paymentMethod),
             };

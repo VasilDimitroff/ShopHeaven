@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ShopHeaven.Data.Models;
-using ShopHeaven.Data.Models.Common;
-using System.Linq.Expressions;
 
 namespace ShopHeaven.Data
 {

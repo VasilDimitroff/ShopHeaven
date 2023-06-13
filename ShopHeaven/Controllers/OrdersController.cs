@@ -30,5 +30,29 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Checkout))]
+        public async Task<ActionResult<OrdersAndStatusesResponseModel>> All(OrderPaginationRequestModel model)
+        {
+            try
+            {
+                var orderStatuses = this.ordersService.GetOrderStatuses();
+                var orders = await this.ordersService.GetOrdersAsync(model);
+
+                var responseModel = new OrdersAndStatusesResponseModel
+                {
+                    Orders = orders,
+                    OrderStatuses = orderStatuses,
+                    PagesCount = 10,
+                    OrdersCount = 100
+                };
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

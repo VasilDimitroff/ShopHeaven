@@ -7,6 +7,8 @@ namespace ShopHeaven.Models.Responses.Orders
 {
     public class OrderResponseModel
     {
+        public string Id { get; set; }
+
         public string Recipient { get; set; }
 
         public string Phone { get; set; }
@@ -17,7 +19,7 @@ namespace ShopHeaven.Models.Responses.Orders
 
         public string Address { get; set; }
 
-        public string Details { get; set; }
+        public string? Details { get; set; }
 
         public decimal TotalPriceWithNoDiscount { get; set; }
 
@@ -28,7 +30,7 @@ namespace ShopHeaven.Models.Responses.Orders
         //it is the final price
         public decimal TotalPriceWithDiscountCouponAndShippingTax { get; set; }
 
-        public CouponResponseModel Coupon { get; set; }
+        public CouponBaseResponseModel? Coupon { get; set; }
 
         public string Status { get; set; }
 
