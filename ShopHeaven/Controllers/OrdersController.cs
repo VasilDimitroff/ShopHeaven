@@ -44,5 +44,19 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(ChangeStatus))]
+        public async Task<ActionResult<ChangeOrderStatusResponseModel>> ChangeStatus(ChangeOrderStatusRequestModel model)
+        {
+            try
+            {     
+                var updatedOrder = await this.ordersService.ChangeOrderStatusAsync(model);
+                return Ok(updatedOrder);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

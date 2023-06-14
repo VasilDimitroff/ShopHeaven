@@ -1,7 +1,6 @@
 import { React, Fragment, useState, useEffect, useRef } from "react";
 import {
   Box,
-  Button,
   TableRow,
   TableCell,
   Table,
@@ -55,6 +54,9 @@ export default function AdminOrders() {
   //error message
   const [errorMessage, setErrorMessage] = useState("");
 
+  //status message for child component
+  const [isStatusUpdated, setIsStatusUpdated] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -68,6 +70,10 @@ export default function AdminOrders() {
 
   // by what status to search => processing, delivered,  ..???
   const statusSearchRef = useRef();
+
+  function handleOrderStatusUpdated() {
+    setIsStatusUpdated(true);
+  }
 
   useEffect(() => {
     let timeoutId;
@@ -95,6 +101,7 @@ export default function AdminOrders() {
             signal: controller.signal,
           }
         );
+
         console.log(response.data);
         setOrders(response?.data?.orders);
         setOrderStatuses(response?.data?.orderStatuses);
@@ -105,6 +112,8 @@ export default function AdminOrders() {
           setPage(1);
         }
 
+
+        setIsStatusUpdated(false);
         setIsLoading(false);
       } catch (error) {
         console.log("ERROR: " + error);
@@ -125,16 +134,16 @@ export default function AdminOrders() {
 
     return () => {
       controller.abort();
-      effectRun.current = true; 
+      effectRun.current = true;
       clearTimeout(timeoutId);
       setTimer(0);
     };
-  }, [page, searchTerm, searchOrderProperty, statusSearch]);
+  }, [page, searchTerm, searchOrderProperty, statusSearch, isStatusUpdated]);
 
-  
+
   useEffect(() => {
     setPage(1);
-  }, [searchTerm,searchOrderProperty, statusSearch])
+  }, [searchTerm, searchOrderProperty, statusSearch, isStatusUpdated])
 
   function onSearchOrder(e) {
     e.preventDefault();
@@ -241,7 +250,7 @@ export default function AdminOrders() {
               ref={searchInputRef}
               onChange={onSearchOrder}
               defaultValue={searchTerm}
-              placeholder="Enter search term and select filter type..."
+              placeholder="Enter search term and select filter..."
             />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
@@ -268,27 +277,26 @@ export default function AdminOrders() {
               ref={statusSearchRef}
               name="filter"
             >
-              <option value="">{"--- ORDER STATUS ---"}</option> 
+              <option value="">{"--- ORDER STATUS ---"}</option>
               {
                 orderStatuses?.map(status => {
                   return <option key={status} value={status}>{status}</option>
                 })
-              } 
+              }
             </select>
           </Grid>
         </Grid>
       </form>
-
       {
         errorMessage ?
-         <Alert severity="error" variant="filled" sx={{ mt: 1 }}>
-         {errorMessage}
-        </Alert>
+          <Alert severity="error" variant="filled" sx={{ mt: 1 }}>
+            {errorMessage}
+          </Alert>
 
-        : <></>
+          : <></>
       }
 
-      {((searchTerm && searchOrderProperty) || statusSearch)  && !errorMessage ? (
+      {((searchTerm && searchOrderProperty) || statusSearch) && !errorMessage ? (
         <Alert severity="info" sx={{ mt: 1 }}>
           <Typography>
             <b>{totalOrdersCount} results</b> for{" "}
@@ -302,7 +310,7 @@ export default function AdminOrders() {
               <></>
             )}
 
-          {statusSearch ? (
+            {statusSearch ? (
               <Fragment>
                 {" "}
                 with status <b>{statusSearch}</b>
@@ -310,8 +318,8 @@ export default function AdminOrders() {
             ) : (
               <></>
             )}
-            
-            
+
+
             {" "}
             - (<b>Page {page}</b>)
           </Typography>
@@ -336,6 +344,7 @@ export default function AdminOrders() {
               {orders?.map((order) => {
                 return (
                   <AdminOrderRow
+                    handleOrderStatusUpdated={handleOrderStatusUpdated}
                     key={order?.id}
                     orderStatuses={orderStatuses}
                     order={order}

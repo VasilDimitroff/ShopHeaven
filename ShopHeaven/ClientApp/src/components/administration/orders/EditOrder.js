@@ -1,69 +1,24 @@
-import { React, useState, useRef, useEffect } from "react";
+import { React, useState } from "react";
 import {
   Box,
-  Button,
-  Paper,
   Grid,
   Divider,
   Stack,
-  Alert,
-  Zoom,
   Typography,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
-import { ContactMail, Phone, LocalShipping, Flag, LocationCity, LocationOn, Info, Paid, Payment, PriceCheck, Money, ReceiptLong, Discount, LocalOffer, Sell, Subtitles, LocalAtm, Style, Receipt, Person, CalendarMonth, RuleFolder, ShoppingBag, AddShoppingCart } from "@mui/icons-material";
+import { ContactMail, Phone, LocalShipping, Flag, LocationCity, LocationOn, Info, Paid, Payment, PriceCheck, Money, ReceiptLong, LocalOffer, Subtitles, LocalAtm, Style, Receipt, Person, CalendarMonth, RuleFolder, ShoppingBag, AddShoppingCart } from "@mui/icons-material";
 import { theme } from "../../../theme";
-import { HeadingChip, SubheadingChip, InputBox, StyledSelect, UniversalInput, CompleteActionButton, AdminMainWrapper } from "../../../styles/styles";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { ApiEndpoints } from "../../../api/endpoints";
-import {
-  applicationUserRole,
-  noPermissionsForOperationMessage,
-  singleProductBasePath,
-  usernameRequiredLength
-} from "../../../constants";
+import { SubheadingChip, InputBox, AdminMainWrapper } from "../../../styles/styles";
+import { singleProductBasePath } from "../../../constants";
 import useAppSettings from "../../../hooks/useAppSettings";
 import { Link } from "react-router-dom";
 
 export default function EditOrder(props) {
-  // api requests
-  const axiosPrivate = useAxiosPrivate();
-
   //app settings
   const { appSettings } = useAppSettings();
 
   const [order, setOrder] = useState(props.order);
-
-  //dropdown with all order statuses
-  const [orderStatuses, setOrderStatuses] = useState(
-    props.orderStatuses
-  );
-
-  //product editing refs
-  const userNameRef = useRef();
-  const userEmailRef = useRef();
-  const addToRoleRef = useRef();
-  const removeFromRoleRef = useRef();
-
-  //errors
-  const [messages, setMessages] = useState({
-    userNameError: "",
-    userEmailError: "",
-  });
-
-  const [editUserResponseMessage, setEditUserResponseMessage] = useState("");
-  const [editUserErrorMessage, setEditUserErrorMessage] = useState("");
-
-  const [addUserToRoleResponse, setAddUserToRoleResponse] = useState("");
-  const [addUserToRoleErrorMessage, setAddUserToRoleErrorMessage] =
-    useState("");
-
-  const [
-    removeUserFromRoleResponseMessage,
-    setRemoveUserFromRoleResponseMessage,
-  ] = useState("");
-  const [removeUserFromRoleErrorMessage, setRemoveUserFromRoleErrorMessage] =
-    useState("");
 
   function formatDate(date) {
     const minutes = date.substring(14, 16);
@@ -85,13 +40,10 @@ export default function EditOrder(props) {
     fontWeight: 500
   });
 
-  const Section = styled(Stack)({
-    // borderBottom:"1px solid gray",
-    // borderColor: alpha(theme.palette.common.black, 0.15)
-  })
+  const Section = styled(Stack)({})
 
   return (
-    <AdminMainWrapper sx={{ mt: 4 }}>
+    <AdminMainWrapper sx={{ mt: 4, pb: 5 }}>
       <InputBox>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} lg={12}>

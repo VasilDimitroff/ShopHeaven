@@ -10,6 +10,7 @@ using ShopHeaven.Models.Responses.Payments;
 using ShopHeaven.Models.Responses.ProductOrders;
 using ShopHeaven.Models.Responses.ShippingMethods;
 using Stripe;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace ShopHeaven.Data.Services
 {
@@ -163,6 +164,32 @@ namespace ShopHeaven.Data.Services
                 OrderStatuses = orderStatuses,
                 OrdersCount = allFilteredOrdersCount,
                 PagesCount = (int)Math.Ceiling((double)allFilteredOrdersCount / model.RecordsPerPage),
+            };
+
+            return responseModel;
+        }
+
+        public async Task<ChangeOrderStatusResponseModel> ChangeOrderStatusAsync(ChangeOrderStatusRequestModel model)
+        {
+            var order = await this.db.Orders.FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+
+            if (order == null)
+            {
+                throw new ArgumentException(GlobalConstants.OrderNotFound);
+            }
+
+            bool isOrderStatusParsed = Enum.TryParse<OrderStatus>(model.Status.Trim(), out OrderStatus status);
+
+            if (isOrderStatusParsed)
+            {
+                order.Status = status;
+                await this.db.SaveChangesAsync();
+            }
+
+            var responseModel = new ChangeOrderStatusResponseModel
+            {
+                Id = order.Id,
+                Status = order.Status.ToString()
             };
 
             return responseModel;

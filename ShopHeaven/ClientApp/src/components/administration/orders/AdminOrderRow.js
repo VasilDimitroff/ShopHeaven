@@ -1,4 +1,4 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, Fragment, useRef } from "react";
 import {
   TableRow,
   TableCell,
@@ -19,30 +19,92 @@ import EditOrder from "./EditOrder";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
-  Group,
   Event,
   AccountCircle,
   Delete,
   RestoreFromTrash,
-  Info,
   MoreHoriz,
   Paid,
   Person,
 } from "@mui/icons-material";
 import useAppSettings from "../../../hooks/useAppSettings";
 import UndeleteOrder from "./UndeleteOrder";
+import { ApiEndpoints } from "../../../api/endpoints";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { noPermissionsForOperationMessage } from "../../../constants";
 
 export default function AdminOrderRow(props) {
   const { appSettings } = useAppSettings();
+  const axiosPrivate = useAxiosPrivate();
 
   const [order, setOrder] = useState(props.order);
   const [orderStatuses, setOrderStatuses] = useState(props.orderStatuses);
 
+  const [updateStatusResponseMessage, setUpdateStatusResponseMessage] = useState("");
+  const [updateStatusErrorMessage, setUpdateStatusErrorMessage] = useState("");
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openDeleteForm, setOpenDeleteForm] = useState(false);
   const [openUndeleteForm, setOpenUndeleteForm] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const statusRef = useRef();
+
+  function onStatusChanged(e) {
+    e.preventDefault();
+
+    let newStatus = statusRef.current.value;
+
+    if (!newStatus.trim()) {
+      newStatus = "";
+    }
+
+    const requestData = {
+      id: order?.id,
+      status: newStatus
+    };
+
+    changeOrderStatus(requestData);
+  }
+
+  async function changeOrderStatus(requestData) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.orders.changeStatus,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setUpdateStatusResponseMessage("Order " + order?.id + " status changed!");
+      setUpdateStatusErrorMessage("");
+
+      console.log("UPDATE STATUS RESPONSE", response?.data);
+
+      setOrder(prev => {
+        return {
+          ...prev,
+          status: response?.data?.status
+        }
+      });
+      props.handleOrderStatusUpdated();
+    } catch (error) {
+      setUpdateStatusResponseMessage("");
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setUpdateStatusErrorMessage(
+          noPermissionsForOperationMessage
+        );
+      } else {
+        setUpdateStatusErrorMessage(error?.response?.data);
+      }
+      console.log(error.message);
+    }
+  }
 
   function handleSetOpenEditForm() {
     if (order?.isDeleted) {
@@ -80,6 +142,14 @@ export default function AdminOrderRow(props) {
 
   function handleSnackbarClose() {
     setOpenSnackbar((prev) => !prev);
+  }
+
+  function handleCloseSuccessMessageSnackbar() {
+    setUpdateStatusResponseMessage("");
+  }
+
+  function handleCloseErrorMessageSnackbar() {
+    setUpdateStatusErrorMessage("");
   }
 
   function formatDate(date) {
@@ -190,7 +260,7 @@ export default function AdminOrderRow(props) {
                 <OrderInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
-                    icon={<Person/>}
+                    icon={<Person />}
                     variant="outlined"
                     label={`For: ${order?.recipient}`}
                     size="small"
@@ -240,10 +310,12 @@ export default function AdminOrderRow(props) {
         <TableCell align="center">
           <Grid container spacing={5} sx={{ display: "flex", alignItems: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <select
+                  onChange={onStatusChanged}
                   style={StyledSelect}
                   name="status"
+                  ref={statusRef}
                   defaultValue={order?.status}
                 >
                   {orderStatuses?.map((status) => (
@@ -316,6 +388,20 @@ export default function AdminOrderRow(props) {
             message={`${order.email} is deleted! To edit the order, first you should undelete it!`}
             severity="error"
             onClose={handleSnackbarClose}
+          />
+          <Snackbar
+            open={updateStatusErrorMessage.length > 0}
+            autoHideDuration={8000}
+            message={`Order status updating failed!`}
+            severity="error"
+            onClose={handleCloseErrorMessageSnackbar}
+          />
+          <Snackbar
+            open={updateStatusResponseMessage.length > 0}
+            autoHideDuration={8000}
+            message={`Order status updated to ${order?.status}`}
+            severity="error"
+            onClose={handleCloseSuccessMessageSnackbar}
           />
         </TableCell>
       </TableRow>

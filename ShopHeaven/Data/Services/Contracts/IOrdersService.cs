@@ -16,6 +16,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<OrdersAndStatusesResponseModel> GetOrdersWithOrderStatusesAsync(OrderPaginationRequestModel model);
 
+        Task<ChangeOrderStatusResponseModel> ChangeOrderStatusAsync(ChangeOrderStatusRequestModel model);
+
         Task ReduceQuantityOfProductsAsync(string orderId);
     }
 }
