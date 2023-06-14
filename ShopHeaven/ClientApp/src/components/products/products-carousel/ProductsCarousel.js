@@ -7,10 +7,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
-  const [products, setProduct] = useState(props.products)
+  const [products, setProducts] = useState(props.products)
 
   useEffect(()=> {
-    setProduct(props.products)
+    setProducts(props.products)
   }, [props.products])
 
   function SetCardsNumber() {

@@ -42,6 +42,7 @@ export default function Checkout() {
 
   const couponId = queryParams.get("couponId");
 
+  const [firstTimeLoaded, setFirstTimeLoaded] = useState(false);
   const [shippingMethods, setShippingMethods] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [orderSummary, setOrderSummary] = useState();
@@ -108,16 +109,20 @@ export default function Checkout() {
           }
         );
 
-        setOrderInfo(prev => {
-          return {
-            ...prev,
-            recipient: response?.data?.recipient,
-            phone: response?.data?.phone,
-            country: response?.data?.country,
-            city: response?.data?.city,
-            address: response?.data?.address,
-          }
-        });
+        if(!firstTimeLoaded) {
+          setOrderInfo(prev => {
+            return {
+              ...prev,
+              recipient: response?.data?.recipient,
+              phone: response?.data?.phone,
+              country: response?.data?.country,
+              city: response?.data?.city,
+              address: response?.data?.address,
+            }
+          });
+        }
+
+        setFirstTimeLoaded(true);
 
         setOrderSummary(response?.data?.orderSummary);
         setPaymentMethods(response?.data?.paymentMethods);
@@ -195,13 +200,7 @@ export default function Checkout() {
       localStorage.setItem("paymentSessionId", response?.data?.sessionId);
       
       const stripeUrl = response.headers['location'];
-
-    //  console.log("SESIQTA", response?.data?.sessionId)
-
-      goToPaymentPage(stripeUrl)
-      
-      //setCreateOrderErrorMessage("");
-
+      window.location.href = stripeUrl;
     } catch (error) {
       setCreateOrderResponseMessage("");
 
@@ -212,10 +211,6 @@ export default function Checkout() {
       }
       console.log(error?.message);
     }
-  }
-
-  function goToPaymentPage(url) {
-    window.location.href = url;
   }
 
   function handleSetOrderInfo(order) {
@@ -235,13 +230,20 @@ export default function Checkout() {
   }
 
   function handleChangeShippingMethod() {
+
     setOrderInfo(prev => {
       return {
         ...prev,
+        recipient: recipientRef.current.value,
+        phone: phoneRef.current.value,
+        country: countryRef.current.value,
+        city: cityRef.current.value,
+        address: addressRef.current.value,
+        details: detailsRef.current.value,
         shippingMethod: shippingMethodRef.current.value,
-        paymentMethod: paymentMethodRef.current.value
+        paymentMethod: paymentMethodRef.current.value,
       }
-    })
+    });
   }
 
   function validateOrder() {

@@ -6,6 +6,7 @@ import { theme } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
+import { cartPath } from "../../constants";
 
 export default function Success() {
     const axiosPrivate = useAxiosPrivate();
@@ -83,7 +84,7 @@ export default function Success() {
                             <Typography variant="p">Sorry!</Typography>
                         </Box>)
                 }
-                <GoHomeButton onClick={() => navigate("/")} variant="contained">Go to home</GoHomeButton>
+                <GoHomeButton onClick={() => navigate(cartPath)} variant="contained">Go to cart</GoHomeButton>
             </ComponentWrapper>
         </Box>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Rating,
@@ -38,6 +38,11 @@ function ProductCarouselCard(props) {
 
   const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+
+  
+  useEffect(()=> {
+    setProduct(props.product)
+  }, [props.product])
 
   function onAddProductToCart() {
     if (!auth.isLogged) {

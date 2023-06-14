@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
@@ -6,6 +7,10 @@ import { useState } from "react";
 
 function ProductCarouselSlide(props) {
   const [products, setProducts] = useState(props.products);
+
+  useEffect(()=> {
+    setProducts(props.products)
+  }, [props.products])
 
   const SlideWrapper = styled(Box)({
     marginTop: theme.spacing(2.5),
