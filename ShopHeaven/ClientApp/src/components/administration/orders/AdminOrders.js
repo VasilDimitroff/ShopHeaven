@@ -50,6 +50,10 @@ export default function AdminOrders() {
   //searching values
   const [searchTerm, setSearchTerm] = useState("");
   const [searchOrderProperty, setSearchOrderProperty] = useState("");
+  const [statusSearch, setStatusSearch] = useState("");
+
+  //error message
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,6 +65,9 @@ export default function AdminOrders() {
 
   // by what to searc => username, product name,  ..???
   const propertySearchRef = useRef();
+
+  // by what status to search => processing, delivered,  ..???
+  const statusSearchRef = useRef();
 
   useEffect(() => {
     let timeoutId;
@@ -74,6 +81,7 @@ export default function AdminOrders() {
         let pagingModel = {
           recordsPerPage: ordersPerPageInAdminPanel,
           page: page,
+          status: statusSearch.trim(),
           searchTerm: searchTerm.trim(),
           criteria: searchOrderProperty.trim(),
         };
@@ -121,36 +129,52 @@ export default function AdminOrders() {
       clearTimeout(timeoutId);
       setTimer(0);
     };
-  }, [page, searchTerm, searchOrderProperty]);
+  }, [page, searchTerm, searchOrderProperty, statusSearch]);
 
   
   useEffect(() => {
     setPage(1);
-  }, [searchTerm,searchOrderProperty])
+  }, [searchTerm,searchOrderProperty, statusSearch])
 
-  function onSearchUser(e) {
+  function onSearchOrder(e) {
     e.preventDefault();
+
+    setErrorMessage("");
 
     let searchValue = searchInputRef.current.value;
     let propertyToSearch = propertySearchRef.current.value;
+    let statusToSearch = statusSearchRef.current.value;
 
     if (!searchValue.trim()) {
       searchValue = "";
     }
 
-    if (!propertyToSearch.trim()) {
-      propertyToSearch = "";
+    if (!statusToSearch.trim()) {
+      statusToSearch = "";
     }
+
+    if (!propertyToSearch.trim() && searchValue.trim() && !statusToSearch) {
+      propertyToSearch = "";
+      searchValue = "";
+      searchInputRef.current.value = "";
+      setErrorMessage("Please select filter criteria");
+    }
+
     setSearchTerm(searchValue);
     setSearchOrderProperty(propertyToSearch);
+    setStatusSearch(statusToSearch);
     setTimer(requestTimerMilliseconds);
   }
 
   function clearSearchValue() {
     searchInputRef.current.value = "";
     propertySearchRef.current.value = "";
+    statusSearchRef.current.value = "";
+
+    setErrorMessage("");
     setSearchTerm("");
     setSearchOrderProperty("");
+    setStatusSearch("");
     setPage(1);
   }
 
@@ -198,9 +222,9 @@ export default function AdminOrders() {
           <Grid
             item
             xs={12}
-            sm={8}
-            md={9}
-            lg={9}
+            sm={12}
+            md={8}
+            lg={8}
             sx={{ position: "relative" }}
           >
             <StyledSearchIcon />
@@ -215,36 +239,57 @@ export default function AdminOrders() {
                 borderRadius: theme.shape.borderRadius,
               }}
               ref={searchInputRef}
-              onChange={onSearchUser}
+              onChange={onSearchOrder}
               defaultValue={searchTerm}
               placeholder="Enter search term and select filter type..."
             />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
-          <Grid item xs={12} sm={4} md={3} lg={3}>
+          <Grid item xs={6} sm={6} md={2} lg={2}>
             <select
-              onChange={onSearchUser}
+              onChange={onSearchOrder}
               style={StyledSelect}
               defaultValue={searchOrderProperty}
               ref={propertySearchRef}
               name="filter"
             >
-              <option value="">{"--- FILTER BY ---"}</option>
+              <option value="">{"--- SEARCH BY ---"}</option>
               <option value="Recipient">RECIPIENT</option>
-              <option value="Email">EMAIL</option>
-              <option value="Username">USERNAME</option>
+              <option value="Email">CREATOR EMAIL</option>
+              <option value="Username">CREATOR USERNAME</option>
               <option value="ProductName">PRODUCT NAME</option>
+            </select>
+          </Grid>
+          <Grid item xs={6} sm={6} md={2} lg={2}>
+            <select
+              onChange={onSearchOrder}
+              style={StyledSelect}
+              defaultValue={statusSearch}
+              ref={statusSearchRef}
+              name="filter"
+            >
+              <option value="">{"--- ORDER STATUS ---"}</option> 
               {
                 orderStatuses?.map(status => {
                   return <option key={status} value={status}>{status}</option>
                 })
-              }
+              } 
             </select>
           </Grid>
         </Grid>
       </form>
-      {searchTerm || searchOrderProperty ? (
-        <Alert severity="info" variant="filled" sx={{ mt: 1 }}>
+
+      {
+        errorMessage ?
+         <Alert severity="error" variant="filled" sx={{ mt: 1 }}>
+         {errorMessage}
+        </Alert>
+
+        : <></>
+      }
+
+      {((searchTerm && searchOrderProperty) || statusSearch)  && !errorMessage ? (
+        <Alert severity="info" sx={{ mt: 1 }}>
           <Typography>
             <b>{totalOrdersCount} results</b> for{" "}
             <b>"{searchTerm ? searchTerm : <></>}"</b>
@@ -255,7 +300,19 @@ export default function AdminOrders() {
               </Fragment>
             ) : (
               <></>
-            )}{" "}
+            )}
+
+          {statusSearch ? (
+              <Fragment>
+                {" "}
+                with status <b>{statusSearch}</b>
+              </Fragment>
+            ) : (
+              <></>
+            )}
+            
+            
+            {" "}
             - (<b>Page {page}</b>)
           </Typography>
         </Alert>

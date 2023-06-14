@@ -149,21 +149,20 @@ namespace ShopHeaven.Data.Services
 
         public async Task<OrdersAndStatusesResponseModel> GetOrdersWithOrderStatusesAsync(OrderPaginationRequestModel model)
         {
-            OrderSortingCriteria sortingCriteria = ParseSortingCriteria(model.Criteria);
-
             var orderStatuses = this.GetOrderStatuses();
-            var orders = await this.GetOrdersAsync(model, sortingCriteria);
+            var orders = await this.GetOrdersAsync(model);
 
             //get deleted orders too
             IQueryable<Order> allOrders = this.db.Orders.Include(x => x.CreatedBy);
-            var allOrdersCount = FilterBy(allOrders, sortingCriteria, model.SearchTerm.Trim()).Count();
+            allOrders = FilterByCriteria(allOrders, model.Criteria.Trim(), model.SearchTerm.Trim());
+            var allFilteredOrdersCount = await FilterByOrderStatus(allOrders, model.Status.Trim()).CountAsync();
 
             var responseModel = new OrdersAndStatusesResponseModel
             {
                 Orders = orders,
                 OrderStatuses = orderStatuses,
-                OrdersCount = allOrdersCount,
-                PagesCount = (int)Math.Ceiling((double)allOrdersCount / model.RecordsPerPage),
+                OrdersCount = allFilteredOrdersCount,
+                PagesCount = (int)Math.Ceiling((double)allFilteredOrdersCount / model.RecordsPerPage),
             };
 
             return responseModel;
@@ -175,21 +174,16 @@ namespace ShopHeaven.Data.Services
             return orderStatuses;
         }
 
-        private OrderSortingCriteria ParseSortingCriteria(string sortingCriteria)
+        private IQueryable<Order> FilterByCriteria(IQueryable<Order> orders, string sortingCriteria, string searchTerm)
         {
-            bool isSortCriteriaParsed = Enum.TryParse<OrderSortingCriteria>(sortingCriteria.Trim(), out OrderSortingCriteria criteria);
+            bool isSortCriteriaParsed = Enum.TryParse<OrderSortingCriteria>(sortingCriteria, out OrderSortingCriteria criteria);
 
             if (!isSortCriteriaParsed)
             {
-                return OrderSortingCriteria.All;
+                return orders;
             }
 
-            return criteria;
-        }
-
-        private IQueryable<Order> FilterBy(IQueryable<Order> orders, OrderSortingCriteria sortingCriteria, string searchTerm)
-        {
-            switch (sortingCriteria)
+            switch (criteria)
             {
                 case OrderSortingCriteria.Username:
                     return orders.Where(e => e.CreatedBy.UserName.ToLower().Contains(searchTerm.ToLower()));
@@ -199,27 +193,30 @@ namespace ShopHeaven.Data.Services
                     return orders.Where(e => e.Recipient.ToLower().Contains(searchTerm.ToLower()));
                 case OrderSortingCriteria.ProductName:
                     return orders.Where(e => e.Products.Any(p => p.Product.Name.ToLower().Contains(searchTerm.ToLower())));
-                case OrderSortingCriteria.Pending:
-                    return orders.Where(e => e.Status == OrderStatus.Pending);
-                case OrderSortingCriteria.Processing:
-                    return orders.Where(e => e.Status == OrderStatus.Processing);
-                case OrderSortingCriteria.Shipping:
-                    return orders.Where(e => e.Status == OrderStatus.Shipping);
-                case OrderSortingCriteria.Delivered:
-                    return orders.Where(e => e.Status == OrderStatus.Delivered);
-                case OrderSortingCriteria.Cancelled:
-                    return orders.Where(e => e.Status == OrderStatus.Cancelled);
                 default:
                     return orders;
             }
         }
 
-        private async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model, OrderSortingCriteria sortingCriteria)
+        private IQueryable<Order> FilterByOrderStatus(IQueryable<Order> orders, string orderStatus)
+        {
+            bool isOrderStatusParsed = Enum.TryParse<OrderStatus>(orderStatus, out OrderStatus status);
+
+            if (!isOrderStatusParsed)
+            {
+                return orders;
+            }
+
+            return orders.Where(e => e.Status == status);
+        }
+
+        private async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model)
         {
             //get deleted included
             IQueryable<Order> orders = this.db.Orders.Include(x => x.CreatedBy);
 
-            orders = FilterBy(orders, sortingCriteria, model.SearchTerm.Trim());
+            orders = FilterByCriteria(orders, model.Criteria.Trim(), model.SearchTerm.Trim());
+            orders = FilterByOrderStatus(orders, model.Status.Trim());
 
             var filteredOrders = await orders.OrderByDescending(x => x.CreatedOn)
                .Skip((model.Page - 1) * model.RecordsPerPage)
