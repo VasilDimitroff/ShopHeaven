@@ -247,7 +247,7 @@ export default function AdminOrderRow(props) {
                   defaultValue={order?.status}
                 >
                   {orderStatuses?.map((status) => (
-                    <option key={status} value={status.toLowerCase()}>
+                    <option key={status} value={status}>
                       {status}
                     </option>
                   ))}

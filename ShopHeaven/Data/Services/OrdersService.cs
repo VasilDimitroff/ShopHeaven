@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopHeaven.Data.Models;
+using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Responses.Coupons;
 using ShopHeaven.Models.Responses.Orders;
 using ShopHeaven.Models.Responses.Payments;
 using ShopHeaven.Models.Responses.ProductOrders;
 using ShopHeaven.Models.Responses.ShippingMethods;
+using Stripe;
 
 namespace ShopHeaven.Data.Services
 {
@@ -146,18 +149,21 @@ namespace ShopHeaven.Data.Services
 
         public async Task<OrdersAndStatusesResponseModel> GetOrdersWithOrderStatusesAsync(OrderPaginationRequestModel model)
         {
+            OrderSortingCriteria sortingCriteria = ParseSortingCriteria(model.Criteria);
+
             var orderStatuses = this.GetOrderStatuses();
-            var orders = await this.GetOrdersAsync(model);
+            var orders = await this.GetOrdersAsync(model, sortingCriteria);
 
             //get deleted orders too
-            var ordersCount = await this.db.Orders.CountAsync();
+            IQueryable<Order> allOrders = this.db.Orders.Include(x => x.CreatedBy);
+            var allOrdersCount = FilterBy(allOrders, sortingCriteria, model.SearchTerm.Trim()).Count();
 
             var responseModel = new OrdersAndStatusesResponseModel
             {
                 Orders = orders,
                 OrderStatuses = orderStatuses,
-                OrdersCount = ordersCount,
-                PagesCount = (int)Math.Ceiling((double)ordersCount / model.RecordsPerPage),
+                OrdersCount = allOrdersCount,
+                PagesCount = (int)Math.Ceiling((double)allOrdersCount / model.RecordsPerPage),
             };
 
             return responseModel;
@@ -169,62 +175,104 @@ namespace ShopHeaven.Data.Services
             return orderStatuses;
         }
 
-        private async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model)
+        private OrderSortingCriteria ParseSortingCriteria(string sortingCriteria)
         {
-            var orders = await this.db.Orders
-                //.Where(x => x.IsDeleted != true)
-                .OrderByDescending(x => x.CreatedOn)
-                .Skip((model.Page - 1) * model.RecordsPerPage)
-                .Take(model.RecordsPerPage)
-                .Select(x => new OrderResponseModel
-                {
-                    Id = x.Id,
-                    Recipient = x.Recipient,
-                    Phone = x.Phone,
-                    Country = x.Country,
-                    City = x.City,
-                    Address = x.Address,
-                    Details = x.Details,
-                    CreatedBy = x.CreatedBy.Email,
-                    Status = x.Status.ToString(),
-                    CreatedOn = x.CreatedOn.ToString(),
-                    TotalPriceWithDiscount = x.TotalPriceWithDiscount,
-                    TotalPriceWithNoDiscount = x.TotalPriceWithNoDiscount,
-                    TotalPriceWithDiscountAndCoupon = x.TotalPriceWithDiscountAndCoupon,
-                    TotalPriceWithDiscountCouponAndShippingTax = x.TotalPriceWithDiscountCouponAndShippingTax,
-                    Payment = new PaymentResponseModel
-                    {
-                        Id = x.Payment.Id,
-                        Amount = x.Payment.Amount,
-                        IsCompleted = x.Payment.IsCompleted,
-                        PaymentMethod = x.Payment.PaymentMethod.ToString(),
-                    },
-                    ShippingMethod = new ShippingMethodResponseModel
-                    {
-                        Id = x.ShippingMethod.Id,
-                        Name = x.ShippingMethod.Name,
-                        Amount = x.ShippingMethod.ShippingAmount
-                    },
-                    Coupon = x.Coupon != null 
-                            ? new CouponBaseResponseModel
-                            {
-                                Code = x.Coupon.Code,
-                                Amount = x.Coupon.Amount,
-                            }
-                            : null,
-                    Products = x.Products
-                        .Where(p => p.IsDeleted != true)
-                        .Select(p => new ProductOrderResponseModel
-                        {
-                            Id = p.Product.Id,
-                            Name = p.Product.Name,
-                            Quantity = p.Quantity,
-                        })
-                        .ToList(),         
-                })
-                .ToListAsync();
+            bool isSortCriteriaParsed = Enum.TryParse<OrderSortingCriteria>(sortingCriteria.Trim(), out OrderSortingCriteria criteria);
 
-            return orders;
+            if (!isSortCriteriaParsed)
+            {
+                return OrderSortingCriteria.All;
+            }
+
+            return criteria;
+        }
+
+        private IQueryable<Order> FilterBy(IQueryable<Order> orders, OrderSortingCriteria sortingCriteria, string searchTerm)
+        {
+            switch (sortingCriteria)
+            {
+                case OrderSortingCriteria.Username:
+                    return orders.Where(e => e.CreatedBy.UserName.ToLower().Contains(searchTerm.ToLower()));
+                case OrderSortingCriteria.Email:
+                    return orders.Where(e => e.CreatedBy.Email.ToLower().Contains(searchTerm.ToLower()));
+                case OrderSortingCriteria.Recipient:
+                    return orders.Where(e => e.Recipient.ToLower().Contains(searchTerm.ToLower()));
+                case OrderSortingCriteria.ProductName:
+                    return orders.Where(e => e.Products.Any(p => p.Product.Name.ToLower().Contains(searchTerm.ToLower())));
+                case OrderSortingCriteria.Pending:
+                    return orders.Where(e => e.Status == OrderStatus.Pending);
+                case OrderSortingCriteria.Processing:
+                    return orders.Where(e => e.Status == OrderStatus.Processing);
+                case OrderSortingCriteria.Shipping:
+                    return orders.Where(e => e.Status == OrderStatus.Shipping);
+                case OrderSortingCriteria.Delivered:
+                    return orders.Where(e => e.Status == OrderStatus.Delivered);
+                case OrderSortingCriteria.Cancelled:
+                    return orders.Where(e => e.Status == OrderStatus.Cancelled);
+                default:
+                    return orders;
+            }
+        }
+
+        private async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model, OrderSortingCriteria sortingCriteria)
+        {
+            //get deleted included
+            IQueryable<Order> orders = this.db.Orders.Include(x => x.CreatedBy);
+
+            orders = FilterBy(orders, sortingCriteria, model.SearchTerm.Trim());
+
+            var filteredOrders = await orders.OrderByDescending(x => x.CreatedOn)
+               .Skip((model.Page - 1) * model.RecordsPerPage)
+               .Take(model.RecordsPerPage)
+               .Select(x => new OrderResponseModel
+               {
+                   Id = x.Id,
+                   Recipient = x.Recipient,
+                   Phone = x.Phone,
+                   Country = x.Country,
+                   City = x.City,
+                   Address = x.Address,
+                   Details = x.Details,
+                   CreatedBy = x.CreatedBy.Email,
+                   Status = x.Status.ToString(),
+                   CreatedOn = x.CreatedOn.ToString(),
+                   TotalPriceWithDiscount = x.TotalPriceWithDiscount,
+                   TotalPriceWithNoDiscount = x.TotalPriceWithNoDiscount,
+                   TotalPriceWithDiscountAndCoupon = x.TotalPriceWithDiscountAndCoupon,
+                   TotalPriceWithDiscountCouponAndShippingTax = x.TotalPriceWithDiscountCouponAndShippingTax,
+                   Payment = new PaymentResponseModel
+                   {
+                       Id = x.Payment.Id,
+                       Amount = x.Payment.Amount,
+                       IsCompleted = x.Payment.IsCompleted,
+                       PaymentMethod = x.Payment.PaymentMethod.ToString(),
+                   },
+                   ShippingMethod = new ShippingMethodResponseModel
+                   {
+                       Id = x.ShippingMethod.Id,
+                       Name = x.ShippingMethod.Name,
+                       Amount = x.ShippingMethod.ShippingAmount
+                   },
+                   Coupon = x.Coupon != null
+                           ? new CouponBaseResponseModel
+                           {
+                               Code = x.Coupon.Code,
+                               Amount = x.Coupon.Amount,
+                           }
+                           : null,
+                   Products = x.Products
+                       .Where(p => p.IsDeleted != true)
+                       .Select(p => new ProductOrderResponseModel
+                       {
+                           Id = p.Product.Id,
+                           Name = p.Product.Name,
+                           Quantity = p.Quantity,
+                       })
+                       .ToList(),
+               })
+               .ToListAsync();
+
+            return filteredOrders;
         }
 
         private async Task<Order> CreateOrderAsync(CreateOrderRequestModel model, ShippingMethod shippingMethod, ICollection<ProductCart> cartProducts, OrderSummaryResponseModel orderSummary)

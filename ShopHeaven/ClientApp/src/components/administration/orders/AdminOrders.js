@@ -217,7 +217,7 @@ export default function AdminOrders() {
               ref={searchInputRef}
               onChange={onSearchUser}
               defaultValue={searchTerm}
-              placeholder="Search order by recipient, username, email, product or status..."
+              placeholder="Enter search term and select filter type..."
             />
             <CancelButton onClick={clearSearchValue} />
           </Grid>
@@ -230,13 +230,13 @@ export default function AdminOrders() {
               name="filter"
             >
               <option value="">{"--- FILTER BY ---"}</option>
-              <option value="recipient">RECIPIENT</option>
-              <option value="email">EMAIL</option>
-              <option value="username">USERNAME</option>
-              <option value="product-name">PRODUCT NAME</option>
+              <option value="Recipient">RECIPIENT</option>
+              <option value="Email">EMAIL</option>
+              <option value="Username">USERNAME</option>
+              <option value="ProductName">PRODUCT NAME</option>
               {
                 orderStatuses?.map(status => {
-                  return <option key={status} value={status?.toLowerCase()}>{status}</option>
+                  return <option key={status} value={status}>{status}</option>
                 })
               }
             </select>
