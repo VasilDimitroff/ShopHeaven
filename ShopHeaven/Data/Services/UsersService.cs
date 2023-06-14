@@ -110,14 +110,14 @@ namespace ShopHeaven.Data.Services
             string searchTermToLower = model.SearchTerm.Trim().ToLower();
 
             //gets deleted users too
-            var usersCount = this.db.Users
+            var usersCount = await this.db.Users
                .Where(u => model.Criteria == "" 
                            ? u.Email.ToLower().Contains(searchTermToLower) || u.UserName.ToLower().Contains(searchTermToLower)
                            : (model.Criteria.ToLower() == "email"
                                ? u.Email.ToLower().Contains(searchTermToLower)
                                : u.UserName.ToLower().Contains(searchTermToLower))
                            )
-                .Count();
+                .CountAsync();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
             usersWithRoles = usersWithRoles.OrderByDescending(x => DateTime.Parse(x.CreatedOn)).ToList();

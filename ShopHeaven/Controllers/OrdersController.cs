@@ -36,17 +36,7 @@ namespace ShopHeaven.Controllers
         {
             try
             {
-                var orderStatuses = this.ordersService.GetOrderStatuses();
-                var orders = await this.ordersService.GetOrdersAsync(model);
-
-                var responseModel = new OrdersAndStatusesResponseModel
-                {
-                    Orders = orders,
-                    OrderStatuses = orderStatuses,
-                    PagesCount = 10,
-                    OrdersCount = 100
-                };
-
+                var responseModel = await this.ordersService.GetOrdersWithOrderStatusesAsync(model);
                 return Ok(responseModel);
             }
             catch (Exception ex)

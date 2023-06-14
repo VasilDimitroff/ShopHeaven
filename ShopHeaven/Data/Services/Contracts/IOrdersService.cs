@@ -14,9 +14,7 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ICollection<ProductOrder>> GetOrderProductsAsync(string orderId);
 
-        Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model);
-
-        ICollection<string> GetOrderStatuses();
+        Task<OrdersAndStatusesResponseModel> GetOrdersWithOrderStatusesAsync(OrderPaginationRequestModel model);
 
         Task ReduceQuantityOfProductsAsync(string orderId);
     }

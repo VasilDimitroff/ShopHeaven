@@ -89,11 +89,11 @@ export default function Product() {
       {product ? (
         <>
           <ProductMainInfo product={product} />
+          <ProductDetailInfo product={product}/>
           <ProductsCarousel
             products={similarProducts}
             headingName="Similar Products"
           />
-          <ProductDetailInfo product={product}/>
         </>
       ) : (
         <CircleLoader />

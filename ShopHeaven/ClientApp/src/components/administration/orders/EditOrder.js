@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
-import { ContactMail, Edit, AddCircle, RemoveCircle, Phone, LocalShipping, Flag, LocationCity, LocationOn, Info } from "@mui/icons-material";
+import { ContactMail, Phone, LocalShipping, Flag, LocationCity, LocationOn, Info, Paid, Payment, PriceCheck, Money, ReceiptLong, Discount, LocalOffer, Sell, Subtitles, LocalAtm, Style, Receipt, Person, CalendarMonth, RuleFolder, ShoppingBag, AddShoppingCart } from "@mui/icons-material";
 import { theme } from "../../../theme";
 import { HeadingChip, SubheadingChip, InputBox, StyledSelect, UniversalInput, CompleteActionButton, AdminMainWrapper } from "../../../styles/styles";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -65,7 +65,16 @@ export default function EditOrder(props) {
   const [removeUserFromRoleErrorMessage, setRemoveUserFromRoleErrorMessage] =
     useState("");
 
-  useEffect(() => { }, [messages]);
+  function formatDate(date) {
+    const minutes = date.substring(14, 16);
+    const hour = date.substring(11, 13);
+    const day = date.substring(8, 10);
+    const month = date.substring(5, 7);
+    const year = date.substring(0, 4);
+
+    const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
+    return formattedDate;
+  }
 
   const InfoHolder = styled(Box)({
     display: "flex",
@@ -82,11 +91,11 @@ export default function EditOrder(props) {
   })
 
   return (
-    <AdminMainWrapper sx={{mt:4}}>
+    <AdminMainWrapper sx={{ mt: 4 }}>
       <InputBox>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="RECIPIENT INFO"
                 variant="filled"
@@ -115,7 +124,7 @@ export default function EditOrder(props) {
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="SHIPPING INFO"
                 variant="filled"
@@ -133,12 +142,12 @@ export default function EditOrder(props) {
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <LocalShipping sx={{ color: theme.palette.secondary.main }} />
+                <Paid sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
                   Shipping Amount:
                 </InfoText>
                 <Typography display={"inline"}>
-                 {appSettings.appCurrency.code} {order?.shippingMethod.amount.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.shippingMethod.amount.toFixed(2)}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
@@ -180,7 +189,7 @@ export default function EditOrder(props) {
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="PAYMENT INFO"
                 variant="filled"
@@ -189,36 +198,36 @@ export default function EditOrder(props) {
             </Divider>
             <Section flexWrap={"wrap"} spacing={1}>
               <InfoHolder>
-                <ContactMail sx={{ color: theme.palette.secondary.main }} />
+                <Paid sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
                   Total Amount Paid:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.payment?.amount.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.payment?.amount.toFixed(2)}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <Payment sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                Payment Method:
+                  Payment Method:
                 </InfoText>
                 <Typography display={"inline"}>
                   {order?.payment.paymentMethod}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <PriceCheck sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                 Is Payment Successfull:
+                  Is Payment Successfull:
                 </InfoText>
                 <Typography display={"inline"}>
                   {order?.payment.isCompleted ? "Yes" : "No"}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <Receipt sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                 Payment Id:
+                  Payment ID:
                 </InfoText>
                 <Typography display={"inline"}>
                   {order?.payment.id}
@@ -227,7 +236,7 @@ export default function EditOrder(props) {
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="PRICING INFO"
                 variant="filled"
@@ -236,45 +245,45 @@ export default function EditOrder(props) {
             </Divider>
             <Section flexWrap={"wrap"} spacing={1}>
               <InfoHolder>
-                <ContactMail sx={{ color: theme.palette.secondary.main }} />
+                <Money sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
                   Total price with no discount:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithNoDiscount.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.totalPriceWithNoDiscount.toFixed(2)}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <Style sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                Total price with product discounts:
+                  Total price with product discounts:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscount.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.totalPriceWithDiscount.toFixed(2)}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <LocalOffer sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                 Total price with product discounts and coupon (if there is):
+                  Total price with product discounts and coupon (if there is):
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscountAndCoupon.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.totalPriceWithDiscountAndCoupon.toFixed(2)}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <Paid sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                Total price with product discounts, coupon discount and shipping tax:
+                  Total price with product discounts, coupon discount and shipping tax:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscountCouponAndShippingTax.toFixed(2)}
+                  {appSettings.appCurrency.code} {order?.totalPriceWithDiscountCouponAndShippingTax.toFixed(2)}
                 </Typography>
               </InfoHolder>
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="COUPON INFO"
                 variant="filled"
@@ -283,32 +292,32 @@ export default function EditOrder(props) {
             </Divider>
             {
               order?.coupon
-              ? (<Section flexWrap={"wrap"} spacing={1}>
-              <InfoHolder>
-                <ContactMail sx={{ color: theme.palette.secondary.main }} />
-                <InfoText display={"inline"}>
-                  Coupon Code:
-                </InfoText>
-                <Typography display={"inline"}>
-                 {order?.coupon?.code}
-                </Typography>
-              </InfoHolder>
-              <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
-                <InfoText display={"inline"}>
-                 Coupon Amount:
-                </InfoText>
-                <Typography display={"inline"}>
-                {appSettings.appCurrency.code} -{order?.coupon?.amount}%
-                </Typography>
-              </InfoHolder>
-            </Section>)
-         
-            : <>NO COUPON APPLIED</>
-          }
+                ? (<Section flexWrap={"wrap"} spacing={1}>
+                  <InfoHolder>
+                    <Subtitles sx={{ color: theme.palette.secondary.main }} />
+                    <InfoText display={"inline"}>
+                      Coupon Code:
+                    </InfoText>
+                    <Typography display={"inline"}>
+                      {order?.coupon?.code}
+                    </Typography>
+                  </InfoHolder>
+                  <InfoHolder>
+                    <LocalAtm sx={{ color: theme.palette.secondary.main }} />
+                    <InfoText display={"inline"}>
+                      Coupon Amount:
+                    </InfoText>
+                    <Typography display={"inline"}>
+                      {appSettings.appCurrency.code} -{order?.coupon?.amount}%
+                    </Typography>
+                  </InfoHolder>
+                </Section>)
+
+                : <>NO COUPON APPLIED</>
+            }
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="SYSTEM INFO"
                 variant="filled"
@@ -317,82 +326,81 @@ export default function EditOrder(props) {
             </Divider>
             <Section flexWrap={"wrap"} spacing={1}>
               <InfoHolder>
-                <ContactMail sx={{ color: theme.palette.secondary.main }} />
+                <RuleFolder sx={{ color: theme.palette.secondary.main }} />
+                <InfoText display={"inline"}>
+                  Status:
+                </InfoText>
+                <Typography display={"inline"}>
+                  {order?.status.toUpperCase()}
+                </Typography>
+              </InfoHolder>
+              <InfoHolder>
+                <ReceiptLong sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
                   Order ID:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithNoDiscount.toFixed(2)}
+                  {order?.id}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <Person sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                Created By:
+                  Created By:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscount.toFixed(2)}
+                  {order?.createdBy}
                 </Typography>
               </InfoHolder>
               <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
+                <CalendarMonth sx={{ color: theme.palette.secondary.main }} />
                 <InfoText display={"inline"}>
-                 Created On:
+                  Created On:
                 </InfoText>
                 <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscountAndCoupon.toFixed(2)}
-                </Typography>
-              </InfoHolder>
-              <InfoHolder>
-                <Phone sx={{ color: theme.palette.secondary.main }} />
-                <InfoText display={"inline"}>
-                Status
-                </InfoText>
-                <Typography display={"inline"}>
-                {appSettings.appCurrency.code} {order?.totalPriceWithDiscountCouponAndShippingTax.toFixed(2)}
+                  {formatDate(order?.createdOn)}
                 </Typography>
               </InfoHolder>
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{mb:2}}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
               <SubheadingChip
                 label="PRODUCTS ORDERED"
                 variant="filled"
                 color="primary"
               />
             </Divider>
-            <Section flexWrap={"wrap"} spacing={1}>
-
+            <Section flexWrap={"wrap"} spacing={4}>
               {
                 order?.products?.map((product, index) => {
                   return (
-                  <Box key={product?.id} sx={{mb: 3}}>
-                     <InfoHolder>
-                      <ContactMail sx={{ color: theme.palette.secondary.main }} />
-                      <InfoText display={"inline"}>
-                        Name:
-                      </InfoText>
-                      <Link to={`${singleProductBasePath}${product?.id}`}>
-                      <Typography display={"inline"}>
-                       {product?.name}
-                      </Typography>
-                      </Link>
-                    </InfoHolder>
-                    <InfoHolder>
-                      <ContactMail sx={{ color: theme.palette.secondary.main }} />
-                      <InfoText display={"inline"}>
-                        Quantity purchased:
-                      </InfoText>
-                      <Typography display={"inline"}>
-                       {product?.quantity}
-                      </Typography>
-                    </InfoHolder> 
-                  </Box>
+                    <Stack spacing={1} key={product?.id}>
+                      <InfoHolder>
+                        <ShoppingBag sx={{ color: theme.palette.secondary.main }} />
+                        <InfoText display={"inline"}>
+                          Name:
+                        </InfoText>
+                        <Link to={`${singleProductBasePath}${product?.id}`}>
+                          <Typography display={"inline"}>
+                            {product?.name}
+                          </Typography>
+                        </Link>
+                      </InfoHolder>
+                      <InfoHolder>
+                        <AddShoppingCart sx={{ color: theme.palette.secondary.main }} />
+                        <InfoText display={"inline"}>
+                          Quantity purchased:
+                        </InfoText>
+                        <Typography display={"inline"}>
+                          {product?.quantity}
+                        </Typography>
+                      </InfoHolder>
+                    </Stack>
                   )
                 })
               }
-            
+
             </Section>
           </Grid>
         </Grid>

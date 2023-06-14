@@ -22,15 +22,19 @@ import {
   Group,
   Event,
   AccountCircle,
-  Edit,
   Delete,
   RestoreFromTrash,
   Info,
   MoreHoriz,
+  Paid,
+  Person,
 } from "@mui/icons-material";
+import useAppSettings from "../../../hooks/useAppSettings";
 import UndeleteOrder from "./UndeleteOrder";
 
 export default function AdminOrderRow(props) {
+  const { appSettings } = useAppSettings();
+
   const [order, setOrder] = useState(props.order);
   const [orderStatuses, setOrderStatuses] = useState(props.orderStatuses);
 
@@ -79,11 +83,13 @@ export default function AdminOrderRow(props) {
   }
 
   function formatDate(date) {
+    const minutes = date.substring(14, 16);
+    const hour = date.substring(11, 13);
     const day = date.substring(8, 10);
     const month = date.substring(5, 7);
     const year = date.substring(0, 4);
 
-    const formattedDate = `${day}/${month}/${year}`;
+    const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
     return formattedDate;
   }
 
@@ -142,7 +148,7 @@ export default function AdminOrderRow(props) {
           ) : (
             <>{order?.id}</>
           )}
-          <Grid container spacing={1} columns={4}>
+          <Grid container spacing={1} columns={5}>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip title={`By: ${order?.createdBy}`} placement="bottom-start" arrow>
                 <OrderInfoText>
@@ -169,7 +175,7 @@ export default function AdminOrderRow(props) {
                     icon={<Event />}
                     variant="outlined"
                     color="primary"
-                    label={`Created on: ${formatDate(order?.createdOn)}`}
+                    label={`Created: ${formatDate(order?.createdOn)}`}
                     size="small"
                   />
                 </OrderInfoText>
@@ -184,9 +190,27 @@ export default function AdminOrderRow(props) {
                 <OrderInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
-                    icon={<Group />}
+                    icon={<Person/>}
                     variant="outlined"
                     label={`For: ${order?.recipient}`}
+                    size="small"
+                    color="primary"
+                  />
+                </OrderInfoText>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={4} sm={2} md={1} lg={1}>
+              <Tooltip
+                placement="bottom-start"
+                title={`Total amount paid for this order: ${appSettings.appCurrency.code} ${order?.payment?.amount}`}
+                arrow
+              >
+                <OrderInfoText>
+                  <Chip
+                    sx={{ padding: 0.5 }}
+                    icon={<Paid />}
+                    variant="outlined"
+                    label={`Paid: ${appSettings.appCurrency.code} ${order?.payment?.amount}`}
                     size="small"
                     color="primary"
                   />
@@ -214,7 +238,7 @@ export default function AdminOrderRow(props) {
           </Grid>
         </OrderTableCell>
         <TableCell align="center">
-          <Grid container spacing={2} sx={{ display: "flex", alignItems: "center" }}>
+          <Grid container spacing={5} sx={{ display: "flex", alignItems: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <Box>
                 <select

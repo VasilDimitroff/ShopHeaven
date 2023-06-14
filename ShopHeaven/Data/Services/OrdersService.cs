@@ -144,17 +144,38 @@ namespace ShopHeaven.Data.Services
             await this.db.SaveChangesAsync();
         }
 
-        public ICollection<string> GetOrderStatuses()
+        public async Task<OrdersAndStatusesResponseModel> GetOrdersWithOrderStatusesAsync(OrderPaginationRequestModel model)
+        {
+            var orderStatuses = this.GetOrderStatuses();
+            var orders = await this.GetOrdersAsync(model);
+
+            //get deleted orders too
+            var ordersCount = await this.db.Orders.CountAsync();
+
+            var responseModel = new OrdersAndStatusesResponseModel
+            {
+                Orders = orders,
+                OrderStatuses = orderStatuses,
+                OrdersCount = ordersCount,
+                PagesCount = (int)Math.Ceiling((double)ordersCount / model.RecordsPerPage),
+            };
+
+            return responseModel;
+        }
+
+        private ICollection<string> GetOrderStatuses()
         {
             var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.OrderStatus));
             return orderStatuses;
         }
 
-        public async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model)
+        private async Task<ICollection<OrderResponseModel>> GetOrdersAsync(OrderPaginationRequestModel model)
         {
             var orders = await this.db.Orders
-                .Where(x => x.IsDeleted != true)
+                //.Where(x => x.IsDeleted != true)
                 .OrderByDescending(x => x.CreatedOn)
+                .Skip((model.Page - 1) * model.RecordsPerPage)
+                .Take(model.RecordsPerPage)
                 .Select(x => new OrderResponseModel
                 {
                     Id = x.Id,

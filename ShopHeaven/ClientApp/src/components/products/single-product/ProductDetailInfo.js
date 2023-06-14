@@ -21,12 +21,20 @@ import { theme } from "../../../theme";
 
 export default function ProductDetailInfo(props) {
   const [product, setProduct] = useState(props.product);
+  const [value, setValue] = useState(0);
+
 
   useEffect(()=> {
-    setProduct(props.product)
+    setProduct(props.product);
+    setValue(0);
   }, [props.product])
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   function TabPanel(props) {
+    
     const { children, value, index } = props;
 
     return (
@@ -35,12 +43,6 @@ export default function ProductDetailInfo(props) {
       </div>
     );
   }
-
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const StyledTabContent = styled(Box)({
     padding: theme.spacing(3),

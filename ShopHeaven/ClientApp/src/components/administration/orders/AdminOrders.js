@@ -271,7 +271,7 @@ export default function AdminOrders() {
           <Table>
             <TableHead>
               <TableRow>
-                <OrderTableCell>ORDER ID</OrderTableCell>
+                <OrderTableCell></OrderTableCell>
                 <OrderTableCell align="left"></OrderTableCell>
               </TableRow>
             </TableHead>
