@@ -34,7 +34,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Route(nameof(AllByProductId))]
-        public async Task<ActionResult<PaginatedReviewsResponseModel>> AllByProductId([FromBody] PaginatedReviewRequestModel model)
+        public async Task<ActionResult<PaginatedReviewsResponseModel>> AllByProductId([FromBody] PaginatedProductReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
@@ -51,6 +51,22 @@ namespace ShopHeaven.Controllers
                 };
                 
                 return Ok(reviewsInfoModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Route(nameof(All))]
+        public async Task<ActionResult<ReviewsAndStatusesResponseModel>> All([FromBody] PaginatedAdminReviewRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                var responseModel = await this.reviewsService.GetReviewsWithReviewStatusesAsync(model);
+                return Ok(responseModel);
             }
             catch (Exception ex)
             {

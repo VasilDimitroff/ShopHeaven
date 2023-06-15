@@ -317,7 +317,7 @@ namespace ShopHeaven.Data.Services
 
         private ICollection<string> GetOrderStatuses()
         {
-            var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.OrderStatus));
+            var orderStatuses = Enum.GetNames(typeof(OrderStatus));
             return orderStatuses;
         }
 

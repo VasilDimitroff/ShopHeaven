@@ -24,6 +24,7 @@ export const usernameRequiredLength = 2;
 export const usersPerPageInAdminPanel = 5; // how many users to view per page in admin panel
 export const productsPerPageInAdminPanel = 5; // how many products to view per page in admin panel
 export const ordersPerPageInAdminPanel = 5; // how many orders to view per page in admin panel
+export const reviewsPerPageInAdminPanel = 5; // how many reviews to view per page in admin panel
 
 //records count per page in single subcategory products page - for product gallery
 export const productsPerPageInSubCategoryPage = 20;

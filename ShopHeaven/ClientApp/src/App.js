@@ -15,7 +15,7 @@ import AdminOrders from "./components/administration/orders/AdminOrders";
 import AdminDashboard from "./components/administration/AdminDashboard";
 import AdminUsers from "./components/administration/users/AdminUsers";
 import AdminCoupons from "./components/administration/coupons/AdminCoupons";
-import AdminReviews from "./components/administration/AdminReviews";
+import AdminReviews from "./components/administration/reviews/AdminReviews";
 import AdminSettings from "./components/administration/settings/AdminSettings";
 import RequireAuth from "./components/auth/RequireAuth";
 import PersistLogin from "./components/auth/PersistLogin";

@@ -2,6 +2,7 @@
 using ShopHeaven.Data.Models;
 using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Responses.Reviews;
 
@@ -69,7 +70,7 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
-        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(PaginatedReviewRequestModel model)
+        public async Task<ICollection<ReviewResponseModel>> GetReviewsByProductIdAsync(PaginatedProductReviewRequestModel model)
         {
             var status = ParseReviewStatus(model.Status);
 
@@ -101,6 +102,95 @@ namespace ShopHeaven.Data.Services
                 .CountAsync();
 
             return totalReviewsCount;
+        }
+
+        public async Task<ReviewsAndStatusesResponseModel> GetReviewsWithReviewStatusesAsync(PaginatedAdminReviewRequestModel model)
+        {
+            var reviewStatuses = this.GetReviewStatuses();
+            var reviews = await this.GetReviewsAsync(model);
+
+            //get deleted orders too
+            IQueryable<Review> allReviews = this.db.Reviews.Include(x => x.CreatedBy);
+            allReviews = FilterByCriteria(allReviews, model.Criteria.Trim(), model.SearchTerm.Trim());
+            var allFilteredReviewsCount = await FilterByReviewStatus(allReviews, model.Status.Trim()).CountAsync();
+
+            var responseModel = new ReviewsAndStatusesResponseModel
+            {
+                Reviews = reviews,
+                ReviewStatuses = reviewStatuses,
+                ReviewsCount = allFilteredReviewsCount,
+                PagesCount = (int)Math.Ceiling((double)allFilteredReviewsCount / model.RecordsPerPage),
+            };
+
+            return responseModel;
+        }
+
+        private async Task<ICollection<AdminReviewResponseModel>> GetReviewsAsync(PaginatedAdminReviewRequestModel model)
+        {
+            //get deleted included
+            IQueryable<Review> reviews = this.db.Reviews.Include(x => x.CreatedBy).Include(x => x.Product);
+
+            reviews = FilterByCriteria(reviews, model.Criteria.Trim(), model.SearchTerm.Trim());
+            reviews = FilterByReviewStatus(reviews, model.Status.Trim());
+
+            var filteredReviews = await reviews.OrderByDescending(x => x.CreatedOn)
+               .Skip((model.Page - 1) * model.RecordsPerPage)
+               .Take(model.RecordsPerPage)
+               .Select(review => new AdminReviewResponseModel
+               {
+                   Id = review.Id,
+                   Content = review.Content,
+                   Email = review.CreatedBy.Email,
+                   CreatedOn = review.CreatedOn.ToString(),
+                   RatingValue = review.RatingValue,
+                   IsDeleted = review.IsDeleted,
+                   Product = review.Product.Name,
+               })
+               .ToListAsync();
+
+            return filteredReviews;
+        }
+
+        private IQueryable<Review> FilterByCriteria(IQueryable<Review> reviews, string sortingCriteria, string searchTerm)
+        {
+            bool isSortCriteriaParsed = Enum.TryParse<ReviewSortingCriteria>(sortingCriteria, out ReviewSortingCriteria criteria);
+
+            if (!isSortCriteriaParsed)
+            {
+                return reviews;
+            }
+
+            switch (criteria)
+            {
+                case ReviewSortingCriteria.Username:
+                    return reviews.Where(e => e.CreatedBy.UserName.ToLower().Contains(searchTerm.ToLower()));
+                case ReviewSortingCriteria.Email:
+                    return reviews.Where(e => e.CreatedBy.Email.ToLower().Contains(searchTerm.ToLower()));
+                case ReviewSortingCriteria.Content:
+                    return reviews.Where(e => e.Content.ToLower().Contains(searchTerm.ToLower()));
+                case ReviewSortingCriteria.ProductName:
+                    return reviews.Where(e => e.Product.Name.ToLower().Contains(searchTerm.ToLower()));
+                default:
+                    return reviews;
+            }
+        }
+
+        private IQueryable<Review> FilterByReviewStatus(IQueryable<Review> reviews, string orderStatus)
+        {
+            bool isReviewStatusParsed = Enum.TryParse<ReviewStatus>(orderStatus, out ReviewStatus status);
+
+            if (!isReviewStatusParsed)
+            {
+                return reviews;
+            }
+
+            return reviews.Where(e => e.Status == status);
+        }
+
+        private ICollection<string> GetReviewStatuses()
+        {
+            var reviewStatuses = Enum.GetNames(typeof(ReviewStatus));
+            return reviewStatuses;
         }
 
         private ReviewStatus ParseReviewStatus(string status)

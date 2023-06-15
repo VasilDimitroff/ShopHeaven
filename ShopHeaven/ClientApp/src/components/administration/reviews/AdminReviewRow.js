@@ -14,8 +14,8 @@ import {
 import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { ActionIconButton } from "../../../styles/styles";
-import DeleteOrder from "./DeleteOrder";
-import OrderInfo from "./OrderInfo";
+import DeleteReview from "./DeleteReview";
+import EditReview from "./EditReview";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -26,19 +26,20 @@ import {
   MoreHoriz,
   Paid,
   Person,
+  Star,
 } from "@mui/icons-material";
 import useAppSettings from "../../../hooks/useAppSettings";
-import UndeleteOrder from "./UndeleteOrder";
+import UndeleteReview from "./UndeleteReview";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { noPermissionsForOperationMessage } from "../../../constants";
 
-export default function AdminOrderRow(props) {
+export default function AdminReviewRow(props) {
   const { appSettings } = useAppSettings();
   const axiosPrivate = useAxiosPrivate();
 
-  const [order, setOrder] = useState(props.order);
-  const [orderStatuses, setOrderStatuses] = useState(props.orderStatuses);
+  const [review, setReview] = useState(props.review);
+  const [reviewsStatuses, setReviewsStatuses] = useState(props.reviewStatuses);
 
   const [updateStatusResponseMessage, setUpdateStatusResponseMessage] = useState("");
   const [updateStatusErrorMessage, setUpdateStatusErrorMessage] = useState("");
@@ -60,14 +61,14 @@ export default function AdminOrderRow(props) {
     }
 
     const requestData = {
-      id: order?.id,
+      id: review?.id,
       status: newStatus
     };
 
-    changeOrderStatus(requestData);
+    changeReviewStatus(requestData);
   }
 
-  async function changeOrderStatus(requestData) {
+  async function changeReviewStatus(requestData) {
     try {
       const controller = new AbortController();
 
@@ -81,18 +82,18 @@ export default function AdminOrderRow(props) {
 
       controller.abort();
 
-      setUpdateStatusResponseMessage("Order " + order?.id + " status changed!");
+      setUpdateStatusResponseMessage("Review " + review?.id + " status changed!");
       setUpdateStatusErrorMessage("");
 
-      console.log("UPDATE STATUS RESPONSE", response?.data);
+      console.log("UPDATE REVIEW STATUS RESPONSE", response?.data);
 
-      setOrder(prev => {
+      setReview(prev => {
         return {
           ...prev,
           status: response?.data?.status
         }
       });
-      props.handleOrderStatusUpdated();
+      props.handleReviewStatusUpdated();
     } catch (error) {
       setUpdateStatusResponseMessage("");
       if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -107,7 +108,7 @@ export default function AdminOrderRow(props) {
   }
 
   function handleSetOpenEditForm() {
-    if (order?.isDeleted) {
+    if (review?.isDeleted) {
       setOpenSnackbar((prev) => !prev);
       return;
     }
@@ -136,8 +137,8 @@ export default function AdminOrderRow(props) {
     setOpenUndeleteForm((prev) => !prev);
   }
 
-  function updateOrder(updatedOrder) {
-    setOrder(updatedOrder);
+  function updateReview(updatedReview) {
+    setReview(updatedReview);
   }
 
   function handleSnackbarClose() {
@@ -163,12 +164,12 @@ export default function AdminOrderRow(props) {
     return formattedDate;
   }
 
-  const OrderTableCell = styled(TableCell)({
+  const ReviewTableCell = styled(TableCell)({
     fontWeight: 500,
     fontSize: 18,
   });
 
-  const OrderInfoText = styled(Box)({
+  const ReviewInfoText = styled(Box)({
     fontSize: 13,
     fontWeight: 400,
     [theme.breakpoints.down("lg")]: {
@@ -185,7 +186,6 @@ export default function AdminOrderRow(props) {
     fontSize: 14,
   };
 
-
   return (
     <Fragment>
       <TableRow
@@ -196,7 +196,7 @@ export default function AdminOrderRow(props) {
           },
         }}
       >
-        <OrderTableCell
+        <ReviewTableCell
           onClick={handleSetOpenEditForm}
           component="th"
           scope="row"
@@ -204,109 +204,109 @@ export default function AdminOrderRow(props) {
           <IconButton size="small">
             {openEditForm ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
-          {order?.isDeleted ? (
+          {review?.isDeleted ? (
             <>
-              {order?.id}
+              {review?.content}
               <Typography
                 color="error"
                 sx={{ display: "inline", fontWeight: 500 }}
               >
                 {" "}
-                (Order Deleted)
+                (Review Deleted)
               </Typography>
             </>
           ) : (
-            <>{order?.id}</>
+            <>{review?.content?.length > 50 ? review?.content?.substring(0, 50) + "..." : review?.content}</>
           )}
           <Grid container spacing={1} columns={5}>
             <Grid item xs={4} sm={2} md={1} lg={1}>
-              <Tooltip title={`By: ${order?.createdBy}`} placement="bottom-start" arrow>
-                <OrderInfoText>
+              <Tooltip title={`Review leaved by: ${review?.email}`} placement="bottom-start" arrow>
+                <ReviewInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<AccountCircle />}
                     variant="outlined"
                     color="primary"
-                    label={`By: ${order?.createdBy}`}
+                    label={`By: ${review?.email}`}
                     size="small"
                   />
-                </OrderInfoText>
+                </ReviewInfoText>
               </Tooltip>
             </Grid>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Created on: ${formatDate(order?.createdOn)}`}
+                title={`Created on: ${formatDate(review?.createdOn)}`}
                 arrow
               >
-                <OrderInfoText>
+                <ReviewInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<Event />}
                     variant="outlined"
                     color="primary"
-                    label={`Created: ${formatDate(order?.createdOn)}`}
+                    label={`Created: ${formatDate(review?.createdOn)}`}
                     size="small"
                   />
-                </OrderInfoText>
+                </ReviewInfoText>
               </Tooltip>
             </Grid>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Recipient of the order is: ${order?.recipient}`}
+                title={`Product for which the review is: ${review?.product}`}
                 arrow
               >
-                <OrderInfoText>
+                <ReviewInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<Person />}
                     variant="outlined"
-                    label={`For: ${order?.recipient}`}
+                    label={`To: ${review?.product.substring(0, 20)}`}
                     size="small"
                     color="primary"
                   />
-                </OrderInfoText>
+                </ReviewInfoText>
               </Tooltip>
             </Grid>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Total amount paid for this order: ${appSettings.appCurrency.code} ${order?.payment?.amount}`}
+                title={`Rating of the review: ${review?.ratingValue.toFixed(2)}`}
                 arrow
               >
-                <OrderInfoText>
+                <ReviewInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
-                    icon={<Paid />}
+                    icon={<Star />}
                     variant="outlined"
-                    label={`Paid: ${appSettings.appCurrency.code} ${order?.payment?.amount}`}
+                    label={`Rating: ${review?.ratingValue.toFixed(2)}`}
                     size="small"
                     color="primary"
                   />
-                </OrderInfoText>
+                </ReviewInfoText>
               </Tooltip>
             </Grid>
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Is order deleted: ${order?.isDeleted ? "Yes" : "No"}`}
+                title={`Is order deleted: ${review?.isDeleted ? "Yes" : "No"}`}
                 arrow
               >
-                <OrderInfoText>
+                <ReviewInfoText>
                   <Chip
                     sx={{ padding: 0.5 }}
                     icon={<Delete />}
                     variant="outlined"
-                    label={`Deleted: ${order?.isDeleted ? "Yes" : "No"}`}
+                    label={`Deleted: ${review?.isDeleted ? "Yes" : "No"}`}
                     size="small"
-                    color={order?.isDeleted ? "error" : "success"}
+                    color={review?.isDeleted ? "error" : "success"}
                   />
-                </OrderInfoText>
+                </ReviewInfoText>
               </Tooltip>
             </Grid>
           </Grid>
-        </OrderTableCell>
+        </ReviewTableCell>
         <TableCell align="center">
           <Grid container spacing={5} sx={{ display: "flex", alignItems: "center" }}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -316,9 +316,9 @@ export default function AdminOrderRow(props) {
                   style={StyledSelect}
                   name="status"
                   ref={statusRef}
-                  defaultValue={order?.status}
+                  defaultValue={review?.status}
                 >
-                  {orderStatuses?.map((status) => (
+                  {reviewsStatuses?.map((status) => (
                     <option key={status} value={status}>
                       {status}
                     </option>
@@ -336,7 +336,7 @@ export default function AdminOrderRow(props) {
               </ActionIconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={3} lg={3}>
-              {!order?.isDeleted ? (
+              {!review?.isDeleted ? (
                 <ActionIconButton
                   onClick={handleSetOpenDeleteForm}
                   color="error"
@@ -361,29 +361,30 @@ export default function AdminOrderRow(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           {
             <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-              <OrderInfo
-                order={order}
+              <EditReview
+                review={review}
+                updateReview={updateReview}
               />
             </Collapse>
           }
           <Collapse in={openDeleteForm} timeout="auto" unmountOnExit>
-            <DeleteOrder
-              order={order}
+            <DeleteReview
+              review={review}
               onCancelButtonClicked={onCancelButtonClicked}
-              updateOrder={updateOrder}
+              updateReview={updateReview}
             />
           </Collapse>
           <Collapse in={openUndeleteForm} timeout="auto" unmountOnExit>
-            <UndeleteOrder
+            <UndeleteReview
               onUndeleteCancelButtonClicked={onUndeleteCancelButtonClicked}
-              updateOrder={updateOrder}
-              order={order}
+              updateReview={updateReview}
+              review={review}
             />
           </Collapse>
           <Snackbar
             open={openSnackbar}
             autoHideDuration={8000}
-            message={`Order ${order.id} is deleted! To view the order, first you should undelete it!`}
+            message={`Review ${review.id} is deleted! To view the review, first you should undelete it!`}
             severity="error"
             onClose={handleSnackbarClose}
           />
@@ -397,7 +398,7 @@ export default function AdminOrderRow(props) {
           <Snackbar
             open={updateStatusResponseMessage.length > 0}
             autoHideDuration={8000}
-            message={`Order status updated to ${order?.status}`}
+            message={`Order status updated to ${review?.status}`}
             severity="error"
             onClose={handleCloseSuccessMessageSnackbar}
           />
