@@ -299,8 +299,8 @@ export default function AdminOrders() {
       {((searchTerm && searchOrderProperty) || statusSearch) && !errorMessage ? (
         <Alert severity="info" sx={{ mt: 1 }}>
           <Typography>
-            <b>{totalOrdersCount} results</b> for{" "}
-            <b>"{searchTerm ? searchTerm : <></>}"</b>
+            <b>{totalOrdersCount} results</b>
+            {searchTerm && searchOrderProperty ? <>for <b>"{searchTerm}"</b></> : <></>}
             {searchOrderProperty ? (
               <Fragment>
                 {" "}
