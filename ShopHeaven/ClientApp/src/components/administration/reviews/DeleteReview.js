@@ -36,7 +36,7 @@ export default function DeleteReview(props) {
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.orders.deleteOrder,
+        ApiEndpoints.reviews.deleteReview,
         JSON.stringify({ id: reviewId }),
         {
           signal: controller.signal,
@@ -92,7 +92,7 @@ export default function DeleteReview(props) {
           }}
         >
           <Typography variant="h6">
-            You are on the way to delete review {review.id}!
+            You are on the way to delete review of {review.email}!
           </Typography>
           <Typography variant="p" color="error">
             Be careful!

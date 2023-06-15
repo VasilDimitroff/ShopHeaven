@@ -12,5 +12,9 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<int> GetReviewsCountByProductIdAsync(string productId);
 
         Task<ReviewsAndStatusesResponseModel> GetReviewsWithReviewStatusesAsync(PaginatedAdminReviewRequestModel model);
+
+        Task<AdminReviewResponseModel> DeleteReviewAsync(DeleteReviewRequestModel model);
+
+        Task<AdminReviewResponseModel> UndeleteReviewAsync(UndeleteReviewRequestModel model);
     }
 }

@@ -144,7 +144,13 @@
 
         public const string OrderAlreadyDeleted = "Order with this Id is already deleted!";
 
+        public const string ReviewAlreadyDeleted = "Review with this Id is already deleted!";
+
         public const string OrderAlreadyUndeleted = "You cannot undelete this order because it is not deleted!";
+
+        public const string ReviewAlreadyUndeleted = "You cannot undelete this review because it is not deleted!";
+
+        public const string ReviewNotFound = "Review with this Id not found!";
 
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";

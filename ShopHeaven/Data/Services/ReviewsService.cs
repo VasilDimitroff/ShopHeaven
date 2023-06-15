@@ -125,6 +125,78 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+        public async Task<AdminReviewResponseModel> DeleteReviewAsync(DeleteReviewRequestModel model)
+        {
+            var review = await GetReviewByIdAsync(model.Id);
+
+            if (review.IsDeleted)
+            {
+                throw new ArgumentException(GlobalConstants.ReviewAlreadyDeleted);
+            }
+
+            review.IsDeleted = true;
+            review.ModifiedOn = DateTime.UtcNow;
+            review.DeletedOn = DateTime.UtcNow;
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = CreateReviewResponseModel(review);
+
+            return responseModel;
+        }
+
+        public async Task<AdminReviewResponseModel> UndeleteReviewAsync(UndeleteReviewRequestModel model)
+        {
+            var review = await GetReviewByIdAsync(model.Id);
+
+            if (!review.IsDeleted)
+            {
+                throw new ArgumentException(GlobalConstants.ReviewAlreadyUndeleted);
+            }
+
+            review.IsDeleted = false;
+            review.ModifiedOn = DateTime.UtcNow;
+            review.DeletedOn = null;
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = CreateReviewResponseModel(review);
+
+            return responseModel;
+        }
+
+        private async Task<Review> GetReviewByIdAsync(string id)
+        {
+            var review = await this.db.Reviews
+               .Include(x => x.CreatedBy)
+               .Include(x => x.Product)
+               .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (review == null)
+            {
+                throw new ArgumentException(GlobalConstants.ReviewNotFound);
+            }
+
+            return review;
+        }
+
+        private AdminReviewResponseModel CreateReviewResponseModel(Review review)
+        {
+            var responseModel = new AdminReviewResponseModel
+            {
+                Id = review.Id,
+                Status = review.Status.ToString(),
+                Content = review.Content,
+                CreatedOn = review.CreatedOn.ToString(),
+                Email = review.CreatedBy.Email,
+                IsDeleted = review.IsDeleted,
+                Product = review.Product.Name,
+                RatingValue = review.RatingValue
+            };
+
+            return responseModel;
+        }
+
         private async Task<ICollection<AdminReviewResponseModel>> GetReviewsAsync(PaginatedAdminReviewRequestModel model)
         {
             //get deleted included
@@ -145,6 +217,7 @@ namespace ShopHeaven.Data.Services
                    RatingValue = review.RatingValue,
                    IsDeleted = review.IsDeleted,
                    Product = review.Product.Name,
+                   Status = review.Status.ToString(),
                })
                .ToListAsync();
 

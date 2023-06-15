@@ -210,6 +210,7 @@ namespace ShopHeaven.Data.Services
 
             order.IsDeleted = true;
             order.DeletedOn = DateTime.UtcNow;
+            order.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
 
@@ -235,6 +236,7 @@ namespace ShopHeaven.Data.Services
 
             order.IsDeleted = false;
             order.DeletedOn = null;
+            order.ModifiedOn = DateTime.UtcNow;
 
             await this.db.SaveChangesAsync();
 

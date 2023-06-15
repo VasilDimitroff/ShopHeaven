@@ -73,5 +73,37 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Route(nameof(Delete))]
+        public async Task<ActionResult<ReviewResponseModel>> Delete([FromBody] DeleteReviewRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                var responseModel = await this.reviewsService.DeleteReviewAsync(model);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Route(nameof(Undelete))]
+        public async Task<ActionResult<ReviewResponseModel>> Undelete([FromBody] UndeleteReviewRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                var responseModel = await this.reviewsService.UndeleteReviewAsync(model);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

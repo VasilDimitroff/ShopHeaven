@@ -31,7 +31,7 @@ export default function UndeleteReview(props) {
     try {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
-        ApiEndpoints.orders.undeleteOrder,
+        ApiEndpoints.reviews.undeleteReview,
         JSON.stringify({ id: reviewId }),
         {
           signal: controller.signal,
@@ -80,7 +80,7 @@ export default function UndeleteReview(props) {
         }}
       >
         <Typography variant="h6">
-          Do you want to reveal review {review?.id}!
+          Do you want to reveal review of {review?.email}!
         </Typography>
       </Box>
       <ButtonsHolder>
