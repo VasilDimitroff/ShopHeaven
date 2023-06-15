@@ -58,6 +58,7 @@ export const ApiEndpoints = {
         deleteReview: "api/reviews/delete",
         undeleteReview: "api/reviews/undelete",
         changeStatus: "api/reviews/changeStatus",
+        editReview: "api/reviews/edit",
     },
     carts: {
         addProduct: "api/carts/addProduct",

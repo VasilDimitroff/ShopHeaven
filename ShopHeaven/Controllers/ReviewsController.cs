@@ -90,8 +90,24 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Edit))]
+        public async Task<ActionResult<AdminReviewResponseModel>> Edit([FromBody] EditReviewRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            { 
+                var editedReview = await this.reviewsService.EditReviewAsync(model);
+                return Ok(editedReview);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost, Authorize(Roles =GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
-        public async Task<ActionResult<ReviewResponseModel>> Delete([FromBody] DeleteReviewRequestModel model)
+        public async Task<ActionResult<AdminReviewResponseModel>> Delete([FromBody] DeleteReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
@@ -107,7 +123,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
-        public async Task<ActionResult<ReviewResponseModel>> Undelete([FromBody] UndeleteReviewRequestModel model)
+        public async Task<ActionResult<AdminReviewResponseModel>> Undelete([FromBody] UndeleteReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 

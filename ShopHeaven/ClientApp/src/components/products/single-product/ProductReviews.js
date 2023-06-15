@@ -254,6 +254,18 @@ export default function ProductReviews(props) {
     return isValid;
   }
 
+  function formatDate(date) {
+    const minutes = date.substring(14, 16);
+    const hour = date.substring(11, 13);
+    const day = date.substring(8, 10);
+    const month = date.substring(5, 7);
+    const year = date.substring(0, 4);
+
+    const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
+    return formattedDate;
+  }
+
+
   const StyledPaper = styled(Paper)({
     padding: theme.spacing(3),
   });
@@ -402,7 +414,7 @@ export default function ProductReviews(props) {
                   {review.email[0].toUpperCase()}
                 </Avatar>
                 <Author>{review.email}</Author>
-                <Date>on: {review.createdOn}</Date>
+                <Date>on: {formatDate(review.createdOn)}</Date>
               </InfoHolder>
               <InfoHolder>
                 <Rating

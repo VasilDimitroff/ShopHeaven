@@ -62,7 +62,7 @@ namespace ShopHeaven.Data.Services
             {
                 Id = newReview.Id,
                 Content = newReview.Content,
-                CreatedOn = newReview.CreatedOn.ToString(),
+                CreatedOn = newReview.CreatedOn,
                 Email = user.Email,
                 RatingValue = newReview.RatingValue,
             };
@@ -88,7 +88,7 @@ namespace ShopHeaven.Data.Services
                     Email = r.CreatedBy.Email,
                     Content = r.Content,
                     RatingValue = r.RatingValue,
-                    CreatedOn = r.CreatedOn.ToString(),
+                    CreatedOn = r.CreatedOn,
                 })
                 .ToListAsync();
 
@@ -192,6 +192,18 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+        public async Task<AdminReviewResponseModel> EditReviewAsync(EditReviewRequestModel model)
+        {
+            var review = await GetReviewByIdAsync(model.Id);
+            review.Content = model.Content.Trim();
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = CreateReviewResponseModel(review);
+
+            return responseModel;
+        }
+
         private async Task<Review> GetReviewByIdAsync(string id)
         {
             var review = await this.db.Reviews
@@ -214,7 +226,7 @@ namespace ShopHeaven.Data.Services
                 Id = review.Id,
                 Status = review.Status.ToString(),
                 Content = review.Content,
-                CreatedOn = review.CreatedOn.ToString(),
+                CreatedOn = review.CreatedOn,
                 Email = review.CreatedBy.Email,
                 IsDeleted = review.IsDeleted,
                 Product = review.Product.Name,
@@ -240,7 +252,7 @@ namespace ShopHeaven.Data.Services
                    Id = review.Id,
                    Content = review.Content,
                    Email = review.CreatedBy.Email,
-                   CreatedOn = review.CreatedOn.ToString(),
+                   CreatedOn = review.CreatedOn,
                    RatingValue = review.RatingValue,
                    IsDeleted = review.IsDeleted,
                    Product = review.Product.Name,

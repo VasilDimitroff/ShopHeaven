@@ -113,7 +113,6 @@ export default function AdminReviews() {
           setPage(1);
         }
 
-
         setIsStatusUpdated(false);
         setIsLoading(false);
       } catch (error) {

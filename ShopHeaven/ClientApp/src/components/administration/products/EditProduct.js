@@ -288,7 +288,6 @@ export default function EditProduct(props) {
   }
 
   async function editProduct(formData) {
-    console.log("EDIT PRODUCT REQUES", formData);
     try {
       const controller = new AbortController();
 
