@@ -165,6 +165,33 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+        public async Task<ChangeReviewStatusResponseModel> ChangeReviewStatusAsync(ChangeReviewStatusRequestModel model)
+        {
+            //including deleted
+            var review = await this.db.Reviews.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (review == null)
+            {
+                throw new ArgumentException(GlobalConstants.ReviewNotFound);
+            }
+
+            bool isOrderStatusParsed = Enum.TryParse<ReviewStatus>(model.Status.Trim(), out ReviewStatus status);
+
+            if (isOrderStatusParsed)
+            {
+                review.Status = status;
+                await this.db.SaveChangesAsync();
+            }
+
+            var responseModel = new ChangeReviewStatusResponseModel
+            {
+                Id = review.Id,
+                Status = review.Status.ToString()
+            };
+
+            return responseModel;
+        }
+
         private async Task<Review> GetReviewByIdAsync(string id)
         {
             var review = await this.db.Reviews

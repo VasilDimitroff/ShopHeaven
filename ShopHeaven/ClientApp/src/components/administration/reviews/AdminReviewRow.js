@@ -73,7 +73,7 @@ export default function AdminReviewRow(props) {
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.orders.changeStatus,
+        ApiEndpoints.reviews.changeStatus,
         requestData,
         {
           signal: controller.signal,
@@ -290,7 +290,7 @@ export default function AdminReviewRow(props) {
             <Grid item xs={4} sm={2} md={1} lg={1}>
               <Tooltip
                 placement="bottom-start"
-                title={`Is order deleted: ${review?.isDeleted ? "Yes" : "No"}`}
+                title={`Is review deleted: ${review?.isDeleted ? "Yes" : "No"}`}
                 arrow
               >
                 <ReviewInfoText>
@@ -391,14 +391,14 @@ export default function AdminReviewRow(props) {
           <Snackbar
             open={updateStatusErrorMessage.length > 0}
             autoHideDuration={8000}
-            message={`Order status updating failed!`}
+            message={`Review status updating failed!`}
             severity="error"
             onClose={handleCloseErrorMessageSnackbar}
           />
           <Snackbar
             open={updateStatusResponseMessage.length > 0}
             autoHideDuration={8000}
-            message={`Order status updated to ${review?.status}`}
+            message={`Review status updated to ${review?.status}`}
             severity="error"
             onClose={handleCloseSuccessMessageSnackbar}
           />

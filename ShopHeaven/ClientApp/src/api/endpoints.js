@@ -57,6 +57,7 @@ export const ApiEndpoints = {
         getAll: "api/reviews/all",
         deleteReview: "api/reviews/delete",
         undeleteReview: "api/reviews/undelete",
+        changeStatus: "api/reviews/changeStatus",
     },
     carts: {
         addProduct: "api/carts/addProduct",

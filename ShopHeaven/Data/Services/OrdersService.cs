@@ -169,7 +169,8 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ChangeOrderStatusResponseModel> ChangeOrderStatusAsync(ChangeOrderStatusRequestModel model)
         {
-            var order = await this.db.Orders.FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
+            //including deleted
+            var order = await this.db.Orders.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (order == null)
             {

@@ -1,4 +1,5 @@
-﻿using ShopHeaven.Models.Requests.Reviews;
+﻿using ShopHeaven.Data.Models.Enums;
+using ShopHeaven.Models.Requests.Reviews;
 using ShopHeaven.Models.Responses.Reviews;
 
 namespace ShopHeaven.Data.Services.Contracts
@@ -12,6 +13,8 @@ namespace ShopHeaven.Data.Services.Contracts
         Task<int> GetReviewsCountByProductIdAsync(string productId);
 
         Task<ReviewsAndStatusesResponseModel> GetReviewsWithReviewStatusesAsync(PaginatedAdminReviewRequestModel model);
+
+        Task<ChangeReviewStatusResponseModel> ChangeReviewStatusAsync(ChangeReviewStatusRequestModel model);
 
         Task<AdminReviewResponseModel> DeleteReviewAsync(DeleteReviewRequestModel model);
 

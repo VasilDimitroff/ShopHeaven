@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
+using ShopHeaven.Models.Requests.Orders;
 using ShopHeaven.Models.Requests.Reviews;
+using ShopHeaven.Models.Responses.Orders;
 using ShopHeaven.Models.Responses.Reviews;
 
 namespace ShopHeaven.Controllers
@@ -58,7 +60,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Route(nameof(All))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(All))]
         public async Task<ActionResult<ReviewsAndStatusesResponseModel>> All([FromBody] PaginatedAdminReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
@@ -74,7 +76,21 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Route(nameof(Delete))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(ChangeStatus))]
+        public async Task<ActionResult<ChangeReviewStatusResponseModel>> ChangeStatus(ChangeReviewStatusRequestModel model)
+        {
+            try
+            {
+                var updatedReview = await this.reviewsService.ChangeReviewStatusAsync(model);
+                return Ok(updatedReview);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles =GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
         public async Task<ActionResult<ReviewResponseModel>> Delete([FromBody] DeleteReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
@@ -90,7 +106,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Route(nameof(Undelete))]
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
         public async Task<ActionResult<ReviewResponseModel>> Undelete([FromBody] UndeleteReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
