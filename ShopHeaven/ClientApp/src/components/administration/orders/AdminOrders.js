@@ -300,7 +300,7 @@ export default function AdminOrders() {
         <Alert severity="info" sx={{ mt: 1 }}>
           <Typography>
             <b>{totalOrdersCount} results</b>
-            {searchTerm && searchOrderProperty ? <>for <b>"{searchTerm}"</b></> : <></>}
+            {searchTerm && searchOrderProperty ? <> for <b>"{searchTerm}"</b></> : <></>}
             {searchOrderProperty ? (
               <Fragment>
                 {" "}

@@ -5,7 +5,6 @@ import {
   Typography,
   Paper,
   Alert,
-  AlertTitle,
   Zoom,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -28,17 +27,17 @@ export default function DeleteOrder(props) {
     useState("");
   const [isDeleted, setIsDeleted] = useState(false);
 
-  function onDenleteOrder() {
+  function onDeleteOrder() {
     deleteOrder(order.id);
   }
 
-  async function deleteOrder(userId) {
+  async function deleteOrder(orderId) {
     try {
       const controller = new AbortController();
 
       const response = await axiosPrivate.post(
-        ApiEndpoints.users.deleteUser,
-        JSON.stringify({ id: userId }),
+        ApiEndpoints.orders.deleteOrder,
+        JSON.stringify({ id: orderId }),
         {
           signal: controller.signal,
         }
@@ -48,11 +47,11 @@ export default function DeleteOrder(props) {
 
       setDeleteOrderErrorMessage("");
       setDeleteOrderResponseMessage(
-        "Order " + order?.email + " deleted!"
+        "Order " + order?.id + " deleted!"
       );
 
       setDeleteResponse(response?.data);
-      
+      console.log("RESPONSE DELETED OREDER", response?.data)
       setIsDeleted(true);
       props.updateOrder(response?.data);
     } catch (error) {
@@ -66,7 +65,7 @@ export default function DeleteOrder(props) {
       }
       console.log(error.message);
     }
-  } 
+  }
 
   const DeleteOrderButton = styled(Button)({
     width: "100%",
@@ -84,63 +83,63 @@ export default function DeleteOrder(props) {
 
   return (
     <Paper sx={{ padding: theme.spacing(2), marginTop: theme.spacing(2) }}>
-        <Fragment>
-          <Box
-            sx={{
-              textAlign: "center",
-              marginLeft: theme.spacing(4),
-              marginTop: theme.spacing(3),
-            }}
+      <Fragment>
+        <Box
+          sx={{
+            textAlign: "center",
+            marginLeft: theme.spacing(4),
+            marginTop: theme.spacing(3),
+          }}
+        >
+          <Typography variant="h6">
+            You are on the way to delete order {order.id}!
+          </Typography>
+          <Typography variant="p" color="error">
+            Be careful!
+          </Typography>
+        </Box>
+        <ButtonsHolder>
+          <DeleteOrderButton
+            startIcon={<Delete />}
+            onClick={onDeleteOrder}
+            type="submit"
+            size="large"
+            variant="outlined"
+            color="error"
+            disabled={isDeleted ? true : false}
           >
-            <Typography variant="h6">
-              You are on the way to delete order {order.email.toUpperCase()}!
-            </Typography>
-            <Typography variant="p" color="error">
-              Be careful!
-            </Typography>
-          </Box>
-          <ButtonsHolder>
-            <DeleteOrderButton
-              startIcon={<Delete />}
-              onClick={onDenleteOrder}
-              type="submit"
-              size="large"
-              variant="outlined"
-              color="error"
-              disabled={isDeleted ? true : false}
-            >
-              DELETE ORDER
-            </DeleteOrderButton>
-            <DeleteOrderButton
-              startIcon={<Cancel />}
-              onClick={props.onCancelButtonClicked}
-              type="submit"
-              size="large"
-              variant="contained"
-              color="error"
-            >
-              CANCEL
-            </DeleteOrderButton>
-          </ButtonsHolder>
-          {deleteOrderResponseMessage ? (
-            <Zoom in={deleteOrderResponseMessage.length > 0 ? true : false}>
-              <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
-                {deleteOrderResponseMessage}
-              </Alert>
-            </Zoom>
-          ) : (
-            ""
-          )}
-          {deleteOrderErrorMessage ? (
-            <Zoom in={deleteOrderErrorMessage.length > 0 ? true : false}>
-              <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
-                {deleteOrderErrorMessage}
-              </Alert>
-            </Zoom>
-          ) : (
-            ""
-          )}
-        </Fragment>
+            DELETE ORDER
+          </DeleteOrderButton>
+          <DeleteOrderButton
+            startIcon={<Cancel />}
+            onClick={props.onCancelButtonClicked}
+            type="submit"
+            size="large"
+            variant="contained"
+            color="error"
+          >
+            CANCEL
+          </DeleteOrderButton>
+        </ButtonsHolder>
+        {deleteOrderResponseMessage ? (
+          <Zoom in={deleteOrderResponseMessage.length > 0 ? true : false}>
+            <Alert sx={{ marginTop: theme.spacing(1) }} severity="success">
+              {deleteOrderResponseMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+        {deleteOrderErrorMessage ? (
+          <Zoom in={deleteOrderErrorMessage.length > 0 ? true : false}>
+            <Alert variant="filled" sx={{ marginTop: theme.spacing(1) }} severity="error">
+              {deleteOrderErrorMessage}
+            </Alert>
+          </Zoom>
+        ) : (
+          ""
+        )}
+      </Fragment>
     </Paper>
   );
 }

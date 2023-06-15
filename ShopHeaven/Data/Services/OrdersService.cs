@@ -9,8 +9,6 @@ using ShopHeaven.Models.Responses.Orders;
 using ShopHeaven.Models.Responses.Payments;
 using ShopHeaven.Models.Responses.ProductOrders;
 using ShopHeaven.Models.Responses.ShippingMethods;
-using Stripe;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace ShopHeaven.Data.Services
 {
@@ -195,6 +193,128 @@ namespace ShopHeaven.Data.Services
             return responseModel;
         }
 
+        public async Task<OrderResponseModel> DeleteOrderAsync(DeleteOrderRequestModel model)
+        {
+            var order = await GetOrderByIdAsync(model.Id);
+
+            if (order.IsDeleted)
+            {
+                throw new ArgumentException(GlobalConstants.OrderAlreadyDeleted);
+            }
+
+            foreach (var product in order.Products)
+            {
+                product.IsDeleted = true;
+                product.DeletedOn = DateTime.UtcNow;
+            }
+
+            order.IsDeleted = true;
+            order.DeletedOn = DateTime.UtcNow;
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = CreateOrderResponseModel(order);
+
+            return responseModel;
+        }
+
+        public async Task<OrderResponseModel> UndeleteOrderAsync(UndeleteOrderRequestModel model)
+        {
+            var order = await GetOrderByIdAsync(model.Id);
+
+            if (!order.IsDeleted)
+            {
+                throw new ArgumentException(GlobalConstants.OrderAlreadyUndeleted);
+            }
+
+            foreach (var product in order.Products)
+            {
+                product.IsDeleted = false;
+                product.DeletedOn = null;
+            }
+
+            order.IsDeleted = false;
+            order.DeletedOn = null;
+
+            await this.db.SaveChangesAsync();
+
+            var responseModel = CreateOrderResponseModel(order);
+
+            return responseModel;
+        }
+
+        private OrderResponseModel CreateOrderResponseModel(Order order)
+        {
+            var responseModel = new OrderResponseModel
+            {
+                Id = order.Id,
+                Recipient = order.Recipient,
+                Phone = order.Phone,
+                Country = order.Country,
+                City = order.City,
+                Address = order.Address,
+                Details = order.Details,
+                CreatedBy = order.CreatedBy.Email,
+                Status = order.Status.ToString(),
+                CreatedOn = order.CreatedOn.ToString(),
+                IsDeleted = order.IsDeleted,
+                TotalPriceWithDiscount = order.TotalPriceWithDiscount,
+                TotalPriceWithNoDiscount = order.TotalPriceWithNoDiscount,
+                TotalPriceWithDiscountAndCoupon = order.TotalPriceWithDiscountAndCoupon,
+                TotalPriceWithDiscountCouponAndShippingTax = order.TotalPriceWithDiscountCouponAndShippingTax,
+                Payment = new PaymentResponseModel
+                {
+                    Id = order.Payment.Id,
+                    Amount = order.Payment.Amount,
+                    IsCompleted = order.Payment.IsCompleted,
+                    PaymentMethod = order.Payment.PaymentMethod.ToString(),
+                },
+                ShippingMethod = new ShippingMethodResponseModel
+                {
+                    Id = order.ShippingMethod.Id,
+                    Name = order.ShippingMethod.Name,
+                    Amount = order.ShippingMethod.ShippingAmount
+                },
+                Coupon = order.Coupon != null
+                           ? new CouponBaseResponseModel
+                           {
+                               Code = order.Coupon.Code,
+                               Amount = order.Coupon.Amount,
+                           }
+                           : null,
+                Products = order.Products
+                       .Where(p => p.IsDeleted != true)
+                       .Select(p => new ProductOrderResponseModel
+                       {
+                           Id = p.Product.Id,
+                           Name = p.Product.Name,
+                           Quantity = p.Quantity,
+                       })
+                       .ToList(),
+            };
+
+            return responseModel;
+        }
+
+        private async Task<Order> GetOrderByIdAsync(string id)
+        {
+            var order = await this.db.Orders
+               .Include(x => x.Products)
+               .ThenInclude(x => x.Product)
+               .Include(x => x.Payment)
+               .Include(x => x.Coupon)
+               .Include(x => x.ShippingMethod)
+               .Include(x => x.CreatedBy)
+               .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (order == null)
+            {
+                throw new ArgumentException(GlobalConstants.OrderNotFound);
+            }
+
+            return order;
+        }
+
         private ICollection<string> GetOrderStatuses()
         {
             var orderStatuses = Enum.GetNames(typeof(Data.Models.Enums.OrderStatus));
@@ -248,43 +368,44 @@ namespace ShopHeaven.Data.Services
             var filteredOrders = await orders.OrderByDescending(x => x.CreatedOn)
                .Skip((model.Page - 1) * model.RecordsPerPage)
                .Take(model.RecordsPerPage)
-               .Select(x => new OrderResponseModel
+               .Select(order => new OrderResponseModel
                {
-                   Id = x.Id,
-                   Recipient = x.Recipient,
-                   Phone = x.Phone,
-                   Country = x.Country,
-                   City = x.City,
-                   Address = x.Address,
-                   Details = x.Details,
-                   CreatedBy = x.CreatedBy.Email,
-                   Status = x.Status.ToString(),
-                   CreatedOn = x.CreatedOn.ToString(),
-                   TotalPriceWithDiscount = x.TotalPriceWithDiscount,
-                   TotalPriceWithNoDiscount = x.TotalPriceWithNoDiscount,
-                   TotalPriceWithDiscountAndCoupon = x.TotalPriceWithDiscountAndCoupon,
-                   TotalPriceWithDiscountCouponAndShippingTax = x.TotalPriceWithDiscountCouponAndShippingTax,
+                   Id = order.Id,
+                   Recipient = order.Recipient,
+                   Phone = order.Phone,
+                   Country = order.Country,
+                   City = order.City,
+                   Address = order.Address,
+                   Details = order.Details,
+                   CreatedBy = order.CreatedBy.Email,
+                   Status = order.Status.ToString(),
+                   CreatedOn = order.CreatedOn.ToString(),
+                   IsDeleted = order.IsDeleted,
+                   TotalPriceWithDiscount = order.TotalPriceWithDiscount,
+                   TotalPriceWithNoDiscount = order.TotalPriceWithNoDiscount,
+                   TotalPriceWithDiscountAndCoupon = order.TotalPriceWithDiscountAndCoupon,
+                   TotalPriceWithDiscountCouponAndShippingTax = order.TotalPriceWithDiscountCouponAndShippingTax,
                    Payment = new PaymentResponseModel
                    {
-                       Id = x.Payment.Id,
-                       Amount = x.Payment.Amount,
-                       IsCompleted = x.Payment.IsCompleted,
-                       PaymentMethod = x.Payment.PaymentMethod.ToString(),
+                       Id = order.Payment.Id,
+                       Amount = order.Payment.Amount,
+                       IsCompleted = order.Payment.IsCompleted,
+                       PaymentMethod = order.Payment.PaymentMethod.ToString(),
                    },
                    ShippingMethod = new ShippingMethodResponseModel
                    {
-                       Id = x.ShippingMethod.Id,
-                       Name = x.ShippingMethod.Name,
-                       Amount = x.ShippingMethod.ShippingAmount
+                       Id = order.ShippingMethod.Id,
+                       Name = order.ShippingMethod.Name,
+                       Amount = order.ShippingMethod.ShippingAmount
                    },
-                   Coupon = x.Coupon != null
+                   Coupon = order.Coupon != null
                            ? new CouponBaseResponseModel
                            {
-                               Code = x.Coupon.Code,
-                               Amount = x.Coupon.Amount,
+                               Code = order.Coupon.Code,
+                               Amount = order.Coupon.Amount,
                            }
                            : null,
-                   Products = x.Products
+                   Products = order.Products
                        .Where(p => p.IsDeleted != true)
                        .Select(p => new ProductOrderResponseModel
                        {

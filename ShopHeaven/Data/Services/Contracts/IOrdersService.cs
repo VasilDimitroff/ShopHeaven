@@ -18,6 +18,10 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task<ChangeOrderStatusResponseModel> ChangeOrderStatusAsync(ChangeOrderStatusRequestModel model);
 
+        Task<OrderResponseModel> DeleteOrderAsync(DeleteOrderRequestModel model);
+
+        Task<OrderResponseModel> UndeleteOrderAsync(UndeleteOrderRequestModel model);
+
         Task ReduceQuantityOfProductsAsync(string orderId);
     }
 }

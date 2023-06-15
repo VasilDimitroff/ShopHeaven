@@ -142,6 +142,10 @@
 
         public const string OrderNotFound = "Order with this Id not found!";
 
+        public const string OrderAlreadyDeleted = "Order with this Id is already deleted!";
+
+        public const string OrderAlreadyUndeleted = "You cannot undelete this order because it is not deleted!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

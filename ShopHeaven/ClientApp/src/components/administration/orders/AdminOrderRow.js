@@ -15,7 +15,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { ActionIconButton } from "../../../styles/styles";
 import DeleteOrder from "./DeleteOrder";
-import EditOrder from "./EditOrder";
+import OrderInfo from "./OrderInfo";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
@@ -361,7 +361,7 @@ export default function AdminOrderRow(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           {
             <Collapse in={openEditForm} timeout="auto" unmountOnExit>
-              <EditOrder
+              <OrderInfo
                 order={order}
                 orderStatuses={props.orderStatuses}
                 updateOrder={updateOrder}
@@ -385,7 +385,7 @@ export default function AdminOrderRow(props) {
           <Snackbar
             open={openSnackbar}
             autoHideDuration={8000}
-            message={`${order.email} is deleted! To edit the order, first you should undelete it!`}
+            message={`Order ${order.id} is deleted! To view the order, first you should undelete it!`}
             severity="error"
             onClose={handleSnackbarClose}
           />

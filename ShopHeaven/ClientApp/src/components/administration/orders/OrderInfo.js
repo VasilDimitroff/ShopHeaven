@@ -14,8 +14,7 @@ import { singleProductBasePath } from "../../../constants";
 import useAppSettings from "../../../hooks/useAppSettings";
 import { Link } from "react-router-dom";
 
-export default function EditOrder(props) {
-  //app settings
+export default function OrderInfo(props) {
   const { appSettings } = useAppSettings();
 
   const [order, setOrder] = useState(props.order);
@@ -138,6 +137,45 @@ export default function EditOrder(props) {
                   {order?.details}
                 </Typography>
               </InfoHolder>
+            </Section>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
+              <SubheadingChip
+                label="PRODUCTS ORDERED"
+                variant="filled"
+                color="primary"
+              />
+            </Divider>
+            <Section flexWrap={"wrap"} spacing={4}>
+              {
+                order?.products?.map((product, index) => {
+                  return (
+                    <Stack spacing={1} key={product?.id}>
+                      <InfoHolder>
+                        <ShoppingBag sx={{ color: theme.palette.secondary.main }} />
+                        <InfoText display={"inline"}>
+                          Name:
+                        </InfoText>
+                        <Link to={`${singleProductBasePath}${product?.id}`}>
+                          <Typography display={"inline"}>
+                            {product?.name}
+                          </Typography>
+                        </Link>
+                      </InfoHolder>
+                      <InfoHolder>
+                        <AddShoppingCart sx={{ color: theme.palette.secondary.main }} />
+                        <InfoText display={"inline"}>
+                          Quantity purchased:
+                        </InfoText>
+                        <Typography display={"inline"}>
+                          {product?.quantity}
+                        </Typography>
+                      </InfoHolder>
+                    </Stack>
+                  )
+                })
+              }
             </Section>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -313,46 +351,6 @@ export default function EditOrder(props) {
                   {formatDate(order?.createdOn)}
                 </Typography>
               </InfoHolder>
-            </Section>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Divider textAlign="left" sx={{ mb: 2 }}>
-              <SubheadingChip
-                label="PRODUCTS ORDERED"
-                variant="filled"
-                color="primary"
-              />
-            </Divider>
-            <Section flexWrap={"wrap"} spacing={4}>
-              {
-                order?.products?.map((product, index) => {
-                  return (
-                    <Stack spacing={1} key={product?.id}>
-                      <InfoHolder>
-                        <ShoppingBag sx={{ color: theme.palette.secondary.main }} />
-                        <InfoText display={"inline"}>
-                          Name:
-                        </InfoText>
-                        <Link to={`${singleProductBasePath}${product?.id}`}>
-                          <Typography display={"inline"}>
-                            {product?.name}
-                          </Typography>
-                        </Link>
-                      </InfoHolder>
-                      <InfoHolder>
-                        <AddShoppingCart sx={{ color: theme.palette.secondary.main }} />
-                        <InfoText display={"inline"}>
-                          Quantity purchased:
-                        </InfoText>
-                        <Typography display={"inline"}>
-                          {product?.quantity}
-                        </Typography>
-                      </InfoHolder>
-                    </Stack>
-                  )
-                })
-              }
-
             </Section>
           </Grid>
         </Grid>

@@ -1,4 +1,4 @@
-import { React, useState, Fragment } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -17,22 +17,22 @@ import { noPermissionsForOperationMessage } from "../../../constants";
 export default function UndeleteOrder(props) {
   let axiosPrivate = useAxiosPrivate();
 
-  const [order, setOrder] = useState(props.user);
+  const [order, setOrder] = useState(props.order);
   const [undeleteOrderResponseMessage, setUndeleteOrderResponseMessage] =
     useState("");
   const [undeleteOrderErrorMessage, setUndeleteOrderErrorMessage] = useState("");
   const [isUndeleted, setIsUndeleted] = useState(false);
 
   function onUndeleteOrder() {
-    undeleteOrder(order.id);
+    undeleteOrder(order?.id);
   }
 
-  async function undeleteOrder(userId) {
+  async function undeleteOrder(orderId) {
     try {
       const controller = new AbortController();
       const response = await axiosPrivate.post(
-        ApiEndpoints.users.undeleteUser,
-        JSON.stringify({ id: userId }),
+        ApiEndpoints.orders.undeleteOrder,
+        JSON.stringify({ id: orderId }),
         {
           signal: controller.signal,
         }
@@ -41,7 +41,7 @@ export default function UndeleteOrder(props) {
       controller.abort();
 
       setUndeleteOrderErrorMessage("");
-      setUndeleteOrderResponseMessage("Order " + order.email + " undeleted!");
+      setUndeleteOrderResponseMessage("Order " + order.id + " undeleted!");
 
       setIsUndeleted(true);
       props.updateOrder(response?.data);
@@ -80,7 +80,7 @@ export default function UndeleteOrder(props) {
         }}
       >
         <Typography variant="h6">
-          Do you want to reveal order {order.email.toUpperCase()}!
+          Do you want to reveal order {order?.id}!
         </Typography>
       </Box>
       <ButtonsHolder>

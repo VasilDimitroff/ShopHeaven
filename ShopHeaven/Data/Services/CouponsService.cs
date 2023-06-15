@@ -94,6 +94,7 @@ namespace ShopHeaven.Data.Services
             var coupon = await GetCouponByIdAsync(model.Id);
 
             coupon.IsDeleted = false;
+            coupon.DeletedOn = null;
 
             await this.db.SaveChangesAsync();
 

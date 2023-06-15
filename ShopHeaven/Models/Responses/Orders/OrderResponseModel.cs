@@ -38,9 +38,11 @@ namespace ShopHeaven.Models.Responses.Orders
 
         public PaymentResponseModel Payment { get; set; }
 
-        public string CreatedBy { get; set; } //email
+        public string CreatedBy { get; set; }
 
-        public string CreatedOn { get; set; } //email
+        public string CreatedOn { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         public ICollection<ProductOrderResponseModel> Products { get; set; } // the products of the order
     }

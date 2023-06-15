@@ -58,5 +58,33 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Delete))]
+        public async Task<ActionResult<OrderResponseModel>> Delete(DeleteOrderRequestModel model)
+        {
+            try
+            {
+                var orderResponseModel = await this.ordersService.DeleteOrderAsync(model);
+                return Ok(orderResponseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(Undelete))]
+        public async Task<ActionResult<OrderResponseModel>> Undelete(UndeleteOrderRequestModel model)
+        {
+            try
+            {
+                var orderResponseModel = await this.ordersService.UndeleteOrderAsync(model);
+                return Ok(orderResponseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
