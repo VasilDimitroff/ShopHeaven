@@ -7,7 +7,6 @@ import {
   UniversalInput,
   InputBox,
   AddSpecificationButton,
-  CalculatePriceButton,
   StyledChip,
   TagsWrapper,
   CompleteActionButton,
@@ -168,10 +167,6 @@ export default function EditProduct(props) {
     setValuesToStates();
   }
 
-  function calculateFinalPrice() {
-    setValuesToStates();
-  }
-
   function setValuesToStates() {
     setProductName(productNameRef.current.value);
     setProductBrand(productBrandRef.current.value);
@@ -186,7 +181,6 @@ export default function EditProduct(props) {
     let currDiscount = parseFloat(productDiscountRef.current.value);
     let newFinalPrice = currPrice - currPrice * (currDiscount / 100);
     setFinalPrice(newFinalPrice);
-    console.log("TAOTAl PRICE", newFinalPrice)
 
     const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
     setProductHasGuarantee(checkedHasGuarantee);
@@ -794,7 +788,7 @@ export default function EditProduct(props) {
               <select
                 style={StyledSelect}
                 name="subcategory"
-                defaultValue={productSubcategoryId}
+                value={productSubcategoryId}
                 ref={productSubcategoryRef}
                 onChange={setValuesToStates}
               >

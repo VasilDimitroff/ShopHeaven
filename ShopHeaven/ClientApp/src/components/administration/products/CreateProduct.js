@@ -18,7 +18,6 @@ import {
   UniversalInput,
   InputBox,
   AddSpecificationButton,
-  CalculatePriceButton,
   StyledChip,
   TagsWrapper,
   CompleteActionButton,
@@ -124,7 +123,6 @@ export default function CreateProduct(props) {
 
   function loadSubcategories() {
     const checkedCategoryId = productCategoryRef.current.value;
-    console.log("CATEOGRY:", checkedCategoryId);
 
     //3
     setValuesToStates();

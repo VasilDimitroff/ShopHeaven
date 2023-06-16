@@ -118,24 +118,12 @@ export const AddSpecificationButton = styled(Button)({
   },
 });
 
-//for product editing and product creating
-export const CalculatePriceButton = styled(Button)({
-  width: "50%",
-  display: "block",
-  margin: "auto",
-  marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(4),
-  [theme.breakpoints.down("sm")]: {
-    width: "95%",
-  },
-});
-
 //Edit product, create product, edit user, edit category...
 export const CompleteActionButton = styled(Button)({
   width: "100%",
   marginTop: theme.spacing(3),
   marginBottom: theme.spacing(1),
-  padding: theme.spacing(2),
+  padding: theme.spacing(1),
 });
 
 //product editing and product creating
