@@ -26,6 +26,7 @@ import {
   Zoom,
   Tooltip,
   TextField,
+  InputBase,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -89,9 +90,7 @@ export default function EditProduct(props) {
   const [productImages, setProductImages] = useState(product.images); // array[{}]
   const [productTags, setProductTags] = useState(product.tags); // array[string]
   const [productLabels, setProductLabels] = useState(product.labels); // array[string]
-  let finalPriceInitialy =
-    productPrice - productPrice * (productDiscount / 100);
-  const [finalPrice, setFinalPrice] = useState(finalPriceInitialy);
+  const [finalPrice, setFinalPrice] = useState(productPrice - productPrice * (productDiscount / 100));
 
   const [tagsInput, setTagsInput] = useState(true);
   const [labelsInput, setLabelsInput] = useState(true);
@@ -169,6 +168,10 @@ export default function EditProduct(props) {
     setValuesToStates();
   }
 
+  function calculateFinalPrice() {
+    setValuesToStates();  
+  }
+
   function setValuesToStates() {
     setProductName(productNameRef.current.value);
     setProductBrand(productBrandRef.current.value);
@@ -179,13 +182,14 @@ export default function EditProduct(props) {
     setProductDiscount(productDiscountRef.current.value);
     setProductQuantity(productQuantityRef.current.value);
 
-    const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
-    setProductHasGuarantee(checkedHasGuarantee);
+    let currPrice = parseFloat(productPriceRef.current.value);
+    let currDiscount = parseFloat(productDiscountRef.current.value);
+    let newFinalPrice = currPrice - currPrice * (currDiscount / 100);
+    setFinalPrice(newFinalPrice);
+    console.log("TAOTAl PRICE", newFinalPrice)
 
-    const price = productPriceRef.current.value;
-    const discount = productDiscountRef.current.value;
-    const totalPrice = price - price * (discount / 100);
-    setFinalPrice(totalPrice);
+    const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
+    setProductHasGuarantee(checkedHasGuarantee);  
 
     const key = productSpecificationKeyRef.current.value;
     const value = productSpecificationValueRef.current.value;
@@ -288,6 +292,7 @@ export default function EditProduct(props) {
   }
 
   async function editProduct(formData) {
+    console.log("EDIT PRODUCT REQUES", formData);
     try {
       const controller = new AbortController();
 
@@ -826,6 +831,7 @@ export default function EditProduct(props) {
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
                 <UniversalInput
+                  onChange={setValuesToStates}
                   type="number"
                   label="Price"
                   variant="outlined"
@@ -851,6 +857,7 @@ export default function EditProduct(props) {
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
+                onChange={setValuesToStates}
                 label="Discount (%)"
                 variant="outlined"
                 type="number"
@@ -875,18 +882,10 @@ export default function EditProduct(props) {
                 label="Final Price"
                 variant="outlined"
                 disabled
-                defaultValue={finalPrice.toFixed(2)}
+                value={finalPrice.toFixed(2)} 
               />
             </InputBox>
           </Box>
-          <CalculatePriceButton
-            onClick={setValuesToStates}
-            size="small"
-            variant="contained"
-            color="primary"
-          >
-            CALCULATE FINAL PRICE
-          </CalculatePriceButton>
           <InputBox>
             <Divider>
               <HeadingChip

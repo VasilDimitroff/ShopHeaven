@@ -152,8 +152,8 @@ export default function CreateProduct(props) {
     const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
     setProductHasGuarantee(checkedHasGuarantee);
 
-    const price = productPriceRef.current.value;
-    const discount = productDiscountRef.current.value;
+    const price = parseFloat(productPriceRef.current.value);
+    const discount = parseFloat(productDiscountRef.current.value);
     const totalPrice = price - price * (discount / 100);
     setFinalPrice(totalPrice);
 
@@ -650,6 +650,7 @@ export default function CreateProduct(props) {
             </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
+                onChange={setValuesToStates}
                 label="Price"
                 type="number"
                 inputRef={productPriceRef}
@@ -672,6 +673,7 @@ export default function CreateProduct(props) {
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
+                onChange={setValuesToStates}
                 label="Discount"
                 type="number"
                 inputRef={productDiscountRef}
@@ -694,7 +696,7 @@ export default function CreateProduct(props) {
               <UniversalInput
                 label="Final Price"
                 disabled
-                defaultValue={finalPrice.toFixed(2)}
+                value={finalPrice.toFixed(2)}
               />
             </InputBox>
           </Box>
