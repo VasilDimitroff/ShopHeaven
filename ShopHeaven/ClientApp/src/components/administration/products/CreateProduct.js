@@ -108,7 +108,7 @@ export default function CreateProduct(props) {
   const [createProductErrorMessage, setCreateProductErrorMessage] =
     useState("");
 
-  useEffect(() => {}, [messages]);
+  useEffect(() => { }, [messages]);
 
   function handleTagsInput() {
     //1
@@ -643,13 +643,6 @@ export default function CreateProduct(props) {
           <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
-                label="Currency"
-                disabled
-                defaultValue={appSettings.appCurrency.code}
-              />
-            </InputBox>
-            <InputBox sx={{ width: "50%" }}>
-              <UniversalInput
                 onChange={setValuesToStates}
                 label="Price"
                 type="number"
@@ -669,8 +662,6 @@ export default function CreateProduct(props) {
                 <></>
               )}
             </InputBox>
-          </Box>
-          <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
                 onChange={setValuesToStates}
@@ -692,6 +683,8 @@ export default function CreateProduct(props) {
                 <></>
               )}
             </InputBox>
+          </Box>
+          <Box sx={{ display: "flex" }}>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
                 label="Final Price"
@@ -699,15 +692,14 @@ export default function CreateProduct(props) {
                 value={finalPrice.toFixed(2)}
               />
             </InputBox>
+            <InputBox sx={{ width: "50%" }}>
+              <UniversalInput
+                label="Currency"
+                disabled
+                defaultValue={appSettings.appCurrency.code}
+              />
+            </InputBox>
           </Box>
-          <CalculatePriceButton
-            onClick={setValuesToStates}
-            size="small"
-            variant="contained"
-            color="primary"
-          >
-            CALCULATE FINAL PRICE
-          </CalculatePriceButton>
           <InputBox>
             <Divider>
               <HeadingChip

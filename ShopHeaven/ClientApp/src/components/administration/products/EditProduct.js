@@ -137,8 +137,8 @@ export default function EditProduct(props) {
   const [thumbnailResponseMessage, setThumbnailResponseMessage] = useState("");
   const [thumbnailErrorMessage, setThumbnailErrorMessage] = useState("");
 
-  useEffect(() => {}, [messages]);
-  useEffect(() => {}, [productImages]);
+  useEffect(() => { }, [messages]);
+  useEffect(() => { }, [productImages]);
 
   useEffect(() => {
     loadSubcategories();
@@ -169,7 +169,7 @@ export default function EditProduct(props) {
   }
 
   function calculateFinalPrice() {
-    setValuesToStates();  
+    setValuesToStates();
   }
 
   function setValuesToStates() {
@@ -189,7 +189,7 @@ export default function EditProduct(props) {
     console.log("TAOTAl PRICE", newFinalPrice)
 
     const checkedHasGuarantee = productGuaranteeRef.current.value === "true";
-    setProductHasGuarantee(checkedHasGuarantee);  
+    setProductHasGuarantee(checkedHasGuarantee);
 
     const key = productSpecificationKeyRef.current.value;
     const value = productSpecificationValueRef.current.value;
@@ -725,7 +725,6 @@ export default function EditProduct(props) {
             <></>
           )}
         </InputBox>
-
         <InputBox>
           <UniversalInput
             label="Brand"
@@ -823,14 +822,6 @@ export default function EditProduct(props) {
             <Grid container spacing={3} sx={{ textAlign: "center" }}>
               <Grid item xs={6} sm={6} md={6} lg={6}>
                 <UniversalInput
-                  label="Currency"
-                  variant="outlined"
-                  disabled
-                  defaultValue={appSettings.appCurrency.code}
-                />
-              </Grid>
-              <Grid item xs={6} sm={6} md={6} lg={6}>
-                <UniversalInput
                   onChange={setValuesToStates}
                   type="number"
                   label="Price"
@@ -851,39 +842,48 @@ export default function EditProduct(props) {
                   <></>
                 )}
               </Grid>
+              <Grid item xs={6} sm={6} md={6} lg={6}>
+                <UniversalInput
+                  onChange={setValuesToStates}
+                  label="Discount (%)"
+                  variant="outlined"
+                  type="number"
+                  inputRef={productDiscountRef}
+                  defaultValue={productDiscount.toString()}
+                  placeholder={productDiscount.toString()}
+                  inputProps={{
+                    step: "0.1",
+                    min: "0.00",
+                  }}
+                />
+                {messages.productDiscountError ? (
+                  <Alert variant="filled" severity="error">
+                    {messages.productDiscountError}
+                  </Alert>
+                ) : (
+                  <></>
+                )}
+              </Grid>
             </Grid>
           </InputBox>
-
           <Box sx={{ display: "flex" }}>
-            <InputBox sx={{ width: "50%" }}>
-              <UniversalInput
-                onChange={setValuesToStates}
-                label="Discount (%)"
-                variant="outlined"
-                type="number"
-                inputRef={productDiscountRef}
-                defaultValue={productDiscount.toString()}
-                placeholder={productDiscount.toString()}
-                inputProps={{
-                  step: "0.1",
-                  min: "0.00",
-                }}
-              />
-              {messages.productDiscountError ? (
-                <Alert variant="filled" severity="error">
-                  {messages.productDiscountError}
-                </Alert>
-              ) : (
-                <></>
-              )}
-            </InputBox>
             <InputBox sx={{ width: "50%" }}>
               <UniversalInput
                 label="Final Price"
                 variant="outlined"
                 disabled
-                value={finalPrice.toFixed(2)} 
+                value={finalPrice.toFixed(2)}
               />
+            </InputBox>
+            <InputBox sx={{ width: "50%" }}>
+
+              <UniversalInput
+                label="Currency"
+                variant="outlined"
+                disabled
+                defaultValue={appSettings.appCurrency.code}
+              />
+
             </InputBox>
           </Box>
           <InputBox>
