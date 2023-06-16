@@ -55,7 +55,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Route(nameof(DeleteProduct))]
-        public async Task<ActionResult<int>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
+        public async Task<ActionResult<DeleteProductFromCartResponseModel>> DeleteProduct([FromBody] DeleteProductFromCartRequestModel model)
         {
             try
             {

@@ -170,7 +170,7 @@ export default function AdminSettings() {
                 style={StyledSelect}
                 ref={appCurrencyRef}
                 name="currency"
-                defaultValue={appCurrencyId}
+                value={appCurrencyId}
               >
                 {currencies?.map((currency) => (
                   <option key={currency?.id} value={currency?.id}>

@@ -152,6 +152,14 @@
 
         public const string ReviewNotFound = "Review with this Id not found!";
 
+        public const string WishlistNotFound = "Wishlist with this Id not found!";
+
+        public const string ProductAlreadyExistsInWishlist = "Product already exists in the wishlist!";
+
+        public const string CannotAddProductsInOthersWishlists = "You can add products in your wishlist only!";
+
+        public const string ProductIsNotInWishlist = "Product is not in the wishlist!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 
