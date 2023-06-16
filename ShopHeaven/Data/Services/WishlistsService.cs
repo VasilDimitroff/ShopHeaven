@@ -29,7 +29,7 @@ namespace ShopHeaven.Data.Services
             var productInWishlist = wishlist.Products
                 .FirstOrDefault(x => x.WishlistId == wishlist.Id && x.ProductId == product.Id && x.IsDeleted != true);
 
-            if (product != null)
+            if (productInWishlist != null)
             {
                 throw new ArgumentException(GlobalConstants.ProductAlreadyExistsInWishlist);
             }

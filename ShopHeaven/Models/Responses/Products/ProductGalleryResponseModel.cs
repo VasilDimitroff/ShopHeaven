@@ -14,6 +14,8 @@ namespace ShopHeaven.Models.Responses.Products
 
         public double Rating { get; set; }
 
+        public bool IsInUserWishlist { get; set; }
+
         public string Image { get; set; } //this is thumbnail
 
         public ICollection<string> Labels { get; set; }

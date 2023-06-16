@@ -44,16 +44,12 @@ export default function ProductActionButtons(props) {
   let axiosPrivate = useAxiosPrivate();
 
   const [product, setProduct] = useState(props.product);
-  const [isInUserWishlist, setIsInUserWishlist] = useState(
-    product.isInUserWishlist
-  );
-
-  const [addToFavorites, setAddToFavorites] = useState(false);
-  const [addToFavoritesButtonText, setAddToFavoritesButtonText] =
-    useState("Add to favorites");
 
   const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+
+  const [addToWishlistResponseMessage, setAddToWishlistResponseMessage] = useState("");
+  const [addToWishlistErrorMessage, setAddToWishlistErrorMessage] = useState("");
 
   let [productsQuantity, setProductsQuantity] = useState(1);
 
@@ -143,22 +139,74 @@ export default function ProductActionButtons(props) {
     }
   }
 
-  function handleAddToFavorites(value) {
-    setAddToFavorites(value);
-
-    if (value === false) {
-      setAddToFavoritesButtonText("Add to favorites");
-    } else {
-      setAddToFavoritesButtonText("Remove from favorites");
-    }
-
-    console.log("Add to favorites is " + addToFavorites);
-  }
-
-  function handleCloseSnackbar() {
+  function handleCloseAddToCartSnackbar() {
     setAddToCartErrorMessage("");
     setAddToCartResponseMessage("");
   }
+
+  function handleCloseAddToWishlistSnackbar() {
+    setAddToWishlistErrorMessage("");
+    setAddToWishlistResponseMessage("");
+  }
+
+  function onAddProductToWishlist() {
+    const requestData = {
+      userId: auth.userId,
+      wishlistId: auth.wishlistId,
+      productId: product.id,
+    };
+
+    addProductToWishlist(requestData);
+  }
+
+  async function addProductToWishlist(requestData) {
+    try {
+      const controller = new AbortController();
+
+      const response = await axiosPrivate.post(
+        ApiEndpoints.wishlists.addProduct,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      setProduct((prev) => {
+        return {
+          ...prev,
+          isInUserWishlist: response?.data?.isProductInTheWishlist,
+        };
+      });
+
+      setUser((prev) => {
+        return {
+          ...prev,
+          wishlistProductsCount: response?.data?.productsInWishlistCount,
+        };
+      });
+
+      setAddToWishlistErrorMessage("");
+      setAddToWishlistResponseMessage(
+        `You have added product ${product.name} in your wishlist`
+      );
+
+      console.log("ADD TO WISHLIST RESPONSE", response?.data);
+    } catch (error) {
+      setAddToWishlistResponseMessage("")
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setAddToWishlistErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setAddToWishlistErrorMessage(error?.response?.data);
+      }
+
+      console.log(error);
+    } finally {
+      setProductsQuantity(1);
+    }
+  }
+
 
   const Discount = styled(Typography)({
     color: "gray",
@@ -232,10 +280,6 @@ export default function ProductActionButtons(props) {
       textDecoration: "underline",
     },
   });
-  
-  function renderFavoriteIcon() {
-    return product.isInUserWishlist ? <Favorite /> : <FavoriteBorder />;
-  }
 
   function renderPrice() {
     const price = product.price - product.price * (product.discount / 100);
@@ -325,7 +369,7 @@ export default function ProductActionButtons(props) {
                 {`${product.quantity} items left`}
               </Typography>
               <Snackbar
-                onClose={handleCloseSnackbar}
+                onClose={handleCloseAddToCartSnackbar}
                 autoHideDuration={9000}
                 ContentProps={{
                   style: {
@@ -339,7 +383,7 @@ export default function ProductActionButtons(props) {
                 message={`${addToCartErrorMessage}`}
               ></Snackbar>
               <Snackbar
-                onClose={handleCloseSnackbar}
+                onClose={handleCloseAddToCartSnackbar}
                 autoHideDuration={6000}
                 ContentProps={{
                   style: {
@@ -352,6 +396,35 @@ export default function ProductActionButtons(props) {
                 message={`${addToCartResponseMessage}`}
               ></Snackbar>
 
+<Snackbar
+                onClose={handleCloseAddToWishlistSnackbar}
+                autoHideDuration={9000}
+                ContentProps={{
+                  style: {
+                    backgroundColor: theme.palette.error.main,
+                    textAlign: "center",
+                  },
+                }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                open={addToWishlistErrorMessage.length > 0 ? true : false}
+                TransitionComponent={Slide}
+                message={`${addToWishlistErrorMessage}`}
+              ></Snackbar>
+              <Snackbar
+                onClose={handleCloseAddToWishlistSnackbar}
+                autoHideDuration={6000}
+                ContentProps={{
+                  style: {
+                    textAlign: "center",
+                  },
+                }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                open={addToWishlistResponseMessage.length > 0 ? true : false}
+                TransitionComponent={Slide}
+                message={`${addToWishlistResponseMessage}`}
+              ></Snackbar>
+
+
               <ActionButtons spacing={1.5}>
                 <ActionButton
                   onClick={onAddProductToCart}
@@ -362,12 +435,12 @@ export default function ProductActionButtons(props) {
                   ADD TO CART
                 </ActionButton>
                 <ActionButton
-                  onClick={() => handleAddToFavorites(!addToFavorites)}
+                  onClick={onAddProductToWishlist}
                   variant="outlined"
                   size="large"
-                  startIcon={renderFavoriteIcon()}
+                  startIcon={product.isInUserWishlist ? <Favorite /> : <FavoriteBorder />}
                 >
-                  {addToFavoritesButtonText}
+                  { product.isInUserWishlist ? "REMOVE FROM FAVORITES" : "ADD TO FAVORITES" }
                 </ActionButton>
               </ActionButtons>
               <Link to={`${cartPath}`}>

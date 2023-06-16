@@ -1,7 +1,7 @@
 export const apiUrl = "https://localhost:44349/";
 
 export const ApiEndpoints = {
-    auth:{
+    auth: {
         register: "api/auth/register",
         login: "api/auth/login",
         logout: "api/auth/logout",
@@ -18,7 +18,7 @@ export const ApiEndpoints = {
     currencies: {
         getAll: "api/currencies/getall",
         getAppCurrency: "api/currencies/getAppCurrency",
-        setAppCurrency: "api/currencies/setAppCurrency"  
+        setAppCurrency: "api/currencies/setAppCurrency"
     },
     categories: {
         createCategory: "api/categories/create",
@@ -30,7 +30,7 @@ export const ApiEndpoints = {
         getCategoryNames: "api/categories/getcategorynames",
     },
     subcategories: {
-        createSubcategory : "api/subcategories/create",
+        createSubcategory: "api/subcategories/create",
         editSubcategory: "api/subcategories/edit",
         deleteSubcategory: "api/subcategories/delete",
         undeleteSubcategory: "api/subcategories/undelete",
@@ -66,6 +66,11 @@ export const ApiEndpoints = {
         deleteProduct: "api/carts/deleteProduct",
         changeProductQuantity: "api/carts/changeProductQuantity",
     },
+    wishlists: {
+        addProduct: "api/wishlists/addProduct",
+        deleteProduct: "api/wishlists/deleteProduct",
+        getProducts: "api/wishlists/getProducts",
+    },
     coupons: {
         createCoupon: "api/coupons/create",
         editCoupon: "api/coupons/edit",
@@ -85,4 +90,5 @@ export const ApiEndpoints = {
         createSession: "api/payments/createCheckoutSession",
         getPaymentSession: "api/payments/getPaymentSession"
     }
+
 }

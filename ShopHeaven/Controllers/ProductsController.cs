@@ -82,7 +82,7 @@ namespace ShopHeaven.Controllers
                     Name = x.Name,
                     Labels = x.Labels,
                     Price = x.Price,
-                    Rating = x.Rating,  
+                    Rating = x.Rating,
                 })
                     .ToList();
 
