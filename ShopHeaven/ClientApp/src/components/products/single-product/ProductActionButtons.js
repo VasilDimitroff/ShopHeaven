@@ -48,8 +48,8 @@ export default function ProductActionButtons(props) {
   const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
   const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
 
-  const [addToWishlistResponseMessage, setAddToWishlistResponseMessage] = useState("");
-  const [addToWishlistErrorMessage, setAddToWishlistErrorMessage] = useState("");
+  const [addOrRemoveToWishlistResponseMessage, setAddOrRemoveToWishlistResponseMessage] = useState("");
+  const [addOrRemoveToWishlistErrorMessage, setAddOrRemoveToWishlistErrorMessage] = useState("");
 
   let [productsQuantity, setProductsQuantity] = useState(1);
 
@@ -115,6 +115,72 @@ export default function ProductActionButtons(props) {
     }
   }
 
+  function onAddOrRemoveProductToWishlist() {
+    const requestData = {
+      userId: auth.userId,
+      wishlistId: auth.wishlistId,
+      productId: product.id,
+    };
+
+    addOrRemoveProductToWishlist(requestData);
+  }
+
+  async function addOrRemoveProductToWishlist(requestData) {
+    try {
+      const controller = new AbortController();
+
+      let requestUrl = ApiEndpoints.wishlists.addProduct;
+
+      if(product.isInUserWishlist) {
+        requestUrl = ApiEndpoints.wishlists.deleteProduct;
+      }
+
+      const response = await axiosPrivate.post(
+        requestUrl,
+        requestData,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      controller.abort();
+
+      let responseMessage = `You added product ${product.name} in your wishlist`;
+
+      if(product.isInUserWishlist) {
+        responseMessage = `You removed product ${product.name} from your wishlist`;
+      }
+
+      setProduct((prev) => {
+        return {
+          ...prev,
+          isInUserWishlist: response?.data?.isProductInTheWishlist,
+        };
+      });
+
+      setUser((prev) => {
+        return {
+          ...prev,
+          wishlistProductsCount: response?.data?.productsInWishlistCount,
+        };
+      });
+
+      setAddOrRemoveToWishlistErrorMessage("");
+      setAddOrRemoveToWishlistResponseMessage(responseMessage);
+
+      console.log("ADD TO WISHLIST RESPONSE", response?.data);
+    } catch (error) {
+      setAddOrRemoveToWishlistResponseMessage("")
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        setAddOrRemoveToWishlistErrorMessage(noPermissionsForOperationMessage);
+      } else {
+        setAddOrRemoveToWishlistErrorMessage(error?.response?.data);
+      }
+
+      console.log(error);
+    }
+  }
+
   function handleSetProductsQuantity(value) {
     value = parseInt(value);
 
@@ -145,68 +211,9 @@ export default function ProductActionButtons(props) {
   }
 
   function handleCloseAddToWishlistSnackbar() {
-    setAddToWishlistErrorMessage("");
-    setAddToWishlistResponseMessage("");
+    setAddOrRemoveToWishlistErrorMessage("");
+    setAddOrRemoveToWishlistResponseMessage("");
   }
-
-  function onAddProductToWishlist() {
-    const requestData = {
-      userId: auth.userId,
-      wishlistId: auth.wishlistId,
-      productId: product.id,
-    };
-
-    addProductToWishlist(requestData);
-  }
-
-  async function addProductToWishlist(requestData) {
-    try {
-      const controller = new AbortController();
-
-      const response = await axiosPrivate.post(
-        ApiEndpoints.wishlists.addProduct,
-        requestData,
-        {
-          signal: controller.signal,
-        }
-      );
-
-      controller.abort();
-
-      setProduct((prev) => {
-        return {
-          ...prev,
-          isInUserWishlist: response?.data?.isProductInTheWishlist,
-        };
-      });
-
-      setUser((prev) => {
-        return {
-          ...prev,
-          wishlistProductsCount: response?.data?.productsInWishlistCount,
-        };
-      });
-
-      setAddToWishlistErrorMessage("");
-      setAddToWishlistResponseMessage(
-        `You have added product ${product.name} in your wishlist`
-      );
-
-      console.log("ADD TO WISHLIST RESPONSE", response?.data);
-    } catch (error) {
-      setAddToWishlistResponseMessage("")
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setAddToWishlistErrorMessage(noPermissionsForOperationMessage);
-      } else {
-        setAddToWishlistErrorMessage(error?.response?.data);
-      }
-
-      console.log(error);
-    } finally {
-      setProductsQuantity(1);
-    }
-  }
-
 
   const Discount = styled(Typography)({
     color: "gray",
@@ -287,9 +294,8 @@ export default function ProductActionButtons(props) {
     let priceWithNoDiscountToRender;
 
     finalPrice = `${appSettings.appCurrency.code} ${price.toFixed(2)}`;
-    priceWithNoDiscountToRender = `${
-      appSettings.appCurrency.code
-    } ${product.price.toFixed(2)}`;
+    priceWithNoDiscountToRender = `${appSettings.appCurrency.code
+      } ${product.price.toFixed(2)}`;
     let renderResult;
 
     if (product.discount > 0) {
@@ -396,7 +402,7 @@ export default function ProductActionButtons(props) {
                 message={`${addToCartResponseMessage}`}
               ></Snackbar>
 
-<Snackbar
+              <Snackbar
                 onClose={handleCloseAddToWishlistSnackbar}
                 autoHideDuration={9000}
                 ContentProps={{
@@ -406,9 +412,9 @@ export default function ProductActionButtons(props) {
                   },
                 }}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                open={addToWishlistErrorMessage.length > 0 ? true : false}
+                open={addOrRemoveToWishlistErrorMessage.length > 0 ? true : false}
                 TransitionComponent={Slide}
-                message={`${addToWishlistErrorMessage}`}
+                message={`${addOrRemoveToWishlistErrorMessage}`}
               ></Snackbar>
               <Snackbar
                 onClose={handleCloseAddToWishlistSnackbar}
@@ -419,9 +425,9 @@ export default function ProductActionButtons(props) {
                   },
                 }}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                open={addToWishlistResponseMessage.length > 0 ? true : false}
+                open={addOrRemoveToWishlistResponseMessage.length > 0 ? true : false}
                 TransitionComponent={Slide}
-                message={`${addToWishlistResponseMessage}`}
+                message={`${addOrRemoveToWishlistResponseMessage}`}
               ></Snackbar>
 
 
@@ -435,12 +441,12 @@ export default function ProductActionButtons(props) {
                   ADD TO CART
                 </ActionButton>
                 <ActionButton
-                  onClick={onAddProductToWishlist}
+                  onClick={onAddOrRemoveProductToWishlist}
                   variant="outlined"
                   size="large"
                   startIcon={product.isInUserWishlist ? <Favorite /> : <FavoriteBorder />}
                 >
-                  { product.isInUserWishlist ? "REMOVE FROM FAVORITES" : "ADD TO FAVORITES" }
+                  {product.isInUserWishlist ? "REMOVE FROM FAVORITES" : "ADD TO FAVORITES"}
                 </ActionButton>
               </ActionButtons>
               <Link to={`${cartPath}`}>
