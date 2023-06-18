@@ -41,6 +41,9 @@ export default function FavoriteProduct(props) {
 	//error/response messages
 	const [deleteFromWishlistErrorMessage, setDeleteFromWishlistErrorMessage] = useState("");
 
+	const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
+	const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+
 	//get resolution type (bool)
 	const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
 	const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -81,7 +84,7 @@ export default function FavoriteProduct(props) {
 			});
 
 			controller.abort();
-			
+
 			setDeleteFromWishlistErrorMessage(``)
 		} catch (error) {
 			if (error?.response?.status === 401 || error?.response?.status === 403) {
@@ -94,9 +97,71 @@ export default function FavoriteProduct(props) {
 		}
 	}
 
+	function onAddProductToCart(quantityValue) {
+
+		if (productInWishlist.inStockQuantity < quantityValue) {
+			setAddToCartErrorMessage(`Product has not enough quantity!`);
+			return;
+		}
+
+		setAddToCartErrorMessage("");
+
+		const requestData = {
+			userId: auth.userId,
+			cartId: auth.cartId,
+			productId: productInWishlist.id,
+			quantity: quantityValue,
+		};
+
+		addProductToCart(requestData);
+	}
+
+	async function addProductToCart(requestData) {
+		try {
+			const controller = new AbortController();
+
+			const response = await axiosPrivate.post(
+				ApiEndpoints.carts.addProduct,
+				requestData,
+				{
+					signal: controller.signal,
+				}
+			);
+
+			controller.abort();
+
+			setUser((prev) => {
+				return {
+					...prev,
+					cartProductsCount: response?.data?.productsInCartCount,
+				};
+			});
+
+			setAddToCartErrorMessage("");
+			setAddToCartResponseMessage(
+				`You added product ${productInWishlist.name} in your cart`
+			);
+		} catch (error) {
+			setAddToCartResponseMessage("");
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setAddToCartErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setAddToCartErrorMessage(error?.response?.data);
+			}
+
+			console.log(error);
+		}
+	}
+
+
 	function handleCloseErrorSnackbar() {
 		setDeleteFromWishlistErrorMessage("");
 	}
+	
+    function handleCloseAddToCartSnackbar() {
+        setAddToCartErrorMessage("");
+        setAddToCartResponseMessage("");
+    }
 
 	const ImageHolder = styled(Box)({
 		width: isSmallOrDown ? "50%" : "75%",
@@ -275,7 +340,7 @@ export default function FavoriteProduct(props) {
 						justifyContent={"center"}
 					>
 						<LinkButton onClick={onDeleteProductFromWishlist}>Delete</LinkButton>
-						<LinkButton>Add to Cart</LinkButton>
+						<LinkButton onClick={() => onAddProductToCart(1)}>Add to Cart</LinkButton>
 					</Stack>
 				</Grid>
 			</Grid>
@@ -292,6 +357,33 @@ export default function FavoriteProduct(props) {
 				open={deleteFromWishlistErrorMessage.length > 0 ? true : false}
 				TransitionComponent={Slide}
 				message={`${deleteFromWishlistErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToCartSnackbar}
+				autoHideDuration={9000}
+				ContentProps={{
+					style: {
+						backgroundColor: theme.palette.error.main,
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addToCartErrorMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addToCartErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToCartSnackbar}
+				autoHideDuration={6000}
+				ContentProps={{
+					style: {
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addToCartResponseMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addToCartResponseMessage}`}
 			></Snackbar>
 		</Paper>
 	);

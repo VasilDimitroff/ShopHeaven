@@ -100,9 +100,10 @@ export default function ProductActionButtons(props) {
 
             setAddToCartErrorMessage("");
             setAddToCartResponseMessage(
-                `You have added product ${product.name} in the cart ${response?.data?.quantity} time(s)`
+                `You added product ${product.name} in the cart ${response?.data?.quantity} time(s)`
             );
         } catch (error) {
+            setAddToCartResponseMessage("");
             if (error?.response?.status === 401 || error?.response?.status === 403) {
                 setAddToCartErrorMessage(noPermissionsForOperationMessage);
             } else {
