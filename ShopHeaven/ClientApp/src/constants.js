@@ -10,6 +10,7 @@ export const subcategoriesOfMainCategoryBaseUrl =`/categories/`;
 export const subcategoryProductsBaseUrl =`/subcategories/`;
 export const singleProductBasePath =`/products/`;
 export const cartPath =`/cart`;
+export const favoritesPath =`/favorites`;
 export const checkoutPath =`/order/checkout`;
 export const successPaymentPath =`/payment/success`;
 

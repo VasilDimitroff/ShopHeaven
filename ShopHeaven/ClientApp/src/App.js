@@ -21,6 +21,7 @@ import RequireAuth from "./components/auth/RequireAuth";
 import PersistLogin from "./components/auth/PersistLogin";
 import AppSettings from "./components/settings/AppSettings";
 import Cart from "./components/cart/Cart";
+import Favorites from "./components/favorites/Favorites";
 import Checkout from "./components/checkout/Checkout";
 import SubcategoryProducts from "./components/products/products-gallery/SubcategoryProducts";
 import Success from "./components/payment/Success";
@@ -37,6 +38,7 @@ import {
   cartPath,
   checkoutPath,
   successPaymentPath,
+  favoritesPath,
 } from "./constants";
 
 export default function App() {
@@ -59,6 +61,7 @@ export default function App() {
               {/* authorization needed paths */}
               <Route element={<RequireAuth allowedRoles={[applicationUserRole, adminRole]} />}>
                 <Route path={`${cartPath}`} element={<Cart />} />
+                <Route path={`${favoritesPath}`} element={<Favorites />} />
                 <Route path={`${checkoutPath}`} element={<Checkout />} />
               </Route>
 

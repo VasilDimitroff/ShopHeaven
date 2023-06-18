@@ -388,7 +388,7 @@ export default function CartProduct(props) {
                 label={"Available"}
               />
             </Stack>
-            <Typography>{productInCart.description}</Typography>
+            <Typography>{productInCart.description.length > 400 ? productInCart.description.substring(0, 400) + "..." : productInCart.description}</Typography>
           </Stack>
         </Grid>
         <Grid

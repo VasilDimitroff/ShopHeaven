@@ -41,7 +41,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import MainMenu from "./home/MainMenu";
-import { cartPath, loginPath } from "../constants";
+import { cartPath, favoritesPath, loginPath } from "../constants";
 
 export default function Header() {
   const { auth } = useAuth();
@@ -310,6 +310,7 @@ export default function Header() {
             ) : (
               <Fragment>
                 <CustomBadge
+                  onClick={() => navigate(favoritesPath)}
                   badgeContent={user.wishlistProductsCount}
                   color="secondary"
                   sx={{

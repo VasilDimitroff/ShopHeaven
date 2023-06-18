@@ -16,6 +16,22 @@ namespace ShopHeaven.Controllers
             this.wishlistsService = wishlistsService;
         }
 
+        [HttpPost, Route(nameof(GetProducts))]
+        public async Task<ActionResult<ICollection<WishlistProductResponseModel>>> GetProducts([FromBody] GetWishlistProductsRequestModel model)
+        {
+            try
+            {
+                var productsInWishlist = await this.wishlistsService.GetWishlistProductsFullInfoAsync(model);
+            
+                return Ok(productsInWishlist);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost, Route(nameof(AddProduct))]
         public async Task<ActionResult<AddProductToWishlistResponseModel>> AddProduct([FromBody] AddProductToWishlistRequestModel model)
         {

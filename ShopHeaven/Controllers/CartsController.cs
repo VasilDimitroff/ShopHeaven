@@ -33,7 +33,7 @@ namespace ShopHeaven.Controllers
         }
 
         [HttpPost, Route(nameof(GetProducts))]
-        public async Task<ActionResult<CartProductResponseModel>> GetProducts([FromBody] GetCartProductsRequestModel model)
+        public async Task<ActionResult<GetCartProductsResponseModel>> GetProducts([FromBody] GetCartProductsRequestModel model)
         {
             try
             {
