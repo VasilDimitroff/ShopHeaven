@@ -105,7 +105,7 @@ namespace ShopHeaven.Data.Services
 
             var deleteProductFromWishlist = new DeleteProductFromWishlistResponseModel
             {
-                WishlistProductsCount = productsInWishlistCount,
+                ProductsInWishlistCount = productsInWishlistCount,
                 IsProductInTheWishlist = false,
             };
 

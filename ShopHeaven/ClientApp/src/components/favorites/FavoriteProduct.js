@@ -225,7 +225,7 @@ export default function FavoriteProduct(props) {
 								label={"Available"}
 							/>
 						</Stack>
-						<Typography>{productInWishlist.description.length > 400 ? productInWishlist.description.substring(0, 400) + "..." : productInWishlist.description}</Typography>
+						<Typography>{productInWishlist.description.length > 600 ? productInWishlist.description.substring(0, 600) + "..." : productInWishlist.description}</Typography>
 					</Stack>
 				</Grid>
 				<Grid

@@ -2,7 +2,7 @@
 {
     public class DeleteProductFromWishlistResponseModel
     {
-        public int WishlistProductsCount { get; set; }
+        public int ProductsInWishlistCount { get; set; }
 
         public bool IsProductInTheWishlist { get; set; }
     }
