@@ -20,7 +20,7 @@ const breadcrumbs = [
   },
 ];
 
-export default function Cart() {
+export default function Favorites() {
   const [productsInWishlist, setProductsInWishlist] = useState([]);
   const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
 
@@ -74,18 +74,6 @@ export default function Cart() {
 
   function productDeleted() { setDeleteProductDOMelement(true) };
 
-  function quantityUpdated(productId, newQuantity) { 
-  
-    setProductsInWishlist((prevProducts) => {
-      return prevProducts.map((product) => {
-        if (product.id === productId) {
-          return { ...product, purchasedQuantity: newQuantity };
-        }
-        return product;
-      });
-    });
-   }
-
   return (
     <Box>
       <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
@@ -100,7 +88,6 @@ export default function Cart() {
                       key={product.id}
                       productInWishlist={product}
                       productDeleted={productDeleted}
-                      quantityUpdated={quantityUpdated}
                     />
                   );
                 })}

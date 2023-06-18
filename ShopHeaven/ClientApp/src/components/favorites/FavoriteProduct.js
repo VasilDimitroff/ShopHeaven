@@ -38,9 +38,8 @@ export default function FavoriteProduct(props) {
 	//main states for component
 	const [productInWishlist, setProductInWishlist] = useState(props.productInWishlist);
 
-	//error messages
-	const [deleteFromWishlistErrorMessage, setDeleteFromWishlistErrorMessage] =
-		useState("");
+	//error/response messages
+	const [deleteFromWishlistErrorMessage, setDeleteFromWishlistErrorMessage] = useState("");
 
 	//get resolution type (bool)
 	const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -65,7 +64,7 @@ export default function FavoriteProduct(props) {
 			const controller = new AbortController();
 
 			const response = await axiosPrivate.post(
-				ApiEndpoints.carts.deleteProduct,
+				ApiEndpoints.wishlists.deleteProduct,
 				requestData,
 				{
 					signal: controller.signal,
@@ -82,6 +81,8 @@ export default function FavoriteProduct(props) {
 			});
 
 			controller.abort();
+			
+			setDeleteFromWishlistErrorMessage(``)
 		} catch (error) {
 			if (error?.response?.status === 401 || error?.response?.status === 403) {
 				setDeleteFromWishlistErrorMessage(noPermissionsForOperationMessage);
@@ -93,7 +94,7 @@ export default function FavoriteProduct(props) {
 		}
 	}
 
-	function handleCloseSnackbar() {
+	function handleCloseErrorSnackbar() {
 		setDeleteFromWishlistErrorMessage("");
 	}
 
@@ -220,12 +221,12 @@ export default function FavoriteProduct(props) {
 
 							<Chip
 								variant="outlined"
-								color="success"
+								color={productInWishlist.isAvailable ? "success" : "error"}
 								size="small"
-								label={"Available"}
+								label={productInWishlist.isAvailable ? "Available" : "Not Available"}
 							/>
 						</Stack>
-						<Typography>{productInWishlist.description.length > 600 ? productInWishlist.description.substring(0, 600) + "..." : productInWishlist.description}</Typography>
+						<Typography>{productInWishlist.description.length > 500 ? productInWishlist.description.substring(0, 500) + "..." : productInWishlist.description}</Typography>
 					</Stack>
 				</Grid>
 				<Grid
@@ -279,7 +280,7 @@ export default function FavoriteProduct(props) {
 				</Grid>
 			</Grid>
 			<Snackbar
-				onClose={handleCloseSnackbar}
+				onClose={handleCloseErrorSnackbar}
 				autoHideDuration={6000}
 				ContentProps={{
 					style: {

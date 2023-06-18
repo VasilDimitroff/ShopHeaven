@@ -1,19 +1,19 @@
 import { React, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  useMediaQuery,
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  Stack,
-  Chip,
-  InputBase,
-  Divider,
-  Alert,
-  Zoom,
-  Slide,
-  Snackbar,
+	useMediaQuery,
+	Box,
+	Grid,
+	Paper,
+	Typography,
+	Stack,
+	Chip,
+	InputBase,
+	Divider,
+	Alert,
+	Zoom,
+	Slide,
+	Snackbar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
@@ -25,494 +25,493 @@ import useUser from "../../hooks/useUser";
 import useAppSettings from "../../hooks/useAppSettings";
 
 export default function CartProduct(props) {
-  //app hooks
-  const { auth } = useAuth();
-  const { setUser } = useUser();
-  const { appSettings } = useAppSettings();
+	//app hooks
+	const { auth } = useAuth();
+	const { setUser } = useUser();
+	const { appSettings } = useAppSettings();
 
-  //api
-  const axiosPrivate = useAxiosPrivate();
-  
-  //nav
-  const navigate = useNavigate();
+	//api
+	const axiosPrivate = useAxiosPrivate();
 
-  //main states for component
-  const [productInCart, setProductInCart] = useState(props.productInCart);
+	//nav
+	const navigate = useNavigate();
 
-  //error messages
-  const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] =
-    useState("");
-  const [
-    changePurchasedQuantityErrorMessage,
-    setChangePurchasedQuantityErrorMessage,
-  ] = useState("");
-  const [quantityBlockMessage, setQuantityBlockMessage] = useState("");
+	//main states for component
+	const [productInCart, setProductInCart] = useState(props.productInCart);
 
-  //refs
-  const quantityRef = useRef();
+	//error messages
+	const [deleteFromCartErrorMessage, setDeleteFromCartErrorMessage] =
+		useState("");
+	const [
+		changePurchasedQuantityErrorMessage,
+		setChangePurchasedQuantityErrorMessage,
+	] = useState("");
+	const [quantityBlockMessage, setQuantityBlockMessage] = useState("");
 
-  //get resulution type (bool)
-  const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
+	//refs
+	const quantityRef = useRef();
 
-  useEffect(() => {
-    setProductInCart(props.productInCart);
-  }, [props.productInCart, productInCart]);
+	//get resulution type (bool)
+	const isSmallOrDown = useMediaQuery(theme.breakpoints.down("sm"));
+	const isMdOrDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  function onDeleteProductFromCart() {
-    const requestData = {
-      userId: auth.userId,
-      cartId: auth.cartId,
-      productId: productInCart.id,
-    };
+	useEffect(() => {
+		setProductInCart(props.productInCart);
+	}, [props.productInCart, productInCart]);
 
-    deleteProductFromCart(requestData);
-  }
+	function onDeleteProductFromCart() {
+		const requestData = {
+			userId: auth.userId,
+			cartId: auth.cartId,
+			productId: productInCart.id,
+		};
 
-  async function deleteProductFromCart(requestData) {
-    try {
-      const controller = new AbortController();
+		deleteProductFromCart(requestData);
+	}
 
-      const response = await axiosPrivate.post(
-        ApiEndpoints.carts.deleteProduct,
-        requestData,
-        {
-          signal: controller.signal,
-        }
-      );
+	async function deleteProductFromCart(requestData) {
+		try {
+			const controller = new AbortController();
 
-      props.productDeleted();
+			const response = await axiosPrivate.post(
+				ApiEndpoints.carts.deleteProduct,
+				requestData,
+				{
+					signal: controller.signal,
+				}
+			);
 
-      setUser((prev) => {
-        return {
-          ...prev,
-          cartProductsCount: response?.data?.cartProductsCount,
-        };
-      });
+			props.productDeleted();
 
-      controller.abort();
-    } catch (error) {
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setDeleteFromCartErrorMessage(noPermissionsForOperationMessage);
-      } else {
-        setDeleteFromCartErrorMessage(error?.response?.data);
-      }
+			setUser((prev) => {
+				return {
+					...prev,
+					cartProductsCount: response?.data?.cartProductsCount,
+				};
+			});
 
-      console.log(error);
-    }
-  }
+			controller.abort();
+		} catch (error) {
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setDeleteFromCartErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setDeleteFromCartErrorMessage(error?.response?.data);
+			}
 
-  function onChangeProductQuantity() {
-    let newValue = quantityRef.current.value;
+			console.log(error);
+		}
+	}
 
-    if (!newValue) {
-      newValue = 1;
-    }
+	function onChangeProductQuantity() {
+		let newValue = quantityRef.current.value;
 
-    let newQuantity = parseInt(quantityRef.current.value);
+		if (!newValue) {
+			newValue = 1;
+		}
 
-    let isValid = validateProductQuantityValue(newQuantity);
+		let newQuantity = parseInt(quantityRef.current.value);
 
-    if (!isValid) {
-      return;
-    }
+		let isValid = validateProductQuantityValue(newQuantity);
 
-    const requestData = {
-      userId: auth.userId,
-      cartId: auth.cartId,
-      productId: productInCart.id,
-      newQuantity: newQuantity,
-    };
+		if (!isValid) {
+			return;
+		}
 
-    setTimeout(() => {
-      changeProductQuantity(requestData);
-    }, 0);
-  }
+		const requestData = {
+			userId: auth.userId,
+			cartId: auth.cartId,
+			productId: productInCart.id,
+			newQuantity: newQuantity,
+		};
 
-  async function changeProductQuantity(requestData) {
-    try {
-      console.log("ADD TO CART REQUEST", requestData);
+		setTimeout(() => {
+			changeProductQuantity(requestData);
+		}, 0);
+	}
 
-      const controller = new AbortController();
+	async function changeProductQuantity(requestData) {
+		try {
+			console.log("ADD TO CART REQUEST", requestData);
 
-      //await new Promise((resolve) => setTimeout(resolve, 300));
+			const controller = new AbortController();
 
-      const response = await axiosPrivate.post(
-        ApiEndpoints.carts.changeProductQuantity,
-        requestData,
-        {
-          signal: controller.signal,
-        }
-      );
+			//await new Promise((resolve) => setTimeout(resolve, 300));
 
-      controller.abort();
+			const response = await axiosPrivate.post(
+				ApiEndpoints.carts.changeProductQuantity,
+				requestData,
+				{
+					signal: controller.signal,
+				}
+			);
 
-      console.log("CHANGE QUANTITY", response?.data);
+			controller.abort();
 
-      setUser((prev) => {
-        return {
-          ...prev,
-          cartProductsCount: response?.data?.productsInCartCount,
-        };
-      });
+			console.log("CHANGE QUANTITY", response?.data);
 
-      setProductInCart((prev) => {
-        return {
-          ...prev,
-          purchasedQuantity: response?.data?.productQuantity,
-        };
-      });
+			setUser((prev) => {
+				return {
+					...prev,
+					cartProductsCount: response?.data?.productsInCartCount,
+				};
+			});
 
-      props.quantityUpdated(
-        productInCart.id,
-        response?.data?.productQuantity,
-        response?.data?.summary
-      );
+			setProductInCart((prev) => {
+				return {
+					...prev,
+					purchasedQuantity: response?.data?.productQuantity,
+				};
+			});
 
-      setChangePurchasedQuantityErrorMessage("");
-    } catch (error) {
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setChangePurchasedQuantityErrorMessage(
-          noPermissionsForOperationMessage
-        );
-      } else {
-        setChangePurchasedQuantityErrorMessage(error?.response?.data);
-      }
+			props.quantityUpdated(
+				productInCart.id,
+				response?.data?.productQuantity,
+				response?.data?.summary
+			);
 
-      console.log(error);
-    }
-  }
+			setChangePurchasedQuantityErrorMessage("");
+		} catch (error) {
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setChangePurchasedQuantityErrorMessage(
+					noPermissionsForOperationMessage
+				);
+			} else {
+				setChangePurchasedQuantityErrorMessage(error?.response?.data);
+			}
 
-  function validateProductQuantityValue(value) {
-    setChangePurchasedQuantityErrorMessage(``);
+			console.log(error);
+		}
+	}
 
-    if (value < 1) {
-      setProductInCart((prev) => {
-        return {
-          ...prev,
-          purchasedQuantity: 1,
-        };
-      });
+	function validateProductQuantityValue(value) {
+		setChangePurchasedQuantityErrorMessage(``);
 
-      setChangePurchasedQuantityErrorMessage(
-        `You have to purchase almost 1 item of product!`
-      );
+		if (value < 1) {
+			setProductInCart((prev) => {
+				return {
+					...prev,
+					purchasedQuantity: 1,
+				};
+			});
 
-      return false;
-    }
+			setChangePurchasedQuantityErrorMessage(
+				`You have to purchase almost 1 item of product!`
+			);
 
-    if (!productInCart.isAvailable) {
-      setChangePurchasedQuantityErrorMessage(
-        `Product is out of stock! You cannot purchase it!`
-      );
+			return false;
+		}
 
-      return false;
-    }
+		if (!productInCart.isAvailable) {
+			setChangePurchasedQuantityErrorMessage(
+				`Product is out of stock! You cannot purchase it!`
+			);
 
-    if (value > productInCart.inStockQuantity) {
-      setProductInCart((prev) => {
-        return {
-          ...prev,
-          purchasedQuantity: productInCart.inStockQuantity,
-        };
-      });
-      setChangePurchasedQuantityErrorMessage(
-        `In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
-      );
-      return false;
-    }
+			return false;
+		}
 
-    return true;
-  }
+		if (value > productInCart.inStockQuantity) {
+			setProductInCart((prev) => {
+				return {
+					...prev,
+					purchasedQuantity: productInCart.inStockQuantity,
+				};
+			});
+			setChangePurchasedQuantityErrorMessage(
+				`In stock are ${productInCart.inStockQuantity} items! You cannot purchase more than this count.`
+			);
+			return false;
+		}
 
-  function clearChangeQuantityErrorMessage() {
-    setChangePurchasedQuantityErrorMessage(``);
-  }
+		return true;
+	}
 
-  function clearQuantityBlockMesssage() {
-    setQuantityBlockMessage("");
-  }
+	function clearChangeQuantityErrorMessage() {
+		setChangePurchasedQuantityErrorMessage(``);
+	}
 
-  const onKeyDown = (event) => {
-    if (event.keyCode !== 38 && event.keyCode !== 40) {
-      event.preventDefault();
-      setQuantityBlockMessage("Use field controls to change quantity!");
-    }
-  };
+	function clearQuantityBlockMesssage() {
+		setQuantityBlockMessage("");
+	}
 
-  function handleCloseSnackbar() {
-    setDeleteFromCartErrorMessage("");
-  }
+	const onKeyDown = (event) => {
+		if (event.keyCode !== 38 && event.keyCode !== 40) {
+			event.preventDefault();
+			setQuantityBlockMessage("Use field controls to change quantity!");
+		}
+	};
 
-  const UniversalInput = styled(InputBase)({
-    border: "1px solid rgba(0, 0, 0, 0.2)",
-    width: "50%",
-    fontWeight: 500,
-    paddingLeft: "19%",
-    marginTop: theme.spacing(0.6),
-    borderRadius: theme.shape.borderRadius,
-    cursor: "not-allowed",
-  });
+	function handleCloseSnackbar() {
+		setDeleteFromCartErrorMessage("");
+	}
 
-  const ImageHolder = styled(Box)({
-    width: isSmallOrDown ? "50%" : "75%",
-    maxWidth: "200px",
-    height: 0,
-    paddingBottom: isSmallOrDown ? "50%" : "75%",
-    position: "relative",
-    overflow: "hidden",
-  });
+	const UniversalInput = styled(InputBase)({
+		border: "1px solid rgba(0, 0, 0, 0.2)",
+		width: "50%",
+		fontWeight: 500,
+		paddingLeft: "19%",
+		marginTop: theme.spacing(0.6),
+		borderRadius: theme.shape.borderRadius,
+		cursor: "not-allowed",
+	});
 
-  const ProductName = styled(Typography)({
-    cursor: "pointer",
-    lineHeight: 1,
-    fontSize: 18,
-    fontWeight: 500,
-    "&:hover": {
-      color: theme.palette.primary.main,
-      textDecoration: "underline"
-    },
-  })
+	const ImageHolder = styled(Box)({
+		width: isSmallOrDown ? "50%" : "75%",
+		maxWidth: "200px",
+		height: 0,
+		paddingBottom: isSmallOrDown ? "50%" : "75%",
+		position: "relative",
+		overflow: "hidden",
+	});
 
-  const InfoHolder = styled(Box)({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  });
+	const ProductName = styled(Typography)({
+		cursor: "pointer",
+		lineHeight: 1,
+		fontSize: 18,
+		fontWeight: 500,
+		"&:hover": {
+			color: theme.palette.primary.main,
+			textDecoration: "underline"
+		},
+	})
 
-  const LabelHolder = styled(InfoHolder)({
-    margin: theme.spacing(1, 0),
-  });
+	const InfoHolder = styled(Box)({
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	});
 
-  const QuantityHolder = styled(Box)({
-    display: "block",
-    textAlign: "center",
-    marginTop: theme.spacing(1.5),
-  });
+	const LabelHolder = styled(InfoHolder)({
+		margin: theme.spacing(1, 0),
+	});
 
-  const RegularPrice = styled(Typography)({
-    textDecoration: "line-through",
-    color: "gray",
-    fontSize: 14,
-  });
+	const QuantityHolder = styled(Box)({
+		display: "block",
+		textAlign: "center",
+		marginTop: theme.spacing(1.5),
+	});
 
-  const FinalPriceHolder = styled(Box)({
-    display: "block",
-    textAlign: "center",
-    gap: theme.spacing(0.8),
-    marginTop: theme.spacing(1),
-    fontWeight: 500,
-    color: theme.palette.error.main,
-  });
+	const RegularPrice = styled(Typography)({
+		textDecoration: "line-through",
+		color: "gray",
+		fontSize: 14,
+	});
 
-  const StyledChip = styled(Chip)({
-    color: theme.palette.white.main,
-    fontWeight: 500,
-    backgroundColor: theme.palette.secondary.main,
-    borderRadius: theme.shape.borderRadius,
-  });
+	const FinalPriceHolder = styled(Box)({
+		display: "block",
+		textAlign: "center",
+		gap: theme.spacing(0.8),
+		marginTop: theme.spacing(1),
+		fontWeight: 500,
+		color: theme.palette.error.main,
+	});
 
-  const LinkButton = styled(Typography)({
-    textAlign: "right",
-    cursor: "pointer",
-    marginTop: theme.spacing(1.5),
-    fontSize: 14,
-    color: theme.palette.primary.main,
-    [theme.breakpoints.down("lg")]: {
-      marginTop: theme.spacing(1.5),
-    },
-    "&:hover": {
-      textDecoration: "underline",
-    },
-  });
+	const StyledChip = styled(Chip)({
+		color: theme.palette.white.main,
+		fontWeight: 500,
+		backgroundColor: theme.palette.secondary.main,
+		borderRadius: theme.shape.borderRadius,
+	});
 
-  return (
-    <Paper sx={{ p: 2 }}>
-      <Grid container spacing={2}>
-        <Grid
-          item
-          xs={12}
-          sm={3}
-          md={3}
-          lg={3}
-          display="flex"
-          alignContent="center"
-          justifyContent="center"
-        >
-          <ImageHolder>
-            <img
-              onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}
-              style={{
-                cursor: "pointer",
-                borderRadius: "15%",
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                padding: theme.spacing(1),
-              }}
-              src={productInCart.image}
-            />
-          </ImageHolder>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6}
-        >
-          <Stack spacing={1.2}>
-            <ProductName onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}>
-              {productInCart.name}
-            </ProductName>
-            <Divider />
-            <Stack spacing={2} flexWrap="wrap" direction="row">
-              {productInCart.hasGuarantee ? (
-                <Chip
-                  variant="outlined"
-                  color="success"
-                  size="small"
-                  label="Warranty"
-                />
-              ) : (
-                <></>
-              )}
+	const LinkButton = styled(Typography)({
+		textAlign: "right",
+		cursor: "pointer",
+		marginTop: theme.spacing(1.5),
+		fontSize: 14,
+		color: theme.palette.primary.main,
+		[theme.breakpoints.down("lg")]: {
+			marginTop: theme.spacing(1.5),
+		},
+		"&:hover": {
+			textDecoration: "underline",
+		},
+	});
 
-              <Chip
-                variant="outlined"
-                color="success"
-                size="small"
-                label={"Available"}
-              />
-            </Stack>
-            <Typography>{productInCart.description.length > 400 ? productInCart.description.substring(0, 400) + "..." : productInCart.description}</Typography>
-          </Stack>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={3}
-          md={3}
-          lg={3}
-          sx={{
-            paddingBottom: theme.spacing(1),
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          {productInCart.discount > 0 ? (
-            <LabelHolder>
-              <StyledChip
-                size="small"
-                variant="filled"
-                label={`Save ${appSettings.appCurrency.code} ${(
-                  (productInCart.purchasedQuantity *
-                    productInCart.price *
-                    productInCart.discount) /
-                  100
-                ).toFixed(2)}`}
-              />
-            </LabelHolder>
-          ) : (
-            <></>
-          )}
-          <FinalPriceHolder>
-            {productInCart.discount > 0 ? (
-              <RegularPrice>
-                {appSettings.appCurrency.code}{" "}
-                {(
-                  productInCart.purchasedQuantity * productInCart.price
-                ).toFixed(2)}
-              </RegularPrice>
-            ) : (
-              <></>
-            )}
-            <Typography variant="h6">
-              {appSettings.appCurrency.code}{" "}
-              {(
-                productInCart.purchasedQuantity * productInCart.price -
-                (productInCart.purchasedQuantity *
-                  productInCart.price *
-                  productInCart.discount) /
-                  100
-              ).toFixed(2)}
-            </Typography>
-          </FinalPriceHolder>
-          <QuantityHolder>
-            <Typography>Quantity:</Typography>
-            <UniversalInput
-              type="number"
-              onKeyDown={onKeyDown}
-              onChange={onChangeProductQuantity}
-              inputRef={quantityRef}
-              defaultValue={productInCart.purchasedQuantity}
-              inputProps={
-                {
-                  // min: "1",
-                  // max: productInCart.inStockQuantity
-                }
-              }
-            />
-          </QuantityHolder>
-          <Stack
-            gap={isMdOrDown ? (isSmallOrDown ? 2 : 1) : 2}
-            flexWrap="wrap"
-            flexDirection="row"
-            justifyContent={"center"}
-          >
-            <LinkButton onClick={onDeleteProductFromCart}>Delete</LinkButton>
-            <LinkButton>Add to favorites</LinkButton>
-          </Stack>
-        </Grid>
-      </Grid>
-      {quantityBlockMessage ? (
-        <Zoom in={quantityBlockMessage.length > 0 ? true : false}>
-          <Alert
-            sx={{ marginTop: theme.spacing(2) }}
-            variant="filled"
-            severity="error"
-            onClose={clearQuantityBlockMesssage}
-          >
-            {quantityBlockMessage}
-          </Alert>
-        </Zoom>
-      ) : (
-        <></>
-      )}
-      {changePurchasedQuantityErrorMessage ? (
-        <Zoom
-          in={changePurchasedQuantityErrorMessage.length > 0 ? true : false}
-        >
-          <Alert
-            sx={{ marginTop: theme.spacing(2) }}
-            variant="filled"
-            severity="error"
-            onClose={clearChangeQuantityErrorMessage}
-          >
-            {changePurchasedQuantityErrorMessage}
-          </Alert>
-        </Zoom>
-      ) : (
-        <></>
-      )}
-      <Snackbar
-        onClose={handleCloseSnackbar}
-        autoHideDuration={6000}
-        ContentProps={{
-          style: {
-            backgroundColor: theme.palette.error.main,
-            textAlign: "center",
-          },
-        }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={deleteFromCartErrorMessage.length > 0 ? true : false}
-        TransitionComponent={Slide}
-        message={`${deleteFromCartErrorMessage}`}
-      ></Snackbar>
-    </Paper>
-  );
+	return (
+		<Paper sx={{ p: 2 }}>
+			<Grid container spacing={2}>
+				<Grid
+					item
+					xs={12}
+					sm={3}
+					md={3}
+					lg={3}
+					display="flex"
+					alignContent="center"
+					justifyContent="center"
+				>
+					<ImageHolder>
+						<img
+							onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}
+							style={{
+								cursor: "pointer",
+								borderRadius: "15%",
+								width: "100%",
+								height: "100%",
+								objectFit: "cover",
+								position: "absolute",
+								top: 0,
+								left: 0,
+								padding: theme.spacing(1),
+							}}
+							src={productInCart.image}
+						/>
+					</ImageHolder>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+					md={6}
+					lg={6}
+				>
+					<Stack spacing={1.2}>
+						<ProductName onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}>
+							{productInCart.name}
+						</ProductName>
+						<Divider />
+						<Stack spacing={2} flexWrap="wrap" direction="row">
+							{productInCart.hasGuarantee ? (
+								<Chip
+									variant="outlined"
+									color="success"
+									size="small"
+									label="Warranty"
+								/>
+							) : (
+								<></>
+							)}
+							<Chip
+								variant="outlined"
+								color={productInCart.isAvailable ? "success" : "error"}
+								size="small"
+								label={productInCart.isAvailable ? "Available" : "Not Available"}
+							/>
+						</Stack>
+						<Typography>{productInCart.description.length > 400 ? productInCart.description.substring(0, 400) + "..." : productInCart.description}</Typography>
+					</Stack>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={3}
+					md={3}
+					lg={3}
+					sx={{
+						paddingBottom: theme.spacing(1),
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "space-between",
+					}}
+				>
+					{productInCart.discount > 0 ? (
+						<LabelHolder>
+							<StyledChip
+								size="small"
+								variant="filled"
+								label={`Save ${appSettings.appCurrency.code} ${(
+									(productInCart.purchasedQuantity *
+										productInCart.price *
+										productInCart.discount) /
+									100
+								).toFixed(2)}`}
+							/>
+						</LabelHolder>
+					) : (
+						<></>
+					)}
+					<FinalPriceHolder>
+						{productInCart.discount > 0 ? (
+							<RegularPrice>
+								{appSettings.appCurrency.code}{" "}
+								{(
+									productInCart.purchasedQuantity * productInCart.price
+								).toFixed(2)}
+							</RegularPrice>
+						) : (
+							<></>
+						)}
+						<Typography variant="h6">
+							{appSettings.appCurrency.code}{" "}
+							{(
+								productInCart.purchasedQuantity * productInCart.price -
+								(productInCart.purchasedQuantity *
+									productInCart.price *
+									productInCart.discount) /
+								100
+							).toFixed(2)}
+						</Typography>
+					</FinalPriceHolder>
+					<QuantityHolder>
+						<Typography>Quantity:</Typography>
+						<UniversalInput
+							type="number"
+							onKeyDown={onKeyDown}
+							onChange={onChangeProductQuantity}
+							inputRef={quantityRef}
+							defaultValue={productInCart.purchasedQuantity}
+							inputProps={
+								{
+									// min: "1",
+									// max: productInCart.inStockQuantity
+								}
+							}
+						/>
+					</QuantityHolder>
+					<Stack
+						gap={isMdOrDown ? (isSmallOrDown ? 2 : 1) : 2}
+						flexWrap="wrap"
+						flexDirection="row"
+						justifyContent={"center"}
+					>
+						<LinkButton onClick={onDeleteProductFromCart}>Delete</LinkButton>
+						<LinkButton>Add to favorites</LinkButton>
+					</Stack>
+				</Grid>
+			</Grid>
+			{quantityBlockMessage ? (
+				<Zoom in={quantityBlockMessage.length > 0 ? true : false}>
+					<Alert
+						sx={{ marginTop: theme.spacing(2) }}
+						variant="filled"
+						severity="error"
+						onClose={clearQuantityBlockMesssage}
+					>
+						{quantityBlockMessage}
+					</Alert>
+				</Zoom>
+			) : (
+				<></>
+			)}
+			{changePurchasedQuantityErrorMessage ? (
+				<Zoom
+					in={changePurchasedQuantityErrorMessage.length > 0 ? true : false}
+				>
+					<Alert
+						sx={{ marginTop: theme.spacing(2) }}
+						variant="filled"
+						severity="error"
+						onClose={clearChangeQuantityErrorMessage}
+					>
+						{changePurchasedQuantityErrorMessage}
+					</Alert>
+				</Zoom>
+			) : (
+				<></>
+			)}
+			<Snackbar
+				onClose={handleCloseSnackbar}
+				autoHideDuration={6000}
+				ContentProps={{
+					style: {
+						backgroundColor: theme.palette.error.main,
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={deleteFromCartErrorMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${deleteFromCartErrorMessage}`}
+			></Snackbar>
+		</Paper>
+	);
 }
