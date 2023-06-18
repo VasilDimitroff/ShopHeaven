@@ -1,4 +1,4 @@
-import { React, useState, useRef, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	useMediaQuery,
@@ -9,14 +9,17 @@ import {
 	Stack,
 	Chip,
 	Divider,
-	Alert,
-	Zoom,
 	Slide,
 	Snackbar,
+	Button,
 } from "@mui/material";
+import { AddShoppingCart } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { noPermissionsForOperationMessage, singleProductBasePath } from "../../constants";
+import {
+	noPermissionsForOperationMessage,
+	singleProductBasePath,
+} from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
@@ -36,10 +39,13 @@ export default function FavoriteProduct(props) {
 	const navigate = useNavigate();
 
 	//main states for component
-	const [productInWishlist, setProductInWishlist] = useState(props.productInWishlist);
+	const [productInWishlist, setProductInWishlist] = useState(
+		props.productInWishlist
+	);
 
 	//error/response messages
-	const [deleteFromWishlistErrorMessage, setDeleteFromWishlistErrorMessage] = useState("");
+	const [deleteFromWishlistErrorMessage, setDeleteFromWishlistErrorMessage] =
+		useState("");
 
 	const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
 	const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
@@ -85,7 +91,7 @@ export default function FavoriteProduct(props) {
 
 			controller.abort();
 
-			setDeleteFromWishlistErrorMessage(``)
+			setDeleteFromWishlistErrorMessage(``);
 		} catch (error) {
 			if (error?.response?.status === 401 || error?.response?.status === 403) {
 				setDeleteFromWishlistErrorMessage(noPermissionsForOperationMessage);
@@ -98,7 +104,6 @@ export default function FavoriteProduct(props) {
 	}
 
 	function onAddProductToCart(quantityValue) {
-
 		if (productInWishlist.inStockQuantity < quantityValue) {
 			setAddToCartErrorMessage(`Product has not enough quantity!`);
 			return;
@@ -153,15 +158,14 @@ export default function FavoriteProduct(props) {
 		}
 	}
 
-
 	function handleCloseErrorSnackbar() {
 		setDeleteFromWishlistErrorMessage("");
 	}
-	
-    function handleCloseAddToCartSnackbar() {
-        setAddToCartErrorMessage("");
-        setAddToCartResponseMessage("");
-    }
+
+	function handleCloseAddToCartSnackbar() {
+		setAddToCartErrorMessage("");
+		setAddToCartResponseMessage("");
+	}
 
 	const ImageHolder = styled(Box)({
 		width: isSmallOrDown ? "50%" : "75%",
@@ -179,9 +183,9 @@ export default function FavoriteProduct(props) {
 		fontWeight: 500,
 		"&:hover": {
 			color: theme.palette.primary.main,
-			textDecoration: "underline"
+			textDecoration: "underline",
 		},
-	})
+	});
 
 	const InfoHolder = styled(Box)({
 		display: "flex",
@@ -244,7 +248,9 @@ export default function FavoriteProduct(props) {
 				>
 					<ImageHolder>
 						<img
-							onClick={() => navigate(`${singleProductBasePath}${productInWishlist.id}`)}
+							onClick={() =>
+								navigate(`${singleProductBasePath}${productInWishlist.id}`)
+							}
 							style={{
 								cursor: "pointer",
 								borderRadius: "15%",
@@ -260,15 +266,13 @@ export default function FavoriteProduct(props) {
 						/>
 					</ImageHolder>
 				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={6}
-					md={6}
-					lg={6}
-				>
+				<Grid item xs={12} sm={6} md={6} lg={6}>
 					<Stack spacing={1.2}>
-						<ProductName onClick={() => navigate(`${singleProductBasePath}${productInWishlist.id}`)}>
+						<ProductName
+							onClick={() =>
+								navigate(`${singleProductBasePath}${productInWishlist.id}`)
+							}
+						>
 							{productInWishlist.name}
 						</ProductName>
 						<Divider />
@@ -288,10 +292,16 @@ export default function FavoriteProduct(props) {
 								variant="outlined"
 								color={productInWishlist.isAvailable ? "success" : "error"}
 								size="small"
-								label={productInWishlist.isAvailable ? "Available" : "Not Available"}
+								label={
+									productInWishlist.isAvailable ? "Available" : "Not Available"
+								}
 							/>
 						</Stack>
-						<Typography>{productInWishlist.description.length > 500 ? productInWishlist.description.substring(0, 500) + "..." : productInWishlist.description}</Typography>
+						<Typography>
+							{productInWishlist.description.length > 400
+								? productInWishlist.description.substring(0, 400) + "..."
+								: productInWishlist.description}
+						</Typography>
 					</Stack>
 				</Grid>
 				<Grid
@@ -313,7 +323,9 @@ export default function FavoriteProduct(props) {
 								size="small"
 								variant="filled"
 								label={`Save ${appSettings.appCurrency.code} ${(
-									(productInWishlist.price * productInWishlist.discount) / 100).toFixed(2)}`}
+									(productInWishlist.price * productInWishlist.discount) /
+									100
+								).toFixed(2)}`}
 							/>
 						</LabelHolder>
 					) : (
@@ -323,25 +335,32 @@ export default function FavoriteProduct(props) {
 						{productInWishlist.discount > 0 ? (
 							<RegularPrice>
 								{appSettings.appCurrency.code}{" "}
-								{(productInWishlist.price).toFixed(2)}
+								{productInWishlist.price.toFixed(2)}
 							</RegularPrice>
 						) : (
 							<></>
 						)}
 						<Typography variant="h6">
 							{appSettings.appCurrency.code}{" "}
-							{(productInWishlist.price - (productInWishlist.price * productInWishlist.discount) / 100).toFixed(2)}
+							{(
+								productInWishlist.price -
+								(productInWishlist.price * productInWishlist.discount) / 100
+							).toFixed(2)}
 						</Typography>
 					</FinalPriceHolder>
-					<Stack
-						gap={isMdOrDown ? (isSmallOrDown ? 2 : 1) : 2}
-						flexWrap="wrap"
-						flexDirection="row"
-						justifyContent={"center"}
+					<Button
+						onClick={() => onAddProductToCart(1)}
+						variant="contained"
+						size="medium"
+						startIcon={<AddShoppingCart />}
 					>
-						<LinkButton onClick={onDeleteProductFromWishlist}>Delete</LinkButton>
-						<LinkButton onClick={() => onAddProductToCart(1)}>Add to Cart</LinkButton>
-					</Stack>
+						ADD TO CART
+					</Button>
+					<Box sx={{ display: "flex", justifyContent: "center" }}>
+						<LinkButton onClick={onDeleteProductFromWishlist}>
+							Delete from favorites
+						</LinkButton>
+					</Box>
 				</Grid>
 			</Grid>
 			<Snackbar

@@ -9,95 +9,94 @@ import CircleLoader from "../../common/CircleLoader";
 import { ApiEndpoints } from "../../../api/endpoints";
 import axios from "../../../api/axios";
 import {
-  singleProductBasePath,
-  subcategoryProductsBaseUrl,
-  subcategoriesOfMainCategoryBaseUrl,
-  similarProductsForSingleProductPageSlider,
+	singleProductBasePath,
+	subcategoryProductsBaseUrl,
+	subcategoriesOfMainCategoryBaseUrl,
+	similarProductsForSingleProductPageSlider,
 } from "../../../constants";
 
 export default function Product() {
-  const params = useParams();
-  const { auth } = useAuth();
-  const [product, setProduct] = useState(null);
-  const [similarProducts, setSimilarProducts] = useState(null);
+	const params = useParams();
+	const { auth } = useAuth();
+	const [product, setProduct] = useState(null);
+	const [similarProducts, setSimilarProducts] = useState(null);
 
-  const effectRun = useRef(false);
+	const effectRun = useRef(false);
 
-  useEffect(() => {
-    window.scroll(0, 0);
-    const controller = new AbortController();
-    const getProduct = async () => {
-      try {
-        const response = await axios.post(
-          ApiEndpoints.products.getById,
-          {
-            id: params.productId,
-            userId: auth.userId,
-            similarProductsCount: similarProductsForSingleProductPageSlider,
-          },
-          {
-            signal: controller.signal,
-          }
-        );
+	useEffect(() => {
+		window.scroll(0, 0);
+		const controller = new AbortController();
+		const getProduct = async () => {
+			try {
+				const response = await axios.post(
+					ApiEndpoints.products.getById,
+					{
+						id: params.productId,
+						userId: auth.userId,
+						similarProductsCount: similarProductsForSingleProductPageSlider,
+					},
+					{
+						signal: controller.signal,
+					}
+				);
 
-        console.log(response);
-        
-        setProduct(response?.data?.product);
-        setSimilarProducts(response?.data?.similarProducts);
+				console.log(response);
 
-      } catch (error) {
-        console.log(error);
-      }
-    };
+				setProduct(response?.data?.product);
+				setSimilarProducts(response?.data?.similarProducts);
 
-    if (effectRun.current) {
-      getProduct();
-    }
+			} catch (error) {
+				console.log(error);
+			}
+		};
 
-    return () => {
-      effectRun.current = true; // update the value of effectRun to true
-      controller.abort();
-    };
-  }, [params]);
+		if (effectRun.current) {
+			getProduct();
+		}
 
-  const breadcrumbs = [
-    {
-      name: "Home",
-      uri: "/",
-    },
-    {
-      name: `${product?.category?.name ?? ""}`,
-      uri: `${subcategoriesOfMainCategoryBaseUrl}${product?.category?.id}`,
-    },
-    {
-      name: `${product?.subcategory?.name ?? ""}`,
-      uri: `${subcategoryProductsBaseUrl}${product?.subcategory?.id}`,
-    },
-    {
-      name: `${
-        product?.name.length > 25
-          ? product?.name.slice(0, 25) + "..."
-          : product?.name ?? ""
-      }`,
-      uri: `${singleProductBasePath}${params}`,
-    },
-  ];
+		return () => {
+			effectRun.current = true; // update the value of effectRun to true
+			controller.abort();
+		};
+	}, [params]);
 
-  return (
-    <Fragment>
-      <BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
-      {product ? (
-        <>
-          <ProductMainInfo product={product} />
-          <ProductDetailInfo product={product}/>
-          <ProductsCarousel
-            products={similarProducts}
-            headingName="Similar Products"
-          />
-        </>
-      ) : (
-        <CircleLoader />
-      )}
-    </Fragment>
-  );
+	const breadcrumbs = [
+		{
+			name: "Home",
+			uri: "/",
+		},
+		{
+			name: `${product?.category?.name ?? ""}`,
+			uri: `${subcategoriesOfMainCategoryBaseUrl}${product?.category?.id}`,
+		},
+		{
+			name: `${product?.subcategory?.name ?? ""}`,
+			uri: `${subcategoryProductsBaseUrl}${product?.subcategory?.id}`,
+		},
+		{
+			name: `${product?.name.length > 25
+					? product?.name.slice(0, 25) + "..."
+					: product?.name ?? ""
+				}`,
+			uri: `${singleProductBasePath}${params}`,
+		},
+	];
+
+	return (
+		<Fragment>
+			<BreadcrumbsBar breadcrumbsItems={breadcrumbs} />
+			{product ? (
+				<>
+					<ProductMainInfo product={product} />
+					<ProductDetailInfo product={product} />
+					<ProductsCarousel
+						products={similarProducts}
+						headingName="Similar Products"
+					/>
+				</>
+			) : (
+				<CircleLoader />
+			)}
+		</Fragment>
+	);
 }
