@@ -25,6 +25,7 @@ export default function Cart() {
 	const [productsInCart, setProductsInCart] = useState([]);
 	const [cartSummary, setCartSummary] = useState();
 	const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
+	const [addedOrRemovedProductFromFavorites, setAddedOrRemovedProductFromFavorites] = useState(false);
 
 	const { auth } = useAuth();
 	const navigate = useNavigate();
@@ -56,6 +57,7 @@ export default function Cart() {
 				setCartSummary(response?.data?.summary);
 
 				setDeleteProductDOMelement(false);
+				setAddedOrRemovedProductFromFavorites(false);
 
 				console.log("CART RESPONSE: ", response?.data);
 			} catch (error) {
@@ -71,10 +73,14 @@ export default function Cart() {
 			effectRun.current = true;
 			controller.abort();
 		};
-	}, [deleteProductDOMelement]);
+	}, [deleteProductDOMelement, addedOrRemovedProductFromFavorites]);
 
 	function productDeleted() {
 		setDeleteProductDOMelement(true);
+	}
+
+	function productUpdated() {
+		setAddedOrRemovedProductFromFavorites(true)
 	}
 
 	function quantityUpdated(productId, newQuantity, cartSummary) {
@@ -108,6 +114,7 @@ export default function Cart() {
 											productInCart={product}
 											productDeleted={productDeleted}
 											quantityUpdated={quantityUpdated}
+											productUpdated={productUpdated}
 										/>
 									);
 								})}

@@ -402,7 +402,6 @@ export default function ProductActionButtons(props) {
 								TransitionComponent={Slide}
 								message={`${addToCartResponseMessage}`}
 							></Snackbar>
-
 							<Snackbar
 								onClose={handleCloseAddToWishlistSnackbar}
 								autoHideDuration={9000}
@@ -430,8 +429,6 @@ export default function ProductActionButtons(props) {
 								TransitionComponent={Slide}
 								message={`${addOrRemoveToWishlistResponseMessage}`}
 							></Snackbar>
-
-
 							<ActionButtons spacing={1.5}>
 								<ActionButton
 									onClick={onAddProductToCart}

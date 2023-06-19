@@ -21,5 +21,7 @@
         public int PurchasedQuantity { get; set; }
 
         public int InStockQuantity { get; set; }
+
+        public bool IsInUserWishlist { get; set; }
     }
 }

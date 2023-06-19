@@ -177,7 +177,8 @@ namespace ShopHeaven.Data.Services
                     HasGuarantee = pc.Product.HasGuarantee,
                     PurchasedQuantity = pc.Quantity,
                     IsAvailable = pc.Product.IsAvailable,
-                    InStockQuantity = pc.Product.Quantity
+                    InStockQuantity = pc.Product.Quantity,
+                    IsInUserWishlist = pc.Product.Wishlists.Any(pw => pw.ProductId == pc.ProductId && pw.WishlistId == user.WishlistId && pw.IsDeleted != true)
                 })
                 .ToListAsync();
 

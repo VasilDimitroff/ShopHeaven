@@ -17,7 +17,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { theme } from "../../theme";
-import { noPermissionsForOperationMessage, singleProductBasePath } from "../../constants";
+import {
+	noPermissionsForOperationMessage,
+	singleProductBasePath,
+} from "../../constants";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../api/endpoints";
 import useAuth from "../../hooks/useAuth";
@@ -48,6 +51,15 @@ export default function CartProduct(props) {
 	] = useState("");
 	const [quantityBlockMessage, setQuantityBlockMessage] = useState("");
 
+	const [
+		addOrRemoveToWishlistResponseMessage,
+		setAddOrRemoveToWishlistResponseMessage,
+	] = useState("");
+	const [
+		addOrRemoveToWishlistErrorMessage,
+		setAddOrRemoveToWishlistErrorMessage,
+	] = useState("");
+
 	//refs
 	const quantityRef = useRef();
 
@@ -58,6 +70,63 @@ export default function CartProduct(props) {
 	useEffect(() => {
 		setProductInCart(props.productInCart);
 	}, [props.productInCart, productInCart]);
+
+	function onAddOrRemoveProductToWishlist() {
+		const requestData = {
+			userId: auth.userId,
+			wishlistId: auth.wishlistId,
+			productId: productInCart.id,
+		};
+
+		addOrRemoveProductToWishlist(requestData);
+	}
+
+	async function addOrRemoveProductToWishlist(requestData) {
+		try {
+			const controller = new AbortController();
+
+			let requestUrl = ApiEndpoints.wishlists.addProduct;
+
+			if (productInCart.isInUserWishlist) {
+				requestUrl = ApiEndpoints.wishlists.deleteProduct;
+			}
+
+			const response = await axiosPrivate.post(requestUrl, requestData, {
+				signal: controller.signal,
+			});
+
+			controller.abort();
+
+			let responseMessage = `You added product ${productInCart.name} in your favorites`;
+
+			if (productInCart.isInUserWishlist) {
+				responseMessage = `You removed product ${productInCart.name} from your favorites`;
+			}
+
+			setUser((prev) => {
+				return {
+					...prev,
+					wishlistProductsCount: response?.data?.productsInWishlistCount,
+				};
+			});
+
+			props.productUpdated();
+
+			setAddOrRemoveToWishlistErrorMessage("");
+			setAddOrRemoveToWishlistResponseMessage(responseMessage);
+
+			console.log("ADD TO WISHLIST RESPONSE", response?.data);
+		} catch (error) {
+			setAddOrRemoveToWishlistResponseMessage("");
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setAddOrRemoveToWishlistErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setAddOrRemoveToWishlistErrorMessage(error?.response?.data);
+			}
+
+			console.log(error);
+		}
+	}
 
 	function onDeleteProductFromCart() {
 		const requestData = {
@@ -244,6 +313,11 @@ export default function CartProduct(props) {
 		setDeleteFromCartErrorMessage("");
 	}
 
+	function handleCloseAddToWishlistSnackbar() {
+		setAddOrRemoveToWishlistErrorMessage("");
+		setAddOrRemoveToWishlistResponseMessage("");
+	}
+
 	const UniversalInput = styled(InputBase)({
 		border: "1px solid rgba(0, 0, 0, 0.2)",
 		width: "50%",
@@ -270,9 +344,9 @@ export default function CartProduct(props) {
 		fontWeight: 500,
 		"&:hover": {
 			color: theme.palette.primary.main,
-			textDecoration: "underline"
+			textDecoration: "underline",
 		},
-	})
+	});
 
 	const InfoHolder = styled(Box)({
 		display: "flex",
@@ -341,7 +415,9 @@ export default function CartProduct(props) {
 				>
 					<ImageHolder>
 						<img
-							onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}
+							onClick={() =>
+								navigate(`${singleProductBasePath}${productInCart.id}`)
+							}
 							style={{
 								cursor: "pointer",
 								borderRadius: "15%",
@@ -357,15 +433,13 @@ export default function CartProduct(props) {
 						/>
 					</ImageHolder>
 				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={6}
-					md={6}
-					lg={6}
-				>
+				<Grid item xs={12} sm={6} md={6} lg={6}>
 					<Stack spacing={1.2}>
-						<ProductName onClick={() => navigate(`${singleProductBasePath}${productInCart.id}`)}>
+						<ProductName
+							onClick={() =>
+								navigate(`${singleProductBasePath}${productInCart.id}`)
+							}
+						>
 							{productInCart.name}
 						</ProductName>
 						<Divider />
@@ -384,10 +458,16 @@ export default function CartProduct(props) {
 								variant="outlined"
 								color={productInCart.isAvailable ? "success" : "error"}
 								size="small"
-								label={productInCart.isAvailable ? "Available" : "Not Available"}
+								label={
+									productInCart.isAvailable ? "Available" : "Not Available"
+								}
 							/>
 						</Stack>
-						<Typography>{productInCart.description.length > 400 ? productInCart.description.substring(0, 400) + "..." : productInCart.description}</Typography>
+						<Typography>
+							{productInCart.description.length > 400
+								? productInCart.description.substring(0, 400) + "..."
+								: productInCart.description}
+						</Typography>
 					</Stack>
 				</Grid>
 				<Grid
@@ -437,7 +517,7 @@ export default function CartProduct(props) {
 								(productInCart.purchasedQuantity *
 									productInCart.price *
 									productInCart.discount) /
-								100
+									100
 							).toFixed(2)}
 						</Typography>
 					</FinalPriceHolder>
@@ -464,7 +544,11 @@ export default function CartProduct(props) {
 						justifyContent={"center"}
 					>
 						<LinkButton onClick={onDeleteProductFromCart}>Delete</LinkButton>
-						<LinkButton>Add to favorites</LinkButton>
+						<LinkButton onClick={onAddOrRemoveProductToWishlist}>
+							{productInCart.isInUserWishlist
+								? "Remove from Favorites"
+								: "Add to Favorites"}
+						</LinkButton>
 					</Stack>
 				</Grid>
 			</Grid>
@@ -511,6 +595,33 @@ export default function CartProduct(props) {
 				open={deleteFromCartErrorMessage.length > 0 ? true : false}
 				TransitionComponent={Slide}
 				message={`${deleteFromCartErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToWishlistSnackbar}
+				autoHideDuration={9000}
+				ContentProps={{
+					style: {
+						backgroundColor: theme.palette.error.main,
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addOrRemoveToWishlistErrorMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addOrRemoveToWishlistErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToWishlistSnackbar}
+				autoHideDuration={6000}
+				ContentProps={{
+					style: {
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addOrRemoveToWishlistResponseMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addOrRemoveToWishlistResponseMessage}`}
 			></Snackbar>
 		</Paper>
 	);

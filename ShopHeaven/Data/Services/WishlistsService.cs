@@ -28,6 +28,7 @@ namespace ShopHeaven.Data.Services
 
             var responseModel = wishlist.Products
                 .Where(x => x.IsDeleted != true)
+                .OrderByDescending(x => x.CreatedOn)
                 .Select(pw => new WishlistProductResponseModel
                 {
                     Id = pw.ProductId,
