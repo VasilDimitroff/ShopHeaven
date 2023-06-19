@@ -33,6 +33,8 @@ namespace ShopHeaven.Models.Responses.Products
 
         public bool IsAvailable { get; set; }
 
+        public bool IsInUserWishlist { get; set; }
+
         public double Rating { get; set; }
 
         public ICollection<BasicImageResponseModel> Images { get; set; }

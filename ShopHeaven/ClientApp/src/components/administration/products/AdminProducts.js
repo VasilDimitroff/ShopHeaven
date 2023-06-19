@@ -17,6 +17,7 @@ import { styled } from "@mui/material/styles";
 import { theme } from "../../../theme";
 import { RemoveCircle, AddCircle, Search, Cancel } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
 import { ApiEndpoints } from "../../../api/endpoints";
 import { productsPerPageInAdminPanel, requestTimerMilliseconds, productsSortingCriteriaInAdminProductsPanel, loginPath } from "../../../constants";
 import CreateProduct from "./CreateProduct";
@@ -44,6 +45,7 @@ export default function AdminProducts() {
   const [categories, setCategories] = useState([]);
 
   const axiosPrivate = useAxiosPrivate();
+  const { auth } = useAuth();
 
   const effectRun = useRef(false);
 
@@ -63,6 +65,7 @@ export default function AdminProducts() {
         setIsLoading(true);
 
         let pagingModel = {
+          userId: auth.userId,
           recordsPerPage: productsPerPageInAdminPanel,
           page: page,
           searchTerm: searchTerm,

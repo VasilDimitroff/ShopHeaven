@@ -9,6 +9,7 @@ import SubscribeForm from "../common/SubscribeForm";
 import CircleLoader from "../common/CircleLoader";
 import { ApiEndpoints } from "../../api/endpoints";
 import axios from "../../api/axios";
+import useAuth from "../../hooks/useAuth";
 import {
   productsPerPageInSubCategoryPage,
   maxProductPriceRangeGroup,
@@ -17,6 +18,8 @@ import {
 } from "../../constants.js";
 
 export default function Home() {
+  const { auth } = useAuth();
+
   const effectRun = useRef(false);
 
   const [firstLineProducts, setFirstLineProducts] = useState();
@@ -37,6 +40,7 @@ export default function Home() {
         setIsLoading(true);
 
         let pagingModel = {
+          userId: auth.userId,
           recordsPerPage: productsPerSliderInHomePage,
           page: 1,
           searchTerm: "", //no filter by search term
@@ -73,7 +77,6 @@ export default function Home() {
   }, []);
 
   
-
   //second line
   useEffect(() => {
 

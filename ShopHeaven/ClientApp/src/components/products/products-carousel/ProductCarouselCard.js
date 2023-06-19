@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Rating,
-  Box,
-  Typography,
-  Card,
-  CardActionArea,
-  IconButton,
-  Button,
-  CardContent,
-  CardMedia,
-  Chip,
-  Snackbar,
-  Slide,
+	Rating,
+	Box,
+	Typography,
+	Card,
+	CardActionArea,
+	IconButton,
+	Button,
+	CardContent,
+	CardMedia,
+	Chip,
+	Snackbar,
+	Slide,
 } from "@mui/material";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
@@ -26,360 +26,463 @@ import { ApiEndpoints } from "../../../api/endpoints";
 import { noPermissionsForOperationMessage } from "../../../constants";
 
 function ProductCarouselCard(props) {
-  const { appSettings } = useAppSettings();
-  const { auth } = useAuth();
-  const { setUser } = useUser();
-  const axiosPrivate = useAxiosPrivate();
+	const { appSettings } = useAppSettings();
+	const { auth } = useAuth();
+	const { setUser } = useUser();
+	const axiosPrivate = useAxiosPrivate();
 
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(props.product);
+	const navigate = useNavigate();
+	const [product, setProduct] = useState(props.product);
 
-  const [subcategory, setSubcategory] = useState(props.subcategory);
+	const [subcategory, setSubcategory] = useState(props.subcategory);
 
-  const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
-  const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
+	const [addToCartResponseMessage, setAddToCartResponseMessage] = useState("");
+	const [addToCartErrorMessage, setAddToCartErrorMessage] = useState("");
 
-  
-  useEffect(()=> {
-    setProduct(props.product)
-  }, [props.product])
+	const [
+		addOrRemoveToWishlistResponseMessage,
+		setAddOrRemoveToWishlistResponseMessage,
+	] = useState("");
+	const [
+		addOrRemoveToWishlistErrorMessage,
+		setAddOrRemoveToWishlistErrorMessage,
+	] = useState("");
 
-  function onAddProductToCart() {
-    if (!auth.isLogged) {
-      navigate(loginPath);
-    }
+	useEffect(() => {
+		setProduct(props.product);
+	}, [props.product]);
 
-    let isValid = validateProductQuantity(1);
+	function onAddOrRemoveProductToWishlist() {
+		const requestData = {
+			userId: auth.userId,
+			wishlistId: auth.wishlistId,
+			productId: product.id,
+		};
 
-    if (!isValid) {
-      return;
-    }
+		addOrRemoveProductToWishlist(requestData);
+	}
 
-    const requestData = {
-      userId: auth.userId,
-      cartId: auth.cartId,
-      productId: product.id,
-      quantity: 1,
-    };
+	async function addOrRemoveProductToWishlist(requestData) {
+		try {
+			const controller = new AbortController();
 
-    addProductToCart(requestData);
-  }
+			let requestUrl = ApiEndpoints.wishlists.addProduct;
 
-  async function addProductToCart(requestData) {
-    try {
-      const controller = new AbortController();
+			if (product.isInUserWishlist) {
+				requestUrl = ApiEndpoints.wishlists.deleteProduct;
+			}
 
-      const response = await axiosPrivate.post(
-        ApiEndpoints.carts.addProduct,
-        requestData,
-        {
-          signal: controller.signal,
-        }
-      );
+			const response = await axiosPrivate.post(requestUrl, requestData, {
+				signal: controller.signal,
+			});
 
-      controller.abort();
+			controller.abort();
 
-      setProduct((prev) => {
-        return {
-          ...prev,
-          quantity: prev.quantity - response?.data?.quantity,
-        };
-      });
+			let responseMessage = `You added product ${product.name} in your favorites`;
 
-      setUser((prev) => {
-        return {
-          ...prev,
-          cartProductsCount: response?.data?.productsInCartCount,
-        };
-      });
+			if (product.isInUserWishlist) {
+				responseMessage = `You removed product ${product.name} from your favorites`;
+			}
 
-      setAddToCartErrorMessage("");
-      setAddToCartResponseMessage(
-        `You have added product ${product.name} in the cart ${response?.data?.quantity} time(s)`
-      );
-    } catch (error) {
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setAddToCartErrorMessage(noPermissionsForOperationMessage);
-      } else {
-        setAddToCartErrorMessage(error?.response?.data);
-      }
+			setUser((prev) => {
+				return {
+					...prev,
+					wishlistProductsCount: response?.data?.productsInWishlistCount,
+				};
+			});
 
-      console.log(error);
-    }
-  }
+			setProduct((prev) => {
+				return {
+					...prev,
+					isInUserWishlist: response?.data?.isProductInTheWishlist,
+				};
+			});
 
-  function validateProductQuantity(addQuantityValue) {
-    if (!product.isAvailable) {
-      setAddToCartErrorMessage(
-        `Product is out of stock! You cannot purchase it!`
-      );
-      return false;
-    }
+			setAddOrRemoveToWishlistErrorMessage("");
+			setAddOrRemoveToWishlistResponseMessage(responseMessage);
 
-    if (addQuantityValue > product.quantity) {
-      setAddToCartErrorMessage(
-        `In stock are ${product.quantity} items only! It is the maximum quantity you can purchase.`
-      );
-      return false;
-    }
+			console.log("ADD TO WISHLIST RESPONSE", response?.data);
+		} catch (error) {
+			setAddOrRemoveToWishlistResponseMessage("");
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setAddOrRemoveToWishlistErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setAddOrRemoveToWishlistErrorMessage(error?.response?.data);
+			}
 
-    return true;
-  }
+			console.log(error);
+		}
+	}
 
-  function handleCloseSnackbar() {
-    setAddToCartErrorMessage("");
-    setAddToCartResponseMessage("");
-  }
+	function onAddProductToCart() {
+		if (!auth.isLogged) {
+			navigate(loginPath);
+		}
 
-  const ProductCardMedia = styled(CardMedia)({
-    height: 250,
-    position: "relative",
-  });
+		let isValid = validateProductQuantity(1);
 
-  const FavoriteIconHolder = styled(Box)({
-    display: "flex",
-    alignItems: "flex-start",
-    justifyContent: "flex-end",
-    color: "rgba(0, 0, 0, 0.3)",
-    "&:hover": {
-      color: theme.palette.error.main,
-    },
-  });
+		if (!isValid) {
+			return;
+		}
 
-  const FavoriteIcon = styled(Box)({
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.0)",
-    borderRadius: "50%",
-    padding: theme.spacing(1.5),
-    "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, 0.1)",
-    },
-  });
+		const requestData = {
+			userId: auth.userId,
+			cartId: auth.cartId,
+			productId: product.id,
+			quantity: 1,
+		};
 
-  const RibbonHolder = styled(Box)({
-    position: "absolute",
-    top: 10,
-    left: -12,
-    borderTopLeftRadius: "0px",
-    borderBottomLeftRadius: "0px",
-    borderTopRightRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-  });
+		addProductToCart(requestData);
+	}
 
-  const ProductRibbon = styled(Chip)({
-    fontSize: 14,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    marginTop: theme.spacing(0.7),
-  });
+	async function addProductToCart(requestData) {
+		try {
+			const controller = new AbortController();
 
-  const LabelsHolder = styled(Box)({
-    position: "absolute",
-    bottom: 5,
-    left: 8,
-    display: "flex",
-    gap: 5,
-    justifyContent: "center",
-  });
+			const response = await axiosPrivate.post(
+				ApiEndpoints.carts.addProduct,
+				requestData,
+				{
+					signal: controller.signal,
+				}
+			);
 
-  const ProductLabel = styled(Chip)({
-    fontSize: 14,
-    borderRadius: 6,
-  });
+			controller.abort();
 
-  const StyledCardActionArea = styled("div")({
-    //lineHeight: '1.2em', // 1 row height
-    height: "4.56em", // 3 rows
-    overflow: "hidden",
-    display: "-webkit-box",
-    WebkitLineClamp: 3, // 3 rows
-    WebkitBoxOrient: "vertical",
-    marginBottom: theme.spacing(1),
-  });
+			setProduct((prev) => {
+				return {
+					...prev,
+					quantity: prev.quantity - response?.data?.quantity,
+				};
+			});
 
-  const ProductName = styled(Typography)({
-    lineHeight: 1.2,
-    fontWeight: 500,
-    fontSize: "120%",
-    cursor: "pointer",
-    "&:hover": {
-      color: theme.palette.primary.main,
-    },
-  });
+			setUser((prev) => {
+				return {
+					...prev,
+					cartProductsCount: response?.data?.productsInCartCount,
+				};
+			});
 
-  const RatingWrapper = styled(Box)({
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  });
+			setAddToCartErrorMessage("");
+			setAddToCartResponseMessage(
+				`You have added product ${product.name} in the cart ${response?.data?.quantity} time(s)`
+			);
+		} catch (error) {
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setAddToCartErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setAddToCartErrorMessage(error?.response?.data);
+			}
 
-  const PriceAndActionsWrapper = styled(Box)({
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  });
+			console.log(error);
+		}
+	}
 
-  const RatingText = styled(Typography)({
-    marginLeft: theme.spacing(1),
-    whiteSpace: "nowrap",
-  });
+	function validateProductQuantity(addQuantityValue) {
+		if (!product.isAvailable) {
+			setAddToCartErrorMessage(
+				`Product is out of stock! You cannot purchase it!`
+			);
+			return false;
+		}
 
-  const PriceText = styled(Typography)({
-    color: theme.palette.secondary.main,
-    whiteSpace: "nowrap",
-    fontWeight: 500,
-  });
+		if (addQuantityValue > product.quantity) {
+			setAddToCartErrorMessage(
+				`In stock are ${product.quantity} items only! It is the maximum quantity you can purchase.`
+			);
+			return false;
+		}
 
-  const StyledCard = styled(Card)({
-    marginLeft: theme.spacing(0.7),
-    marginRight: theme.spacing(0.7),
-    minHeight: 400,
-  });
+		return true;
+	}
 
-  return (
-    <StyledCard>
-      <CardActionArea>
-        <ProductCardMedia
-          onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
-          title={product.name}
-          image={props.image}
-        />
-        <FavoriteIconHolder>
-          <FavoriteIcon>
-            <Box>
-              <Favorite
-                sx={{
-                  fontSize: "25px",
-                }}
-              />
-            </Box>
-          </FavoriteIcon>
-        </FavoriteIconHolder>
-        <RibbonHolder>
-          {product.discount > 0 ? (
-            <Box>
-              <ProductRibbon
-                label={`- ${product.discount}%`}
-                color="error"
-                variant="filled"
-              />
-            </Box>
-          ) : (
-            <></>
-          )}
-        </RibbonHolder>
-        <LabelsHolder>
-          {product.labels.map((label) => {
-            return (
-              <ProductLabel
-                key={label}
-                label={label}
-                color="primary"
-                size="small"
-                variant="filled"
-              />
-            );
-          })}
-        </LabelsHolder>
-      </CardActionArea>
-      <CardContent>
-        {subcategory?.name ? (
-          <Button variant="outlined" size="small">
-            {subcategory?.name}
-          </Button>
-        ) : (
-          <></>
-        )}
-        <StyledCardActionArea>
-          <ProductName
-            onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
-          >
-            {product.name}
-          </ProductName>
-        </StyledCardActionArea>
-        <Box>
-          <RatingWrapper>
-            <Rating
-              name="half-rating-read"
-              defaultValue={product.rating}
-              precision={0.5}
-              readOnly
-              size="small"
-            />
-            <RatingText component="legend">
-              {product.rating.toFixed(2)} stars
-            </RatingText>
-          </RatingWrapper>
-          {product?.discount > 0 ? (
-            <Box
-              sx={{
-                height: 25,
-                color: "gray",
-                textDecoration: "line-through",
-              }}
-            >
-              {appSettings.appCurrency.code} {product.price.toFixed(2)}
-            </Box>
-          ) : (
-            <Box sx={{ height: 25 }}></Box>
-          )}
-          <PriceAndActionsWrapper>
-            <PriceText variant="h6">
-              {`${appSettings.appCurrency.code} ${(
-                Math.round(
-                  (product.price - (product.price * product.discount) / 100) *
-                    100
-                ) / 100
-              ).toFixed(2)}`}
-            </PriceText>
-            <Box>
-              <IconButton
-                onClick={onAddProductToCart}
-                size="large"
-                variant="contained"
-                sx={{
-                  color: theme.palette.primary.main,
-                }}
-              >
-                <ShoppingCart sx={{ fontSize: "26px" }} />
-              </IconButton>
-            </Box>
-          </PriceAndActionsWrapper>
-        </Box>
-      </CardContent>
-      <Snackbar
-        onClose={handleCloseSnackbar}
-        autoHideDuration={10000}
-        ContentProps={{
-          style: {
-            backgroundColor: theme.palette.error.main,
-            textAlign: "center",
-          },
-        }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={addToCartErrorMessage.length > 0 ? true : false}
-        TransitionComponent={Slide}
-        message={`${addToCartErrorMessage}`}
-      ></Snackbar>
-      <Snackbar
-        onClose={handleCloseSnackbar}
-        autoHideDuration={10000}
-        ContentProps={{
-          style: {
-            textAlign: "center",
-          },
-        }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={addToCartResponseMessage.length > 0 ? true : false}
-        TransitionComponent={Slide}
-        message={`${addToCartResponseMessage}`}
-      ></Snackbar>
-    </StyledCard>
-  );
+	function handleCloseSnackbar() {
+		setAddToCartErrorMessage("");
+		setAddToCartResponseMessage("");
+	}
+
+	function handleCloseAddToWishlistSnackbar() {
+		setAddOrRemoveToWishlistErrorMessage("");
+		setAddOrRemoveToWishlistResponseMessage("");
+	}
+
+	const ProductCardMedia = styled(CardMedia)({
+		height: 250,
+		position: "relative",
+	});
+
+	const FavoriteIconHolder = styled(Box)({
+		display: "flex",
+		alignItems: "flex-start",
+		justifyContent: "flex-end",
+		color: "rgba(0, 0, 0, 0.3)",
+		"&:hover": {
+			color: theme.palette.error.main,
+		},
+	});
+
+	const FavoriteIcon = styled(Box)({
+		position: "absolute",
+		top: 10,
+		right: 10,
+		backgroundColor: "rgba(0, 0, 0, 0.0)",
+		borderRadius: "50%",
+		color: product.isInUserWishlist ? theme.palette.error.main : "",
+		padding: theme.spacing(1.5),
+		"&:hover": {
+			backgroundColor: "rgba(0, 0, 0, 0.1)",
+		},
+	});
+
+	const RibbonHolder = styled(Box)({
+		position: "absolute",
+		top: 10,
+		left: -12,
+		borderTopLeftRadius: "0px",
+		borderBottomLeftRadius: "0px",
+		borderTopRightRadius: theme.shape.borderRadius,
+		borderBottomRightRadius: theme.shape.borderRadius,
+	});
+
+	const ProductRibbon = styled(Chip)({
+		fontSize: 14,
+		paddingLeft: theme.spacing(2),
+		paddingRight: theme.spacing(1),
+		marginTop: theme.spacing(0.7),
+	});
+
+	const LabelsHolder = styled(Box)({
+		position: "absolute",
+		bottom: 5,
+		left: 8,
+		display: "flex",
+		gap: 5,
+		justifyContent: "center",
+	});
+
+	const ProductLabel = styled(Chip)({
+		fontSize: 14,
+		borderRadius: 6,
+	});
+
+	const StyledCardActionArea = styled("div")({
+		//lineHeight: '1.2em', // 1 row height
+		height: "4.56em", // 3 rows
+		overflow: "hidden",
+		display: "-webkit-box",
+		WebkitLineClamp: 3, // 3 rows
+		WebkitBoxOrient: "vertical",
+		marginBottom: theme.spacing(1),
+	});
+
+	const ProductName = styled(Typography)({
+		lineHeight: 1.2,
+		fontWeight: 500,
+		fontSize: "120%",
+		cursor: "pointer",
+		"&:hover": {
+			color: theme.palette.primary.main,
+		},
+	});
+
+	const RatingWrapper = styled(Box)({
+		display: "flex",
+		justifyContent: "flex-start",
+		alignItems: "center",
+		marginTop: theme.spacing(1),
+		marginBottom: theme.spacing(1),
+	});
+
+	const PriceAndActionsWrapper = styled(Box)({
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+	});
+
+	const RatingText = styled(Typography)({
+		marginLeft: theme.spacing(1),
+		whiteSpace: "nowrap",
+	});
+
+	const PriceText = styled(Typography)({
+		color: theme.palette.secondary.main,
+		whiteSpace: "nowrap",
+		fontWeight: 500,
+	});
+
+	const StyledCard = styled(Card)({
+		marginLeft: theme.spacing(0.7),
+		marginRight: theme.spacing(0.7),
+		minHeight: 400,
+	});
+
+	return (
+		<StyledCard>
+			<CardActionArea>
+				<ProductCardMedia
+					onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
+					title={product.name}
+					image={props.image}
+				/>
+				<FavoriteIconHolder>
+					<FavoriteIcon onClick={onAddOrRemoveProductToWishlist}>
+						<Box>
+							<Favorite
+								sx={{
+									fontSize: "25px",
+								}}
+							/>
+						</Box>
+					</FavoriteIcon>
+				</FavoriteIconHolder>
+				<RibbonHolder>
+					{product.discount > 0 ? (
+						<Box>
+							<ProductRibbon
+								label={`- ${product.discount}%`}
+								color="error"
+								variant="filled"
+							/>
+						</Box>
+					) : (
+						<></>
+					)}
+				</RibbonHolder>
+				<LabelsHolder>
+					{product.labels.map((label) => {
+						return (
+							<ProductLabel
+								key={label}
+								label={label}
+								color="primary"
+								size="small"
+								variant="filled"
+							/>
+						);
+					})}
+				</LabelsHolder>
+			</CardActionArea>
+			<CardContent>
+				{subcategory?.name ? (
+					<Button variant="outlined" size="small">
+						{subcategory?.name}
+					</Button>
+				) : (
+					<></>
+				)}
+				<StyledCardActionArea>
+					<ProductName
+						onClick={() => navigate(`${singleProductBasePath}${product.id}`)}
+					>
+						{product.name}
+					</ProductName>
+				</StyledCardActionArea>
+				<Box>
+					<RatingWrapper>
+						<Rating
+							name="half-rating-read"
+							defaultValue={product.rating}
+							precision={0.5}
+							readOnly
+							size="small"
+						/>
+						<RatingText component="legend">
+							{product.rating.toFixed(2)} stars
+						</RatingText>
+					</RatingWrapper>
+					{product?.discount > 0 ? (
+						<Box
+							sx={{
+								height: 25,
+								color: "gray",
+								textDecoration: "line-through",
+							}}
+						>
+							{appSettings.appCurrency.code} {product.price.toFixed(2)}
+						</Box>
+					) : (
+						<Box sx={{ height: 25 }}></Box>
+					)}
+					<PriceAndActionsWrapper>
+						<PriceText variant="h6">
+							{`${appSettings.appCurrency.code} ${(
+								Math.round(
+									(product.price - (product.price * product.discount) / 100) *
+										100
+								) / 100
+							).toFixed(2)}`}
+						</PriceText>
+						<Box>
+							<IconButton
+								onClick={onAddProductToCart}
+								size="large"
+								variant="contained"
+								sx={{
+									color: theme.palette.primary.main,
+								}}
+							>
+								<ShoppingCart sx={{ fontSize: "26px" }} />
+							</IconButton>
+						</Box>
+					</PriceAndActionsWrapper>
+				</Box>
+			</CardContent>
+			<Snackbar
+				onClose={handleCloseSnackbar}
+				autoHideDuration={10000}
+				ContentProps={{
+					style: {
+						backgroundColor: theme.palette.error.main,
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addToCartErrorMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addToCartErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseSnackbar}
+				autoHideDuration={10000}
+				ContentProps={{
+					style: {
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addToCartResponseMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addToCartResponseMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToWishlistSnackbar}
+				autoHideDuration={9000}
+				ContentProps={{
+					style: {
+						backgroundColor: theme.palette.error.main,
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addOrRemoveToWishlistErrorMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addOrRemoveToWishlistErrorMessage}`}
+			></Snackbar>
+			<Snackbar
+				onClose={handleCloseAddToWishlistSnackbar}
+				autoHideDuration={6000}
+				ContentProps={{
+					style: {
+						textAlign: "center",
+					},
+				}}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+				open={addOrRemoveToWishlistResponseMessage.length > 0 ? true : false}
+				TransitionComponent={Slide}
+				message={`${addOrRemoveToWishlistResponseMessage}`}
+			></Snackbar>
+		</StyledCard>
+	);
 }
 
 export default ProductCarouselCard;

@@ -83,7 +83,7 @@ namespace ShopHeaven.Data.Services
                 model.Labels = new List<string>();
             }
 
-            var newProduct = new Product();
+            var newProduct = new Models.Product();
 
             //get tags from database, or create it without saving DB
             var filteredTags = model.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -133,6 +133,8 @@ namespace ShopHeaven.Data.Services
             await this.db.Products.AddAsync(newProduct);
             await this.db.SaveChangesAsync();
 
+            bool isProductInUserWishlist = await IsProductInUserWishlistAsync(newProduct, user);
+
             var createdProduct = new AdminProductResponseModel()
             {
                 Id = newProduct.Id,
@@ -149,6 +151,7 @@ namespace ShopHeaven.Data.Services
                 IsAvailable = newProduct.IsAvailable,
                 Rating = newProduct.Rating,
                 HasGuarantee = newProduct.HasGuarantee,
+                IsInUserWishlist = isProductInUserWishlist,
                 ReviewsCount = newProduct.Reviews
                     .Where(x => x.IsDeleted != true)
                     .Count(),
@@ -308,6 +311,8 @@ namespace ShopHeaven.Data.Services
                 })
                 .ToListAsync();
 
+            bool isProductInUserWishlist = await IsProductInUserWishlistAsync(product, user);
+
             var updatedProduct = new AdminProductResponseModel()
             {
                 Id = product.Id,
@@ -324,6 +329,7 @@ namespace ShopHeaven.Data.Services
                 IsAvailable = product.IsAvailable,
                 Rating = product.Rating,
                 HasGuarantee = product.HasGuarantee,
+                IsInUserWishlist = isProductInUserWishlist,
                 ReviewsCount = product.Reviews
                     .Where(x => x.IsDeleted != true)
                     .Count(),
@@ -366,6 +372,10 @@ namespace ShopHeaven.Data.Services
 
         public async Task<ICollection<AdminProductResponseModel>> GetAllAsync(AdminProductPaginationRequestModel model)
         {
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+
+            if (user == null) { user = new User(); }
+
             //select these product which contains search term in their name
             //also product is not deleted
             //and also if there is Category Id selected, filter products by this category
@@ -374,7 +384,7 @@ namespace ShopHeaven.Data.Services
             //get requested sort criteria as enumeration type
             SortingCriteria sortingCriteria = ParseSortingCriteria(model.SortingCriteria);
 
-            IQueryable<Product> products = this.db.Products
+            IQueryable<Models.Product> products = this.db.Products
             .Where(p => p.IsDeleted != true && (p.Name.ToLower().Contains(model.SearchTerm.Trim().ToLower())
              || p.Brand.ToLower().Contains(model.SearchTerm.Trim().ToLower()))
                     && (model.CategoryId == ""
@@ -401,6 +411,7 @@ namespace ShopHeaven.Data.Services
                 Quantity = p.Quantity,
                 HasGuarantee = p.HasGuarantee,
                 IsAvailable = p.IsAvailable,
+                IsInUserWishlist = p.Wishlists.Any(pw => pw.ProductId == p.Id && pw.WishlistId == user.WishlistId),
                 Rating = p.Rating,
                 ReviewsCount = p.Reviews
                     .Where(x => x.IsDeleted != true)
@@ -496,7 +507,7 @@ namespace ShopHeaven.Data.Services
         {
             model.Labels = model.Labels.Select(x => x.Trim().ToLower()).ToList();
 
-            var filteredProducts = new HashSet<Product>();
+            var filteredProducts = new HashSet<Models.Product>();
 
             foreach (var label in model.Labels)
             {
@@ -681,6 +692,9 @@ namespace ShopHeaven.Data.Services
 
         public async Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model)
         {
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+            if (user == null) { user = new User(); }
+
             return await this.db.Products
                 .Where(p => p.IsDeleted != true)
                 .Take(model.SimilarProductsCount)
@@ -689,10 +703,12 @@ namespace ShopHeaven.Data.Services
                     Id = p.Id,
                     Name = p.Name,
                     Discount = p.Discount,
+                   
                     Brand = p.Brand,
                     IsAvailable = p.IsAvailable,
                     Price = p.Price,
                     Rating = p.Rating,
+                    IsInUserWishlist = p.Wishlists.Any(pw => pw.WishlistId == user.WishlistId && pw.ProductId == p.Id && pw.IsDeleted != true),
                     Labels = p.Labels
                         .Where(x => x.IsDeleted != true)
                         .Select(x => x.Label.Content)
@@ -730,9 +746,9 @@ namespace ShopHeaven.Data.Services
                                     .Where(x => x.IsDeleted != true)
                                     .Count(),
                                 IsInUserCart = p.Carts
-                                    .FirstOrDefault(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
+                                    .Any(x => x.ProductId == model.Id && x.Cart.UserId == model.UserId && x.IsDeleted != true),
                                 IsInUserWishlist = p.Wishlists
-                                    .FirstOrDefault(x => x.ProductId == model.Id && x.Wishlist.UserId == model.UserId && x.IsDeleted != true) != null ? true : false,
+                                    .Any(x => x.ProductId == model.Id && x.Wishlist.UserId == model.UserId && x.IsDeleted != true),
                                 Category = new CategoryBaseResponseModel
                                 {
                                     Id = p.SubCategory.MainCategoryId,
@@ -779,7 +795,7 @@ namespace ShopHeaven.Data.Services
             return product;
         }
 
-        public async Task<Product> GetProductAsync(string id)
+        public async Task<Models.Product> GetProductAsync(string id)
         {
             var product = await this.db.Products.
                             FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
@@ -792,7 +808,7 @@ namespace ShopHeaven.Data.Services
             return product;
         }
 
-        private void ConfigureDeletionInfo(Product product, bool forDelete)
+        private void ConfigureDeletionInfo(Models.Product product, bool forDelete)
         {
             foreach (var review in product.Reviews.Where(x => x.IsDeleted == forDelete))
             {
@@ -1087,13 +1103,16 @@ namespace ShopHeaven.Data.Services
 
         private async Task<ICollection<ProductGalleryResponseModel>> GetProductsBySubcategoryIdAsync(ProductPaginationRequestModel model)
         {
+            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+            if (user == null) { user = new User(); }
+
             //get requested sort criteria as enumeration
             SortingCriteria sortingCriteria = ParseSortingCriteria(model.SortingCriteria);
 
             var searchTerm = model.SearchTerm.Trim().ToLower();
 
             //get filtered products
-            IQueryable<Product> products = this.db.Products
+            IQueryable<Models.Product> products = this.db.Products
                 .Where(p => p.SubCategoryId == model.SubcategoryId
                     && p.Price >= model.LowestPrice
                     && p.Price <= model.HighestPrice
@@ -1116,6 +1135,7 @@ namespace ShopHeaven.Data.Services
                     Price = product.Price,
                     Discount = product.Discount,
                     IsAvailable = product.IsAvailable,
+                    IsInUserWishlist = product.Wishlists.Any(pw => pw.WishlistId == user.WishlistId && pw.ProductId == product.Id && product.IsDeleted != true),
                     Rating = product.Rating,
                     Image = product.Images
                             .FirstOrDefault(x => x.IsThumbnail && x.IsDeleted != true).Image.Url ?? product.Images.FirstOrDefault(x => x.IsDeleted != true).Image.Url,
@@ -1136,6 +1156,12 @@ namespace ShopHeaven.Data.Services
             return productsFilteredByAvailability;
         }
 
+        private async Task<bool> IsProductInUserWishlistAsync(Models.Product product, User user)
+        {
+            return await this.db.ProductsWishlists
+                            .AnyAsync(x => x.ProductId == product.Id && x.WishlistId == user.WishlistId && x.IsDeleted != true);
+        }
+
         private SortingCriteria ParseSortingCriteria(string sortingCriteria)
         {
             bool isSortCriteriaParsed = Enum.TryParse<SortingCriteria>(sortingCriteria, out SortingCriteria criteria);
@@ -1148,7 +1174,7 @@ namespace ShopHeaven.Data.Services
             return criteria;
         }
 
-        private IQueryable<Product> OrderBy(IQueryable<Product> productsCollection, SortingCriteria sortingCriteria)
+        private IQueryable<Models.Product> OrderBy(IQueryable<Models.Product> productsCollection, SortingCriteria sortingCriteria)
         {
             switch (sortingCriteria)
             {
@@ -1166,6 +1192,5 @@ namespace ShopHeaven.Data.Services
                     return productsCollection.OrderByDescending(e => e.CreatedOn).ThenByDescending(x => x.CreatedOn);
             }
         }
-
     }
 }

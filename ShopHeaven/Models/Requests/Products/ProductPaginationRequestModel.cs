@@ -4,6 +4,8 @@ namespace ShopHeaven.Models.Requests.Products
 {
     public class ProductPaginationRequestModel : PaginationRequestModel
     {
+        public string? UserId { get; set; }
+
         public string SubcategoryId { get; set; }
 
         public double? Rating { get; set; } = 0;
