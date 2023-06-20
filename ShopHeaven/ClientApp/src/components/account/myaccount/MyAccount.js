@@ -51,7 +51,7 @@ export default function MyAccount() {
 				);
 
 				setMyUser(response?.data);
-
+				setUserUpdated(false);
 				console.log("USER RESPONSE: ", response?.data);
 			} catch (error) {
 				console.log(error);
@@ -68,10 +68,8 @@ export default function MyAccount() {
 		};
 	}, [userUpdated]);
 
-	function updatedUser() {
-		setUserUpdated(true);
-	}
-
+	function updatedUser() { setUserUpdated(true); }
+	
 	return (
 		<Box>
 			<BreadcrumbsBar breadcrumbsItems={breadcrumbs} />

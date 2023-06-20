@@ -1,13 +1,9 @@
 import { React, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
 	Box,
-	Grid,
 	Paper,
 	Typography,
 	Stack,
-	Chip,
-	Divider,
 	Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -46,18 +42,25 @@ export default function ProfileSection(props) {
 
 	return (
 		<Paper sx={{ p: 2 }}>
-			<Stack spacing={2} sx={{mt:2, mb:2}}>
+			<Stack spacing={2} sx={{ mt: 2, mb: 2 }}>
 				<StackItem>
 					<UserAvatar>{myUser?.email[0].toUpperCase()}</UserAvatar>
 				</StackItem>
 				<StackItem>
-					<Username variant="h5">{myUser?.email}</Username>
+					<Username variant="h6">{myUser?.email}</Username>
 				</StackItem>
 				<StackItem>
-					<Typography>Username: <b>{myUser?.username}</b></Typography>
+					<Typography>
+						Username: <b>{myUser?.username}</b>
+					</Typography>
 				</StackItem>
 				<StackItem>
 					<Typography>{renderDate()}</Typography>
+				</StackItem>
+				<StackItem>
+					<Typography>
+						Roles: {myUser?.roles.map((x) => x.name + ", ")}
+					</Typography>
 				</StackItem>
 			</Stack>
 		</Paper>

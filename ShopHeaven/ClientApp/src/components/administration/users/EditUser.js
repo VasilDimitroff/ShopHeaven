@@ -237,8 +237,6 @@ export default function EditUser(props) {
 			setEditUserErrorMessage("");
 			setEditUserResponseMessage(`${user.email} successfully updated`);
 
-			window.scroll(0, 0);
-
 			props.updateUser(response?.data);
 		} catch (error) {
 			setEditUserResponseMessage("");
