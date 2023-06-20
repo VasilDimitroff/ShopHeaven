@@ -26,12 +26,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task RegisterAsync(CreateUserRequestModel model)
         {
-            User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim() && x.IsDeleted != true);
-
-            if (userWithSameEmail != null)
-            {
-                throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
-            }
+            User userWithSameEmail = await EmailIsFree(model.Email);
 
             if (model.Password.Trim() != model.ConfirmPassword.Trim())
             {
@@ -41,6 +36,11 @@ namespace ShopHeaven.Data.Services
             if (model.Password.Length < GlobalConstants.PasswordLength)
             {
                 throw new ArgumentException(GlobalConstants.PasswordLengthNotEnough);
+            }
+
+            if(!(model.Password.Any(char.IsDigit) && model.Password.Any(char.IsLetter)))
+            {
+                throw new ArgumentException(GlobalConstants.PasswordMustContainsLettersAndDigits);
             }
 
             User user = new User
@@ -284,6 +284,9 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UsernameLengthNotEnough);
             }
 
+            await EmailIsFree(user.Email);
+            await UsernameIsFree(model.Username);
+
             user.Email = model.Email.Trim();
             user.UserName = model.Username.Trim();
             user.ModifiedOn = DateTime.UtcNow;
@@ -407,6 +410,30 @@ namespace ShopHeaven.Data.Services
                           .ToList()
                       })
                   .ToListAsync();
+        }
+
+        private async Task<User> EmailIsFree(string email)
+        {
+            User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == email.Trim() && x.IsDeleted != true);
+
+            if (userWithSameEmail != null)
+            {
+                throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
+            }
+
+            return userWithSameEmail;
+        }
+
+        private async Task<User> UsernameIsFree(string username)
+        {
+            User userWithSameUsername = await db.Users.FirstOrDefaultAsync(x => x.UserName == username.Trim() && x.IsDeleted != true);
+
+            if (userWithSameUsername != null)
+            {
+                throw new ArgumentException(GlobalConstants.UserWithThisUsernameAlreadyExists);
+            }
+
+            return userWithSameUsername;
         }
     }
 }

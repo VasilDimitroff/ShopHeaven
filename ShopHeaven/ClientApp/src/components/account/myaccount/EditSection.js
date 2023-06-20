@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { ApiEndpoints } from "../../../api/endpoints";
 import {
@@ -29,7 +30,9 @@ import {
 export default function EditSection(props) {
 	const [myUser, setMyUser] = useState(props.myUser);
 
+	const { setAuth } = useAuth();
 	const axiosPrivate = useAxiosPrivate();
+	const navigate = useNavigate();
 
 	const userNameRef = useRef();
 	const userEmailRef = useRef();
@@ -156,6 +159,66 @@ export default function EditSection(props) {
 		}
 
 		return isValid;
+	}
+
+	function onChangePassword(e) {
+		e.preventDefault();
+
+		setValuesToStates();
+
+		let isFormValid = validateChangePasswordForm();
+
+		if (!isFormValid) {
+			return;
+		}
+
+		const changePasswordModel = {
+			userId: myUser.id,
+			oldPassword: userOldPasswordRef.current.value.trim(),
+			newPassword: userNewPasswordRef.current.value.trim(),
+			confirmNewPassword: userNewPasswordAgainRef.current.value.trim(),
+		};
+
+		changePassword(changePasswordModel);
+	}
+
+	async function changePassword(changePasswordModel) {
+		try {
+			const controller = new AbortController();
+
+			const response = await axiosPrivate.post(
+				ApiEndpoints.auth.changePassword,
+				changePasswordModel,
+				{
+					signal: controller.signal,
+				}
+			);
+
+			controller.abort();
+
+			console.log("CHANGE PASSWORD RESPONSE", response?.data);
+
+			deleteAuthData();
+			//props.updatedUser();
+
+			setChangePasswordErrorMessage("");
+			setChangePasswordResponseMessage(`Password updated successfully`);
+
+			navigate("/");
+		} catch (error) {
+			setChangePasswordResponseMessage("");
+
+			if (error?.response?.status === 401 || error?.response?.status === 403) {
+				setChangePasswordErrorMessage(noPermissionsForOperationMessage);
+			} else {
+				setChangePasswordErrorMessage(error?.response?.data);
+			}
+			console.log(error?.message);
+		}
+	}
+
+	function deleteAuthData() {
+		setAuth({});
 	}
 
 	function validateChangePasswordForm() {
@@ -309,12 +372,13 @@ export default function EditSection(props) {
 					/>
 				</Divider>
 				<Box>
-					<form component="form">
+					<form component="form" onSubmit={onChangePassword}>
 						<InputBox>
 							<UniversalInput
 								label={"Enter old password"}
 								inputRef={userOldPasswordRef}
 								placeholder={"Enter old password"}
+								type="password"
 							/>
 						</InputBox>
 						<InputBox>
@@ -322,6 +386,7 @@ export default function EditSection(props) {
 								label={"Enter new password"}
 								inputRef={userNewPasswordRef}
 								placeholder={"Enter new password"}
+								type="password"
 							/>
 						</InputBox>
 						<InputBox>
@@ -329,6 +394,7 @@ export default function EditSection(props) {
 								label={"Confirm new password"}
 								inputRef={userNewPasswordAgainRef}
 								placeholder={"Confirm new password"}
+								type="password"
 							/>
 						</InputBox>
 						<InputBox>

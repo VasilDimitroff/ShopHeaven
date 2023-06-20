@@ -5,7 +5,8 @@ export const ApiEndpoints = {
         register: "api/auth/register",
         login: "api/auth/login",
         logout: "api/auth/logout",
-        refreshToken: "api/auth/refreshToken"
+        refreshToken: "api/auth/refreshToken",
+        changePassword: "api/auth/changePassword"
     },
     users: {
         getAll: "api/users/getall",

@@ -32,11 +32,17 @@
        
         public static string PasswordLengthNotEnough = $"Password length must be at least {PasswordLength} characters long.";
 
+        public const string ChangePasswordFailed = "Error occurred! Password not changed!";
+
+        public const string PasswordMustContainsLettersAndDigits = "Password must contains letters and digits!";
+
         public const string UserDoesNotExist = "User with given Id doesn't exists!";
 
         public const string UserNotFound = "User is not found!";
 
         public const string UserWithThisEmailAlreadyExists = "User with this email already exists!";
+
+        public const string UserWithThisUsernameAlreadyExists = "User with this username already exists!";
 
         public const string UserSuccessfullyRegistered = "User is registered successfully!";
 

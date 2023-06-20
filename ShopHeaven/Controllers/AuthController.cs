@@ -155,6 +155,21 @@ namespace ShopHeaven.Controllers
         }
 
 
+        [HttpPost, Authorize, Route(nameof(ChangePassword))]
+        public async Task<ActionResult> ChangePassword(ChangePasswordRequestModel model)
+        {
+            try
+            {
+                await this.authService.ChangePasswordAsync(model);
+                return RedirectToAction(nameof(Logout));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [Route(nameof(Logout)), HttpGet]
         public async Task<ActionResult> Logout()
         {
@@ -182,7 +197,6 @@ namespace ShopHeaven.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
         }

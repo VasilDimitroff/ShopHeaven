@@ -1,5 +1,4 @@
 ﻿using ShopHeaven.Data.Models;
-using ShopHeaven.Models.Requests;
 using ShopHeaven.Models.Requests.Roles;
 using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Users;
