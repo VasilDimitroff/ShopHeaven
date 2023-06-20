@@ -2,7 +2,9 @@
 
 namespace ShopHeaven.Models.Requests.Users
 {
-    public class UndeleteUserRequestModel : UserBaseRequestModel
+    public class UserBaseRequestModel
     {
+        [Required]
+        public string Id { get; set; }
     }
 }

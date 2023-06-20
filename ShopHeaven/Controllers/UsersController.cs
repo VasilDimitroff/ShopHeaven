@@ -39,7 +39,22 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        
+        [HttpPost, Route(nameof(GetById)), Authorize]
+        public async Task<ActionResult<UserWithRolesResponseModel>> GetById([FromBody] UserBaseRequestModel model)
+        {
+            try
+            {
+                var user = await this.usersService.GetUserWithRolesAsync(model.Id);
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost, Route(nameof(Edit)), Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<ActionResult<UserWithRolesResponseModel>> Edit(EditUserRequestModel model)
         {

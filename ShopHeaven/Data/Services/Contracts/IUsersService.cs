@@ -12,6 +12,8 @@ namespace ShopHeaven.Data.Services.Contracts
 
         Task RegisterAsync(CreateUserRequestModel model);
 
+        Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId);
+
         Task<IList<string>> GetUserRolesNamesAsync(string userId);
 
         Task<GetUsersAndRolesResponseModel> GetAllAsync(UserPaginationRequestModel model);

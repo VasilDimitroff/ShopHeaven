@@ -7,7 +7,6 @@ using ShopHeaven.Models.Requests.Users;
 using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
 using System.Data;
-using System.Linq;
 using System.Security.Claims;
 
 namespace ShopHeaven.Data.Services
@@ -85,12 +84,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<IList<string>> GetUserRolesNamesAsync(string userId)
         {
-            var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserNotFound);
-            }
+            var user = await this.GetUserAsync(userId);
 
             IList<string> userRoles = await userManager.GetRolesAsync(user);
 
@@ -120,7 +114,7 @@ namespace ShopHeaven.Data.Services
                 .CountAsync();
 
             List<UserWithRolesResponseModel> usersWithRoles = await GetAllUsersWithRolesInfoAsync(model);
-            usersWithRoles = usersWithRoles.OrderByDescending(x => DateTime.Parse(x.CreatedOn)).ToList();
+            usersWithRoles = usersWithRoles.OrderByDescending(x => x.CreatedOn).ToList();
 
             var usersAndRoles = new GetUsersAndRolesResponseModel
             {
@@ -214,8 +208,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UserIsAlreadyInThisRole);
             }
 
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+            var user = await this.GetUserAsync(model.UserId);
 
             if (user == null)
             {
@@ -256,13 +249,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UserIsNotInTheSelectedRole);
             }
 
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.GetUserAsync(model.UserId);
 
             var role = await this.db.Roles
                 .FirstOrDefaultAsync(x => x.Id == model.RoleId);
@@ -289,13 +276,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<UserWithRolesResponseModel> EditUserAsync(EditUserRequestModel model)
         {
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentNullException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.GetUserAsync(model.Id);
 
             if (string.IsNullOrWhiteSpace(model.Username) 
                 || model.Username.Trim().Length < GlobalConstants.UsernameLength)
@@ -316,13 +297,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<UserWithRolesResponseModel> DeleteUserAsync(DeleteUserRequestModel model)
         {
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted != true);
-
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.GetUserAsync(model.Id);
 
             user.IsDeleted = true;
             user.DeletedOn = DateTime.UtcNow;
@@ -336,13 +311,7 @@ namespace ShopHeaven.Data.Services
 
         public async Task<UserWithRolesResponseModel> UndeleteUserAsync(UndeleteUserRequestModel model)
         {
-            var user = await this.db.Users
-                .FirstOrDefaultAsync(x => x.Id == model.Id && x.IsDeleted == true);
-
-            if (user == null)
-            {
-                throw new ArgumentException(GlobalConstants.UserDoesNotExist);
-            }
+            var user = await this.GetUserAsync(model.Id);
 
             user.IsDeleted = false;
             user.DeletedOn = null;
@@ -367,7 +336,7 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
-        private async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
+        public async Task<UserWithRolesResponseModel> GetUserWithRolesAsync(string userId)
         {
             var user = await this.db.Users
                 //.Where(u => u.Id == userId && u.IsDeleted != true)
@@ -377,7 +346,7 @@ namespace ShopHeaven.Data.Services
                     Id = u.Id,
                     Username = u.UserName,
                     Email = u.Email,
-                    CreatedOn = u.CreatedOn.ToString(),
+                    CreatedOn = u.CreatedOn,
                     IsDeleted = u.IsDeleted,
                     Roles = this.db.UserRoles
                         .Where(ur => ur.UserId == u.Id)
@@ -428,7 +397,7 @@ namespace ShopHeaven.Data.Services
                           Id = g.Key.Id,
                           Username = g.Key.UserName,
                           Email = g.Key.Email,
-                          CreatedOn = g.Key.CreatedOn.ToString(),
+                          CreatedOn = g.Key.CreatedOn,
                           IsDeleted = g.Key.IsDeleted,
                           Roles = g.Select(x => new UserRoleResponseModel
                           {
@@ -439,6 +408,5 @@ namespace ShopHeaven.Data.Services
                       })
                   .ToListAsync();
         }
-
     }
 }

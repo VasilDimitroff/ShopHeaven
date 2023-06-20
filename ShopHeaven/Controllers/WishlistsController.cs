@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Wishlists;
 using ShopHeaven.Models.Responses.Wishlists;
@@ -7,6 +8,7 @@ namespace ShopHeaven.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WishlistsController : ControllerBase
     {
         private readonly IWishlistsService wishlistsService;
@@ -30,7 +32,6 @@ namespace ShopHeaven.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpPost, Route(nameof(AddProduct))]
         public async Task<ActionResult<AddProductToWishlistResponseModel>> AddProduct([FromBody] AddProductToWishlistRequestModel model)

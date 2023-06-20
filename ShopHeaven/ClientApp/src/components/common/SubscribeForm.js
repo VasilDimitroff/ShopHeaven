@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Person, Email } from "@mui/icons-material";
 function SubscribeForm(props) {
   const Banner = styled(Box)({
-    backgroundColor: theme.palette.primary.main,
+    //backgroundColor: theme.palette.common.white.main,
     height: props.height,
     width: "100%",
     position: "relative",
@@ -16,7 +16,7 @@ function SubscribeForm(props) {
 
   const Overlay = styled(Box)({
     paddingTop: props.ContentPaddingTop,
-    backgroundColor: "rgba(0, 0, 0, 0.0)",
+    //backgroundColor: "rgba(0, 0, 0, 0.0)",
     height: props.height,
     position: "absolute",
     bottom: 0,
@@ -48,7 +48,6 @@ function SubscribeForm(props) {
   const Info = styled(Typography)({
     textAlign: "center",
     paddingBottom: theme.spacing(4),
-    color: "white",
     fontSize: "22px",
     [theme.breakpoints.down("md")]: {
       paddingBottom: theme.spacing(0),
@@ -56,8 +55,8 @@ function SubscribeForm(props) {
   });
 
   const StyledTextField = styled(TextField)({
-    color: "#ffffff",
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    //color: "#ffffff",
+    //backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderTopRightRadius: theme.shape.borderRadius,
     borderTopLeftRadius: theme.shape.borderRadius,
     width: "100%"
@@ -68,7 +67,7 @@ function SubscribeForm(props) {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: 20,
+    gap: theme.spacing(3),
     [theme.breakpoints.down("md")]: {
       display: "block",
       width: "100%",
@@ -109,11 +108,10 @@ function SubscribeForm(props) {
   return (
     <MainWrapper>
       <Banner>
-        <Slide direction="right" in={true}>
           <Overlay>
             <Info>{props.infoText}</Info>
             <FormHolder>
-              <FormWrapper variant="filled" >
+              <FormWrapper>
                 <InputBox>
                   <StyledTextField
                     InputProps={{
@@ -122,7 +120,6 @@ function SubscribeForm(props) {
                           <Person
                             sx={{
                               fontSize: "34px",
-                              color: theme.palette.white.main,
                               pt: theme.spacing(1),
                               pb: theme.spacing(1),
                             }}
@@ -131,8 +128,8 @@ function SubscribeForm(props) {
                       ),
                     }}
                     label="Name"
-                    color="white"
-                    variant="filled"
+                    variant="outlined"
+                    placeholder="Your Name"
                   />
                 </InputBox>
                 <InputBox>
@@ -143,7 +140,6 @@ function SubscribeForm(props) {
                           <Email
                             sx={{
                               fontSize: "34px",
-                              color: theme.palette.white.main,
                               pt: theme.spacing(1),
                               pb: theme.spacing(1),
                             }}
@@ -152,21 +148,20 @@ function SubscribeForm(props) {
                       ),
                     }}
                     label="E-mail"
-                    color="white"
-                    variant="filled"
+                    variant="outlined"
+                    placeholder="Your E-mail"
                   />
                 </InputBox>
                 <SubscribeButton
                   variant="contained"
-                  color="secondary"
                   size="large"
+                  color="secondary"
                 >
                   SUBSCRIBE
                 </SubscribeButton>
               </FormWrapper>
             </FormHolder>
           </Overlay>
-        </Slide>
       </Banner>
     </MainWrapper>
   );

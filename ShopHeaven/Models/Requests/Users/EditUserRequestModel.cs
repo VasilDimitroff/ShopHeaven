@@ -2,11 +2,8 @@
 
 namespace ShopHeaven.Models.Requests.Users
 {
-    public class EditUserRequestModel
+    public class EditUserRequestModel : UserBaseRequestModel
     {
-        [Required]
-        public string Id { get; set; }
-
         [Required]
         [MinLength(2)]
         public string Username { get; set; }
