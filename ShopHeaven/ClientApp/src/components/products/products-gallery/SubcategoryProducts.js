@@ -116,6 +116,10 @@ export default function SubcategoryProducts() {
 	];
 
 	useEffect(() => {
+		window.scroll(0, 0);
+	}, [params])
+
+	useEffect(() => {
 		let timeoutId;
 		const controller = new AbortController();
 
