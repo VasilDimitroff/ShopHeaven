@@ -8,6 +8,7 @@ using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
 using System.Data;
 using System.Security.Claims;
+using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace ShopHeaven.Data.Services
 {
@@ -26,7 +27,12 @@ namespace ShopHeaven.Data.Services
 
         public async Task RegisterAsync(CreateUserRequestModel model)
         {
-            User userWithSameEmail = await EmailIsFree(model.Email);
+            User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == model.Email.Trim() && x.IsDeleted != true);
+
+            if (userWithSameEmail != null)
+            {
+                throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
+            }
 
             if (model.Password.Trim() != model.ConfirmPassword.Trim())
             {
@@ -284,8 +290,8 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.UsernameLengthNotEnough);
             }
 
-            await EmailIsFree(user.Email);
-            await UsernameIsFree(model.Username);
+            await EmailIsFree(user.Email, user.Id);
+            await UsernameIsFree(model.Username, user.Id);
 
             user.Email = model.Email.Trim();
             user.UserName = model.Username.Trim();
@@ -412,11 +418,11 @@ namespace ShopHeaven.Data.Services
                   .ToListAsync();
         }
 
-        private async Task<User> EmailIsFree(string email)
+        private async Task<User> EmailIsFree(string email, string userId)
         {
             User userWithSameEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == email.Trim() && x.IsDeleted != true);
 
-            if (userWithSameEmail != null)
+            if (userWithSameEmail != null && userWithSameEmail.Id != userId)
             {
                 throw new ArgumentException(GlobalConstants.UserWithThisEmailAlreadyExists);
             }
@@ -424,11 +430,11 @@ namespace ShopHeaven.Data.Services
             return userWithSameEmail;
         }
 
-        private async Task<User> UsernameIsFree(string username)
+        private async Task<User> UsernameIsFree(string username, string userId)
         {
             User userWithSameUsername = await db.Users.FirstOrDefaultAsync(x => x.UserName == username.Trim() && x.IsDeleted != true);
 
-            if (userWithSameUsername != null)
+            if (userWithSameUsername != null && userWithSameUsername.Id != userId)
             {
                 throw new ArgumentException(GlobalConstants.UserWithThisUsernameAlreadyExists);
             }

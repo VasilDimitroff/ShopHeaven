@@ -52,7 +52,7 @@ export default function ProfileSection(props) {
 					</Stack>
 				</Grid>
 				<Grid item sx={{ margin: "auto" }} xs={12} sm={6} md={12} lg={12}>
-					<Stack spacing={1}>
+					<Stack spacing={3}>
 						<StackItem>
 							<Box>
 								Username: <Chip label={`${myUser?.username}`} color="primary" />
@@ -64,13 +64,18 @@ export default function ProfileSection(props) {
 							</Box>
 						</StackItem>
 						<StackItem>
-							<Box>
-								Roles:{" "}
-								<Chip
-									label={`${myUser?.roles.map((x) => x.name).join(", ")}`}
-									color="primary"
-								/>
-							</Box>
+							<Stack spacing={1} flexWrap={"wrap"} direction={"row"}>
+								<Typography>Roles: </Typography>
+								{myUser?.roles.map((role) => {
+									return (
+										<Chip
+											key={role.name}
+											label={`${role.name.toUpperCase()}`}
+											color="primary"
+										/>
+									);
+								})}
+							</Stack>
 						</StackItem>
 					</Stack>
 				</Grid>
