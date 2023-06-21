@@ -41,7 +41,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import MainMenu from "./home/MainMenu";
-import { cartPath, favoritesPath, loginPath, myAccountPath } from "../constants";
+import { cartPath, favoritesPath, loginPath, myAccountPath, myReviewsPath } from "../constants";
 
 export default function Header() {
 	const { auth } = useAuth();
@@ -406,7 +406,7 @@ export default function Header() {
 								</DropDownMenuListItemButton>
 							</ListItem>
 							<Divider />
-							<ListItem disablePadding>
+							<ListItem disablePadding onClick={() => navigate(myReviewsPath)}>
 								<DropDownMenuListItemButton>
 									<Reviews />
 									<UserMenuListItem primary="My Reviews" />

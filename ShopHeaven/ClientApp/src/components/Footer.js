@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Box, Grid, Typography, List, ListItem, Divider } from "@mui/material";
 import {
 	LinkedIn,

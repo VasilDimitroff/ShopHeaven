@@ -2,10 +2,10 @@
 
 namespace ShopHeaven.Models.Requests.Reviews
 {
-    public class PaginatedProductReviewRequestModel : PaginationRequestModel
+    public class PaginatedUserReviewRequestModel : PaginationRequestModel
     {
         [Required]
-        public string ProductId { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         public string Status { get; set; }

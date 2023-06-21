@@ -14,6 +14,7 @@ export const favoritesPath =`/favorites`;
 export const checkoutPath =`/order/checkout`;
 export const successPaymentPath =`/payment/success`;
 export const myAccountPath =`/account`;
+export const myReviewsPath =`/reviews`;
 
 //unautorized message
 export const noPermissionsForOperationMessage = "You have no permissions to perform the operation";

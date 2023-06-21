@@ -60,6 +60,31 @@ namespace ShopHeaven.Controllers
             }
         }
 
+        [HttpPost, Route(nameof(AllByUserId))]
+        public async Task<ActionResult<PaginatedReviewsResponseModel>> AllByUserId([FromBody] PaginatedUserReviewRequestModel model)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                var paginatedUserReviews = await this.reviewsService.GetReviewsByUserIdAsync(model);
+                var totalReviewsCount = await this.reviewsService.GetReviewsCountByUserIdAsync(model.UserId);
+
+                var reviewsInfoModel = new PaginatedReviewsResponseModel
+                {
+                    Reviews = paginatedUserReviews,
+                    ReviewsCount = totalReviewsCount,
+                    PagesCount = (int)Math.Ceiling((double)totalReviewsCount / model.RecordsPerPage),
+                };
+
+                return Ok(reviewsInfoModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(All))]
         public async Task<ActionResult<ReviewsAndStatusesResponseModel>> All([FromBody] PaginatedAdminReviewRequestModel model)
         {

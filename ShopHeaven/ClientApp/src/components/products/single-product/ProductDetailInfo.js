@@ -4,7 +4,6 @@ import {
 	Tabs,
 	Tab,
 	Paper,
-	Divider,
 	Table,
 	TableHead,
 	TableCell,
@@ -13,7 +12,7 @@ import {
 	TableBody,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { MainWrapper, HeadingChip } from "../../../styles/styles";
+import { MainWrapper } from "../../../styles/styles";
 import ProductReviews from "./ProductReviews";
 import ProductSpecifications from "./ProductSpecifications";
 import { theme } from "../../../theme";
@@ -22,18 +21,16 @@ export default function ProductDetailInfo(props) {
 	const [product, setProduct] = useState(props.product);
 	const [value, setValue] = useState(0);
 
-
 	useEffect(() => {
 		setProduct(props.product);
 		setValue(0);
-	}, [props.product])
+	}, [props.product]);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 
 	function TabPanel(props) {
-
 		const { children, value, index } = props;
 
 		return (
@@ -45,12 +42,6 @@ export default function ProductDetailInfo(props) {
 
 	const StyledTabContent = styled(Box)({
 		padding: theme.spacing(3),
-	});
-
-	const DetailsHeading = styled(Box)({
-		textAlign: "center",
-		marginTop: theme.spacing(1.9),
-		marginBottom: theme.spacing(3),
 	});
 
 	return (
@@ -72,25 +63,9 @@ export default function ProductDetailInfo(props) {
 				</Box>
 				<Box>
 					<TabPanel value={value} index={0}>
-						<DetailsHeading>
-							<Divider>
-								<HeadingChip
-									color="primary"
-									label={"PRODUCT DESCRIPTION"}
-								></HeadingChip>
-							</Divider>
-						</DetailsHeading>
 						<p>{product.description}</p>
 					</TabPanel>
 					<TabPanel value={value} index={1}>
-						<DetailsHeading>
-							<Divider>
-								<HeadingChip
-									color="primary"
-									label={"SPECIFICATIONS"}
-								></HeadingChip>
-							</Divider>
-						</DetailsHeading>
 						<TableContainer>
 							<Table aria-label="customized table">
 								<TableHead>
@@ -107,12 +82,10 @@ export default function ProductDetailInfo(props) {
 						</TableContainer>
 					</TabPanel>
 					<TabPanel value={value} index={2}>
-						<DetailsHeading>
-							<Divider>
-								<HeadingChip color="primary" label={"REVIEWS"}></HeadingChip>
-							</Divider>
-						</DetailsHeading>
-						<ProductReviews reviews={product?.reviews} productId={product?.id} />
+						<ProductReviews
+							reviews={product?.reviews}
+							productId={product?.id}
+						/>
 					</TabPanel>
 				</Box>
 			</Paper>
