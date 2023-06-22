@@ -4,6 +4,7 @@ using ShopHeaven.Data.Models.Enums;
 using ShopHeaven.Data.Services.Contracts;
 using ShopHeaven.Models.Requests.Enumerations;
 using ShopHeaven.Models.Requests.Reviews;
+using ShopHeaven.Models.Responses.Products.BaseModel;
 using ShopHeaven.Models.Responses.Reviews;
 
 namespace ShopHeaven.Data.Services
@@ -237,7 +238,11 @@ namespace ShopHeaven.Data.Services
                 CreatedOn = review.CreatedOn,
                 Email = review.CreatedBy.Email,
                 IsDeleted = review.IsDeleted,
-                Product = review.Product.Name,
+                Product = new ProductBaseResponseModel
+                {
+                    Id = review.ProductId,
+                    Name = review.Product.Name,
+                },
                 RatingValue = review.RatingValue
             };
 
@@ -268,7 +273,11 @@ namespace ShopHeaven.Data.Services
                    CreatedOn = review.CreatedOn,
                    RatingValue = review.RatingValue,
                    IsDeleted = review.IsDeleted,
-                   Product = review.Product.Name,
+                   Product = new ProductBaseResponseModel
+                   {
+                       Id = review.ProductId,
+                       Name = review.Product.Name,
+                   },
                    Status = review.Status.ToString(),
                })
                .ToListAsync();
