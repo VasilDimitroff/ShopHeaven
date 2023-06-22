@@ -9,5 +9,7 @@ namespace ShopHeaven.Models.Requests.Reviews
 
         [Required]
         public string Status { get; set; }
+
+        public string? Criteria { get; set; }
     }
 }

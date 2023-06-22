@@ -97,8 +97,11 @@ export const columnsWithSubcategoriesToShowIfScreenIsLg = 4;
 //allowed file formats in upload image functionality (sync it with backend)
 export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 
-//how many reviews per page in single product page
+//how many reviews per page in reviews page in admin panel
 export const reviewsPerPageInProductPage = 3;
+
+//how many reviews per page in MyReviews page
+export const reviewsPerPageInMyReviewsPage = 3;
 
 //exact length of the coupon code (sync it with backend)
 export const couponCodeLength = 8;

@@ -95,44 +95,10 @@ namespace ShopHeaven.Data.Services
             return reviews;
         }
 
-        public async Task<ICollection<ReviewResponseModel>> GetReviewsByUserIdAsync(PaginatedUserReviewRequestModel model)
-        {
-            bool isStatusParsed = Enum.TryParse<ReviewStatus>(model.Status, out ReviewStatus status);
-
-            var reviews = await this.db.Reviews
-                .OrderByDescending(r => r.CreatedOn)
-                .Where(r => r.CreatedById == model.UserId
-                    && r.IsDeleted != true
-                    && (isStatusParsed ? r.Status == status : r.Status != null)
-                    && r.Content.Contains(model.SearchTerm.Trim()))
-                .Skip((model.Page - 1) * model.RecordsPerPage)
-                .Take(model.RecordsPerPage)
-                .Select(r => new ReviewResponseModel
-                {
-                    Id = r.Id,
-                    Email = r.CreatedBy.Email,
-                    Content = r.Content,
-                    RatingValue = r.RatingValue,
-                    CreatedOn = r.CreatedOn,
-                })
-                .ToListAsync();
-
-            return reviews;
-        }
-
         public async Task<int> GetReviewsCountByProductIdAsync(string productId)
         {
             var totalReviewsCount = await this.db.Reviews
                 .Where(x => x.IsDeleted != true && x.ProductId == productId)
-                .CountAsync();
-
-            return totalReviewsCount;
-        }
-
-        public async Task<int> GetReviewsCountByUserIdAsync(string userId)
-        {
-            var totalReviewsCount = await this.db.Reviews
-                .Where(x => x.IsDeleted != true && x.CreatedById == userId)
                 .CountAsync();
 
             return totalReviewsCount;
@@ -274,6 +240,12 @@ namespace ShopHeaven.Data.Services
         {
             //get deleted included
             IQueryable<Review> reviews = this.db.Reviews.Include(x => x.CreatedBy).Include(x => x.Product);
+       
+            if (model.UserId != null && model.UserId != "")
+            {
+                var user = await this.usersService.GetUserAsync(model.UserId);
+                reviews = reviews.Where(x => x.CreatedById == user.Id && x.IsDeleted != true);
+            }
 
             reviews = FilterByCriteria(reviews, model.Criteria.Trim(), model.SearchTerm.Trim());
             reviews = FilterByReviewStatus(reviews, model.Status.Trim());

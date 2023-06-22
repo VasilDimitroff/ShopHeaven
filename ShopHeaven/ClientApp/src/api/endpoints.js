@@ -56,6 +56,7 @@ export const ApiEndpoints = {
     reviews: {
         createReview: "api/reviews/create",
         allByProductId: "api/reviews/allByProductId",
+        allByUserId: "api/reviews/allByUserId",
         getAll: "api/reviews/all",
         deleteReview: "api/reviews/delete",
         undeleteReview: "api/reviews/undelete",
