@@ -1,213 +1,84 @@
-import { React, useState, useRef, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Rating,
-  Avatar,
-  Zoom,
-  Alert,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { React, useState } from "react";
+import { Box, Rating, Avatar, Paper, Typography, Stack, Chip } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ContactMail, Phone, LocalShipping, } from "@mui/icons-material";
 import { theme } from "../../../theme";
-import { InputBox, AdminMainWrapper, UniversalInput } from "../../../styles/styles";
-import { noPermissionsForOperationMessage } from "../../../constants";
-import { ApiEndpoints } from "../../../api/endpoints";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
 
 export default function SingleReview(props) {
-  const axiosPrivate = useAxiosPrivate();
+	const [review, setReview] = useState(props.review);
 
-  const [review, setReview] = useState(props.review);
+    const { auth } = useAuth();
 
-  const [editReviewResponseMessage, setEditReviewResponseMessage] = useState("");
-  const [editReviewErrorMessage, setEditReviewErrorMessage] = useState("");
+	function formatDate(date) {
+		console.log("DATE IS", date);
+		const minutes = date.substring(14, 16);
+		const hour = date.substring(11, 13);
+		const day = date.substring(8, 10);
+		const month = date.substring(5, 7);
+		const year = date.substring(0, 4);
 
-  const contentRef = useRef();
+		const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
+		return formattedDate;
+	}
 
+	const Author = styled(Typography)({
+		fontWeight: 500,
+		fontSize: 16,
+	});
 
-  useEffect(() => {
-    console.log("START DATE IS", review.createdOn)
-  }, [])
+	const StyledPaper = styled(Paper)({
+		padding: theme.spacing(3),
+	});
 
-  function onEditReview(e) {
-    e.preventDefault();
+	const ContentHolder = styled(Box)({
+		marginTop: theme.spacing(2),
+	});
 
-    setReview(prev => {
-      return {
-        ...prev,
-        content: contentRef.current.value
-      }
-    })
+	const Date = styled(Typography)({
+		color: "gray",
+		fontSize: 13,
+	});
 
-    let isFormValid = validateForm();
+    const StyledChip = styled(Chip)({
+		fontWeight: 500,
+		borderRadius: theme.shape.borderRadius,
+        fontSize: 11
+	});
 
-    if (!isFormValid) {
-      return;
-    }
-
-    const editedReview = {
-      id: review?.id,
-      content: contentRef.current.value.trim(),
-    };
-
-    editReview(editedReview);
-  }
-
-  async function editReview(editedReview) {
-    try {
-      const controller = new AbortController();
-
-      const response = await axiosPrivate.post(
-        ApiEndpoints.reviews.editReview,
-        editedReview,
-        {
-          signal: controller.signal,
-        }
-      );
-
-      controller.abort();
-
-      setEditReviewErrorMessage("");
-      setEditReviewResponseMessage(`Review of ${review?.email} successfully updated`);
-
-      setReview(response?.data)
-      props.updateReview(response?.data);
-    } catch (error) {
-      setEditReviewResponseMessage("");
-
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        setEditReviewErrorMessage(noPermissionsForOperationMessage);
-      } else {
-        setEditReviewErrorMessage(error?.response?.data);
-      }
-      console.log(error?.message);
-    }
-  }
-
-  function validateForm() {
-    let isValid = true;
-
-    if (!contentRef.current.value || contentRef.current.value.length < 2) {
-      setEditReviewErrorMessage("Rating comment must be at least 2 characters")
-      isValid = false;
-    } else {
-      setEditReviewErrorMessage("")
-      setEditReviewResponseMessage("");
-    }
-
-    return isValid;
-  }
-
-  const Author = styled(Typography)({
-    fontWeight: 500,
-    fontSize: 16,
-  });
-
-  function formatDate(date) {
-    console.log("DATE IS", date)
-    const minutes = date.substring(14, 16);
-    const hour = date.substring(11, 13);
-    const day = date.substring(8, 10);
-    const month = date.substring(5, 7);
-    const year = date.substring(0, 4);
-
-    const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
-    return formattedDate;
-  }
-
-  const InfoHolder = styled(Box)({
-    display: "flex",
-    gap: 10,
-    alignItems: "center"
-  });
-
-  const Section = styled(Stack)({})
-
-  return (
-    <AdminMainWrapper sx={{ p: 4 }}>
-      <InputBox>
-        <form onSubmit={onEditReview}>
-          <Stack spacing={2}>
-          <Box>
-            <InfoHolder>
-              <Avatar
-                sx={{
-                  bgcolor: theme.palette.secondary.main,
-                }}
-              >
-                {review?.email[0].toUpperCase()}
-              </Avatar>
-              <Author>{review?.email}</Author>
-              <Typography sx={{color: "gray", fontSize: 12}}>on {formatDate(review?.createdOn)}</Typography>
-            </InfoHolder>
-          </Box>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Typography>Rating:</Typography>
-            <Rating             
-              readOnly
-              name="size-small"
-              variant="outlined"
-              size="medium"
-              value={review?.ratingValue}
-            />{" "}
-            <Typography>
-              {review?.ratingValue ? (
-                `(${review?.ratingValue} stars)`
-              ) : (
-                <></>
-              )}
-            </Typography>
-          </Box>
-          <UniversalInput
-            inputRef={contentRef}
-            multiline
-            label="Edit review comment..."
-            variant="outlined"
-            defaultValue={review?.content}
-            minRows={4}
-          />
-          <Button
-            type="submit"
-            size="medium"
-            variant="contained"
-            color="secondary"
-          >
-            EDIT REVIEW
-          </Button>
-          </Stack>
-        </form>
-        {editReviewResponseMessage ? (
-          <Zoom
-            in={
-              editReviewResponseMessage.length > 0 ? true : false
-            }
-          >
-            <Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
-              {editReviewResponseMessage}
-            </Alert>
-          </Zoom>
-        ) : (
-          ""
-        )}
-        {editReviewErrorMessage ? (
-          <Zoom
-            in={editReviewErrorMessage.length > 0 ? true : false}
-          >
-            <Alert
-              sx={{ marginTop: theme.spacing(2) }}
-              variant="filled"
-              severity="error"
-            >
-              {editReviewErrorMessage}
-            </Alert>
-          </Zoom>
-        ) : (
-          <></>
-        )}
-      </InputBox>
-    </AdminMainWrapper>
-  );
+	return (
+		<StyledPaper key={review.id} variant="elevation" elevation={1}>
+            <Typography>{review.product}</Typography>
+			<Stack flexWrap={"wrap"} direction={"row"} spacing={1} alignItems={"center"}>
+				<Avatar
+					sx={{
+						bgcolor: theme.palette.primary.main,
+						width: 30,
+						height: 30,
+					}}
+				>
+					{review.email[0].toUpperCase()}
+				</Avatar>
+				<Author>{review.email}</Author>
+				<Date>on: {formatDate(review.createdOn)}</Date>
+                {
+                    auth?.email == review.email
+                    ? <StyledChip label={review.status} size="small" color={review.status == "Approved" ? "success" : "error" }/>
+                    : <></>
+                }             
+			</Stack>
+			<Stack flexWrap={"wrap"} direction={"row"} spacing={1} alignItems={"center"} sx={{mt:1}}>
+				<Rating
+					name="read-only"
+					size="small"
+					value={review.ratingValue}
+					max={5}
+					readOnly
+				/>
+				<Typography>({review.ratingValue} stars)</Typography>
+			</Stack>
+			<ContentHolder>
+				<Typography>{review.content}</Typography>
+			</ContentHolder>
+		</StyledPaper>
+	);
 }

@@ -60,7 +60,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(All))]
+        [HttpPost, Authorize, Route(nameof(All))]
         public async Task<ActionResult<ReviewsAndStatusesResponseModel>> All([FromBody] PaginatedAdminReviewRequestModel model)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }

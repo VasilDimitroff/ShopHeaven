@@ -32,7 +32,7 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.ProductWithThisIdDoesNotExist);
             }
 
-            if (model.RatingValue < 1 )
+            if (model.RatingValue < 1)
             {
                 model.RatingValue = 1;
             }
@@ -42,12 +42,13 @@ namespace ShopHeaven.Data.Services
                 throw new ArgumentException(GlobalConstants.RatingContentCannotBeEmpty);
             }
 
-            var newReview = new Review() {
+            var newReview = new Review()
+            {
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = user,
                 Content = model.Content.Trim(),
                 RatingValue = model.RatingValue,
-                Product = product, 
+                Product = product,
             };
 
             product.Reviews.Add(newReview);
@@ -76,7 +77,7 @@ namespace ShopHeaven.Data.Services
 
             var reviews = await this.db.Reviews
                 .OrderByDescending(r => r.CreatedOn)
-                .Where(r => r.ProductId == model.ProductId 
+                .Where(r => r.ProductId == model.ProductId
                     && r.IsDeleted != true
                     && r.Status == status
                     && r.Content.Contains(model.SearchTerm.Trim()))
@@ -89,6 +90,7 @@ namespace ShopHeaven.Data.Services
                     Content = r.Content,
                     RatingValue = r.RatingValue,
                     CreatedOn = r.CreatedOn,
+                    Status = r.Status.ToString(),
                 })
                 .ToListAsync();
 
@@ -111,6 +113,12 @@ namespace ShopHeaven.Data.Services
 
             //get deleted orders too
             IQueryable<Review> allReviews = this.db.Reviews.Include(x => x.CreatedBy);
+
+            if (model.UserId != null && model.UserId != "")
+            {
+                allReviews = await FilterByUserIdAsync(allReviews, model.UserId);
+            }
+
             allReviews = FilterByCriteria(allReviews, model.Criteria.Trim(), model.SearchTerm.Trim());
             var allFilteredReviewsCount = await FilterByReviewStatus(allReviews, model.Status.Trim()).CountAsync();
 
@@ -240,11 +248,10 @@ namespace ShopHeaven.Data.Services
         {
             //get deleted included
             IQueryable<Review> reviews = this.db.Reviews.Include(x => x.CreatedBy).Include(x => x.Product);
-       
+
             if (model.UserId != null && model.UserId != "")
             {
-                var user = await this.usersService.GetUserAsync(model.UserId);
-                reviews = reviews.Where(x => x.CreatedById == user.Id && x.IsDeleted != true);
+                reviews = await FilterByUserIdAsync(reviews, model.UserId);
             }
 
             reviews = FilterByCriteria(reviews, model.Criteria.Trim(), model.SearchTerm.Trim());
@@ -267,6 +274,14 @@ namespace ShopHeaven.Data.Services
                .ToListAsync();
 
             return filteredReviews;
+        }
+
+        private async Task<IQueryable<Review>> FilterByUserIdAsync(IQueryable<Review> reviews, string userId)
+        {
+            var user = await this.usersService.GetUserAsync(userId);
+            reviews = reviews.Where(x => x.CreatedById == userId && x.IsDeleted != true);
+
+            return reviews;
         }
 
         private IQueryable<Review> FilterByCriteria(IQueryable<Review> reviews, string sortingCriteria, string searchTerm)

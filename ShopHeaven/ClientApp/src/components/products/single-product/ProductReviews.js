@@ -1,16 +1,15 @@
 import { React, useState, useRef, Fragment, useEffect } from "react";
 import {
-  Box,
-  Typography,
-  Stack,
-  Paper,
-  Rating,
-  Button,
-  Alert,
-  TextField,
-  Zoom,
-  Avatar,
-  Chip,
+	Box,
+	Typography,
+	Stack,
+	Paper,
+	Rating,
+	Button,
+	Alert,
+	Zoom,
+	Avatar,
+	Chip,
 } from "@mui/material";
 import AppPagination from "../../common/AppPagination";
 import { theme } from "../../../theme";
@@ -19,428 +18,379 @@ import { styled } from "@mui/material/styles";
 import { ApiEndpoints } from "../../../api/endpoints";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import axios from "../../../api/axios";
-import { loginPath, noPermissionsForOperationMessage, reviewsPerPageInProductPage } from "../../../constants";
-import { useNavigate, useLocation, Link  } from "react-router-dom";
+import {
+	loginPath,
+	noPermissionsForOperationMessage,
+	reviewsFilterStatusForSingleProductPage,
+	reviewsPerPageInProductPage,
+} from "../../../constants";
+import { useLocation, Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import SingleReview from "../../account/myreviews/SingleReview";
 
 export default function ProductReviews(props) {
-  let { auth } = useAuth();
-  let axiosPrivate = useAxiosPrivate();
+	let { auth } = useAuth();
+	let axiosPrivate = useAxiosPrivate();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.pathname;
+	const location = useLocation();
+	const from = location.pathname;
 
-  const [productId, setProductId] = useState(props.productId)
-  const [reviews, setReviews] = useState(props.reviews);
+	const [productId, setProductId] = useState(props.productId);
+	const [reviews, setReviews] = useState(props.reviews);
 
-  //current page with reviews - pagination states
-  const [page, setPage] = useState(1);
-  const [numberOfPages, setNumberOfPages] = useState(10);
-  const [totalReviewsCount, setTotalReviewsCount] = useState(0);
+	//current page with reviews - pagination states
+	const [page, setPage] = useState(1);
+	const [numberOfPages, setNumberOfPages] = useState(10);
+	const [totalReviewsCount, setTotalReviewsCount] = useState(0);
 
-  //create new review states
-  const [newReview, setNewReview] = useState({
-    productId: productId,
-    comment: "",
-    ratingValue: null,
-  });
+	//create new review states
+	const [newReview, setNewReview] = useState({
+		productId: productId,
+		comment: "",
+		ratingValue: null,
+	});
 
-  //error and response messages during creation and get reviews
-  const [messages, setMessages] = useState({
-    createReviewResponseMessage: "",
-    createReviewErrorMessage: "",
-  });
+	//error and response messages during creation and get reviews
+	const [messages, setMessages] = useState({
+		createReviewResponseMessage: "",
+		createReviewErrorMessage: "",
+	});
 
-  //refs
-  const commentRef = useRef();
-  const effectRun = useRef(false);
+	//refs
+	const commentRef = useRef();
+	const effectRun = useRef(false);
 
-  //get reviews
-  useEffect(() => {
-    const controller = new AbortController();
-    const getReview = async () => {
-      try {
-        const response = await axios.post(
-          ApiEndpoints.reviews.allByProductId,
-          {
-            productId: props.productId,
-            status: "Approved",
-            recordsPerPage: reviewsPerPageInProductPage,
-            page: page,
-            searchTerm: "",
-          },
-          {
-            signal: controller.signal,
-          }
-        );
+	//get reviews
+	useEffect(() => {
+		const controller = new AbortController();
+		const getReview = async () => {
+			try {
+				const response = await axios.post(
+					ApiEndpoints.reviews.allByProductId,
+					{
+						productId: props.productId,
+						status: reviewsFilterStatusForSingleProductPage,
+						recordsPerPage: reviewsPerPageInProductPage,
+						page: page,
+						searchTerm: "",
+					},
+					{
+						signal: controller.signal,
+					}
+				);
 
-        console.log(response?.data);
-        
-        setReviews(response?.data?.reviews);
-        setNumberOfPages(response?.data?.pagesCount);
-        setTotalReviewsCount(response?.data?.reviewsCount);
+				console.log(response?.data);
 
-        if (page > response?.data?.pagesCount) {
-          setPage(1);
-        }
+				setReviews(response?.data?.reviews);
+				setNumberOfPages(response?.data?.pagesCount);
+				setTotalReviewsCount(response?.data?.reviewsCount);
 
-        setMessages((prev) => {
-          return {
-            ...prev,
-            createReviewErrorMessage: "",
-            createReviewResponseMessage: "",
-          };
-        });
+				if (page > response?.data?.pagesCount) {
+					setPage(1);
+				}
 
-      } catch (error) {
-        handleServerErrors(error)
-        console.log(error);
-      }
-    };
+				setMessages((prev) => {
+					return {
+						...prev,
+						createReviewErrorMessage: "",
+						createReviewResponseMessage: "",
+					};
+				});
+			} catch (error) {
+				handleServerErrors(error);
+				console.log(error);
+			}
+		};
 
-    if (effectRun.current) {
-      getReview();
-    }
+		if (effectRun.current) {
+			getReview();
+		}
 
-    return () => {
-      effectRun.current = true; // update the value of effectRun to true
-      controller.abort();
-    };
-  }, [page]);
+		return () => {
+			effectRun.current = true; // update the value of effectRun to true
+			controller.abort();
+		};
+	}, [page]);
 
-  // set selected rating
-  function handleChangeRating(event, newValue) {
-    setInputFieldsValues();
+	// set selected rating
+	function handleChangeRating(event, newValue) {
+		setInputFieldsValues();
 
-    setNewReview((prev) => {
-      return {
-        ...prev,
-        ratingValue: parseInt(newValue),
-      };
-    });
-  }
+		setNewReview((prev) => {
+			return {
+				...prev,
+				ratingValue: parseInt(newValue),
+			};
+		});
+	}
 
-  //prepare date for create request
-  function onCreateReview(e) {
-    e.preventDefault();
+	//prepare date for create request
+	function onCreateReview(e) {
+		e.preventDefault();
 
-    setInputFieldsValues();
+		setInputFieldsValues();
 
-    const isFormValid = validateForm();
+		const isFormValid = validateForm();
 
-    if (!isFormValid) {
-      return;
-    }
+		if (!isFormValid) {
+			return;
+		}
 
-    const review = {
-      userId: auth.userId,
-      productId: newReview.productId,
-      content: commentRef.current.value,
-      ratingValue: newReview.ratingValue,
-    };
+		const review = {
+			userId: auth.userId,
+			productId: newReview.productId,
+			content: commentRef.current.value,
+			ratingValue: newReview.ratingValue,
+		};
 
-    createReview(review);
-  }
+		createReview(review);
+	}
 
-  //create new review
-  async function createReview(review) {
-    try {
-      console.log("REVIEW REQUEST", review);
-      const controller = new AbortController();
+	//create new review
+	async function createReview(review) {
+		try {
+			console.log("REVIEW REQUEST", review);
+			const controller = new AbortController();
 
-      const response = await axiosPrivate.post(
-        ApiEndpoints.reviews.createReview,
-        review,
-        {
-          signal: controller.signal,
-        }
-      );
+			const response = await axiosPrivate.post(
+				ApiEndpoints.reviews.createReview,
+				review,
+				{
+					signal: controller.signal,
+				}
+			);
 
-      controller.abort();
-     
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: "",
-          createReviewResponseMessage: `Review successfully created!`,
-        };
-      });
+			controller.abort();
 
-      setNewReview((prev) => {
-        return {
-          productId: productId,
-          comment: "",
-          ratingValue: null,
-        };
-      });
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage: "",
+					createReviewResponseMessage: `Review successfully created!`,
+				};
+			});
 
-      setReviews(prev => [...prev, response?.data])
+			setNewReview((prev) => {
+				return {
+					productId: productId,
+					comment: "",
+					ratingValue: null,
+				};
+			});
 
-      console.log("CREAE REVIEW",response);
-    } catch (error) {
-      handleServerErrors(error);
-      console.log(error);
-    }
-  }
+			setReviews((prev) => [...prev, response?.data]);
 
-  //hande errors in try catch block
-  function handleServerErrors(error){
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: noPermissionsForOperationMessage,
-          createReviewResponseMessage: ``,
-        };
-      });
-    } else {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: error?.response?.data,
-          createReviewResponseMessage: ``,
-        };
-      });
-    }
-  }
+			console.log("CREAE REVIEW", response);
+		} catch (error) {
+			handleServerErrors(error);
+			console.log(error);
+		}
+	}
 
-  function setInputFieldsValues() {
-    const comment = commentRef.current.value;
+	//hande errors in try catch block
+	function handleServerErrors(error) {
+		if (error?.response?.status === 401 || error?.response?.status === 403) {
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage: noPermissionsForOperationMessage,
+					createReviewResponseMessage: ``,
+				};
+			});
+		} else {
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage: error?.response?.data,
+					createReviewResponseMessage: ``,
+				};
+			});
+		}
+	}
 
-    setNewReview((prev) => {
-      return {
-        ...prev,
-        comment: comment,
-      };
-    });
-  }
+	function setInputFieldsValues() {
+		const comment = commentRef.current.value;
 
-  //validate create review form
-  function validateForm() {
-    let isValid = true;
+		setNewReview((prev) => {
+			return {
+				...prev,
+				comment: comment,
+			};
+		});
+	}
 
-    if (!commentRef.current.value || newReview.comment.length < 2) {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: "Rating comment must be at least 2 characters",
-        };
-      });
+	//validate create review form
+	function validateForm() {
+		let isValid = true;
 
-      isValid = false;
+		if (!commentRef.current.value || newReview.comment.length < 2) {
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage:
+						"Rating comment must be at least 2 characters",
+				};
+			});
 
-      return isValid;
-    }
+			isValid = false;
 
-    if (!newReview.ratingValue || newReview.ratingValue < 1) {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: "Rating star value must be at least 1",
-        };
-      });
+			return isValid;
+		}
 
-      isValid = false;
-    } else {
-      setMessages((prev) => {
-        return {
-          ...prev,
-          createReviewErrorMessage: "",
-        };
-      });
-    }
+		if (!newReview.ratingValue || newReview.ratingValue < 1) {
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage: "Rating star value must be at least 1",
+				};
+			});
 
-    return isValid;
-  }
+			isValid = false;
+		} else {
+			setMessages((prev) => {
+				return {
+					...prev,
+					createReviewErrorMessage: "",
+				};
+			});
+		}
 
-  function formatDate(date) {
-    const minutes = date.substring(14, 16);
-    const hour = date.substring(11, 13);
-    const day = date.substring(8, 10);
-    const month = date.substring(5, 7);
-    const year = date.substring(0, 4);
+		return isValid;
+	}
 
-    const formattedDate = `${day}/${month}/${year}, ${hour}:${minutes}`;
-    return formattedDate;
-  }
+	const InfoHolder = styled(Box)({
+		display: "flex",
+		gap: 10,
+		alignItems: "center",
+		marginBottom: theme.spacing(1),
+	});
 
+	const Author = styled(Typography)({
+		fontWeight: 500,
+		fontSize: 18,
+	});
 
-  const StyledPaper = styled(Paper)({
-    padding: theme.spacing(3),
-  });
+	const PaginationHolder = styled(Box)({
+		marginTop: theme.spacing(4),
+		marginBottom: theme.spacing(1),
+	});
 
-  const InfoHolder = styled(Box)({
-    display: "flex",
-    gap: 10,
-    alignItems: "center",
-    marginBottom: theme.spacing(1),
-  });
-
-  const ContentHolder = styled(Box)({
-    marginTop: theme.spacing(2),
-  });
-
-  const Author = styled(Typography)({
-    fontWeight: 500,
-    fontSize: 18,
-  });
-
-  const Date = styled(Typography)({
-    color: "gray",
-    fontSize: 13,
-  });
-
-  const PaginationHolder = styled(Box)({
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(1),
-  });
-
-  return (
-    <Fragment>
-      {auth.isLogged ? (
-        <Box>
-          <Chip variant="outlined" label="LEAVE REVIEW:" />
-          <form onSubmit={onCreateReview}>
-            <Box sx={{ mt: 4 }}>
-              <InfoHolder>
-                <Avatar
-                  sx={{
-                    bgcolor: theme.palette.secondary.main,
-                  }}
-                >
-                  {auth?.email[0].toUpperCase()}
-                </Avatar>
-                <Author>{auth.email}</Author>
-              </InfoHolder>
-            </Box>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Typography>Rate:</Typography>
-              <Rating
-                onChange={(event, newValue) =>
-                  handleChangeRating(event, newValue)
-                }
-                name="size-small"
-                variant="outlined"
-                size="medium"
-                sx={{ display: "inline" }}
-                value={newReview.ratingValue}
-              />{" "}
-              <Typography>
-                {newReview.ratingValue ? (
-                  `(${newReview.ratingValue} stars)`
-                ) : (
-                  <></>
-                )}
-              </Typography>
-            </Box>
-            <UniversalInput
-              inputRef={commentRef}
-              multiline
-              label="Type your comment..."
-              variant="outlined"
-              defaultValue={newReview.comment}
-              minRows={4}
-            />
-            <Button
-              type="submit"
-              size="medium"
-              variant="contained"
-              sx={{ mt: theme.spacing(2) }}
-            >
-              SEND REVIEW
-            </Button>
-          </form>
-          {messages.createReviewResponseMessage ? (
-            <Zoom
-              in={
-                messages.createReviewResponseMessage.length > 0 ? true : false
-              }
-            >
-              <Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
-                {messages.createReviewResponseMessage}
-              </Alert>
-            </Zoom>
-          ) : (
-            ""
-          )}
-          {messages.createReviewErrorMessage ? (
-            <Zoom
-              in={messages.createReviewErrorMessage.length > 0 ? true : false}
-            >
-              <Alert
-                sx={{ marginTop: theme.spacing(2) }}
-                variant="filled"
-                severity="error"
-              >
-                {messages.createReviewErrorMessage}
-              </Alert>
-            </Zoom>
-          ) : (
-            <></>
-          )}
-        </Box>
-      ) : (
-        <Paper sx={{padding: theme.spacing(5, 0)}}>
-          <Typography sx={{ textAlign: "center", mb: 2 }}>
-            To add review you have to be logged!
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Link to={loginPath} state={{ from }}>
-            <Button size="big" color="secondary" variant="contained">
-              LOGIN
-            </Button>
-            </Link>
-          </Box>
-        </Paper>
-      )}
-      <Stack spacing={2} sx={{ mt: theme.spacing(4) }}>
-        {reviews?.map((review) => {
-          return (
-            <StyledPaper key={review.id} variant="elevation" elevation={1}>
-              <InfoHolder>
-                <Avatar
-                  sx={{
-                    bgcolor: theme.palette.primary.main,
-                    width: 30,
-                    height: 30,
-                  }}
-                >
-                  {review.email[0].toUpperCase()}
-                </Avatar>
-                <Author>{review.email}</Author>
-                <Date>on: {formatDate(review.createdOn)}</Date>
-              </InfoHolder>
-              <InfoHolder>
-                <Rating
-                  name="read-only"
-                  size="small"
-                  value={review.ratingValue}
-                  max={5}
-                  readOnly
-                />
-                <Typography>({review.ratingValue} stars)</Typography>
-              </InfoHolder>
-              <ContentHolder>
-                <Typography>{review.content}</Typography>
-              </ContentHolder>
-            </StyledPaper>
-          );
-        })}
-      </Stack>
-      <PaginationHolder>
-        <AppPagination
-          setPage={setPage}
-          page={page}
-          numberOfPages={numberOfPages}
-          scroll={false}
-        />
-      </PaginationHolder>
-    </Fragment>
-  );
+	return (
+		<Fragment>
+			{auth.isLogged ? (
+				<Box>
+					<Chip variant="outlined" label="LEAVE REVIEW:" />
+					<form onSubmit={onCreateReview}>
+						<Box sx={{ mt: 4 }}>
+							<InfoHolder>
+								<Avatar
+									sx={{
+										bgcolor: theme.palette.secondary.main,
+									}}
+								>
+									{auth?.email[0].toUpperCase()}
+								</Avatar>
+								<Author>{auth.email}</Author>
+							</InfoHolder>
+						</Box>
+						<Box sx={{ display: "flex", gap: 1 }}>
+							<Typography>Rate:</Typography>
+							<Rating
+								onChange={(event, newValue) =>
+									handleChangeRating(event, newValue)
+								}
+								name="size-small"
+								variant="outlined"
+								size="medium"
+								sx={{ display: "inline" }}
+								value={newReview.ratingValue}
+							/>{" "}
+							<Typography>
+								{newReview.ratingValue ? (
+									`(${newReview.ratingValue} stars)`
+								) : (
+									<></>
+								)}
+							</Typography>
+						</Box>
+						<UniversalInput
+							inputRef={commentRef}
+							multiline
+							label="Type your comment..."
+							variant="outlined"
+							defaultValue={newReview.comment}
+							minRows={4}
+						/>
+						<Button
+							type="submit"
+							size="medium"
+							variant="contained"
+							sx={{ mt: theme.spacing(2) }}
+						>
+							SEND REVIEW
+						</Button>
+					</form>
+					{messages.createReviewResponseMessage ? (
+						<Zoom
+							in={
+								messages.createReviewResponseMessage.length > 0 ? true : false
+							}
+						>
+							<Alert sx={{ marginTop: theme.spacing(2) }} severity="success">
+								{messages.createReviewResponseMessage}
+							</Alert>
+						</Zoom>
+					) : (
+						""
+					)}
+					{messages.createReviewErrorMessage ? (
+						<Zoom
+							in={messages.createReviewErrorMessage.length > 0 ? true : false}
+						>
+							<Alert
+								sx={{ marginTop: theme.spacing(2) }}
+								variant="filled"
+								severity="error"
+							>
+								{messages.createReviewErrorMessage}
+							</Alert>
+						</Zoom>
+					) : (
+						<></>
+					)}
+				</Box>
+			) : (
+				<Paper sx={{ padding: theme.spacing(5, 0) }}>
+					<Typography sx={{ textAlign: "center", mb: 2 }}>
+						To add review you have to be logged!
+					</Typography>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+						}}
+					>
+						<Link to={loginPath} state={{ from }}>
+							<Button size="big" color="secondary" variant="contained">
+								LOGIN
+							</Button>
+						</Link>
+					</Box>
+				</Paper>
+			)}
+			<Stack spacing={2} sx={{ mt: theme.spacing(4) }}>
+				{reviews?.map((review) => {
+					return <SingleReview key={review.id} review={review} />;
+				})}
+			</Stack>
+			<PaginationHolder>
+				<AppPagination
+					setPage={setPage}
+					page={page}
+					numberOfPages={numberOfPages}
+					scroll={false}
+				/>
+			</PaginationHolder>
+		</Fragment>
+	);
 }

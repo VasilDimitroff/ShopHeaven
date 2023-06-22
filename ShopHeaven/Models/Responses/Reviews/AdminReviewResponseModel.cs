@@ -4,8 +4,6 @@
     {
         public string Product { get; set; }
 
-        public string Status { get; set; }
-
         public bool IsDeleted { get; set; }
     }
 }

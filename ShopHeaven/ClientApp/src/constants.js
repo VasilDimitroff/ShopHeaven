@@ -100,6 +100,9 @@ export const allowedFileFormats = ".jpg, .png, .jpeg, .webp"
 //how many reviews per page in reviews page in admin panel
 export const reviewsPerPageInProductPage = 3;
 
+// show reviews in product page only with this status
+export const reviewsFilterStatusForSingleProductPage = "Approved";
+
 //how many reviews per page in MyReviews page
 export const reviewsPerPageInMyReviewsPage = 3;
 
