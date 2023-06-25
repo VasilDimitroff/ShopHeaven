@@ -16,6 +16,7 @@ import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 import CircleLoader from "../../common/CircleLoader";
 import SingleReview from "./SingleReview";
 import AppPagination from "../../common/AppPagination";
+
 const breadcrumbs = [
 	{
 		name: "Home",

@@ -15,6 +15,7 @@ export const checkoutPath =`/order/checkout`;
 export const successPaymentPath =`/payment/success`;
 export const myAccountPath =`/account`;
 export const myReviewsPath =`/reviews`;
+export const myOrdersPath =`/orders`;
 
 //unautorized message
 export const noPermissionsForOperationMessage = "You have no permissions to perform the operation";
@@ -104,7 +105,7 @@ export const reviewsPerPageInProductPage = 3;
 export const reviewsFilterStatusForSingleProductPage = "Approved";
 
 //how many reviews per page in MyReviews page
-export const reviewsPerPageInMyReviewsPage = 3;
+export const reviewsPerPageInMyReviewsPage = 5;
 
 //exact length of the coupon code (sync it with backend)
 export const couponCodeLength = 8;

@@ -26,6 +26,7 @@ import Checkout from "./components/checkout/Checkout";
 import SubcategoryProducts from "./components/products/products-gallery/SubcategoryProducts";
 import MyAccount from "./components/account/myaccount/MyAccount";
 import MyReviews from "./components/account/myreviews/MyReviews";
+import MyOrders from "./components/account/myorders/MyOrders";
 import Success from "./components/payment/Success";
 import Unauthorized from "./components/auth/Unauthorized";
 import {
@@ -43,6 +44,7 @@ import {
   favoritesPath,
   myAccountPath,
   myReviewsPath,
+  myOrdersPath,
 } from "./constants";
 
 export default function App() {
@@ -69,6 +71,7 @@ export default function App() {
                 <Route path={`${checkoutPath}`} element={<Checkout />} />
                 <Route path={`${myAccountPath}`} element={<MyAccount />} />
                 <Route path={`${myReviewsPath}`} element={<MyReviews />} />
+                <Route path={`${myOrdersPath}`} element={<MyOrders />} />
               </Route>
 
               {/* admin only routes */}
