@@ -31,7 +31,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(All))]
+        [HttpPost, Authorize, Route(nameof(All))]
         public async Task<ActionResult<OrdersAndStatusesResponseModel>> All(OrderPaginationRequestModel model)
         {
             try
@@ -45,7 +45,7 @@ namespace ShopHeaven.Controllers
             }
         }
 
-        [HttpPost, Authorize(Roles = GlobalConstants.AdministratorRoleName), Route(nameof(ChangeStatus))]
+        [HttpPost, Authorize, Route(nameof(ChangeStatus))]
         public async Task<ActionResult<ChangeOrderStatusResponseModel>> ChangeStatus(ChangeOrderStatusRequestModel model)
         {
             try

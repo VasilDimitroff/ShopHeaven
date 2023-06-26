@@ -153,6 +153,12 @@ namespace ShopHeaven.Data.Services
 
             //get deleted orders too
             IQueryable<Order> allOrders = this.db.Orders.Include(x => x.CreatedBy);
+
+            if (model.UserId != null && model.UserId != "")
+            {
+                allOrders = await FilterByUserIdAsync(allOrders, model.UserId);
+            }
+
             allOrders = FilterByCriteria(allOrders, model.Criteria.Trim(), model.SearchTerm.Trim());
             var allFilteredOrdersCount = await FilterByOrderStatus(allOrders, model.Status.Trim()).CountAsync();
 
@@ -324,6 +330,14 @@ namespace ShopHeaven.Data.Services
             return orderStatuses;
         }
 
+        private async Task<IQueryable<Order>> FilterByUserIdAsync(IQueryable<Order> orders, string userId)
+        {
+            var user = await this.usersService.GetUserAsync(userId);
+            orders = orders.Where(x => x.CreatedById == userId && x.IsDeleted != true);
+
+            return orders;
+        }
+
         private IQueryable<Order> FilterByCriteria(IQueryable<Order> orders, string sortingCriteria, string searchTerm)
         {
             bool isSortCriteriaParsed = Enum.TryParse<OrderSortingCriteria>(sortingCriteria, out OrderSortingCriteria criteria);
@@ -364,6 +378,11 @@ namespace ShopHeaven.Data.Services
         {
             //get deleted included
             IQueryable<Order> orders = this.db.Orders.Include(x => x.CreatedBy);
+
+            if (model.UserId != null && model.UserId != "")
+            {
+                orders = await FilterByUserIdAsync(orders, model.UserId);
+            }
 
             orders = FilterByCriteria(orders, model.Criteria.Trim(), model.SearchTerm.Trim());
             orders = FilterByOrderStatus(orders, model.Status.Trim());
@@ -507,7 +526,7 @@ namespace ShopHeaven.Data.Services
             return lastOrder;
         }
 
-        private OrderSummaryResponseModel GetOrderSummary(Cart cart, Data.Models.Coupon coupon, ShippingMethod shippingMethod)
+        private OrderSummaryResponseModel GetOrderSummary(Cart cart, Coupon coupon, ShippingMethod shippingMethod)
         {
             return new OrderSummaryResponseModel
             {
@@ -543,11 +562,11 @@ namespace ShopHeaven.Data.Services
             return isPaymentMethodParsed;
         }
 
-        private async Task<Models.Coupon> PrepareCouponAsync(string couponId)
+        private async Task<Coupon> PrepareCouponAsync(string couponId)
         {
             if (couponId == null || couponId.Trim() == "")
             {
-                return new Data.Models.Coupon();
+                return new Coupon();
             }
 
             var coupon = await this.couponsService.GetCouponByIdAsync(couponId);

@@ -26,6 +26,7 @@ import {
 } from "../../../constants";
 import AppPagination from "../../common/AppPagination";
 import { useNavigate, useLocation } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import { MainWrapper } from "../../../styles/styles";
 import BreadcrumbsBar from "../../common/BreadcrumbsBar";
 
@@ -43,6 +44,8 @@ const breadcrumbs = [
 
 export default function MyOrders() {
 	const axiosPrivate = useAxiosPrivate();
+
+	const { auth } = useAuth();
 
 	//is data loading
 	const [isLoading, setIsLoading] = useState(false);
@@ -105,6 +108,7 @@ export default function MyOrders() {
 					status: statusSearch.trim(),
 					searchTerm: searchTerm.trim(),
 					criteria: searchOrderProperty.trim(),
+					userId: auth.userId
 				};
 
 				console.log("MYORDER REQUEST ", pagingModel);

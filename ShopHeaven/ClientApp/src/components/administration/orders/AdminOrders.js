@@ -90,6 +90,7 @@ export default function AdminOrders() {
 					status: statusSearch.trim(),
 					searchTerm: searchTerm.trim(),
 					criteria: searchOrderProperty.trim(),
+					userId: null,
 				};
 
 				console.log("ORDER REQUEST ", pagingModel);
