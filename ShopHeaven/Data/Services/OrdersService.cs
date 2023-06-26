@@ -158,6 +158,13 @@ namespace ShopHeaven.Data.Services
             {
                 allOrders = await FilterByUserIdAsync(allOrders, model.UserId);
             }
+            else
+            {
+                if (!this.usersService.IsUserAdmin())
+                {
+                    throw new ArgumentException(GlobalConstants.NoPermissionsToPerformOperation);
+                }
+            }
 
             allOrders = FilterByCriteria(allOrders, model.Criteria.Trim(), model.SearchTerm.Trim());
             var allFilteredOrdersCount = await FilterByOrderStatus(allOrders, model.Status.Trim()).CountAsync();
@@ -382,6 +389,13 @@ namespace ShopHeaven.Data.Services
             if (model.UserId != null && model.UserId != "")
             {
                 orders = await FilterByUserIdAsync(orders, model.UserId);
+            }
+            else
+            {
+                if (!this.usersService.IsUserAdmin())
+                {
+                    throw new ArgumentException(GlobalConstants.NoPermissionsToPerformOperation);
+                }
             }
 
             orders = FilterByCriteria(orders, model.Criteria.Trim(), model.SearchTerm.Trim());

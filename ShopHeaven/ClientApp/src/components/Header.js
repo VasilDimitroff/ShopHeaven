@@ -41,7 +41,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoSmall from "../static/images/shop_heaven_logo_small_2.png";
 import LogoBig from "../static/images/shop_heaven_logo_big_2.png";
 import MainMenu from "./home/MainMenu";
-import { cartPath, favoritesPath, loginPath, myAccountPath, myReviewsPath } from "../constants";
+import { cartPath, favoritesPath, loginPath, myAccountPath, myOrdersPath, myReviewsPath } from "../constants";
 
 export default function Header() {
 	const { auth } = useAuth();
@@ -380,15 +380,15 @@ export default function Header() {
 							</ListItem>
 							<Divider />
 							{auth?.roles?.includes("Administrator") ? (
-								<Link style={styledLink} to="/admin">
-									<ListItem disablePadding>
+								<>
+									<ListItem disablePadding onClick={() => navigate("/admin")}>
 										<DropDownMenuListItemButton>
 											<AdminPanelSettings />
 											<UserMenuListItem primary="Admin Panel" />
 										</DropDownMenuListItemButton>
 									</ListItem>
 									<Divider />
-								</Link>
+								</>
 							) : (
 								<></>
 							)}
@@ -399,7 +399,7 @@ export default function Header() {
 								</DropDownMenuListItemButton>
 							</ListItem>
 							<Divider />
-							<ListItem disablePadding>
+							<ListItem disablePadding onClick={() => navigate(myOrdersPath)}>
 								<DropDownMenuListItemButton>
 									<ShoppingCartCheckout />
 									<UserMenuListItem primary="My Orders" />

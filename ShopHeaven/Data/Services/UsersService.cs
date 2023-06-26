@@ -8,7 +8,6 @@ using ShopHeaven.Models.Responses.Roles;
 using ShopHeaven.Models.Responses.Users;
 using System.Data;
 using System.Security.Claims;
-using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace ShopHeaven.Data.Services
 {
@@ -173,6 +172,18 @@ namespace ShopHeaven.Data.Services
             return user;
         }
 
+        public bool IsUserAdmin()
+        {
+            var user = this.GetUserInfoFromJwt();
+
+            if (!user.Roles.Any(role => role == GlobalConstants.AdministratorRoleName))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task<UserResponseModel> GetAuthInfoByUserEmail(string email)
         {
             var userModel = await db.Users
@@ -202,7 +213,7 @@ namespace ShopHeaven.Data.Services
             userModel.Roles = userRoles;
 
             return userModel;
-        }
+        }        
 
         public async Task<UserWithRolesResponseModel> AddToRoleAsync(AddToRoleRequestModel model)
         {

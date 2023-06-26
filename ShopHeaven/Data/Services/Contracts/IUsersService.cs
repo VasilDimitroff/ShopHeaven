@@ -30,5 +30,7 @@ namespace ShopHeaven.Data.Services.Contracts
         public Task<UserWithRolesResponseModel> DeleteUserAsync(DeleteUserRequestModel model);
 
         public Task<UserWithRolesResponseModel> UndeleteUserAsync(UndeleteUserRequestModel model);
+
+        public bool IsUserAdmin();
     }
 }

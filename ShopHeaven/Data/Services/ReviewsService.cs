@@ -107,6 +107,7 @@ namespace ShopHeaven.Data.Services
             return totalReviewsCount;
         }
 
+
         public async Task<ReviewsAndStatusesResponseModel> GetReviewsWithReviewStatusesAsync(PaginatedAdminReviewRequestModel model)
         {
             var reviewStatuses = this.GetReviewStatuses();
@@ -118,6 +119,13 @@ namespace ShopHeaven.Data.Services
             if (model.UserId != null && model.UserId != "")
             {
                 allReviews = await FilterByUserIdAsync(allReviews, model.UserId);
+            }
+            else
+            {
+                if (!this.usersService.IsUserAdmin())
+                {
+                    throw new ArgumentException(GlobalConstants.NoPermissionsToPerformOperation);
+                }
             }
 
             allReviews = FilterByCriteria(allReviews, model.Criteria.Trim(), model.SearchTerm.Trim());
@@ -257,6 +265,13 @@ namespace ShopHeaven.Data.Services
             if (model.UserId != null && model.UserId != "")
             {
                 reviews = await FilterByUserIdAsync(reviews, model.UserId);
+            }
+            else
+            {
+                if (!this.usersService.IsUserAdmin())
+                {
+                    throw new ArgumentException(GlobalConstants.NoPermissionsToPerformOperation);
+                }
             }
 
             reviews = FilterByCriteria(reviews, model.Criteria.Trim(), model.SearchTerm.Trim());

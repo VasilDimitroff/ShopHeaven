@@ -36,6 +36,8 @@
 
         public const string PasswordMustContainsLettersAndDigits = "Password must contains letters and digits!";
 
+        public const string NoPermissionsToPerformOperation = "You have no permissions to perform this operation!";
+
         public const string UserDoesNotExist = "User with given Id doesn't exists!";
 
         public const string UserNotFound = "User is not found!";
