@@ -114,8 +114,6 @@ export default function CartProduct(props) {
 
 			setAddOrRemoveToWishlistErrorMessage("");
 			setAddOrRemoveToWishlistResponseMessage(responseMessage);
-
-			console.log("ADD TO WISHLIST RESPONSE", response?.data);
 		} catch (error) {
 			setAddOrRemoveToWishlistResponseMessage("");
 			if (error?.response?.status === 401 || error?.response?.status === 403) {

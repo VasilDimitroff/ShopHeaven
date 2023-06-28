@@ -25,7 +25,10 @@ export default function Cart() {
 	const [productsInCart, setProductsInCart] = useState([]);
 	const [cartSummary, setCartSummary] = useState();
 	const [deleteProductDOMelement, setDeleteProductDOMelement] = useState(false);
-	const [addedOrRemovedProductFromFavorites, setAddedOrRemovedProductFromFavorites] = useState(false);
+	const [
+		addedOrRemovedProductFromFavorites,
+		setAddedOrRemovedProductFromFavorites,
+	] = useState(false);
 
 	const { auth } = useAuth();
 	const navigate = useNavigate();
@@ -80,7 +83,7 @@ export default function Cart() {
 	}
 
 	function productUpdated() {
-		setAddedOrRemovedProductFromFavorites(true)
+		setAddedOrRemovedProductFromFavorites(true);
 	}
 
 	function quantityUpdated(productId, newQuantity, cartSummary) {

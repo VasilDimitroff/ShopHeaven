@@ -55,7 +55,7 @@ namespace ShopHeaven.Data.Services
 
             var shippingMethods = await this.shippingService.GetShippingMethodsAsync();
 
-            var paymentMethods = Enum.GetNames(typeof(Data.Models.Enums.PaymentMethod));
+            var paymentMethods = Enum.GetNames(typeof(PaymentMethod));
 
             var responseModel = new CheckoutResponseModel
             {

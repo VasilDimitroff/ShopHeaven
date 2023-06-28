@@ -72,9 +72,6 @@ export default function MyOrders() {
 	//error message
 	const [errorMessage, setErrorMessage] = useState("");
 
-	//status message for child component
-	const [isStatusUpdated, setIsStatusUpdated] = useState(false);
-
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -88,10 +85,6 @@ export default function MyOrders() {
 
 	// by what status to search => processing, delivered,  ..???
 	const statusSearchRef = useRef();
-
-	function handleOrderStatusUpdated() {
-		setIsStatusUpdated(true);
-	}
 
 	useEffect(() => {
 		let timeoutId;
@@ -131,8 +124,6 @@ export default function MyOrders() {
 					setPage(1);
 				}
 
-
-				setIsStatusUpdated(false);
 				setIsLoading(false);
 			} catch (error) {
 				console.log("ERROR: " + error);
@@ -157,12 +148,12 @@ export default function MyOrders() {
 			clearTimeout(timeoutId);
 			setTimer(0);
 		};
-	}, [page, searchTerm, searchOrderProperty, statusSearch, isStatusUpdated]);
+	}, [page, searchTerm, searchOrderProperty, statusSearch]);
 
 
 	useEffect(() => {
 		setPage(1);
-	}, [searchTerm, searchOrderProperty, statusSearch, isStatusUpdated])
+	}, [searchTerm, searchOrderProperty, statusSearch])
 
 	function onSearchOrder(e) {
 		e.preventDefault();
@@ -313,7 +304,6 @@ export default function MyOrders() {
 
 					: <></>
 			}
-
 			{((searchTerm && searchOrderProperty) || statusSearch) && !errorMessage ? (
 				<Alert severity="info" sx={{ mt: 1 }}>
 					<Typography>
@@ -336,8 +326,6 @@ export default function MyOrders() {
 						) : (
 							<></>
 						)}
-
-
 						{" "}
 						- (<b>Page {page}</b>)
 					</Typography>
@@ -362,9 +350,7 @@ export default function MyOrders() {
 							{orders?.map((order) => {
 								return (
 									<SingleOrder
-										handleOrderStatusUpdated={handleOrderStatusUpdated}
 										key={order?.id}
-										orderStatuses={orderStatuses}
 										order={order}
 									/>
 								);
