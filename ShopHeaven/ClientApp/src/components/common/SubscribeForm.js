@@ -1,170 +1,235 @@
-import React from "react";
-import { Box,  Container, TextField,Slide, Typography,  Button, InputAdornment, Paper} from "@mui/material";
+import { useState, useRef } from "react";
+import {
+	Box,
+	Container,
+	TextField,
+	Typography,
+	Button,
+	InputAdornment,
+	Paper,
+	Alert,
+} from "@mui/material";
+import { Person, Email } from "@mui/icons-material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
-import { Person, Email } from "@mui/icons-material";
+import { MainWrapper } from "../../styles/styles";
 function SubscribeForm(props) {
-  const Banner = styled(Box)({
-    //backgroundColor: theme.palette.common.white.main,
-    height: props.height,
-    width: "100%",
-    position: "relative",
-    [theme.breakpoints.down("md")]: {
-      height: props.heightSm,
-    },
-  });
+	const [name, setName] = useState("");
+	const [email, setEmail] = useState("");
 
-  const Overlay = styled(Box)({
-    paddingTop: props.ContentPaddingTop,
-    //backgroundColor: "rgba(0, 0, 0, 0.0)",
-    height: props.height,
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    [theme.breakpoints.down("md")]: {
-      height: props.heightSm,
-      paddingTop: theme.spacing(4.5),
-    },
-    [theme.breakpoints.down("sm")]: {
-      height: props.heightSm,
-      paddingTop: theme.spacing(4),
-    },
-  });
+	const nameRef = useRef();
+	const emailRef = useRef();
 
-  const FormHolder = styled(Container)({
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    [theme.breakpoints.down("md")]: {
-      width: "50%",
-      paddingTop: theme.spacing(4),
-    },
-    [theme.breakpoints.down("sm")]: {
-      width: "80%",
-    },
-  });
+	//errors
+	const [messages, setMessages] = useState({
+		nameError: "",
+		emailError: "",
+		successSubscribing: "",
+	});
 
-  const Info = styled(Typography)({
-    textAlign: "center",
-    paddingBottom: theme.spacing(4),
-    fontSize: "22px",
-    [theme.breakpoints.down("md")]: {
-      paddingBottom: theme.spacing(0),
-    },
-  });
+	function onSubmitForm(e) {
+		e.preventDefault();
 
-  const StyledTextField = styled(TextField)({
-    //color: "#ffffff",
-    //backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderTopRightRadius: theme.shape.borderRadius,
-    borderTopLeftRadius: theme.shape.borderRadius,
-    width: "100%"
-  });
+		console.log(emailRef.current.value);
+		console.log(nameRef.current.value);
 
-  const FormWrapper = styled(Box)({
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.spacing(3),
-    [theme.breakpoints.down("md")]: {
-      display: "block",
-      width: "100%",
-      margin: "auto",
-    },
-  });
+		setName(nameRef.current.value);
+		setEmail(emailRef.current.value);
 
-  const InputBox = styled(Box)({
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    [theme.breakpoints.down("md")]: {
-      marginBottom: theme.spacing(1.5),
-    },
-  });
+		if (!validateUserDataForm()) {
+			return;
+		}
 
-  const SubscribeButton = styled(Button)({
-    width: "100%",
-    display: "block",
-    margin: "auto",
-    paddingTop: theme.spacing(1.75),
-    paddingBottom: theme.spacing(1.75),
-  });
+		messages.successSubscribing = "You successfully subscribed for our newsletter!"
+	}
 
-  const MainWrapper = styled(Paper)({
-    width: "80%",
-    display: "block",
-    margin: "auto",
-    paddingBottom: props.padddingBottom,
-    paddingTop:props.paddingTop,
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-    },
-  })
+	function validateUserDataForm() {
+		let isValid = true;
 
-  return (
-    <MainWrapper>
-      <Banner>
-          <Overlay>
-            <Info>{props.infoText}</Info>
-            <FormHolder>
-              <FormWrapper>
-                <InputBox>
-                  <StyledTextField
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Person
-                            sx={{
-                              fontSize: "34px",
-                              pt: theme.spacing(1),
-                              pb: theme.spacing(1),
-                            }}
-                          />
-                        </InputAdornment>
-                      ),
-                    }}
-                    label="Name"
-                    variant="outlined"
-                    placeholder="Your Name"
-                  />
-                </InputBox>
-                <InputBox>
-                  <StyledTextField
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Email
-                            sx={{
-                              fontSize: "34px",
-                              pt: theme.spacing(1),
-                              pb: theme.spacing(1),
-                            }}
-                          />
-                        </InputAdornment>
-                      ),
-                    }}
-                    label="E-mail"
-                    variant="outlined"
-                    placeholder="Your E-mail"
-                  />
-                </InputBox>
-                <SubscribeButton
-                  variant="contained"
-                  size="large"
-                  color="secondary"
-                >
-                  SUBSCRIBE
-                </SubscribeButton>
-              </FormWrapper>
-            </FormHolder>
-          </Overlay>
-      </Banner>
-    </MainWrapper>
-  );
+		if (nameRef.current.value.length < 1) {
+			let msg = `Name must contain at least ${1} character`;
+
+			setMessages((prev) => {
+				return {
+					...prev,
+					nameError: msg,
+				};
+			});
+
+			isValid = false;
+		} else {
+			setMessages((prev) => {
+				return {
+					...prev,
+					nameError: "",
+				};
+			});
+		}
+
+		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+		if (!emailRef.current.value.match(mailformat)) {
+			let msg = "Please enter valid email format!";
+
+			setMessages((prev) => {
+				return {
+					...prev,
+					emailError: msg,
+				};
+			});
+
+			isValid = false;
+		} else {
+			setMessages((prev) => {
+				return {
+					...prev,
+					emailError: "",
+				};
+			});
+		}
+
+		return isValid;
+	}
+
+	const Info = styled(Typography)({
+		textAlign: "center",
+		paddingBottom: theme.spacing(4),
+		fontSize: "22px",
+		[theme.breakpoints.down("md")]: {
+			paddingBottom: theme.spacing(0),
+		},
+	});
+
+	const StyledTextField = styled(TextField)({
+		//color: "#ffffff",
+		backgroundColor: "rgba(246, 246, 246, 0.7)",
+		borderRadius: theme.shape.borderRadius,
+		width: "100%",
+	});
+
+	const InputsWrapper = styled(Box)({
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: theme.spacing(3),
+		[theme.breakpoints.down("md")]: {
+			display: "block",
+			width: "100%",
+			margin: "auto",
+		},
+	});
+
+	const InputBox = styled(Box)({
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		[theme.breakpoints.down("md")]: {
+			marginBottom: theme.spacing(1.5),
+		},
+	});
+
+	const SubscribeButton = styled(Button)({
+		width: "100%",
+		display: "block",
+		margin: "auto",
+		paddingTop: theme.spacing(1.75),
+		paddingBottom: theme.spacing(1.75),
+	});
+
+	return (
+		<MainWrapper>
+			<Paper>
+				<Box sx={{ pt: 8, pb: 8 }}>
+					<Info>{props.infoText}</Info>
+					<Container>
+						<form onSubmit={onSubmitForm}>
+							<InputsWrapper>
+								<InputBox>
+									<StyledTextField
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Person
+														sx={{
+															fontSize: "34px",
+															pt: theme.spacing(1),
+															pb: theme.spacing(1),
+														}}
+													/>
+												</InputAdornment>
+											),
+										}}
+										label="Name"
+										variant="outlined"
+										defaultValue={name}
+										inputRef={nameRef}
+										placeholder="Your Name"
+									/>
+								</InputBox>
+								<InputBox>
+									<StyledTextField
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Email
+														sx={{
+															fontSize: "34px",
+															pt: theme.spacing(1),
+															pb: theme.spacing(1),
+														}}
+													/>
+												</InputAdornment>
+											),
+										}}
+										label="E-mail"
+										variant="outlined"
+										defaultValue={email}
+										inputRef={emailRef}
+										placeholder="Your E-mail"
+									/>
+								</InputBox>
+								<InputBox>
+									<SubscribeButton
+										variant="contained"
+										size="large"
+										color="secondary"
+										type="submit"
+									>
+										SUBSCRIBE
+									</SubscribeButton>
+								</InputBox>
+							</InputsWrapper>
+							{messages.nameError ? (
+								<Alert sx={{ mt: 1 }} variant="filled" severity="error">
+									{messages.nameError}
+								</Alert>
+							) : (
+								<></>
+							)}
+
+							{messages.emailError ? (
+								<Alert sx={{ mt: 1 }} variant="filled" severity="error">
+									{messages.emailError}
+								</Alert>
+							) : (
+								<></>
+							)}
+
+							{messages.successSubscribing ? (
+								<Alert sx={{ mt: 1 }} severity="success">
+									{messages.successSubscribing}
+								</Alert>
+							) : (
+								<></>
+							)}
+						</form>
+					</Container>
+				</Box>
+			</Paper>
+		</MainWrapper>
+	);
 }
 
 export default SubscribeForm;

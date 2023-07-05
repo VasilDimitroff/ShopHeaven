@@ -198,10 +198,6 @@ export default function Home() {
         />
       */}
 			<SubscribeForm
-				ContentPaddingTop={theme.spacing(8)}
-				height={250}
-				heightSm={320}
-				paddingBottom={theme.spacing(3)}
 				infoText="Subscribe to our newsletter"
 			/>
 		</Fragment>
