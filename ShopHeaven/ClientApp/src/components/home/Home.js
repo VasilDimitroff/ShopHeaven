@@ -11,143 +11,178 @@ import { ApiEndpoints } from "../../api/endpoints";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import {
-  productsPerPageInSubCategoryPage,
-  maxProductPriceRangeGroup,
-  productsPerSliderInHomePage,
-  firstProductCarouselSortingCriteria
+	productsPerSliderInHomePage,
+	firstProductCarouselSortingCriteria,
+	secondProductCarouselSortingCriteria,
+	thirdProductCarouselSortingCriteria,
 } from "../../constants.js";
 
 export default function Home() {
-  const { auth } = useAuth();
+	const { auth } = useAuth();
 
-  const effectRun = useRef(false);
+	const effectRun = useRef(false);
 
-  const [firstLineProducts, setFirstLineProducts] = useState();
-  const [secondLineProducts, setSecondLineProducts] = useState();
+	const [firstLineProducts, setFirstLineProducts] = useState();
+	const [secondLineProducts, setSecondLineProducts] = useState();
+	const [thirdLineProducts, setThirdLineProducts] = useState();
 
-  //is request loading
-  const [isLoading, setIsLoading] = useState(false);
+	//is request loading
+	const [isLoading, setIsLoading] = useState(false);
 
-  //first line
-  useEffect(() => {
+	//first line
+	useEffect(() => {
+		window.scroll(0, 0);
 
-    window.scroll(0, 0);
-    
-    const controller = new AbortController();
+		const controller = new AbortController();
 
-    const getProductsByFilter = async () => {
-      try {
-        setIsLoading(true);
+		const getProductsByFilter = async () => {
+			try {
+				setIsLoading(true);
 
-        let pagingModel = {
-          userId: auth.userId,
-          recordsPerPage: productsPerSliderInHomePage,
-          page: 1,
-          searchTerm: "", //no filter by search term
-          categoryId: "", //all categories
-          sortingCriteria: firstProductCarouselSortingCriteria
-        };
+				let pagingModel = {
+					userId: auth.userId,
+					recordsPerPage: productsPerSliderInHomePage,
+					page: 1,
+					searchTerm: "", //no filter by search term
+					categoryId: "", //all categories
+					sortingCriteria: firstProductCarouselSortingCriteria,
+				};
 
-        const response = await axios.post(
-          ApiEndpoints.products.getFilteredProducts,
-          pagingModel,
-          {
-            signal: controller.signal,
-          }
-        );
+				const response = await axios.post(
+					ApiEndpoints.products.getFilteredProducts,
+					pagingModel,
+					{
+						signal: controller.signal,
+					}
+				);
 
-        console.log(response?.data);
+				console.log(response?.data);
 
-        setSecondLineProducts(response?.data);
+				setFirstLineProducts(response?.data);
 
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		};
 
-    if (effectRun.current) {
-      getProductsByFilter();
-    }
+		if (effectRun.current) {
+			getProductsByFilter();
+		}
 
-    return () => {
-      effectRun.current = true;
-      controller.abort();
-    };
-  }, []);
+		return () => {
+			effectRun.current = true;
+			controller.abort();
+		};
+	}, []);
 
-  
-  //second line
-  useEffect(() => {
+	//second line
+	useEffect(() => {
+		const controller = new AbortController();
 
-    window.scroll(0, 0);
-    
-    const controller = new AbortController();
+		const getProductsByFilter = async () => {
+			try {
+				setIsLoading(true);
 
-    const getProductsBySubcategory = async () => {
-      try {
-        setIsLoading(true);
+				let pagingModel = {
+					userId: auth.userId,
+					recordsPerPage: productsPerSliderInHomePage,
+					page: 1,
+					searchTerm: "", //no filter by search term
+					categoryId: "", //all categories
+					sortingCriteria: secondProductCarouselSortingCriteria, // no sorting criteria, order by newest
+				};
 
-        let pricesArray = maxProductPriceRangeGroup.split(" - ");
-        let lowestPrice = parseFloat(pricesArray[0].trim());
-        let highestPrice = parseFloat(pricesArray[1].trim());
+				const response = await axios.post(
+					ApiEndpoints.products.getFilteredProducts,
+					pagingModel,
+					{
+						signal: controller.signal,
+					}
+				);
 
-        let pagingModel = {
-          recordsPerPage: productsPerPageInSubCategoryPage,
-          page: 1,
-          searchTerm: "",
-          sortingCriteria: "",
-          subcategoryId: "8d059c11-43c9-4983-926e-77e5e9191032",
-          inStock: false,
-          rating: 0,
-          lowestPrice: lowestPrice,
-          highestPrice: highestPrice,
-        };
+				console.log(response?.data);
 
-        console.log("REQUIEST ", pagingModel);
+				setSecondLineProducts(response?.data);
 
-        const response = await axios.post(
-          ApiEndpoints.products.getBySubcategoryId,
-          pagingModel,
-          {
-            signal: controller.signal,
-          }
-        );
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		};
 
-        console.log(response?.data);
+		if (effectRun.current) {
+			getProductsByFilter();
+		}
 
-        setFirstLineProducts(response?.data?.products);
+		return () => {
+			effectRun.current = true;
+			controller.abort();
+		};
+	}, []);
 
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+	//third line
+	useEffect(() => {
+		const controller = new AbortController();
 
-    if (effectRun.current) {
-      getProductsBySubcategory();
-    }
+		const getProductsByFilter = async () => {
+			try {
+				setIsLoading(true);
 
-    return () => {
-      effectRun.current = true; // update the value of effectRun to true
-      controller.abort();
-    };
-  }, []);
+				let pagingModel = {
+					userId: auth.userId,
+					recordsPerPage: productsPerSliderInHomePage,
+					page: 1,
+					searchTerm: "", //no filter by search term
+					categoryId: "", //all categories
+					sortingCriteria: thirdProductCarouselSortingCriteria,
+				};
 
-  return firstLineProducts && secondLineProducts ? (
-    <Fragment>
-      <HomeCarouselAndMainMenu />
-      <ProductsCarousel products={secondLineProducts} headingName="Best Offers" />
-      <ProductsCarousel
-        products={secondLineProducts}
-        headingName="Similar to {subcategoryName} (You may also like)"
-      />
-      <ProductsCarousel
-        products={secondLineProducts}
-        headingName="Frequently Purchased"
-      />
+				const response = await axios.post(
+					ApiEndpoints.products.getFilteredProducts,
+					pagingModel,
+					{
+						signal: controller.signal,
+					}
+				);
 
-      {/*
+				console.log(response?.data);
+
+				setThirdLineProducts(response?.data);
+
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		if (effectRun.current) {
+			getProductsByFilter();
+		}
+
+		return () => {
+			effectRun.current = true;
+			controller.abort();
+		};
+	}, []);
+
+	return firstLineProducts && secondLineProducts && thirdLineProducts ? (
+		<Fragment>
+			<HomeCarouselAndMainMenu />
+			<ProductsCarousel
+				products={firstLineProducts}
+				headingName="Best Offers"
+			/>
+			<ProductsCarousel
+				products={secondLineProducts}
+				headingName="Newest products"
+			/>
+			<ProductsCarousel
+				products={thirdLineProducts}
+				headingName="Highest rated products"
+			/>
+
+			{/*
         <FullWidthBannerWithOverlay
           infoText="You haven't account yet? Create a new one now or login"
           hoverOverlay={false}
@@ -162,15 +197,17 @@ export default function Home() {
           image="https://img.freepik.com/free-psd/online-shopping-banner-template_23-2148644052.jpg?w=2000"
         />
       */}
-      <SubscribeForm
-        ContentPaddingTop={theme.spacing(8)}
-        height={250}
-        heightSm={320}
-        paddingBottom={theme.spacing(3)}
-        infoText="Subscribe to our newsletter for better life"
-      />
-    </Fragment>
-  ) : (
-    <Box sx={{pt: 15}}><CircleLoader /></Box>
-  );
+			<SubscribeForm
+				ContentPaddingTop={theme.spacing(8)}
+				height={250}
+				heightSm={320}
+				paddingBottom={theme.spacing(3)}
+				infoText="Subscribe to our newsletter"
+			/>
+		</Fragment>
+	) : (
+		<Box sx={{ pt: 15 }}>
+			<CircleLoader />
+		</Box>
+	);
 }

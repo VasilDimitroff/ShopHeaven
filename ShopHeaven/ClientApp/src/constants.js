@@ -68,6 +68,13 @@ export const productsSortingCriteriaInAdminProductsPanel = sortByNewest;
 
 //Sorting criteria for first carousel with products in home page. Important to be same as backend enum
 export const firstProductCarouselSortingCriteria = sortByDiscountPercentDescending;
+
+//Sorting criteria for second carousel with products in home page. Important to be same as backend enum
+export const secondProductCarouselSortingCriteria = sortByNewest;
+
+//Sorting criteria for third carousel with products in home page. Important to be same as backend enum
+export const thirdProductCarouselSortingCriteria = sortByRating;
+
 //home carousel products count per slider
 export const productsPerSliderInHomePage = 12;
 
