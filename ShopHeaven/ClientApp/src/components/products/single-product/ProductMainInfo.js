@@ -9,9 +9,6 @@ import ProductActionButtons from "./ProductActionButtons";
 
 export default function ProductMainInfo(props) {
   const [product, setProduct] = useState(props.product);
-  const [totalReviewsCount, setTotalReviewsCount] = useState(
-    props.totalReviewsCount
-  );
 
   useEffect(() => {
     setProduct(props.product);

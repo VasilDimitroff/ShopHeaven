@@ -7,125 +7,125 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 
 function ProductsCarousel(props) {
-  const [products, setProducts] = useState(props.products)
+	const [products, setProducts] = useState(props.products);
 
-  useEffect(()=> {
-    setProducts(props.products)
-  }, [props.products])
+	useEffect(() => {
+		setProducts(props.products);
+	}, [props.products]);
 
-  function SetCardsNumber() {
-    let cardsPerSlide;
+	function SetCardsNumber() {
+		let cardsPerSlide;
 
-    const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
-    const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
-    const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
-    const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
-    const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
+		const isBiggerOrXs = useMediaQuery(theme.breakpoints.up("xs"));
+		const isBiggerOrSm = useMediaQuery(theme.breakpoints.up("sm"));
+		const isBiggerOrMd = useMediaQuery(theme.breakpoints.up("md"));
+		const isBiggerOrLg = useMediaQuery(theme.breakpoints.up("lg"));
+		const isBiggerOrXl = useMediaQuery(theme.breakpoints.up("xl"));
 
-    if (isBiggerOrXs === true) {
-      cardsPerSlide = 2;
-    }
-    if (isBiggerOrSm === true) {
-      cardsPerSlide = 2;
-    }
-    if (isBiggerOrMd === true) {
-      cardsPerSlide = 3;
-    }
-    if (isBiggerOrLg === true) {
-      cardsPerSlide = 5;
-    }
-    if (isBiggerOrXl === true) {
-      cardsPerSlide = 6;
-    }
+		if (isBiggerOrXs === true) {
+			cardsPerSlide = 2;
+		}
+		if (isBiggerOrSm === true) {
+			cardsPerSlide = 2;
+		}
+		if (isBiggerOrMd === true) {
+			cardsPerSlide = 3;
+		}
+		if (isBiggerOrLg === true) {
+			cardsPerSlide = 5;
+		}
+		if (isBiggerOrXl === true) {
+			cardsPerSlide = 6;
+		}
 
-    return cardsPerSlide;
-  }
+		return cardsPerSlide;
+	}
 
-  function ReturnSlidesInfo() {
-    let cardsCountPerSlide = SetCardsNumber();
-    let slidesCount = Math.ceil(products.length / cardsCountPerSlide);
+	function ReturnSlidesInfo() {
+		let cardsCountPerSlide = SetCardsNumber();
+		let slidesCount = Math.ceil(products.length / cardsCountPerSlide);
 
-    let slidesInfo = [];
+		let slidesInfo = [];
 
-    for (
-      let i = 0;
-      i < slidesCount * cardsCountPerSlide;
-      i = i + cardsCountPerSlide
-    ) {
-      slidesInfo.push({
-        startIndex: i,
-        cardsPerSlide: cardsCountPerSlide,
-      });
-    }
+		for (
+			let i = 0;
+			i < slidesCount * cardsCountPerSlide;
+			i = i + cardsCountPerSlide
+		) {
+			slidesInfo.push({
+				startIndex: i,
+				cardsPerSlide: cardsCountPerSlide,
+			});
+		}
 
-    return slidesInfo;
-  }
+		return slidesInfo;
+	}
 
-  const CarouselWrapper = styled(Box)({
-    margin: "auto",
-    width: "100%",
-    display: "block",
-    width: "80%",
-    display: "block",
-    margin: "auto",
-    paddingTop: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      width: "95%",
-      paddingTop: theme.spacing(3),
-    },
-  });
+	const CarouselWrapper = styled(Box)({
+		margin: "auto",
+		width: "100%",
+		display: "block",
+		width: "80%",
+		display: "block",
+		margin: "auto",
+		paddingTop: theme.spacing(2),
+		[theme.breakpoints.down("md")]: {
+			width: "95%",
+			paddingTop: theme.spacing(3),
+		},
+	});
 
-  const StyledHeading = styled(Typography)({
-    [theme.breakpoints.down("md")]: {
-      textAlign: "center",
-    },
-  });
+	const StyledHeading = styled(Typography)({
+		[theme.breakpoints.down("md")]: {
+			textAlign: "center",
+		},
+	});
 
-  return (
-    <Box>
-      <CarouselWrapper>
-        <StyledHeading variant="h4">{props.headingName}</StyledHeading>
-        <Carousel
-          animation="slide"
-          swipe={false}
-          fullHeightHover={false}  
-          navButtonsAlwaysVisible={true}
-          indicators={true}
-          interval={12000}
-          cycleNavigation={false}
-          indicatorIconButtonProps={{
-            style: {
-              marginTop: theme.spacing(3),
-            },
-          }}
-          activeIndicatorIconButtonProps={{
-            style: {
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.primary.main,
-            },
-          }}
-          navButtonsProps={{
-            style: {
-              opacity: "0.8",
-              backgroundColor: theme.palette.primary.main
-            },
-          }}
-        >
-          {ReturnSlidesInfo().map((rowInfo) => {
-            return (
-              <ProductCarouselSlide
-                key={rowInfo.startIndex}
-                products={products?.slice(
-                  rowInfo.startIndex,
-                  rowInfo.startIndex + rowInfo.cardsPerSlide
-                )}
-              />
-            );
-          })}
-        </Carousel>
-      </CarouselWrapper>
-    </Box>
-  );
+	return (
+		<Box>
+			<CarouselWrapper>
+				<StyledHeading variant="h4">{props.headingName}</StyledHeading>
+				<Carousel
+					animation="slide"
+					swipe={false}
+					fullHeightHover={false}
+					navButtonsAlwaysVisible={true}
+					indicators={true}
+					interval={12000}
+					cycleNavigation={false}
+					indicatorIconButtonProps={{
+						style: {
+							marginTop: theme.spacing(3),
+						},
+					}}
+					activeIndicatorIconButtonProps={{
+						style: {
+							backgroundColor: theme.palette.primary.main,
+							color: theme.palette.primary.main,
+						},
+					}}
+					navButtonsProps={{
+						style: {
+							opacity: "0.8",
+							backgroundColor: theme.palette.primary.main,
+						},
+					}}
+				>
+					{ReturnSlidesInfo().map((rowInfo) => {
+						return (
+							<ProductCarouselSlide
+								key={rowInfo.startIndex}
+								products={products?.slice(
+									rowInfo.startIndex,
+									rowInfo.startIndex + rowInfo.cardsPerSlide
+								)}
+							/>
+						);
+					})}
+				</Carousel>
+			</CarouselWrapper>
+		</Box>
+	);
 }
 
 export default ProductsCarousel;

@@ -45,7 +45,6 @@ namespace ShopHeaven.Controllers
             {
                 var product = await this.productsService.GetFullProductDataAsync(model);
 
-                //to do: implement WHERE clause in GetSimilarProducts to fill with right products
                 var similarProducts = await this.productsService.GetSimilarProductsByProductIdAsync(model);
 
                 var productWithSimilarProductResponseModel = new ProductWithSimilarProductsResponseModel

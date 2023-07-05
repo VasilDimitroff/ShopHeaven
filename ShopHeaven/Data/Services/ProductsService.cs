@@ -693,10 +693,15 @@ namespace ShopHeaven.Data.Services
         public async Task<List<ProductGalleryResponseModel>> GetSimilarProductsByProductIdAsync(ProductRequestModel model)
         {
             var user = await this.db.Users.FirstOrDefaultAsync(x => x.Id == model.UserId && x.IsDeleted != true);
+
             if (user == null) { user = new User(); }
 
+            Product product = await this.GetProductAsync(model.Id);
+            SubCategory? subcategory = await this.db.SubCategories
+                .FirstOrDefaultAsync(x => x.IsDeleted != true && x.Id == product.SubCategoryId);
+
             return await this.db.Products
-                .Where(p => p.IsDeleted != true)
+                .Where(p => p.IsDeleted != true && p.Id != model.Id && p.SubCategory.MainCategoryId == subcategory.MainCategoryId)
                 .Take(model.SimilarProductsCount)
                 .Select(p => new ProductGalleryResponseModel
                 {
@@ -795,7 +800,7 @@ namespace ShopHeaven.Data.Services
             return product;
         }
 
-        public async Task<Models.Product> GetProductAsync(string id)
+        public async Task<Product> GetProductAsync(string id)
         {
             var product = await this.db.Products.
                             FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted != true);
@@ -808,7 +813,7 @@ namespace ShopHeaven.Data.Services
             return product;
         }
 
-        private void ConfigureDeletionInfo(Models.Product product, bool forDelete)
+        private void ConfigureDeletionInfo(Product product, bool forDelete)
         {
             foreach (var review in product.Reviews.Where(x => x.IsDeleted == forDelete))
             {

@@ -33,7 +33,7 @@ export default function AdminOrders() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	//orders array adn orderStatuses
-	const [orders, setOrders] = useState();
+	const [orders, setOrders] = useState([]);
 
 	// order statuses
 	const [orderStatuses, setOrderStatuses] = useState([]);
