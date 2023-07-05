@@ -7,8 +7,8 @@ namespace ShopHeaven.Data.Models.Common
         public BaseModel()
         {
             Id = Guid.NewGuid().ToString();
-            CreatedOn = DateTime.UtcNow;
             IsDeleted = false;
+            CreatedOn = DateTime.UtcNow;
             ModifiedOn = DateTime.UtcNow;
         }
 

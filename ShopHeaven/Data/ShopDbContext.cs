@@ -59,6 +59,8 @@ namespace ShopHeaven.Data
 
         public DbSet<PaymentSession> PaymentSessions { get; set; }
 
+        public DbSet<BulletinSubscription> BulletinSubscriptions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
