@@ -13,7 +13,13 @@ import { Person, Email } from "@mui/icons-material";
 import { theme } from "../../theme";
 import { styled } from "@mui/material/styles";
 import { MainWrapper } from "../../styles/styles";
+import axios from "../../api/axios";
+import { ApiEndpoints } from "../../api/endpoints";
+import useAuth from "../../hooks/useAuth";
+
 function SubscribeForm(props) {
+	const { auth } = useAuth();
+
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 
@@ -25,6 +31,7 @@ function SubscribeForm(props) {
 		nameError: "",
 		emailError: "",
 		successSubscribing: "",
+		errorSubscribing: "",
 	});
 
 	function onSubmitForm(e) {
@@ -40,7 +47,49 @@ function SubscribeForm(props) {
 			return;
 		}
 
-		messages.successSubscribing = "You successfully subscribed for our newsletter!"
+		const requestData = {
+			name: nameRef.current.value,
+			email: emailRef.current.value,
+			userId: auth.userId ?? null,
+		};
+
+		subscribeToNewsletter(requestData);
+	}
+
+	async function subscribeToNewsletter(requestData) {
+		try {
+			const controller = new AbortController();
+
+			const response = await axios.post(
+				ApiEndpoints.newsletter.subscribe,
+				requestData,
+				{
+					signal: controller.signal,
+				}
+			);
+
+			controller.abort();
+
+			console.log("SUBSCRIBE RESPONSE", response?.data);
+
+			setMessages((prev) => {
+				return {
+					...prev,
+					successSubscribing: "You successfully subscribed for our newsletter!",
+				};
+			});
+
+			setName("");
+			setEmail("");
+		} catch (error) {
+			setMessages((prev) => {
+				return {
+					...prev,
+					errorSubscribing: "Error! Subscription failed!",
+				};
+			});
+			console.log(error?.message);
+		}
 	}
 
 	function validateUserDataForm() {

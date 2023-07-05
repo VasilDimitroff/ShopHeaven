@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopHeaven.Data.Models
 {
-    public class BulletinSubscription : BaseModel
+    public class NewsletterSubscription : BaseModel
     {
         [Required]
         public string Name { get; set; }

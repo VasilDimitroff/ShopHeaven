@@ -89,6 +89,7 @@ builder.Services.AddTransient<IShippingService, ShippingService>();
 builder.Services.AddTransient<IPaymentService, PaymentService>();
 builder.Services.AddTransient<IPaymentSessionsService, PaymentSessionsService>();
 builder.Services.AddTransient<IWishlistsService, WishlistsService>();
+builder.Services.AddTransient<INewsletterService, NewsletterService>();
 
 builder.Services.AddHttpContextAccessor();
 

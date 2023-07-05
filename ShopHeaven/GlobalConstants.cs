@@ -170,6 +170,8 @@
 
         public const string YouCanSeeOnlyYourWishlist = "You can see only your wishlist!";
 
+        public const string NameCannotBeEmpty = "Name cannot be empty!";
+
         public const string CurrentQuantityPlusWantedQuantityIsMoreThanQuantityInStock
             = "Quantity of this product in your cart + quantity you want to add is more than quantity in stock!";
 

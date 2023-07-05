@@ -59,7 +59,7 @@ namespace ShopHeaven.Data
 
         public DbSet<PaymentSession> PaymentSessions { get; set; }
 
-        public DbSet<BulletinSubscription> BulletinSubscriptions { get; set; }
+        public DbSet<NewsletterSubscription> NewsletterSubscriptions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

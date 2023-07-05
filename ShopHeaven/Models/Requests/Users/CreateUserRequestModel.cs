@@ -4,7 +4,7 @@ namespace ShopHeaven.Models.Requests.Users
 {
     public class CreateUserRequestModel
     {
-        [Required(ErrorMessage = "Email cannot be empty")]
+        [Required(ErrorMessage = "Email cannot be empty"), EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password cannot be empty")]

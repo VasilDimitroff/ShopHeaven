@@ -92,6 +92,9 @@ export const ApiEndpoints = {
     payments: {
         createSession: "api/payments/createCheckoutSession",
         getPaymentSession: "api/payments/getPaymentSession"
+    },
+    newsletter: {
+        subscribe: "api/newsletter/subscribe"
     }
 
 }

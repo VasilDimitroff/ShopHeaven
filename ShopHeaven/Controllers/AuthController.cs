@@ -31,6 +31,8 @@ namespace ShopHeaven.Controllers
         [HttpPost, Route(nameof(Register))]
         public async Task<ActionResult> Register(CreateUserRequestModel model)
         {
+            if(!ModelState.IsValid) { return BadRequest(ModelState); }
+
             try
             {
                 await this.usersService.RegisterAsync(model);
