@@ -53,6 +53,10 @@ function ProductCarouselCard(props) {
 	}, [props.product]);
 
 	function onAddOrRemoveProductToWishlist() {
+		if (!auth.isLogged) {
+			navigate(loginPath);
+		}
+		
 		const requestData = {
 			userId: auth.userId,
 			wishlistId: auth.wishlistId,
